@@ -1,0 +1,388 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+# Copyright © 2009-2011 University of Zürich
+# Author: Rico Sennrich <sennrich@cl.uzh.ch>
+
+import sys 
+import os
+import getopt
+import shlex
+from subprocess import Popen, PIPE
+
+
+if sys.version_info < (2, 6):
+    enable_multiprocessing = 0
+else:
+    enable_multiprocessing = 1
+
+
+#list of output formats created by postprocessing_module.pl.
+#if you create a new one, put it here.
+outputformats = ["oldconll","conll","moses","prolog"]
+
+
+########################
+#Command line argument parser
+
+def usage():
+    bold = "\033[1m"
+    reset = "\033[0;0m"
+    print(bold + '\\ParZu options\n' + reset)
+    print('\t' + bold + '-h' + reset + ', ' + bold + '--help' + reset)
+    print('\t\tprint usage information\n')
+    print('\t' + bold + '-i' + reset + ', ' + bold + '--input' + reset + ' type')
+    print('\t\tdefine input type. Supported so far:')
+    print('\t\t' + bold +'raw' + reset + ': plain text')
+    print('\t\t' + bold +'tokenized' + reset + ': tokenized text. one token per line, empty line for sentence boundary')
+    print('\t\t' + bold +'tagged' + reset + ': POS-tagged text. token [tab] tag [newline]')
+    print('\t\t' + bold +'preprocessed' + reset + ': parser-ready input (generated with output option "preprocessed")\n')
+    print('\t' + bold + '-l' + reset + ', ' + bold + '--linewise' + reset)
+    print('\t\tparse text line by line (no automatic sentence splitting). This option is automatically enabled for tokenized or tagged input to enforce the original sentence segmentation.\n')
+    print('\t' + bold + '-o' + reset + ', ' + bold + '--output' + reset + ' type')
+    print('\t\tdefine output type. Supported so far:')
+    print('\t\t' + bold +'conll' + reset + ': CoNLL 2007 data format')
+    print('\t\t' + bold +'moses' + reset + ': factored format used by Moses SMT system')
+    print('\t\t' + bold +'prolog' + reset + ': prolog-readable format')
+    print('\t\t' + bold +'raw' + reset + ': parser output without postprocessing (mostly for debugging)')
+    print('\t\t' + bold +'preprocessed' + reset + ': return preprocessed input (unparsed, but parser-ready)\n')
+    print('\t' + bold + '-p'  + reset + ', ' + bold + '--processes' + reset + ' int')
+    print('\t\tnumber of parallel parser processes\n')
+    print('\t' + bold + '-q'  + reset + ', ' + bold + '--quiet' + reset)
+    print('\t\tsend warnings and errors to temporary log file instead of stderr\n')
+
+def load_arguments():
+    try:
+        opts, args = getopt.getopt(sys.argv[1:], "hi:lo:p:q", ["help", "input=", "linewise", "output=", "processes=", "quiet"])
+    except getopt.GetoptError as err:
+        # print help information and exit:
+        print(err) # will print something like "option -a not recognized"
+        usage()
+        sys.exit(2)
+    output = None
+    processes = None
+    inputformat = None
+    linewise = False
+    verbose = True
+    for o, a in opts:
+        if o in ("-h", "--help"):
+            usage()
+            sys.exit()
+        elif o in ("-p", "--processes"):
+            processes = a
+        elif o in ("-o", "--output"):
+            output = a
+        elif o in ("-i", "--input"):
+            inputformat = a
+        elif o in ("-l", "--linewise"):
+            linewise = True
+        elif o in ("-q", "--quiet"):
+            verbose = False
+        else:
+            assert False, "unhandled option"
+    return processes,output,inputformat,linewise,verbose
+
+
+#config file parser
+
+COMMENT_CHAR = '#'
+OPTION_CHAR =  '='
+
+
+def parse_config(filename):
+    options = {}
+    f = open(filename)
+    for line in f:
+        # First, remove comments:
+        if COMMENT_CHAR in line:
+            # split on comment char, keep only the part before
+            line, comment = line.split(COMMENT_CHAR, 1)
+        # Second, find lines with an option=value:
+        if OPTION_CHAR in line:
+            # split on option char:
+            option, value = line.split(OPTION_CHAR, 1)
+            # strip spaces:
+            option = option.strip()
+            value = value.strip()
+            # store in dictionary:
+            options[option] = value
+    f.close()
+    return options
+
+
+#sanity checks and merging config and command line options
+def process_arguments():
+
+    #get config options
+    options = parse_config(sys.path[0] + '/config.ini')
+
+    #get command line options
+    arg_processes,arg_output,arg_input,options['linewise'],verbose = load_arguments()
+
+    if arg_output:
+        options['outputformat'] = arg_output
+
+    if not options['outputformat'] in ["raw","preprocessed"] + outputformats:
+        print("Error: Output option not recognized: " + options['outputformat'] + "\n")
+        usage()
+        sys.exit(2)
+
+    if arg_input:
+        options['inputformat'] = arg_input
+
+    if not options['inputformat'] in ["plain","tokenized","tagged","preprocessed"]:
+        print("Error: Input option not recognized: " + options['inputformat'] + "\n")
+        usage()
+        sys.exit(2)
+        
+    if options['inputformat'] in ["tokenized","tagged"]:
+        options['linewise'] = True
+
+    if arg_processes:
+        options['processes'] = arg_processes
+
+    try:
+        int(options['processes'])
+    except ValueError:
+        # print help information and exit:
+        print("Error: Number of processes must be int\n")
+        usage()
+        sys.exit(2)
+
+    #calculate real number of parser processes spawned
+    if int(options['processes']) < 1 and enable_multiprocessing:
+        options['num_processes'] = multiprocessing.cpu_count() + int(options['processes'])
+    else:
+        options['num_processes'] = int(options['processes'])
+
+    options['nbestmode'] = int(options['nbestmode'])
+    
+    if options['nbestmode']:
+        options['nbest_cutoff'] = float(options['nbest_cutoff'])
+        
+    if options['linewise']:
+        options['sentdelim'] = '$newline'
+        options['returnsentdelim'] = 'no'
+    
+    if options['tempdir'] == 'local':
+        options['tempdir'] = os.path.join(sys.path[0],'tmp')
+
+
+    if options['uniquetmp'] == '1':
+        uniquetmp = str(os.getpid())
+    else:
+        uniquetmp = ''
+
+    options['tagfilepath'] = os.path.join(options['tempdir'],'tags' + uniquetmp + '.pl')
+    options['morphinpath'] = os.path.join(options['tempdir'],'morphin' + uniquetmp)
+    options['errorpath'] = os.path.join(options['tempdir'],'error' + uniquetmp)
+    options['morphpath'] = os.path.join(options['tempdir'], 'morph' + uniquetmp + '.pl')
+
+    options['taggercmd'] = shlex.split(options['taggercmd'])
+
+    if verbose:
+        options['senderror'] = sys.stderr
+    else:
+        options['senderror'] = open(options['errorpath'],'w')
+        
+    return options
+      
+      
+def main(options):
+    
+    #mapping between processing steps and the corresponding function
+    steps = {10:tokenize,
+             20:tag,
+             30:preprocess,
+             40:parse,
+             50:postprocess}
+    
+    #mapping between input/output options and corresponding processing step
+    states = {"plain":0,
+              "tokenized":10,
+              "tagged":20,
+              "preprocessed":30,
+              "raw":40}
+              
+    for f in outputformats:
+        states[f] = 50
+    
+    first_step = states[options['inputformat']]
+    last_step = states[options['outputformat']]
+
+    #create list of all functions to run
+    todo = [steps[i] for i in sorted(steps) if i > first_step and i <= last_step]
+    
+    for i,func in enumerate(todo):
+    
+        #first function takes stdin as input; all other use the output of the previous step
+        if i == 0:
+            instream = sys.stdin
+        else:
+            instream = last_step.stdout
+
+        #last step writes to stdout; all other write to subprocess.PIPE for use in the next step
+        if i == len(todo)-1:
+            outstream = sys.stdout
+        else:
+            outstream = PIPE
+
+        last_step = func(instream,outstream,options)
+        
+    last_step.wait()
+    
+    
+#sentence splitting and tokenization
+#input: plain text
+#output: one token per line; empty lines mark sentence boundaries
+def tokenize(instream,outstream,options):
+    
+    options['senderror'].write("Starting tokenizer\n")
+    
+    if options['sentdelim'] != '$newline':
+        sentences = Popen(["python", os.path.join(sys.path[0],"preprocessor","sentence_splitter.py")], stdin=instream, stdout=PIPE, stderr=options['senderror'])
+        tokenizer_in = sentences.stdout
+    else:
+        tokenizer_in = instream
+    
+    tokenizer = Popen(["perl", os.path.join(sys.path[0],"preprocessor","tokenizer.perl"), "-l","de"], stdin=tokenizer_in, stdout=outstream, stderr=options['senderror'])
+    
+    return tokenizer
+
+
+#pos tagging
+#input: one token per line
+#output: token \t tag \n
+def tag(instream,outstream,options):
+    
+    options['senderror'].write("Starting POS-tagger\n")
+    
+    if options['nbestmode']:
+        tagger = Popen(options["taggercmd"]+['-n',str(options['nbestmode'])], stdin=instream, stdout=PIPE, stderr=options['senderror'])
+        tagger_formatted = Popen(['python',os.path.join(sys.path[0],"preprocessor","prune_nbest.py"),str(options['nbest_cutoff'])], stdin=tagger.stdout, stdout=outstream, stderr=options['senderror'])
+
+    else:
+        tagger_formatted = Popen(options['taggercmd'], stdin=instream, stdout=outstream, stderr=options['senderror']) 
+
+    return tagger_formatted
+
+
+#convert to prolog-readable format
+#do morphological analysis
+#identify verb complexes
+def preprocess(instream,outstream,options):
+
+    options['senderror'].write("Starting preprocessor\n")
+
+    tagfile = open(options['tagfilepath'],'w')
+    #convert to prolog-readable format
+    #additionally, create list of word types to be analysed (written to 'morphinpath')
+    treetagger2prolog = Popen(["python", os.path.join(sys.path[0],"preprocessor","treetagger2prolog.py"), options['morphinpath'],options['sentdelim']], stdin=instream, stdout=tagfile, stderr=options['senderror'])
+
+    treetagger2prolog.wait()
+    morphfile = open(options['morphpath'],'w')
+
+    #morphological analysis
+    if options['morphology'] == 'gertwol' or options['morphology'] == 'morphisto':
+
+        morphin = open(options['morphinpath'],'r')
+
+        if options['morphology'] == 'gertwol':
+            gertwol = Popen(["python", "gertwol_parzu.py", options['gertwolcmd'], options['gertwolscorecmd']], cwd=os.path.join(sys.path[0],'preprocessor','morphology'),stdin=morphin,stdout=morphfile,stderr=options['senderror'])
+            gertwol.wait()
+        
+        elif options['morphology'] == 'morphisto':
+            morphisto = Popen(["fst-infl", options['morphisto_model']],stdin=morphin,stdout=PIPE,stderr=options['senderror'])
+            morphisto2prolog = Popen(["python", "morphisto2prolog.py"], cwd=os.path.join(sys.path[0],'preprocessor','morphology'),stdin=morphisto.stdout,stdout=morphfile,stderr=options['senderror'])
+            morphisto2prolog.wait()
+    else:
+        morphfile.write('gertwol(\'<unknown>\',\'<unknown>\',_,_,_).')
+
+    morphfile.close()
+    tagfile.close()
+    tagfile = open(options['tagfilepath'],'r')
+
+    #integrate morph. information and do verb complex analysis
+    preprocessing =  Popen(['swipl', '-q', '-s', os.path.join(sys.path[0],'preprocessor','preprocessing.pl'), '-g', 'retractall(lemmatisation(_)),retractall(morphology(_)),assert(lemmatisation('+ options['morphology'] +')),assert(morphology('+ options['morphology'] +")),retract(sentdelim(_)),assert(sentdelim('"+ options['sentdelim'] +"')),start('" + options['morphpath'] + "'),halt."], stdout=outstream, stdin=tagfile, stderr=options['senderror'])
+
+    return preprocessing
+
+
+
+#convert to prolog-readable format
+#identify verb complexes
+#same as preprocess, but assuming that you use a static morphology file (you also need to override options['morphpath'])
+#main advantage is that we no longer need to wait() for the morphological analysis to finish (and generate no temporary files)
+def preprocess2(instream,outstream,options):
+
+    options['senderror'].write("Starting preprocessor\n")
+
+    #convert to prolog-readable format
+    treetagger2prolog = Popen(["python", os.path.join(sys.path[0],"preprocessor","treetagger2prolog.py"), '/dev/null',options['sentdelim']], stdin=instream, stdout=PIPE, stderr=options['senderror'])
+
+    #integrate morph. information and do verb complex analysis
+    preprocessing =  Popen(['swipl', '-q', '-s', os.path.join(sys.path[0],'preprocessor','preprocessing.pl'), '-g', 'retractall(lemmatisation(_)),retractall(morphology(_)),assert(lemmatisation('+ options['morphology'] +')),assert(morphology('+ options['morphology'] +")),retract(sentdelim(_)),assert(sentdelim('"+ options['sentdelim'] +"')),start('" + options['morphpath'] + "'),halt."], stdout=outstream, stdin=treetagger2prolog.stdout, stderr=options['senderror'])
+
+    return preprocessing
+    
+
+#main parsing step
+def parse(instream,outstream,options):
+    #morphisto and 'keep' morphology options are internally treated as Gertwol morphology.
+    morphology_mapping = {'gertwol':'gertwol',
+                          'morphisto':'gertwol',
+                          'none':'off',
+                          'keep':'gertwol',
+                          'tueba':'tueba'}
+    
+    options['senderror'].write("Starting parser\n")
+    
+    #main parsing step
+    args = 'retract(outputformat(_)),assert(outputformat('+ options['outputformat'] +")),retract(sentdelim(_)),assert(sentdelim('"+ options['sentdelim'] +"')),retract(returnsentdelim(_)),assert(returnsentdelim("+ options['returnsentdelim'] +')),retract(nbestmode(_)),assert(nbestmode('+ str(options['nbestmode']) +')),retractall(morphology(_)),assert(morphology('+ morphology_mapping[str(options['morphology'])] +')),retractall(lemmatisation(_)),assert(lemmatisation('+ morphology_mapping[str(options['morphology'])] +')),start.'
+    
+    if enable_multiprocessing and options['num_processes'] > 1:
+        parsing = Popen(["python", os.path.join(sys.path[0],"core","multiprocessed_parsing.py"), str(options['num_processes']), args, options['sentdelim'], os.path.join(sys.path[0],'core')], stdin=instream,stdout=outstream,stderr=options['senderror'])
+
+    else:
+        parsing = Popen(['swipl', '-G128M', '-L128M', '-q', '-s', 'ParZu-parser.pl', '-t', args], cwd=os.path.join(sys.path[0],'core'), stdin=instream, stdout=outstream, stderr=options['senderror'])
+        
+    return parsing
+
+
+#de-projectivization and removal of debugging output
+def postprocess(instream,outstream,options):
+    
+    options['senderror'].write("Starting postprocessor\n")
+    
+    if options['nbestmode']:
+        cleanup_out = PIPE
+    else:
+        cleanup_out = outstream
+
+    #postprocessing
+    #add sentence number
+    if options['outputformat'] == "prolog":
+        clean_parse = Popen(["perl", os.path.join(sys.path[0],"postprocessor","output_cleanup_sentnums.perl")], stdin=instream, stdout=cleanup_out, stderr=options['senderror'])
+    
+    else:
+        clean_parse = Popen(["perl", os.path.join(sys.path[0],"postprocessor","output_cleanup.perl")], stdin=instream, stdout=cleanup_out, stderr=options['senderror'])
+
+    #select one analysis from n-best
+    if options['nbestmode']:
+        return_best = Popen(["python", os.path.join(sys.path[0],'postprocessor','select_from_nbest.py'), options['outputformat']], stdin=clean_parse.stdout,stdout=outstream,stderr=options['senderror'])
+
+        return return_best
+
+    return clean_parse
+
+
+#clean temp directory
+def cleanup(options):
+    if options['deltemp'] == '1':
+        for fname in [options['tagfilepath'],options['morphinpath'],options['errorpath'],options['morphpath']]:
+            if os.path.isfile(fname):
+                os.remove(fname)
+
+
+options = process_arguments()
+main(options)
+cleanup(options)

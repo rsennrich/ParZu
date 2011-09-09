@@ -1,0 +1,53 @@
+ParZu changelog
+
+0.18
+  - first GPL release
+    - support for Morphisto (free software morphology analyzer)
+    - no longer includes TüBa-D/Z statistics by default
+  - new name: ParZu
+  - conll output format now more closely follows standard (old format still available as oldconll)
+  - includes sentence splitting and tokenization (former requires NLTK)
+  - n-best-tagging mode: CRF++ supports n-best output; parse each hypothesis and then determine final parser output based on tag sequence probability and number of unattached tokens
+  - more memory-friendly multiprocessing implementation
+  - cleanup, restructuring and documentation
+  - minor parser improvements
+
+0.17 2011/02/10
+  - improvements to parser
+    - modal-like verbs (bleiben, gehen, lernen)
+    - minor changes
+  - fixed various bugs
+
+0.16 2010/08/31
+  - output now retains punctuation marks (configurable options)
+  - parser now accepts a configurable POS tag as sentence delimiter (configurable option)
+  - fixed various bugs
+
+0.15 2010/04/10
+  - changed prolog and conll output formats
+     advantages: -more verbose (word position + word form + lemma + PoS tag + gramm. relation + position of gramm. head + # of sentence)
+                 -lists all words in order instead of just relations
+                 -tighter integration of postprocessing script
+
+    if you need one of the old formats for compatibility reasons, use a command like this:
+    python pro3gres.py -o raw | perl postprocessor/output_cleanup_oldoutput.perl | swipl -q -s postprocessor/postprocessing.pl -t start\(prolog\).
+
+  - added multiprocessing support (requires python 2.6 or newer)
+  - more parser options (preprocessed parser input as input/output format)
+  - Lemmatiser now also recognizes some spelling variations (ß -> ss; Ä -> Ae)
+  - various improvements to parser quality (grammar/statistical disambiguation/pruning)
+
+
+0.14	2009/12/22
+  - new output option: 'raw' (without postprocessing)
+  - various improvements to grammar (allows rare preposition complements; better handling of some mistagged words)
+
+0.13	2009/12/11
+  - statistical information now available unlemmatised (for those working without Gertwol; check config.ini)
+  - package now includes evaluation data/script
+  - more config options
+  - output can now be invoked from the command line (python pro3gres.py --help for more info)
+  - fixed bug that would cause the parser to hang up if morphology was switched off in Pro3GresDe_parameters.pl
+
+0.12	2009/11/13
+  - initial release
