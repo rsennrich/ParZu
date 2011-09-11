@@ -165,16 +165,15 @@ buildmorphology(Word,Tag,[Word|ListOut]) :- (\+ (gertwol(Word,Lemma,_,_, _), \+ 
 
 %exception: nouns may be substantivized adjectives.
 buildmorphology(Word,'NN',[Word|ListOut]) :- findall(Morph,gertwol(Word,_,'NN',Morph,_),ListTemp),
-% 				      findall(Morph,gertwol(Word,_,'ADJA',Morph,_),ListTemp2),
 				      findall([Gender,Case,Number,_],gertwol(Word,_,'ADJA',[_,Gender,Case,Number,'Sw'],_),ListTemp2),
 				      append(ListTemp,ListTemp2,ListTemp3),
-					(is_uninstantiated(ListTemp3) -> ListOut = [_] ; translatemorphs(ListTemp3,'NN', ListOut)), !.
+				      (is_uninstantiated(ListTemp3) -> ListOut = [_] ; translatemorphs(ListTemp3,'NN', ListTemp4), sort(ListTemp4,ListOut)), !.
 
 %exception: viele/wenige are PIS/PIDAT in TreeTagger, but ADJA in Gertwol
 buildmorphology(Word,Tag,[Word|ListOut]) :- (Tag = 'PIS';Tag='PIDAT'),
 				      \+ gertwol(Word,_,Tag,_,_),
 				      findall([Gender,Case,Number],gertwol(Word,_,'ADJA',[_,Gender,Case,Number,_],_),ListTemp),
-					(is_uninstantiated(ListTemp) -> ListOut = [_] ; sort(ListTemp,ListOut)), !.
+				      (is_uninstantiated(ListTemp) -> ListOut = [_] ; sort(ListTemp,ListOut)), !.
 
 
 %exception: Wegen dem Dativ gibt es immer weniger Präpositionen, die nur mit Genitiv benutzt werden
@@ -184,14 +183,14 @@ buildmorphology(Word,'APPR',[Word|ListOut2]) :- findall(Morph,gertwol(Word,_,'AP
 
 %adjectives; include information on whether it's a participial one or not:
 buildmorphology(Word,'ADJA',[Word|ListOut]) :- findall([Deg,Gender,Case,Number,Class,Original],gertwol(Word,_,'ADJA',[Deg,Gender,Case,Number,Class],Original),ListTemp),
-                    (is_uninstantiated(ListTemp) -> ListOut = [_] ; translatemorphs(ListTemp,'ADJA', ListOut)), !.
+                    (is_uninstantiated(ListTemp) -> ListOut = [_] ; translatemorphs(ListTemp,'ADJA', ListTemp2), sort(ListTemp2,ListOut)), !.
 
 buildmorphology(Word,'ADJD',[Word|ListOut]) :- findall([Degree,Original],gertwol(Word,_,'ADJD',[Degree],Original),ListTemp),
-                    (is_uninstantiated(ListTemp) -> ListOut = [_] ; translatemorphs(ListTemp,'ADJD', ListOut)), !.
+                    (is_uninstantiated(ListTemp) -> ListOut = [_] ; translatemorphs(ListTemp,'ADJD', ListTemp2), sort(ListTemp2,ListOut)), !.
 
-%general case:
+% general case:
 buildmorphology(Word,Tag,[Word|ListOut]) :- findall(Morph,gertwol(Word,_,Tag,Morph,_),ListTemp),
-					(is_uninstantiated(ListTemp) -> ListOut = [_] ; translatemorphs(ListTemp,Tag, ListOut)), !.
+                                        (is_uninstantiated(ListTemp) -> ListOut = [_] ; translatemorphs(ListTemp,Tag, ListTemp2), sort(ListTemp2,ListOut)), !.
 
 translatemorphs([],_,[]) :- !. %break condition.
 
