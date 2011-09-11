@@ -2609,6 +2609,10 @@ morph_cleanup(Class,HMorph,HTag,DMorph,DTag,HPos,DMorphOut) :- nth1(2,DMorph,X),
 
 morph_cleanup(root,_,_,DMorph,_,_,DMorph) :- !.
 
+
+%don't print morphological analyses that are only used internally.
+morph_cleanup(kon,_,_,_,'KON',_,[_]) :- !.
+
 %Some grammatical functions are bound to a specific case. Restrict output morphology to syntactically valid analyses.
 morph_cleanup(subj,HMorph,HTag,DMorph,DTag,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Nom']],'APPR',DMorphTemp), (unify_number(DMorphTemp,DTag,HMorph,HTag,DMorphOut);DMorphOut=DMorphTemp), !.
 morph_cleanup(pred,_,_,DMorph,DTag,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Nom']],'APPR',DMorphOut), !.
@@ -2638,7 +2642,7 @@ morph_cleanup(_,_,_,DMorph,_,_,DMorph) :- !.
 findkonchainhead(DPos,HMorph,HTag) :- output(DPos,_,_,_,kon,HPos,_),
         findkonchainhead(HPos,HMorph,HTag).
 
-findkonchainhead(HPos,HMorph,HTag) :- output(HPos,_,_,HTag,_,_,HMorph), \+ kon_mapping(_,Htag), \+ Htag = 'KON', !.
+findkonchainhead(HPos,HMorph,HTag) :- output(HPos,_,_,HTag,_,_,HMorph), (var(Htag); \+ kon_mapping(_,Htag), \+ Htag = 'KON'), !.
 
 %======================================================================================
 %topological rules
