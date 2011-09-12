@@ -1613,13 +1613,6 @@ head('PP','APZR',r,part,'PP',[_,_,_,_,_,_],_,_,MG,MG).
 
 head('PIS','ART',l,part,'PIS',[_,_,_,_,_,_],F-G,MF,_,MF) :- 2 >= F-G.
 
-
-%in because of tagging errors
-head('PIDAT','ART',l,part,'PIS',[_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G, endOfNP(F).
-
-head('ADV','ART',l,part,'PIS',[_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G, endOfNP(F).
-
-
 %======================================================================================
 %comparatives
 
