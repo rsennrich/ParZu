@@ -24,10 +24,10 @@ stats2(attr,'CARD',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,0.1,_D,_HC).
 
 
 %deverbal adjectives can have same arguments as verbs
-stats2(obja,'ADJA',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0,0,_D,_HC).
-stats2(obja,'ADJD',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0,0,_D,_HC).
-stats2(objd,'ADJA',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0,0,_D,_HC).
-stats2(objd,'ADJD',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0,0,_D,_HC).
+stats2(obja,'ADJA',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,0.1,_D,_HC).
+stats2(obja,'ADJD',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,0.1,_D,_HC).
+stats2(objd,'ADJA',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,0.1,_D,_HC).
+stats2(objd,'ADJD',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,0.1,_D,_HC).
 stats2(zeit,'ADJA',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,0.1,_D,_HC).
 
 %word classes other than articles or attributive pronouns should only be analysed as determiners if there is no other option.
