@@ -193,14 +193,14 @@ head('APPRART','PWS',r,pn,'PPQ',[_,_,_,_,_,OG],_,_,MG,MNew) :- convertMorphList(
 
 
 %use prepcompl/1 to list all valid dependents of prepositions.
-head('APPO',PN,l,pn,'PP',[_,_,_,_,_,_],_-G,MF,_,MF) :- prepcompl(PN,G).
+head('APPO',PN,l,pn,'PP',[_,_,_,_,OG,_],_-G,MF,_,MF) :- prepcompl(PN,G), \+ member('<-pn<-',OG).
 
 %relative clause
-head('APPO','PRELS',l,pn,'PPREL',[_,_,_,_,_,_],_,MF,_,MF).
+head('APPO','PRELS',l,pn,'PPREL',[_,_,_,_,OG,_],_,MF,_,MF) :- \+ member('<-pn<-',OG).
 
-head('APPO','PRELAT',l,pn,'PPREL',[_,_,_,_,_,_],_,MF,_,MF).
+head('APPO','PRELAT',l,pn,'PPREL',[_,_,_,_,OG,_],_,MF,_,MF) :- \+ member('<-pn<-',OG).
 
-head('APPO','PWS',l,pn,'PPQ',[_,_,_,_,_,_],_,MF,_,MF).
+head('APPO','PWS',l,pn,'PPQ',[_,_,_,_,OG,_],_,MF,_,MF) :- \+ member('<-pn<-',OG).
 
 %======================================================================================
 %Subject, only one is allowed    
@@ -2484,6 +2484,8 @@ unify_gender(List1,Tag1,List2,Tag2,ListOut) :- morphology(MorphType),
 
 
 get_case(_,'CARD',_,_) :- !.
+get_case(_,'ADV',_,_) :- !.
+get_case(_,'ADJD',_,_) :- !.
 get_case([Case|_],_,Case,tueba) :- !.
 
 get_case([_,_,Case,_,_],'ADJA',Case,gertwol) :- !.
@@ -2773,9 +2775,9 @@ prepcompl('PIAT',Pos) :- endOfNP(Pos).
 prepcompl('PDAT',Pos) :- endOfNP(Pos).
 prepcompl('PPOSAT',Pos) :- endOfNP(Pos).
 %false positives with unchunked NPs. commented out.
-prepcompl('ADV').
-%prepcompl('TRUNC').
-prepcompl('PP').
+% prepcompl('ADV',Pos) :- endOfNP(Pos).
+% prepcompl('TRUNC',Pos) :- endOfNP(Pos).
+% prepcompl('PP',Pos) :- endOfNP(Pos).
 
 
 
