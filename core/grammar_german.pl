@@ -148,7 +148,7 @@ head('PIS','ADJA',l,attr,'PIS', [_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G.
 %prep(osition)
 
 %use prepcompl/1 to list all valid dependents of prepositions.
-head('APPR',PN,r,pn,'PP',[_,_,_,_,_,_],F-_,MF,MG,MNew) :- prepcompl(PN,F), unify_case(MG,'APPR',MF,PN,MNew).
+head('APPR',PN,r,pn,'PP',[_,_,_,_,_,OG],F-_,MF,MG,MNew) :- prepcompl(PN,F), unify_case(MG,'APPR',MF,PN,MNew), \+ member('->pn->',OG).
 
 %bis auf weiteres - may be mistagged.
 head(_,'PP',r,pn,'PP',[_,_,_,bis,_,_],F-G,_,MG,MG) :- 1 is F-G.
@@ -156,8 +156,8 @@ head(_,'PP',r,pn,'PP',[_,_,_,'Bis',_,_],F-G,_,MG,MG) :- 1 is F-G.
 
 
 %zu might be mistagged as PTKA/PTKZU/PTKVZ
-head(_,PN,r,pn,'PP',[_,_,_,zu,_,_],F-_,MF,MG,MNew) :- prepcompl(PN,F), unify_case(MG,'APPR',MF,PN,MNew).
-head(_,PN,r,pn,'PP',[_,_,_,'Zu',_,_],F-_,MF,MG,MNew) :- prepcompl(PN,F), unify_case(MG,'APPR',MF,PN,MNew).
+head(_,PN,r,pn,'PP',[_,_,_,zu,_,OG],F-_,MF,MG,MNew) :- prepcompl(PN,F), unify_case(MG,'APPR',MF,PN,MNew), \+ member('->pn->',OG).
+head(_,PN,r,pn,'PP',[_,_,_,'Zu',_,OG],F-_,MF,MG,MNew) :- prepcompl(PN,F), unify_case(MG,'APPR',MF,PN,MNew), \+ member('->pn->',OG).
 
 
 %"mit mehr als x" - no distance restriction. (inconsistency in gold standard: pn or kom?)
@@ -166,25 +166,25 @@ head('APPR','KOMPX',r,kom,'PP',[_,_,_,_,_,_],_,_,MG,MG).
 
 
 %relative clause
-head('APPR','PRELAT',r,pn,'PPREL',[_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'APPR',MF,'PRELS',MNew).
+head('APPR','PRELAT',r,pn,'PPREL',[_,_,_,_,_,OG],_,MF,MG,MNew) :- unify_case(MG,'APPR',MF,'PRELS',MNew), \+ member('->pn->',OG).
 
-head('APPR','PRELS',r,pn,'PPREL',[_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'APPR',MF,'PRELS',MNew).
+head('APPR','PRELS',r,pn,'PPREL',[_,_,_,_,_,OG],_,MF,MG,MNew) :- unify_case(MG,'APPR',MF,'PRELS',MNew), \+ member('->pn->',OG).
 
-head('APPR','PWS',r,pn,'PPQ',[_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'APPR',MF,'PRELS',MNew).
+head('APPR','PWS',r,pn,'PPQ',[_,_,_,_,_,OG],_,MF,MG,MNew) :- unify_case(MG,'APPR',MF,'PRELS',MNew), \+ member('->pn->',OG).
 
 
 
 
 %use prepcompl/1 to list all valid dependents of prepositions.
-head('APPRART',PN,r,pn,'PP',[_,_,_,_,_,_],F-_,_,MG,MNew) :- prepcompl(PN,F), convertMorphList('APPRART',MG,'APPR',MNew).
+head('APPRART',PN,r,pn,'PP',[_,_,_,_,_,OG],F-_,_,MG,MNew) :- prepcompl(PN,F), convertMorphList('APPRART',MG,'APPR',MNew), \+ member('->pn->',OG).
 
 
 %relative clause
-head('APPRART','PRELAT',r,pn,'PPREL',[_,_,_,_,_,_],_,_,MG,MNew) :- convertMorphList('APPRART',MG,'APPR',MNew).
+head('APPRART','PRELAT',r,pn,'PPREL',[_,_,_,_,_,OG],_,_,MG,MNew) :- convertMorphList('APPRART',MG,'APPR',MNew), \+ member('->pn->',OG).
 
-head('APPRART','PRELS',r,pn,'PPREL',[_,_,_,_,_,_],_,_,MG,MNew) :- convertMorphList('APPRART',MG,'APPR',MNew).
+head('APPRART','PRELS',r,pn,'PPREL',[_,_,_,_,_,OG],_,_,MG,MNew) :- convertMorphList('APPRART',MG,'APPR',MNew), \+ member('->pn->',OG).
 
-head('APPRART','PWS',r,pn,'PPQ',[_,_,_,_,_,_],_,_,MG,MNew) :- convertMorphList('APPRART',MG,'APPR',MNew).
+head('APPRART','PWS',r,pn,'PPQ',[_,_,_,_,_,OG],_,_,MG,MNew) :- convertMorphList('APPRART',MG,'APPR',MNew), \+ member('->pn->',OG).
 
 
 
