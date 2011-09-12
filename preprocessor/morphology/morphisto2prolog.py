@@ -69,7 +69,7 @@ def create_morph(word,pos,args):
         morph = "[{person},{number},{gender},{case}]".format(person=get_repr('person',args),gender=get_repr('gender',args),case=get_repr('case',args),number=get_repr('number',args))
         
     elif pos == 'ADJA':
-        morph = "[{grade},{gender},{case},{number},{declension},{derivation}]".format(grade=get_repr('grade',args),gender=get_repr('gender',args),case=get_repr('case',args),number=get_repr('number',args),declension=get_repr('declension',args),derivation=get_repr('derivation',args))
+        morph = "[{grade},{gender},{case},{number},{declension}]".format(grade=get_repr('grade',args),gender=get_repr('gender',args),case=get_repr('case',args),number=get_repr('number',args),declension=get_repr('declension',args))
         
     elif pos in ['ADJD']:
         morph = '[{grade}]'.format(grade=get_repr('grade',args))
@@ -288,6 +288,7 @@ for line in sys.stdin:
     lemma = ''
     pos = ''
     morph = []
+    other = "''"
     
     line = line.rstrip().decode('UTF-8')
 
@@ -312,6 +313,9 @@ for line in sys.stdin:
            
     extracted_morph = extract(line)
     morph = create_morph(word,pos,extracted_morph)
+    
+    if 'derivation' in extracted_morph:
+        other = get_repr('derivation',extracted_morph)
 
     if pos2:
         morph2 = create_morph(word,pos2,extracted_morph)
@@ -323,8 +327,8 @@ for line in sys.stdin:
     if line.startswith('<CAP>'):
         segments -= 1
 
-    cache[pos].append((segments,u"gertwol({0},{1},{2},{3},'').".format(get_repr2(word),get_repr2(lemma),get_repr2(pos),morph)))
+    cache[pos].append((segments,u"gertwol({0},{1},{2},{3},{4}).".format(get_repr2(word),get_repr2(lemma),get_repr2(pos),morph,other)))
     if pos2:
-        cache[pos2].append((segments,u"gertwol({0},{1},{2},{3},'').".format(get_repr2(word),get_repr2(lemma),get_repr2(pos2),morph2)))
+        cache[pos2].append((segments,u"gertwol({0},{1},{2},{3},{4}).".format(get_repr2(word),get_repr2(lemma),get_repr2(pos2),morph2,other)))
 
 print_cache(cache)
