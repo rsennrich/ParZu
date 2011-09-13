@@ -145,10 +145,15 @@ TECHNICAL ISSUES
     ParZu uses UTF-8 encoding.
 
 
-- Is there graphical output?
+LICENSE
+-------
 
-    For our online demo, we use DepSVG to generate a graphical representation of the CoNLL output: https://files.ifi.uzh.ch/cl/kalju/download/depsvg/
-    (the online demo is at http://www.cl.uzh.ch/kitt/parzu/)
+ParZu is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (see LICENSE).
+
+The files in postprocessing/DepSVG are from Kaarel Kaljurand's DepSVG library and are licensed under the LGPL (https://github.com/Kaljurand/DepSVG)
+preprocessing/tokenizer.perl and preprocessing/nonbreaking_prefix.de are from the Moses toolkit and licensed under the LGPL (http://www.statmt.org/moses/)
+
+
 
 PUBLICATIONS
 ------------
@@ -163,12 +168,4 @@ Rico Sennrich, Gerold Schneider, Martin Volk and Martin Warin (2009):
 CONTACT
 -------
 
-For questions and feeback, please contact:
-
-Rico Sennrich
-Institut für Computerlinguistik
-Universität Zuerich
-Binzmühlestrasse 14
-8050 Zürich, Schweiz
-
-sennrich@cl.uzh.ch
+For questions and feeback, please contact sennrich@cl.uzh.ch or use the GitHub repository.

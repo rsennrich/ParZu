@@ -32,19 +32,20 @@ def usage():
     print('\t\tprint usage information\n')
     print('\t' + bold + '-i' + reset + ', ' + bold + '--input' + reset + ' type')
     print('\t\tdefine input type. Supported so far:')
-    print('\t\t' + bold +'raw' + reset + ': plain text')
+    print('\t\t' + bold +'plain' + reset + ': plain text')
+    print('\t\t' + bold +'preprocessed' + reset + ': parser-ready input (generated with output option "preprocessed")\n')
     print('\t\t' + bold +'tokenized' + reset + ': tokenized text. one token per line, empty line for sentence boundary')
     print('\t\t' + bold +'tagged' + reset + ': POS-tagged text. token [tab] tag [newline]')
-    print('\t\t' + bold +'preprocessed' + reset + ': parser-ready input (generated with output option "preprocessed")\n')
     print('\t' + bold + '-l' + reset + ', ' + bold + '--linewise' + reset)
     print('\t\tparse text line by line (no automatic sentence splitting). This option is automatically enabled for tokenized or tagged input to enforce the original sentence segmentation.\n')
     print('\t' + bold + '-o' + reset + ', ' + bold + '--output' + reset + ' type')
     print('\t\tdefine output type. Supported so far:')
     print('\t\t' + bold +'conll' + reset + ': CoNLL 2007 data format')
+    print('\t\t' + bold + 'graphical' + reset + ': generate one SVG image per sentence in your current directory, using DepSVG.')
     print('\t\t' + bold +'moses' + reset + ': factored format used by Moses SMT system')
+    print('\t\t' + bold +'preprocessed' + reset + ': return preprocessed input (unparsed, but parser-ready)\n')
     print('\t\t' + bold +'prolog' + reset + ': prolog-readable format')
     print('\t\t' + bold +'raw' + reset + ': parser output without postprocessing (mostly for debugging)')
-    print('\t\t' + bold +'preprocessed' + reset + ': return preprocessed input (unparsed, but parser-ready)\n')
     print('\t' + bold + '-p'  + reset + ', ' + bold + '--processes' + reset + ' int')
     print('\t\tnumber of parallel parser processes\n')
     print('\t' + bold + '-q'  + reset + ', ' + bold + '--quiet' + reset)
@@ -121,7 +122,7 @@ def process_arguments():
     if arg_output:
         options['outputformat'] = arg_output
 
-    if not options['outputformat'] in ["raw","preprocessed"] + outputformats:
+    if not options['outputformat'] in ["raw","preprocessed","graphical"] + outputformats:
         print("Error: Output option not recognized: " + options['outputformat'] + "\n")
         usage()
         sys.exit(2)
@@ -194,14 +195,16 @@ def main(options):
              20:tag,
              30:preprocess,
              40:parse,
-             50:postprocess}
+             50:postprocess,
+             60:generate_graphics}
     
     #mapping between input/output options and corresponding processing step
     states = {"plain":0,
               "tokenized":10,
               "tagged":20,
               "preprocessed":30,
-              "raw":40}
+              "raw":40,
+              "graphical":60}
               
     for f in outputformats:
         states[f] = 50
@@ -336,8 +339,13 @@ def parse(instream,outstream,options):
     
     options['senderror'].write("Starting parser\n")
     
+    if options['outputformat'] == 'graphical':
+        outputformat = 'conll'
+    else:
+        outputformat = options['outputformat']
+    
     #main parsing step
-    args = 'retract(outputformat(_)),assert(outputformat('+ options['outputformat'] +")),retract(sentdelim(_)),assert(sentdelim('"+ options['sentdelim'] +"')),retract(returnsentdelim(_)),assert(returnsentdelim("+ options['returnsentdelim'] +')),retract(nbestmode(_)),assert(nbestmode('+ str(options['nbestmode']) +')),retractall(morphology(_)),assert(morphology('+ morphology_mapping[str(options['morphology'])] +')),retractall(lemmatisation(_)),assert(lemmatisation('+ morphology_mapping[str(options['morphology'])] +')),start.'
+    args = 'retract(outputformat(_)),assert(outputformat('+ outputformat +")),retract(sentdelim(_)),assert(sentdelim('"+ options['sentdelim'] +"')),retract(returnsentdelim(_)),assert(returnsentdelim("+ options['returnsentdelim'] +')),retract(nbestmode(_)),assert(nbestmode('+ str(options['nbestmode']) +')),retractall(morphology(_)),assert(morphology('+ morphology_mapping[str(options['morphology'])] +')),retractall(lemmatisation(_)),assert(lemmatisation('+ morphology_mapping[str(options['morphology'])] +')),start.'
     
     if enable_multiprocessing and options['num_processes'] > 1:
         parsing = Popen(["python", os.path.join(sys.path[0],"core","multiprocessed_parsing.py"), str(options['num_processes']), args, options['sentdelim'], os.path.join(sys.path[0],'core')], stdin=instream,stdout=outstream,stderr=options['senderror'])
@@ -358,9 +366,14 @@ def postprocess(instream,outstream,options):
     else:
         cleanup_out = outstream
 
+    if options['outputformat'] == 'graphical':
+        outputformat = 'conll'
+    else:
+        outputformat = options['outputformat']
+
     #postprocessing
     #add sentence number
-    if options['outputformat'] == "prolog":
+    if outputformat == "prolog":
         clean_parse = Popen(["perl", os.path.join(sys.path[0],"postprocessor","output_cleanup_sentnums.perl")], stdin=instream, stdout=cleanup_out, stderr=options['senderror'])
     
     else:
@@ -368,11 +381,21 @@ def postprocess(instream,outstream,options):
 
     #select one analysis from n-best
     if options['nbestmode']:
-        return_best = Popen(["python", os.path.join(sys.path[0],'postprocessor','select_from_nbest.py'), options['outputformat']], stdin=clean_parse.stdout,stdout=outstream,stderr=options['senderror'])
+        return_best = Popen(["python", os.path.join(sys.path[0],'postprocessor','select_from_nbest.py'), outputformat], stdin=clean_parse.stdout,stdout=outstream,stderr=options['senderror'])
 
         return return_best
 
     return clean_parse
+
+
+#use DepSVG for graphical output
+def generate_graphics(instream,outstream,options):
+    
+    options['senderror'].write("Starting to generate graphics in your current directory (1.svg, ..., n.svg)\n")
+    
+    conll2svg = Popen(["perl", os.path.join(sys.path[0],'postprocessor','DepSVG','conll_to_svg.perl'),'--dir='+os.getcwd()], cwd=os.path.join(sys.path[0],'postprocessor','DepSVG'), stdin=instream,stdout=outstream,stderr=options['senderror'])
+
+    return conll2svg
 
 
 #clean temp directory
