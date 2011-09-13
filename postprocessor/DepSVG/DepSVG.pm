@@ -27,11 +27,11 @@ my $encoding = "UTF-8";
 # BUG: get rid of those constants by calculating
 # some automatically and moving some to CSS
 
-my $letter_width = 9;
+my $letter_width = 12;
 # We can use variable width font, but we can't calculate the exact span
 # of the strings. We calculate the span as if the font was monospace.
 # This results in more whitespace between strings than needed.
-my $fontFamily = "sans-serif";
+my $fontFamily = "Arial, Helvetica, sans-serif";
 #my $fontFamily = "monospace";
 
 my $letterSpacing = "0px";
@@ -147,7 +147,7 @@ sub make_word_distance
 		else {
 			my $prev_len = length($w->{$prev_index}->{$prev_unit});
 			my $curr_len = length($w->{$index}->{$unit});
-			$x = $x + ($prev_len + $curr_len) * $half_letter_width;
+			$x = $x + ($prev_len + $curr_len) * $half_letter_width+5;
 		}	
 
 		$xcoord->{$index} = $x;
@@ -451,7 +451,7 @@ sub draw_arclabel
 	($label) = &escape_xml_entities($label);
 
 return <<EOF;
-<text x="$tx" y="$ty">$label</text>
+<text x="$tx" y="$ty">$label</text>\n
 EOF
 }
 
@@ -493,7 +493,7 @@ sub draw_arclabels
 			}
 		}
 	}
-	$str = $str . "</text>";
+	$str = $str . "</text>\n";
 	return $str;
 }
 

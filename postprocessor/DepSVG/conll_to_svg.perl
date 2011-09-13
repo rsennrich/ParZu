@@ -128,13 +128,25 @@ sub output_sentence
 	my $dir = shift;
 	my $sid = shift;
 	my $svg = shift;
+	my $on = 0;
 
 	mkdir $dir;
 
 	my $filename = $dir . "/" . $sid . "." . "svg";
 
 	open(OUT, "> $filename") or die "conll_to_svg.perl: fatal error: open $filename: $!\n";
-	print OUT $svg;
+
+	my @lines = split /\n/, $svg;
+		foreach my $line (@lines) {
+			#Filter out some unwanted lines
+			$on=1;
+			if ($line =~ m/^<path d=\'M0 0/) {$on=0};
+			if ($line =~ m/root<\/text>/) {$on=0};
+			if ($line =~ m/root <\/text>/) {$on=0};
+			# Print those lines that aren't disabled
+			if ($on==1) {print OUT "$line \n"};
+				}
+
 	close OUT or die "conll_to_svg.perl: fatal error: close $filename: $!\n";
 }
 
