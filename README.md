@@ -32,10 +32,10 @@ It may work in different environments, but there is no guarantee. Any contributi
 
 Additionally, the parser requires the following software and licenses:
 
-A POS-Tagger using the STTS tagset: (for instance TreeTagger: http://www.ims.uni-stuttgart.de/projekte/corplex/TreeTagger/)
-A tool for morphological analysis (not required, but strongly recommended). Supported:
-    Morphisto: http://code.google.com/p/morphisto/ (open source; recommended)
-    Gertwol: http://www2.lingsoft.fi/cgi-bin/gertwol (proprietary; might be deprecated in the future)
+- A POS-Tagger using the STTS tagset: (for instance TreeTagger: http://www.ims.uni-stuttgart.de/projekte/corplex/TreeTagger/)
+- A tool for morphological analysis (not required, but strongly recommended). Supported:
+   - Morphisto: http://code.google.com/p/morphisto/ (open source; recommended)
+   - Gertwol: http://www2.lingsoft.fi/cgi-bin/gertwol (proprietary; might be deprecated in the future)
 
 For development and testing, we recommend Tüba-D/Z, which you can obtain at http://www.sfs.uni-tuebingen.de/de_tuebadz.shtml
 See INSTALLATION on how to extract and integrate statistical information from Tüba-D/Z into the system.
@@ -116,6 +116,7 @@ TECHNICAL ISSUES
 - Why do things go wrong / Can you fix this error?
 
   There are a number of possible reasons for wrong analyses, and often, there's no easy fix:
+
     - Tagging errors (the grammar is unlexicalised and based on PoS tags; errors in tagging may propagate)
     - Errors in morphological analysis (the grammar enforces agreement constraints; morphological misanalysis may prevent the correct parse)
     - Gaps/errors in the grammar (sometimes possible to fix, but allowing a rare construction might generate false positives in other places)
