@@ -238,6 +238,32 @@ head('VMFIN','PWS',l,subj,'QC',[FC,_,_,_,UG,OG],_,MF,MG,MNew) :- case_nom(MG,'PW
 
 head('VAFIN','PWS',l,subj,'QC',[FC,_,_,_,UG,OG],_,MF,MG,MNew) :- case_nom(MG,'PWS'), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG), (member('->kon->',OG)->MNew=MF; check_agreement(MF,'VAFIN',MG,'PWS',MNew)).
 
+
+%interrogative pronoun (new transtag 'QC'); special case with "sein": don't require number agreement (Wer sind die Beatles?)
+head('VAFIN','PWS',l,subj,'QC',[FC,_,sein,_,UG,_],_,MF,MG,MF) :- case_nom(MG,'PWS'), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('VAFIN','PWS',l,subj,'QC',[FC,_,sind,_,UG,_],_,MF,MG,MF) :- case_nom(MG,'PWS'), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('VAFIN','PWS',l,subj,'QC',[FC,_,waren,_,UG,_],_,MF,MG,MF) :- case_nom(MG,'PWS'), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+
+
+%demonstrative pronoun; special case with "sein": don't require number agreement (Das sind die grössten Türme der Welt)
+head2('VAFIN','PDS',l,subj,'VAFIN',[FC,_,sein,_,UG,_,_,_],_,MF,MG,MF) :- case_nom(MG,'PDS'), gender_neut(MG,'PDS'), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head2('VAFIN','PDS',l,subj,'VAFIN',[FC,_,sind,_,UG,_,_,_],_,MF,MG,MF) :- case_nom(MG,'PDS'), gender_neut(MG,'PDS'), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head2('VAFIN','PDS',l,subj,'VAFIN',[FC,_,waren,_,UG,_,_,_],_,MF,MG,MF) :- case_nom(MG,'PDS'), gender_neut(MG,'PDS'), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+
+head2('VAFIN','PDS',r,subj,'VAFIN',[_,_,sein,_,UG,_,_,_],_,MF,MG,MF) :- case_nom(MG,'PDS'), restrict_coord(UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head2('VAFIN','PDS',r,subj,'VAFIN',[_,_,sind,_,UG,_,_,_],_,MF,MG,MF) :- case_nom(MG,'PDS'), restrict_coord(UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head2('VAFIN','PDS',r,subj,'VAFIN',[_,_,waren,_,UG,_,_,_],_,MF,MG,MF) :- case_nom(MG,'PDS'), restrict_coord(UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+
+%personal pronoun: special case with "es sind/waren": (es sind keine leeren Worte)
+head2('VAFIN','PPER',l,subj,'VAFIN',[FC,_,sein,es,UG,_,_,_],_,MF,_,MF) :- restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head2('VAFIN','PPER',l,subj,'VAFIN',[FC,_,sind,es,UG,_,_,_],_,MF,_,MF) :- restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head2('VAFIN','PPER',l,subj,'VAFIN',[FC,_,waren,es,UG,_,_,_],_,MF,_,MF) :- restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+
+head2('VAFIN','PPER',r,subj,'VAFIN',[_,_,sein,es,UG,_,_,_],_,MF,_,MF) :- restrict_coord(UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head2('VAFIN','PPER',r,subj,'VAFIN',[_,_,sind,es,UG,_,_,_],_,MF,_,MF) :- restrict_coord(UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head2('VAFIN','PPER',r,subj,'VAFIN',[_,_,waren,es,UG,_,_,_],_,MF,_,MF) :- restrict_coord(UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+
+
 %only necessary in case of tagging errors
 head('VVPP','PWS',l,subj,'QC',[FC,_,_,_,UG,_],_,MF,MG,MF) :- case_nom(MG,'PWS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
@@ -2356,6 +2382,10 @@ case_dat(_,_) :- morphology(off), !.
 case_gen(_,_) :- morphology(off), !.
 
 
+gender_neut([A],_) :- var(A), !.
+gender_neut([[A]],_) :- var(A), !.
+gender_neut(List,Tag) :- morphology(tueba), member(Morph,List), get_gender(Morph,Tag,'n',tueba), !.
+gender_neut(List,Tag) :- morphology(gertwol), member(Morph,List), get_gender(Morph,Tag,'Neut',gertwol), !.
 
 
 degree_comp(List,Tag) :- morphology(gertwol), !, member(Morph,List), get_degree(Morph,Tag,'Comp',gertwol).
