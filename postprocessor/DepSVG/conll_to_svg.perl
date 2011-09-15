@@ -12,6 +12,7 @@ use strict;
 use warnings;
 use Getopt::Long;
 use DepSVG;
+use List::Util qw[min max];
 
 my $dir = ".";
 my $verbosity = 0;
@@ -129,6 +130,7 @@ sub output_sentence
 	my $sid = shift;
 	my $svg = shift;
 	my $on = 0;
+	my $max_y = 0;
 
 	mkdir $dir;
 
@@ -143,6 +145,11 @@ sub output_sentence
 			if ($line =~ m/^<path d=\'M0 0/) {$on=0};
 			if ($line =~ m/root<\/text>/) {$on=0};
 			if ($line =~ m/root <\/text>/) {$on=0};
+			if ($line =~ m/y='(\d+)'/) {$max_y = max($1,$max_y)};
+			if ($line =~ m/<\/svg>/) {
+				$max_y = 20;
+				$line = "<a xlink:href='" . $dir . "/" . ($sid-1) . ".svg'><text stroke-width='1px' stroke-linecap='butt' font-family='Arial, Helvetica, sans-serif' font-size='12px' word-spacing='0px' letter-spacing='0px' x=\"0\" y=\"$max_y\">Previous</text></a>\n<a xlink:href='" . $dir . "/" . ($sid+1) . ".svg'><text stroke-width='1px' stroke-linecap='butt' font-family='Arial, Helvetica, sans-serif' font-size='12px' word-spacing='0px' letter-spacing='0px' x=\"60\" y=\"$max_y\">Next</text></a>\n</svg>"
+				}
 			# Print those lines that aren't disabled
 			if ($on==1) {print OUT "$line \n"};
 				}
