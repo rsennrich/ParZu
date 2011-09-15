@@ -148,7 +148,7 @@ sub output_sentence
 			if ($line =~ m/y='(\d+)'/) {$max_y = max($1,$max_y)};
 			if ($line =~ m/<\/svg>/) {
 				$max_y = 20;
-				$line = "<a xlink:href='" . $dir . "/" . ($sid-1) . ".svg'><text stroke-width='1px' stroke-linecap='butt' font-family='Arial, Helvetica, sans-serif' font-size='12px' word-spacing='0px' letter-spacing='0px' x=\"0\" y=\"$max_y\">Previous</text></a>\n<a xlink:href='" . $dir . "/" . ($sid+1) . ".svg'><text stroke-width='1px' stroke-linecap='butt' font-family='Arial, Helvetica, sans-serif' font-size='12px' word-spacing='0px' letter-spacing='0px' x=\"60\" y=\"$max_y\">Next</text></a>\n</svg>"
+				$line = "<a xlink:href='" . ($sid-1) . ".svg'><text stroke-width='1px' stroke-linecap='butt' font-family='Arial, Helvetica, sans-serif' font-size='12px' word-spacing='0px' letter-spacing='0px' x=\"0\" y=\"$max_y\">Previous</text></a>\n<a xlink:href='" . ($sid+1) . ".svg'><text stroke-width='1px' stroke-linecap='butt' font-family='Arial, Helvetica, sans-serif' font-size='12px' word-spacing='0px' letter-spacing='0px' x=\"60\" y=\"$max_y\">Next</text></a>\n</svg>"
 				}
 			# Print those lines that aren't disabled
 			if ($on==1) {print OUT "$line \n"};
