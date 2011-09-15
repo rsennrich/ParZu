@@ -83,7 +83,7 @@ def create_morph(word,pos,args):
     else:
         if not pos in ['ADV','CARD','ITJ','PTKVZ','PAV','PTKA','PTKZU','PTKANT','PTKNEG','PTKVZ','PWAV','KOUS','KOKOM','KON','KOUI','TRUNC','VVPP','VAPP','VMPP','VAINF','VMINF','VVINF','VVIZU','XY']:
             sys.stderr.write('undefined PoS: ' + str(pos) + '\n')
-        morph = '[]'
+        morph = '_'
         
     return morph
     
