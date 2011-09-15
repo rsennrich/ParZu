@@ -124,7 +124,10 @@ def extract(line):
             d['definiteness'] = feature
             
         elif feature == 'PPres':
-            d['derivation'] = '<VPART'
+            d['derivation'] = '<PPRES'
+            
+        elif feature == 'PPast':
+            d['derivation'] = '<PPAST'
             
     return d
     

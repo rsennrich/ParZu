@@ -308,9 +308,9 @@ head('VMFIN',OBJ,r,obja,'VMFIN',[_,GC,_,_,_,OG],F-_,MF,MG,MG)  :- objcandidate(O
 head('VVIMP',OBJ,r,obja,'VVIMP',[_,GC,_,_,_,OG],F-_,MF,MG,MG)  :- objcandidate(OBJ,F), case_acc(MF,OBJ), \+ member('passive',GC), restrict_coord(OG), \+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG), \+ member('<-s<-',OG), \+ member('->s->',OG), \+ member('->objp->',OG), \+ member('<-explobja<-',OG), \+ member('->explobja->',OG).
 
 %rollkragenpullover tragende brillenträger
-head('ADJA', OBJ,l,obja,'ADJA',[_,_,_,_,OF,_],F-G,MF,MG,MF) :- 1 is F-G, derived_from_vpart(MF,'ADJA'), objcandidate(OBJ,F), case_acc(MG,OBJ), \+ member('<-obja<-',OF), \+ member('->obja->',OF).
+head('ADJA', OBJ,l,obja,'ADJA',[_,_,_,_,OF,_],F-G,MF,MG,MF) :- 1 is F-G, derived_from_ppres(MF,'ADJA'), objcandidate(OBJ,F), case_acc(MG,OBJ), \+ member('<-obja<-',OF), \+ member('->obja->',OF).
 
-head('ADJA', OBJ,l,obja,'ADJD',[_,_,_,_,OF,_],F-G,MF,MG,MF) :- 1 is F-G, derived_from_vpart(MF,'ADJD'), objcandidate(OBJ,F), case_acc(MG,OBJ), \+ member('<-obja<-',OF), \+ member('->obja->',OF).
+head('ADJD', OBJ,l,obja,'ADJD',[_,_,_,_,OF,_],F-G,MF,MG,MF) :- 1 is F-G, derived_from_ppres(MF,'ADJD'), objcandidate(OBJ,F), case_acc(MG,OBJ), \+ member('<-obja<-',OF), \+ member('->obja->',OF).
 
 
 %======================================================================================
@@ -418,9 +418,9 @@ head('VVPP','PWS',l,objd,'QC',[FC,_,_,_,UG,_],_,MF,MG,MF) :- case_dat(MG,'PWS'),
 
 
 %die der partei nahestehenden wähler
-head('ADJA', OBJ,l,objd,'ADJA',[_,_,_,_,OF,_],F-G,MF,MG,MF) :-  1 is F-G, derived_from_vpart(MF,'ADJA'), objcandidate(OBJ,F), case_dat(MG,OBJ), \+ member('<-objd<-',OF), \+ member('->objd->',OF).
+head('ADJA', OBJ,l,objd,'ADJA',[_,_,_,_,OF,_],F-G,MF,MG,MF) :-  1 is F-G, (derived_from_ppres(MF,'ADJA');derived_from_ppast(MF,'ADJA')), objcandidate(OBJ,F), case_dat(MG,OBJ), \+ member('<-objd<-',OF), \+ member('->objd->',OF).
 
-head('ADJA', OBJ,l,objd,'ADJD',[_,_,_,_,OF,_],F-G,MF,MG,MF) :-  1 is F-G, derived_from_vpart(MF,'ADJD'), objcandidate(OBJ,F), case_dat(MG,OBJ), \+ member('<-objd<-',OF), \+ member('->objd->',OF).
+head('ADJD', OBJ,l,objd,'ADJD',[_,_,_,_,OF,_],F-G,MF,MG,MF) :-  1 is F-G, (derived_from_ppres(MF,'ADJD');derived_from_ppast(MF,'ADJD')), objcandidate(OBJ,F), case_dat(MG,OBJ), \+ member('<-objd<-',OF), \+ member('->objd->',OF).
 
 
 
@@ -2122,9 +2122,9 @@ head('VVPP', 'NZEIT',l,zeit,'VVPP',[FC,_,_,_,UG,_],_,MF,MG,MF) :- verbchunklengt
 head('VVIZU', 'NZEIT',l,zeit,'VVIZU',[FC,_,_,_,UG,_],_,MF,MG,MF) :- verbchunklength(FC,1), case_acc(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 
 %der 1995 verstorbene Künstler
-head('ADJA', 'CARD',l,zeit,'ADJA',[_,_,_,_,UG,_],_,MF,_,MF) :-  derived_from_vpart(MF,'ADJA'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
-head('ADJA', 'CARD',l,zeit,'ADJA',[_,_,_,Lemma,UG,_],_,MF,MG,MF) :-  derived_from_vpart(MF,'ADJA'), zeitcand(Lemma), case_acc(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
-head('ADJA', 'NZEIT',l,zeit,'ADJA',[_,_,_,_,UG,_],_,MF,MG,MF) :-  derived_from_vpart(MF,'ADJA'), case_acc(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('ADJA', 'CARD',l,zeit,'ADJA',[_,_,_,_,UG,_],_,MF,_,MF) :-  (derived_from_ppres(MF,'ADJA');derived_from_ppast(MF,'ADJA')), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('ADJA', 'CARD',l,zeit,'ADJA',[_,_,_,Lemma,UG,_],_,MF,MG,MF) :- (derived_from_ppres(MF,'ADJA');derived_from_ppast(MF,'ADJA')), zeitcand(Lemma), case_acc(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('ADJA', 'NZEIT',l,zeit,'ADJA',[_,_,_,_,UG,_],_,MF,MG,MF) :-  (derived_from_ppres(MF,'ADJA');derived_from_ppast(MF,'ADJA')), case_acc(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 
 
 %'zeit' after verb
@@ -2362,6 +2362,24 @@ degree_comp(List,Tag) :- morphology(gertwol), !, member(Morph,List), get_degree(
 
 degree_comp(_,_) :- morphology(tueba), !.
 degree_comp(_,_) :- morphology(off), !.
+
+
+%check derived_from_vpart for backward compatibility
+derived_from_ppres(List,Tag) :- morphology(gertwol), derived_from_vpart(List,Tag).
+
+derived_from_ppres(List,Tag) :- morphology(gertwol), !, member(Morph,List), get_derived_from(Morph,Tag,'<PPRES',gertwol).
+
+derived_from_ppres(_,_) :- morphology(tueba), !.
+derived_from_ppres(_,_) :- morphology(off), !.
+
+
+%check derived_from_vpart for backward compatibility
+derived_from_ppast(List,Tag) :- morphology(gertwol), derived_from_vpart(List,Tag).
+
+derived_from_ppast(List,Tag) :- morphology(gertwol), !, member(Morph,List), get_derived_from(Morph,Tag,'<PPAST',gertwol).
+
+derived_from_ppast(_,_) :- morphology(tueba), !.
+derived_from_ppast(_,_) :- morphology(off), !.
 
 
 derived_from_vpart(List,Tag) :- morphology(gertwol), !, member(Morph,List), get_derived_from(Morph,Tag,'<VPART',gertwol).
