@@ -47,6 +47,8 @@ for line in sys.stdin:
     token = token.replace("'","\\\'")
     
     label = label.upper()
+
+    morph = list(morph)
     
     # first 4000 sentences are reserved for development/testing
     if i > 4000:
