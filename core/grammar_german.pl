@@ -2306,6 +2306,10 @@ rightbracket('—',21).
 rightbracket('―',21).
 
 
+%if hyphen/dash is at a clause boundary, don't require them to be paired.
+head2('KOUI','$(',l,badbracket,'KOUI',[_,_,_,Lex,_,_,_,_],F-G,HM,_,HM) :- 1 is F-G, leftbracket(Lex,21).
+head2('KOUS','$(',l,badbracket,'KOUS',[_,_,_,Lex,_,_,_,_],F-G,HM,_,HM) :- 1 is F-G, leftbracket(Lex,21).
+head2('KON','$(',l,badbracket,'KON',[_,_,_,Lex,_,_,_,_],F-G,HM,_,HM) :- 1 is F-G, leftbracket(Lex,21).
 
 head2(Tag,'$(',r,badbracket,Tag,[_,_,_,Lex,_,_,_,_],F-G,HM,_,HM) :- -1 is F-G, member(Lex,['"', '\'']).
 
