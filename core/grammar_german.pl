@@ -1213,6 +1213,7 @@ head('ADJA', 'VVINF',l,obji,'ADJA',[_,_,'wollend',_,_,_],F-G,MF,_,MF) :- 1 is F-
 head('VVFIN',NONFIN,l,obji,'VVFIN', [_,GChunk,FF,_,_,OG],_,MF,_,MF) :- modallike(FF), nonfinite(NONFIN), \+ (NONFIN = 'VVIZU', member('->comma->', OG)), verbchunklength(GChunk,1).
 head('VVINF',NONFIN,l,obji,'VVINF', [_,GChunk,FF,_,_,_],_,MF,_,MF) :- modallike(FF), nonfinite(NONFIN), \+ NONFIN = 'VVIZU', verbchunklength(GChunk,1).
 head('VVPP',NONFIN,l,obji,'VVPP', [_,GChunk,FF,_,_,_],_,MF,_,MF) :- modallike(FF), nonfinite(NONFIN), \+ NONFIN = 'VVIZU', verbchunklength(GChunk,1).
+head('VVIZU',NONFIN,l,obji,'VVIZU', [_,GChunk,FF,_,_,_],_,MF,_,MF) :- modallike(FF), nonfinite(NONFIN), \+ NONFIN = 'VVIZU', verbchunklength(GChunk,1).
 head('VVFIN',NONFIN,r,obji,'VVFIN', [FChunk,_,_,FG,OF,_],_,_,MG,MG) :- modallike(FG), nonfinite(NONFIN), \+ (NONFIN = 'VVIZU', member('<-comma<-', OF)), verbchunklength(FChunk,1).
 
 
@@ -2130,6 +2131,20 @@ head('VMPP', 'NN',l,zeit,'VMPP',[FC,_,_,Lemma,UG,_],_,MF,MG,MF) :- zeitcand(Lemm
 head('VVINF', 'NN',l,zeit,'VVINF',[FC,_,_,Lemma,UG,_],_,MF,MG,MF) :- zeitcand(Lemma), case_acc(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 head('VVPP', 'NN',l,zeit,'VVPP',[FC,_,_,Lemma,UG,_],_,MF,MG,MF) :- zeitcand(Lemma), case_acc(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 head('VVIZU', 'NN',l,zeit,'VVIZU',[FC,_,_,Lemma,UG,_],_,MF,MG,MF) :- zeitcand(Lemma), case_acc(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+
+
+%Eines Tages regnete es.
+head('VVFIN','NN',l,zeit,'VVFIN',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_]],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), restrict_vorfeld(FC,UG), case_gen(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('VMFIN','NN',l,zeit,'VMFIN',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_]],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), restrict_vorfeld(FC,UG), case_gen(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('VAFIN','NN',l,zeit,'VAFIN',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_]],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), restrict_vorfeld(FC,UG), case_gen(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+
+head('VAINF', 'NN',l,zeit,'VAINF',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_]],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('VAPP', 'NN',l,zeit,'VAPP',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_]],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('VMINF', 'NN',l,zeit,'VMINF',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_]],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('VMPP', 'NN',l,zeit,'VMPP',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_]],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('VVINF', 'NN',l,zeit,'VVINF',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_]],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('VVPP', 'NN',l,zeit,'VVPP',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_]],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('VVIZU', 'NN',l,zeit,'VVIZU',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_]],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 
 
 %Anfang Oktober regnete es.
