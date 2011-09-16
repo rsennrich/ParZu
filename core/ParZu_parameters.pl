@@ -17,7 +17,7 @@ constant(alterlocal,1). 	 %discard locally if not among alter + alterlocal best 
 constant(aggressive_start, 4096). % number of chart entries from where aggressive pruning starts. default is 500
 constant(aggressive_thresh,0.03).% treshold below which to cut at aggressive pruning. default is 0.01
 constant(commit,1.05).           % early commitment locally if above this probability: do not search for alternatives (=deterministic)
-constant(discard,0.09).          % discard locally if below this probability. default is 0.02
+constant(discard,0.05).          % discard locally if below this probability. default is 0.05
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
