@@ -213,7 +213,9 @@ def get_true_pos(raw_pos,line):
             pos = 'PTKZU'
         elif '<Adj>' in line:
             pos = 'PTKA'
-            
+        elif '<Vz>' in line:
+            pos = 'PTKVZ'
+          
     elif pos == 'PPER':
         if '<refl>' in line:
             pos = 'PRF'
