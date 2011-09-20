@@ -29,9 +29,11 @@ appos_expand(no). %% expand appos
 
 %% END of PARAMETERS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-:- dynamic chart/11, min_len/1, inccount/1, inccount/2, lastpos/1, tops_chart/4, statschart/13, level/1, tried/3, commalast/1, commalongest/2, perlevel/1, graphical/1, sentno/1, output/7, outputformat/1,sentdelim/1,returnsentdelim/1,nbestmode/1, morphology/1, lemmatisation/1.
+:- dynamic chart/11, min_len/1, inccount/1, inccount/2, lastpos/1, tops_chart/4, statschart/8, level/1, tried/2, perlevel/1, graphical/1, sentno/1, output/7, outputformat/1,sentdelim/1,returnsentdelim/1,nbestmode/1, morphology/1, lemmatisation/1.
 
 :- index(chart(1,1,1,0,0,0,0,1,0,0,0)). %% only has an effect in SWI
+:- index(head(1,1,1,0,0,0,0,0,0,0)).
+:- index(head2(1,1,1,0,0,0,0,0,0,0)).
 
 :- ensure_loaded('tree_textual.pl').
 :- assert(outputformat(raw)).
@@ -93,14 +95,13 @@ sparse(Stack,[[F,Ftag,Chunk,MORPH]|SRest],[Pos|PosList],LastPos,FStack,2) :-    
     
 
 
-%% sparse/11 this is the core CYK parsing algorithm
+%% sparse/17 this is the core CYK parsing algorithm
 %% main parsing step:
 %% REDUCE LEFT 
-sparse(FID,_,[FPos,_Ffrom-Fto,FScore,_FLen],[[_F,Ftag,_FType,FID]],FuncF,[WFormF|MORPHF],
-       GID,_,[GPos,Gfrom-_Gto,GScore,_GLen],[[_G,Gtag,_GType,GID]],FuncG,[_|MORPHG], Level) :-  %% Ffrom \= Gfrom,
+sparse(FID,FPos,_Ffrom,Fto,FScore,Ftag,FuncF,[WFormF|MORPHF],
+       GID,GPos,Gfrom,_Gto,GScore,Gtag,FuncG,[_|MORPHG], Level) :-  %% Ffrom \= Gfrom,
   %F(G) = dep to left, reduce-Stack reversed!
-  commalast(Commalast),
-  (tried(FID,GID,Commalast) -> !, fail; assert(tried(FID,GID,Commalast))), % already tried
+  (tried(FID,GID) -> !, fail; assert(tried(FID,GID))), % already tried
   constant(commit,COMMIT),
   constant(discard,DISCARD),
   constant(alter,ALTER),
@@ -114,7 +115,7 @@ sparse(FID,_,[FPos,_Ffrom-Fto,FScore,_FLen],[[_F,Ftag,_FType,FID]],FuncF,[WFormF
   lexic(SF,FFh,_), lexic(SG,FGh,_),
   Dist is FPos - GPos,
   head2(Ftag,Gtag,l,Type,Transtag,[FChunk,GChunk,FFh,FGh,OF,OG,FID,GID],FPos-GPos,MORPHF,MORPHG,MORPH),
-  (statschart(SF,Ftag,FFh,MORPHF,Gtag,FGh,SG,MORPHG,Type,Prob,Percent,Dist,_-_) -> true ; (stats(Type,Ftag,FFh,SF,MORPHF,Gtag,FGh,SG,MORPHG,Prob,Percent,Dist,FChunk-OF), asserta(statschart(SF,Ftag,FFh,MORPHF,Gtag,FGh,SG,MORPHG,Type,Prob,Percent,Dist,_FChunk-_OG)))),
+  (statschart(SF,MORPHF,SG,MORPHG,Type,Prob,Percent,Dist) -> true ; (stats(Type,Ftag,FFh,SF,MORPHF,Gtag,FGh,SG,MORPHG,Prob,Percent,Dist,FChunk-OF), asserta(statschart(SF,MORPHF,SG,MORPHG,Type,Prob,Percent,Dist)))),
   Prob >= DISCARD,
   %% assert stats
   atom_concat('<-',Type,ND1),atom_concat(ND1,'<-',DType),
@@ -139,10 +140,10 @@ sparse(FID,_,[FPos,_Ffrom-Fto,FScore,_FLen],[[_F,Ftag,_FType,FID]],FuncF,[WFormF
 
 %% main parsing step:
 %% REDUCE RIGHT
-sparse(FID,[[_,_,FChunk,_,_]],[FPos,_Ffrom-Fto,FScore,_FLen],[[_F,Ftag,_FType,FID]],FuncF,[_|MORPHF],
-       GID,[[_,_,GChunk,_,_]],[GPos,Gfrom-_Gto,GScore,_GLen],[[_G,Gtag,_GType,GID]],FuncG,[WFormG|MORPHG],Level) :- %% Ffrom \= Gfrom,
+sparse(FID,FPos,_Ffrom,Fto,FScore,Ftag,FuncF,[_|MORPHF],
+       GID,GPos,Gfrom,_Gto,GScore,Gtag,FuncG,[WFormG|MORPHG],Level) :- %% Ffrom \= Gfrom,
   %G(F) = dep to right, reduce-Stack reversed!
-  (tried(GID,FID,0) -> !, fail; assert(tried(GID,FID,0))), % already tried
+  (tried(GID,FID) -> !, fail; assert(tried(GID,FID))), % already tried
   constant(commit,COMMIT),
   constant(discard,DISCARD),
   constant(alter,ALTER),
@@ -157,7 +158,7 @@ sparse(FID,[[_,_,FChunk,_,_]],[FPos,_Ffrom-Fto,FScore,_FLen],[[_F,Ftag,_FType,FI
   lexic(SF,FFh,_), lexic(SG,FGh,_),
   Dist is FPos - GPos,
   head2(Gtag,Ftag,r,Type,Transtag,[GChunk,FChunk,FGh,FFh,OG,OF,GID,FID],GPos-FPos, MORPHG,MORPHF,MORPH),
-  (statschart(SG,Gtag,FGh,MORPHG,Ftag,FFh,SF,MORPHF,Type,Prob,Percent,Dist,_-_) -> true; (stats(Type,Gtag,FGh,SG,MORPHG,Ftag,FFh,SF,MORPHF,Prob,Percent,Dist,GChunk-OG), asserta(statschart(SG,Gtag,FGh,MORPHG,Ftag,FFh,SF,MORPHF,Type,Prob,Percent,Dist,_GChunk-_OG)))),
+  (statschart(SG,MORPHG,SF,MORPHF,Type,Prob,Percent,Dist) -> true; (stats(Type,Gtag,FGh,SG,MORPHG,Ftag,FFh,SF,MORPHF,Prob,Percent,Dist,GChunk-OG), asserta(statschart(SG,MORPHG,SF,MORPHF,Type,Prob,Percent,Dist)))),
   Prob >= DISCARD,
   %% assert stats
   atom_concat('->',Type,ND1),atom_concat(ND1,'->',DType),  % ->func->
@@ -214,23 +215,21 @@ sparse(Stack,[],_,N,FStruc,_) :-     % NEW FUNCTION IN CYK ::: launch the parsin
 % nextlevel -> bagof(sparse/9): reduces all it can on the given CYK level     
 nextlevel(L,MAX) :-
     L < MAX,
-    chart( FID,Ffrom,Fto,_,[FPos,FScore,FLen],F,Ftag,FType,FuncF,_LA,MORPHF), % foreach chart entry
+    constant(alter,ALTER),
+    chart( FID,Ffrom,Fto,_,[FPos,FScore,_FLen],_F,Ftag,_FType,FuncF,_LA,MORPHF), % foreach chart entry
     % LA < L,
     (FID = 1 -> (!,true); (
      Gto is Ffrom-1,
-     chart( GID,Gfrom,Gto,_,[GPos,GScore,GLen],G,Gtag,GType,FuncG,LB,MORPHG),
-     (commalast(0) -> true ; checkcommalongest(Gfrom,Gtag,LB,Ffrom,Fto,_Len,FID,GID)),
+     chart( GID,Gfrom,Gto,_,[GPos,GScore,_GLen],_G,Gtag,_GType,FuncG,_LB,MORPHG),
      % (LA is L-1 -> true; LB is L-1), %% experiment, see 6331,6332,6333
      %% findall only finds the first -> untauglich
-     bagof(_,sparse(FID,_,[FPos,Ffrom-Fto,FScore,FLen],[[F,Ftag,FType,FID]],FuncF, MORPHF,
-                    GID,_,[GPos,Gfrom-Gto,GScore,GLen],[[G,Gtag,GType,GID]],FuncG, MORPHG,
+     bagof(_,sparse(FID,FPos,Ffrom,Fto,FScore,Ftag,FuncF, MORPHF,
+                    GID,GPos,Gfrom,Gto,GScore,Gtag,FuncG, MORPHG,
 		    L),_)
     )),
     write('End of Level '), write(L), write(' reduced items X: '), perlevel(X), lastpos(LastPos), !, XFact is (X/LastPos), write(X), write('XChunks :'), write(XFact), nl,
-    %% has anything managed to reduce at this level? IF NOT --> TRY COMMAJUMP; THEN END!
-    % (chart(_UntilID,_,_,_,_,_,_,L) -> (retractall(commalast(_)), assert(commalast(0))) ; (commalast(0), retractall(commalast(0)), assert(commalast(1)))), !,
-    (X>0 -> true ; (commalast(0), retractall(commalast(0)), assert(commalast(1)))),
-     constant(alter,ALTER),
+    %% has anything managed to reduce at this level? IF NOT, END
+    X>0,
     prune(L,XFact,ALTER),
     L1 is L+1,
     retractall(perlevel(_)),
@@ -248,14 +247,14 @@ nextlevel(L,MAX) :-
 %prune(_,XFact,ALTER) :- XFact < (ALTER-1), inccount(X), X < 200, !.
 
 %% mild pruning
-prune(_L,XFact,ALTER) :-
+prune(L,XFact,ALTER) :-
     XFact < 100,
     write('fixed pruning keep '),
     %% constant(alter,ALTER),
     %% Div is (XFact/10), Div > 0, 
     write(ALTER), nl,
     %% foreach stretch A-Z : discard low prob-half, if there are at least 3 possibilities
-    chart(_,Ffrom,Fto,_,[_,_Score,_],_,_,_,_,_,_),
+    chart(_,Ffrom,Fto,_,[_,_Score,_],_,_,_,_,L,_),
     findall((Score,ID), chart(ID,Ffrom,Fto,_,[_,Score,_],_,_,_,_,_,_),List),
     len(List,Len),
     (Len < ALTER -> fail ;
@@ -266,13 +265,13 @@ prune(_L,XFact,ALTER) :-
        fail)).
 
 %% aggressive pruning
-prune(_L,XFact,ALTER) :-
+prune(L,XFact,ALTER) :-
     XFact >= 100,
     write('variable pruning at '),
     %% constant(alter,ALTER),
     Div is (XFact/8), Div > 0, write(Div), nl,
    %% foreach stretch A-Z : discard low prob-half, if there are at least 3 possibilities
-    chart(_,Ffrom,Fto,_,[_,_Score,_],_,_,_,_,_,_),
+    chart(_,Ffrom,Fto,_,[_,_Score,_],_,_,_,_,L,_),
     findall((Score,ID), chart(ID,Ffrom,Fto,_,[_,Score,_],_,_,_,_,_,_),List),
     len(List,Len),
     (Len < ALTER -> fail ;
@@ -297,13 +296,6 @@ prunechart(C,Till,[(_Score,ID)|RList]) :-
     prunechart(C1,Till,RList).
 
 prunechart(_,_,_). %eorec
-
-checkcommalongest(Gfrom,Gtag,GA,Ffrom,Fto,Len,_FID,_GID) :-
-    Gtag = 'COMMA',
-    GA is 0,
-    Len is Fto-Ffrom,
-    (commalongest(Gfrom,OLen) -> true ; OLen is 0),
-    Len >= OLen, retractall(commalongest(Gfrom,OLen)), assert(commalongest(Gfrom,Len)).
 
 
 shift(Stack,[[F,Ftag,Chunk,C]|SRest],[Pos|PosList],LastPos,FStack,Shift):-
@@ -441,17 +433,14 @@ collect_sents(end-of-file).
 collect_sents(no-end) :-
     garbage_collect,
     trim_stacks,
-    retractall(statschart(_,_,_,_,_,_,_,_,_,_,_,_,_)),
+    retractall(statschart(_,_,_,_,_,_,_,_)),
     retractall(inccount(_,_)),
     collect_sent([],Sent,EOF,1),
     retractall(min_len(_)),
     retractall(chart(_,_,_,_,_,_,_,_,_,_,_)),
     retractall(tops_chart(_,_,_,_)),
-    retractall(tried(_,_,_)),
+    retractall(tried(_,_)),
     retractall(lastpos(_)),
-    retractall(commalast(_)),
-    retractall(commalongest(_,_)),
-    assert(commalast(0)),
     assert(min_len(1000)),
     retractall(inccount(_)),
     assert(inccount(0)),
