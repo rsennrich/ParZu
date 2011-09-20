@@ -2633,7 +2633,7 @@ createMorphOutput(Head,Dep,MyRel) :- (getChartInfo(Head,HPos,HWord,HLemma,_,HMor
       getChartInfo(Dep,DPos,DWord,DLemma,_,DMorph),
       spyme(HPos,DPos,morph),
       (call(output(HPos,HWord,HLemma,HTag,_,_,HMorph2))->true;
-          (chart(HPos,HPos,HPos,[[Lemma,HTag,_,_,_]],_,_,_,_,[Word|HMorph]),
+          (chart(HPos,HPos,HPos,[[Lemma,HTag,_]],_,_,_,_,_,_,[Word|HMorph]),
           assert(output(HPos,Word,Lemma,HTag,root,0,HMorph)), 
           HMorph2 = HMorph)),
       (call(output(DPos,DWord,DLemma,DTag,MyRel,_,DMorph2));
@@ -2654,9 +2654,9 @@ createRelOutput(Head,Dep,MyRel) :- lexic(Head,HLemma,HPos),
 
 createRelOutput(_,_,_) :- !.
 
-getChartInfo(Head,Pos,Word,Lemma,Tag,Morph) :- chart(_,_,_,[[LemmaPos,Tag,_,_,_],_],_,_,Head,_,[Word|Morph]), Head =.. [LemmaPos|_], lexic(LemmaPos,Lemma,Pos), !.
-getChartInfo(Head,Pos,Word,Lemma,Tag,Morph) :- chart(_,_,_,[_,[LemmaPos,Tag,_,_,_]],_,_,Head,_,[Word|Morph]), Head =.. [LemmaPos|_], lexic(LemmaPos,Lemma,Pos), !.
-getChartInfo(Head,Pos,Word,Lemma,Tag,Morph) :- chart(Pos,Pos,Pos,[[Lemma,Tag,_,_,_]],_,_,Head,_,[Word|Morph]), !.
+getChartInfo(Head,Pos,Word,Lemma,Tag,Morph) :- chart(_,_,_,[[LemmaPos,Tag,_],_],_,_,_,_,Head,_,[Word|Morph]), Head =.. [LemmaPos|_], lexic(LemmaPos,Lemma,Pos), !.
+getChartInfo(Head,Pos,Word,Lemma,Tag,Morph) :- chart(_,_,_,[_,[LemmaPos,Tag,_]],_,_,_,_,Head,_,[Word|Morph]), Head =.. [LemmaPos|_], lexic(LemmaPos,Lemma,Pos), !.
+getChartInfo(Head,Pos,Word,Lemma,Tag,Morph) :- chart(Pos,Pos,Pos,[[Lemma,Tag,_]],_,_,_,_,Head,_,[Word|Morph]), !.
 
 
 
@@ -2767,10 +2767,10 @@ bracketToRight(ID) :- getRange(ID,_-To), RightPos is To + 1, checkPos(RightPos,_
 bracketToLeft(ID) :- getRange(ID,From-_), LeftPos is From - 1, checkPos(LeftPos,_,Tag,_,_), (Tag = 'NONE';Tag='$(').
 
 
-getRange(ID, From-To) :- chart(ID,From,To,_,_,_,_,_,_).
+getRange(ID, From-To) :- chart(ID,From,To,_,_,_,_,_,_,_,_).
 
 %check any terminal symbol and its features.
-checkPos(Pos,Word,Tag,Chunk,Morph) :- chart(Pos,Pos,Pos,[[Word,Tag,Chunk,_,_]],_,_,_,_,Morph), !.
+checkPos(Pos,Word,Tag,Chunk,Morph) :- chart(Pos,Pos,Pos,[[Word,Tag,Chunk]],_,_,_,_,_,_,Morph), !.
 
 %catchall (sentence position does not exist: beginning or end of sentence). 
 checkPos(_,'NONE','NONE','NONE','NONE') :- !.

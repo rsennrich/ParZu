@@ -473,7 +473,7 @@ stats2(s,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,NP,_D,HC-_OG) :-
 stats2(par,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,_MORPHD,P,NP,_D,_HC-_OG) :-
 	(Dtag='PAR';Dtag='QUOTE'),
 	lexic(SD,_,DPos),
-	chart(DPos,DPos,DPos,[[_,_,HC,_,_]],_,_,_,_,_),
+	chart(DPos,DPos,DPos,[[_,_,HC]],_,_,_,_,_,_,_),
 	getheadandnormalise(HC,Head,_),
 	((	verb(Head,Occurs,_,_,_,_,_,_,_,_,_,_,_,_,Quote,_),
 		Occurs > 3,

@@ -8,7 +8,7 @@ postprocess(_,raw) :- retractall(output(_,_,_,_,_,_,_)), !.
 
 %all other output formats.
 postprocess(Pos,Outputformat) :-
-             (output(Pos,Word,Lemma,Tag,Rel,HeadPos,Morph)->true;(chart(Pos,Pos,Pos,[[Lemma,Tag,_,_,_]],_,_,_,_,[Word|Morph]),Rel=root,HeadPos=0,assert(output(Pos,Word,Lemma,Tag,Rel,HeadPos,Morph)))),
+             (output(Pos,Word,Lemma,Tag,Rel,HeadPos,Morph)->true;(chart(Pos,Pos,Pos,[[Lemma,Tag,_]],_,_,_,_,_,_,[Word|Morph]),Rel=root,HeadPos=0,assert(output(Pos,Word,Lemma,Tag,Rel,HeadPos,Morph)))),
              ((output(HeadPos,_,_,HTag,_,_,HMorph)->
              morph_cleanup2(Rel,HMorph,HTag,Morph,Tag,HeadPos,Morph2));morph_cleanup2(root,_,_,Morph,Tag,_,Morph2)),
              retract(output(Pos,Word,Lemma,Tag,Rel,HeadPos,Morph)),
@@ -90,7 +90,7 @@ printresult(prolog,Pos,Word,Lemma,Tag,Rel,HeadPos,Morph) :-
 
 %print results in moses format. default.
 printresult(moses,_,Word,_,Tag,Rel,HeadPos,_) :- 
-    (HeadPos=0->HeadWord=root;chart(HeadPos,HeadPos,HeadPos,[[_,_,_,_,_]],_,_,_,_,[HeadWord|_])),
+    (HeadPos=0->HeadWord=root;chart(HeadPos,HeadPos,HeadPos,_,_,_,_,_,_,_,[HeadWord|_])),
     write(Word),
     write('|'),
     write(Tag),
@@ -128,7 +128,7 @@ getPosition(Lemma_Tag,OldPos,Pos) :-
 	append(LemmaChars, [95|TagChars], Lemma_TagChars),
 	name(Tag, TagChars),
 	name(Lemma, LemmaChars),
-        chart(Pos,Pos,Pos,[[Lemma,Tag,_,_,_]],_,_,_,_,_),
+        chart(Pos,Pos,Pos,[[Lemma,Tag,_]],_,_,_,_,_,_,_),
 	output(Pos,_,_,_,aux,OldPos,_), !.
 
 
@@ -149,10 +149,10 @@ transcodeRel(Class,Class) :- !.
 
 %fix auxiliary relationships: head of auxiliary relationship is not always finite verb, but verb one level higher in the hierarchy.
 fixAttachment(aux,DepPos,HeadPos,Pos) :-
-    chart(HeadPos,HeadPos,HeadPos,[[HeadWord,HeadTag,HC,_,_]],_,_,_,_,_),
+    chart(HeadPos,HeadPos,HeadPos,[[HeadWord,HeadTag,HC]],_,_,_,_,_,_,_),
 	atom_concat(HeadWord,'_',HeadTemp),
 	atom_concat(HeadTemp,HeadTag,HeadX),
-    chart(DepPos,DepPos,DepPos,[[DepWord,DepTag,_,_,_]],_,_,_,_,_),
+    chart(DepPos,DepPos,DepPos,[[DepWord,DepTag,_]],_,_,_,_,_,_,_),
 	atom_concat(DepWord,'_',DepTemp),
 	atom_concat(DepTemp,DepTag,Dep),
 	nth1(DPos,HC,Dep),
@@ -164,7 +164,7 @@ fixAttachment(aux,DepPos,HeadPos,Pos) :-
 %fix attachment for prepositional phrases and adverbs (attached to finite verb in vorfeld, but to full verb in mittelfeld)
 fixAttachment(Class,DepPos,HeadPos,Pos) :-
 	(Class=pp;Class=adv),
-        chart(HeadPos,HeadPos,HeadPos,[[_,Tag,HC,_,_]],_,_,_,_,_),
+        chart(HeadPos,HeadPos,HeadPos,[[_,Tag,HC]],_,_,_,_,_,_,_),
 	(Tag='VAFIN';Tag='VMFIN';Tag='VAINF';Tag='VMINF';Tag='VAPP';Tag='VMPP'),
 	(append(mainclause,HC,HCTemp);HCTemp=HC),
 	(append(passive,HCTemp,HCTemp2);HCTemp2=HCTemp),
@@ -201,7 +201,7 @@ fixAttachment(rel,DepPos,HeadPos,CandPos) :- output(DepPos,_,_,_,rel,HeadPos,_),
 %all other cases: dependents that are attached to finite verb should be attached to full verb instead.
 fixAttachment(Class,_,HeadPos,Pos) :- 
 	\+ leavealone(Class),
-        chart(HeadPos,HeadPos,HeadPos,[[_,Tag,HC,_,_]],_,_,_,_,_),
+        chart(HeadPos,HeadPos,HeadPos,[[_,Tag,HC]],_,_,_,_,_,_,_),
 	(Tag='VAFIN';Tag='VMFIN';Tag='VAINF';Tag='VMINF';Tag='VAPP';Tag='VMPP'),
 	(append(mainclause,HC,HCTemp);HCTemp=HC),
 	(append(passive,HCTemp,HCTemp2);HCTemp2=HCTemp),
