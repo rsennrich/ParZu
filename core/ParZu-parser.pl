@@ -31,7 +31,7 @@ appos_expand(no). %% expand appos
 
 :- dynamic chart/11, min_len/1, inccount/1, inccount/2, lastpos/1, tops_chart/4, statschart/8, level/1, tried/2, perlevel/1, graphical/1, sentno/1, output/7, outputformat/1,sentdelim/1,returnsentdelim/1,nbestmode/1, morphology/1, lemmatisation/1.
 
-:- index(chart(1,1,1,0,0,0,0,1,0,0,0)). %% only has an effect in SWI
+:- index(chart(1,1,1,0,0,0,0,0,0,1,0)). %% only has an effect in SWI
 :- index(head(1,1,1,0,0,0,0,0,0,0)).
 :- index(head2(1,1,1,0,0,0,0,0,0,0)).
 
@@ -90,16 +90,16 @@ sparse(Stack,[[F,Ftag,Chunk,MORPH]|SRest],[Pos|PosList],LastPos,FStack,2) :-    
     appl(FID,Chunk,FChunk),
     %%writeq(FID), write(','),
     %% intrachunk0(Chunk,FID,Ftag,C),
-    asserta(chart(ID,Pos,Pos,[[F,Ftag,Chunk]],[Pos,1,1],F,Ftag,w,FChunk,0,MORPH)), % last arg: F/FChunk?
+    asserta(chart(ID,Pos,Pos,[[F,Ftag,Chunk]],[Pos,1,Chunk,1],F,Ftag,w,FChunk,0,MORPH)), % last arg: F/FChunk?
     shift(Stack,[[F,Ftag,Chunk,MORPH]|SRest],[Pos|PosList],LastPos,FStack,2).  %% shift calls sparse again -> recursion
     
 
 
-%% sparse/17 this is the core CYK parsing algorithm
+%% sparse/21 this is the core CYK parsing algorithm
 %% main parsing step:
 %% REDUCE LEFT 
-sparse(FID,FPos,_Ffrom,Fto,FScore,Ftag,FuncF,[WFormF|MORPHF],
-       GID,GPos,Gfrom,_Gto,GScore,Gtag,FuncG,[_|MORPHG], Level) :-  %% Ffrom \= Gfrom,
+sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[WFormF|MORPHF],
+       GID,GPos,Gfrom,_Gto,FGh,GChunk,GScore,Gtag,FuncG,[_|MORPHG], Level) :-  %% Ffrom \= Gfrom,
   %F(G) = dep to left, reduce-Stack reversed!
   (tried(FID,GID) -> !, fail; assert(tried(FID,GID))), % already tried
   constant(commit,COMMIT),
@@ -109,13 +109,10 @@ sparse(FID,FPos,_Ffrom,Fto,FScore,Ftag,FuncF,[WFormF|MORPHF],
   constant(aggressive_start,MAXCHART),
   constant(aggressive_thresh,THRESH),
   FuncF=..[SF|OF],           % get F pred (FF)
-  member([FC1|FC2],OF), FChunk=[FC1|FC2],
   FuncG=..[SG|OG],           % get G pred (FG)
-  member([GC1|GC2],OG), GChunk=[GC1|GC2],
-  lexic(SF,FFh,_), lexic(SG,FGh,_),
   Dist is FPos - GPos,
   head2(Ftag,Gtag,l,Type,Transtag,[FChunk,GChunk,FFh,FGh,OF,OG,FID,GID],FPos-GPos,MORPHF,MORPHG,MORPH),
-  (statschart(SF,MORPHF,SG,MORPHG,Type,Prob,Percent,Dist) -> true ; (stats(Type,Ftag,FFh,SF,MORPHF,Gtag,FGh,SG,MORPHG,Prob,Percent,Dist,FChunk-OF), asserta(statschart(SF,MORPHF,SG,MORPHG,Type,Prob,Percent,Dist)))),
+  (statschart(SF,MORPHF,SG,MORPHG,Type,Prob,Percent,Dist) -> true ; (once(stats2(Type,Ftag,FFh,SF,MORPHF,Gtag,FGh,SG,MORPHG,Prob,Percent,Dist,FChunk-OF)), asserta(statschart(SF,MORPHF,SG,MORPHG,Type,Prob,Percent,Dist)))),
   Prob >= DISCARD,
   %% assert stats
   atom_concat('<-',Type,ND1),atom_concat(ND1,'<-',DType),
@@ -127,11 +124,11 @@ sparse(FID,FPos,_Ffrom,Fto,FScore,Ftag,FuncF,[WFormF|MORPHF],
   (ID>MAXCHART -> (((OPScore / ((Len+(Len**sqrt(2)))+(ID/2))) < THRESH) -> (write(' TOO LOW!'),nl,fail);true); true),
   %do not assert if alternative is not among n best.
   (ALTERL>=0 ->
-    (findall(PruneScore, (chart(_,Gfrom,Fto,_,[_,PruneScore,_],_,_,_,_,_,_),\+var(OPScore),PruneScore>OPScore),PruneList),
+    (findall(PruneScore, (chart(_,Gfrom,Fto,_,[_,PruneScore,_,_],_,_,_,_,_,_),\+var(OPScore),PruneScore>OPScore),PruneList),
     len(PruneList,PruneLen),
     PruneLen < ALTER + ALTERL);true),
   %% OGfrom \= OFto,
-  asserta(chart(ID,Gfrom,Fto,[[SF,Ftag,FChunk],[SG,Gtag,GChunk]],[FPos,OPScore,Len],SF,Transtag,Type,FuncFTRes,Level,[WFormF|MORPH])),
+  asserta(chart(ID,Gfrom,Fto,[[SF,Ftag,FChunk],[SG,Gtag,GChunk]],[FPos,OPScore,FChunk,Len],FFh,Transtag,Type,FuncFTRes,Level,[WFormF|MORPH])),
   (debug(1) -> (write(ID),write(' LEFT'),nl,write_tree(FuncFTRes),nl);true),
   retract(perlevel(X)),
   X1 is X+1, assert(perlevel(X1)),
@@ -140,8 +137,8 @@ sparse(FID,FPos,_Ffrom,Fto,FScore,Ftag,FuncF,[WFormF|MORPHF],
 
 %% main parsing step:
 %% REDUCE RIGHT
-sparse(FID,FPos,_Ffrom,Fto,FScore,Ftag,FuncF,[_|MORPHF],
-       GID,GPos,Gfrom,_Gto,GScore,Gtag,FuncG,[WFormG|MORPHG],Level) :- %% Ffrom \= Gfrom,
+sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[_|MORPHF],
+       GID,GPos,Gfrom,_Gto,FGh,GChunk,GScore,Gtag,FuncG,[WFormG|MORPHG],Level) :- %% Ffrom \= Gfrom,
   %G(F) = dep to right, reduce-Stack reversed!
   (tried(GID,FID) -> !, fail; assert(tried(GID,FID))), % already tried
   constant(commit,COMMIT),
@@ -151,14 +148,11 @@ sparse(FID,FPos,_Ffrom,Fto,FScore,Ftag,FuncF,[_|MORPHF],
   constant(aggressive_start,MAXCHART),
   constant(aggressive_thresh,THRESH),
   FuncF=..[SF|OF],
-  member([FC1|FC2],OF), FChunk=[FC1|FC2],
   FuncG=..[SG|OG],
-  member([GC1|GC2],OG), GChunk=[GC1|GC2],
   !,
-  lexic(SF,FFh,_), lexic(SG,FGh,_),
   Dist is FPos - GPos,
   head2(Gtag,Ftag,r,Type,Transtag,[GChunk,FChunk,FGh,FFh,OG,OF,GID,FID],GPos-FPos, MORPHG,MORPHF,MORPH),
-  (statschart(SG,MORPHG,SF,MORPHF,Type,Prob,Percent,Dist) -> true; (stats(Type,Gtag,FGh,SG,MORPHG,Ftag,FFh,SF,MORPHF,Prob,Percent,Dist,GChunk-OG), asserta(statschart(SG,MORPHG,SF,MORPHF,Type,Prob,Percent,Dist)))),
+  (statschart(SG,MORPHG,SF,MORPHF,Type,Prob,Percent,Dist) -> true; (once(stats2(Type,Gtag,FGh,SG,MORPHG,Ftag,FFh,SF,MORPHF,Prob,Percent,Dist,GChunk-OG)), asserta(statschart(SG,MORPHG,SF,MORPHF,Type,Prob,Percent,Dist)))),
   Prob >= DISCARD,
   %% assert stats
   atom_concat('->',Type,ND1),atom_concat(ND1,'->',DType),  % ->func->
@@ -170,11 +164,11 @@ sparse(FID,FPos,_Ffrom,Fto,FScore,Ftag,FuncF,[_|MORPHF],
   (ID>MAXCHART -> (((OPScore / ((Len+(Len**sqrt(2)))+(ID/2))) < THRESH) -> (write(' TOO LOW!'),nl,!,fail);true); true),
   %do not assert if alternative is not among n best.
   (ALTERL>=0 ->
-    (findall(PruneScore, (chart(_,Gfrom,Fto,_,[_,PruneScore,_],_,_,_,_,_,_),\+var(OPScore),PruneScore>OPScore),PruneList),
+    (findall(PruneScore, (chart(_,Gfrom,Fto,_,[_,PruneScore,_,_],_,_,_,_,_,_),\+var(OPScore),PruneScore>OPScore),PruneList),
     len(PruneList,PruneLen),
     PruneLen < ALTER + ALTERL);true),
   %% OGfrom \= OFto,
-  asserta(chart(ID,Gfrom,Fto,[[SF,Ftag,FChunk],[SG,Gtag,GChunk]],[GPos,OPScore,Len],SG,Transtag,Type,FuncGTRes,Level,[WFormG|MORPH])),
+  asserta(chart(ID,Gfrom,Fto,[[SF,Ftag,FChunk],[SG,Gtag,GChunk]],[GPos,OPScore,GChunk,Len],FGh,Transtag,Type,FuncGTRes,Level,[WFormG|MORPH])),
   (debug(1) -> (write(ID),write(' RIGHT'),nl,write_tree(FuncGTRes),nl);true),
   retract(perlevel(X)),
   X1 is X+1, assert(perlevel(X1)),
@@ -216,15 +210,14 @@ sparse(Stack,[],_,N,FStruc,_) :-     % NEW FUNCTION IN CYK ::: launch the parsin
 nextlevel(L,MAX) :-
     L < MAX,
     constant(alter,ALTER),
-    chart( FID,Ffrom,Fto,_,[FPos,FScore,_FLen],_F,Ftag,_FType,FuncF,_LA,MORPHF), % foreach chart entry
-    % LA < L,
+    chart( FID,Ffrom,Fto,_,[FPos,FScore,FChunk,_FLen],F,Ftag,_FType,FuncF,LA,MORPHF), % foreach chart entry
+
     (FID = 1 -> (!,true); (
      Gto is Ffrom-1,
-     chart( GID,Gfrom,Gto,_,[GPos,GScore,_GLen],_G,Gtag,_GType,FuncG,_LB,MORPHG),
-     % (LA is L-1 -> true; LB is L-1), %% experiment, see 6331,6332,6333
-     %% findall only finds the first -> untauglich
-     bagof(_,sparse(FID,FPos,Ffrom,Fto,FScore,Ftag,FuncF, MORPHF,
-                    GID,GPos,Gfrom,Gto,GScore,Gtag,FuncG, MORPHG,
+     (LA is L-1 -> true; LB is L-1),
+     chart( GID,Gfrom,Gto,_,[GPos,GScore,GChunk,_GLen],G,Gtag,_GType,FuncG,LB,MORPHG),
+     bagof(_,sparse(FID,FPos,Ffrom,Fto,F,FChunk,FScore,Ftag,FuncF, MORPHF,
+                    GID,GPos,Gfrom,Gto,G,GChunk,GScore,Gtag,FuncG, MORPHG,
 		    L),_)
     )),
     write('End of Level '), write(L), write(' reduced items X: '), perlevel(X), lastpos(LastPos), !, XFact is (X/LastPos), write(X), write('XChunks :'), write(XFact), nl,
@@ -254,8 +247,8 @@ prune(L,XFact,ALTER) :-
     %% Div is (XFact/10), Div > 0, 
     write(ALTER), nl,
     %% foreach stretch A-Z : discard low prob-half, if there are at least 3 possibilities
-    chart(_,Ffrom,Fto,_,[_,_Score,_],_,_,_,_,L,_),
-    findall((Score,ID), chart(ID,Ffrom,Fto,_,[_,Score,_],_,_,_,_,_,_),List),
+    chart(_,Ffrom,Fto,_,[_,_Score,_,_],_,_,_,_,L,_),
+    findall((Score,ID), chart(ID,Ffrom,Fto,_,[_,Score,_,_],_,_,_,_,_,_),List),
     len(List,Len),
     (Len < ALTER -> fail ;
       (sort(List,SList),
@@ -271,8 +264,8 @@ prune(L,XFact,ALTER) :-
     %% constant(alter,ALTER),
     Div is (XFact/8), Div > 0, write(Div), nl,
    %% foreach stretch A-Z : discard low prob-half, if there are at least 3 possibilities
-    chart(_,Ffrom,Fto,_,[_,_Score,_],_,_,_,_,L,_),
-    findall((Score,ID), chart(ID,Ffrom,Fto,_,[_,Score,_],_,_,_,_,_,_),List),
+    chart(_,Ffrom,Fto,_,[_,_Score,_,_],_,_,_,_,L,_),
+    findall((Score,ID), chart(ID,Ffrom,Fto,_,[_,Score,_,_],_,_,_,_,_,_),List),
     len(List,Len),
     (Len < ALTER -> fail ;
       (sort(List,SList),
@@ -307,15 +300,6 @@ shift(Stack,[[F,Ftag,Chunk,C]|SRest],[Pos|PosList],LastPos,FStack,Shift):-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% end of parsing
 
-
-%% \section{Statistics}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-%% use this if you want no stats at all: simply delivers probability = 1.
-%stats(Type,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,1,1,Dist,HeadChunk-OG) :- !.
-
-stats(Type,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,P,NP,Dist,HeadChunk-OG) :- stats2(Type,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,P,NP,Dist,HeadChunk-OG), !.
 
 
 
@@ -398,12 +382,6 @@ spaces(X) :-
     LessX is X-1, 
     spaces(LessX).
     
-closebrackets(0).
-closebrackets(X) :-
-    X > 0,
-    write('|'),
-    LessX is X-1,
-    closebrackets(LessX).
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Driver Predicates:
@@ -673,7 +651,7 @@ findlongest(0,A-Z,A-A-Z-Z,_MIn-[A-Z],S-S,Sc-Sc) :- !.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%SWI VERSION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 findlongest(MaxLen,A-Z,A-I-J-Z,MIn-MOut,ScIn-ScOut,SIn-SOut) :-
-  (chart(_,I,J,_,[_,CScore,MaxLen],_,_,_,CStruc,_,_), \+ I=J, I>=A, J=<Z, append(SIn,[CStruc],SOut), ScOut is ScIn*CScore, MOut=MIn)
+  (chart(_,I,J,_,[_,CScore,_,MaxLen],_,_,_,CStruc,_,_), \+ I=J, I>=A, J=<Z, append(SIn,[CStruc],SOut), ScOut is ScIn*CScore, MOut=MIn)
   *-> true;
      (NewMaxLen is MaxLen-1,findlongest(NewMaxLen,A-Z,A-I-J-Z,MIn-MOut,ScIn-ScOut,SIn-SOut)).
 
@@ -695,7 +673,7 @@ pathfinder_l(A-Z,MCIn-[Z|MCOut],ScoreIn-ScoreOut,StrucIn-StrucOut) :- % or path 
    pathfinder(A-Z1,[Z1|MCIn]-MCOut,ScoreIn-ScoreOut,StrucIn-StrucOut)).
 pathfinder(Z-Z,M-M,FS-FS,Strucs-Strucs) :- !.           % end of recursion
 pathfinder(A-Z,MI-MO,ScoreIn-ScoreOut,StrucIn-StrucOut) :-   % direct path
-  chart(_ID,A,Z,_,[_,ZScore,Len],_,_,_,ZStruc,_,_),
+  chart(_ID,A,Z,_,[_,ZScore,_,Len],_,_,_,ZStruc,_,_),
   %dlen(A-Z,Len),
   ScoreMid is ScoreIn * ZScore * Len,
   append([ZStruc],StrucIn,StrucMid),
@@ -706,7 +684,7 @@ pathfinder(A-Z,MI-MO,ScoreIn-ScoreOut,StrucIn-StrucOut) :- % indirect path, decr
   pathfinder_r(A-B-Z,MI-MO,ScoreIn-ScoreOut,StrucIn-StrucOut).
 
 pathfinder_r(A-B-Z,MI-MO,ScoreIn-ScoreOut,StrucIn-StrucOut) :-  % indirect path to end, long first
-  chart(_ID,A,B,_,[_,BScore,Len],_,_,_,BStruc,_,_), 
+  chart(_ID,A,B,_,[_,BScore,_,Len],_,_,_,BStruc,_,_), 
   %dlen(A-B,Len),
   ScoreMid is ScoreIn * BScore * Len,
   append([BStruc],StrucIn,StrucMid),
