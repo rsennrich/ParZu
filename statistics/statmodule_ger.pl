@@ -34,7 +34,7 @@ stats2(zeit,'ADJA',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,0.1,_D,_HC).
 stats2(det,_Htag,_FH,_SH,_MORPHH,'PRELS',_FD,_SD,_MORPHD,0.45,0.45,_D,_HC).
 stats2(det,_Htag,_FH,_SH,_MORPHH,'PWS',_FD,_SD,_MORPHD,0.3,0.3,_D,_HC).
 
-stats2(pn,_Htag,_FH,_SH,_MORPHH,'ADV',_FD,_SD,_MORPHD,1,1,_D,_HC).
+stats2(pn,_Htag,_FH,_SH,_MORPHH,'ADV',_FD,_SD,_MORPHD,0.5,0.5,_D,_HC).
 stats2(pn,_Htag,_FH,_SH,_MORPHH,'ADJD',_FD,_SD,_MORPHD,0.5,0.5,_D,_HC).
 stats2(pn,_Htag,_FH,_SH,_MORPHH,'PP',_FD,_SD,_MORPHD,0.5,0.5,_D,_HC).
 stats2(pn,_Htag,_FH,_SH,_MORPHH,'ADJA',_FD,_SD,_MORPHD,0.5,0.5,_D,_HC).
@@ -47,19 +47,19 @@ stats2(part,_,_FH,_SH,_MORPHH,'ART',_FD,_SD,_MORPHD,0.9,0.9,_D,_HC).
 
 
 %expl. should only be used together with objc/subjc.
-stats2(explsubj,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,NP,_D,_HC-OG) :- ((member('->subjc->',OG);member('->obji->',OG);member('<-subjc<-',OG);member('<-obji<-',OG))-> (P is 1.04, NP is 1.04); (P is 0.2,NP is 0.2)).
+stats2(explsubj,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,NP,_D,_HC-OG) :- ((member('->subjc->',OG);member('->obji->',OG);member('<-subjc<-',OG);member('<-obji<-',OG))-> (P is 1.06, NP is 1.06); (P is 0.2,NP is 0.2)).
 
-stats2(explobja,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,NP,_D,_HC-OG) :- ((member('->objc->',OG);member('<-objc<-',OG))-> (P is 1.04, NP is 1.04); ((member('->obji->',OG);member('<-obji<-',OG))->(P is 0.8,NP is 0.8);(P is 0.2,NP is 0.2))).
+stats2(explobja,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,NP,_D,_HC-OG) :- ((member('->objc->',OG);member('<-objc<-',OG))-> (P is 1.06, NP is 1.06); ((member('->obji->',OG);member('<-obji<-',OG))->(P is 0.8,NP is 0.8);(P is 0.2,NP is 0.2))).
 
 
 %use the conjunction to distinguish between subordinated clauses and clausal objects
 stats2(konjneb,_Htag,_FH,_SH,_MORPHH,_Dtag,FD,_SD,_MORPHD,P,NP,_D,_HC-OG) :- 
-	member('<-konjneb<-',OG)->P is 1,NP is 1;(
+	member('<-konjneb<-',OG)->P is 1.06,NP is 1.06;(
 	downcase_atom(FD,FL), 
 	(konjstats(FL,neb,NEB);NEB is 0),
 	(konjstats(FL,objc,OBJC);OBJC is 0),
 	(NEB + OBJC =:= 0-> Ratio is 1;Ratio is (NEB+1)/(NEB+OBJC+1)),
-	(Ratio > 0.7->(P is 1, NP is 1);(
+	(Ratio > 0.7->(P is 1.06, NP is 1.06);(
 	Ratio< 0.3->(P is 0, NP is 0);(P is Ratio, NP is Ratio)))).
 
 
@@ -69,7 +69,7 @@ stats2(konjobjc,_Htag,_FH,_SH,_MORPHH,_Dtag,FD,_SD,_MORPHD,P,NP,_D,_HC-OG) :-
 	(konjstats(FL,neb,NEB);NEB is 0),
 	(konjstats(FL,objc,OBJC);OBJC is 0),
 	(NEB + OBJC =:= 0-> Ratio is 0;Ratio is (OBJC+1)/(NEB+OBJC+1)),
-	(Ratio > 0.7->(P is 1, NP is 1);(
+	(Ratio > 0.7->(P is 1.06, NP is 1.06);(
 	Ratio< 0.3->(P is 0, NP is 0);(P is Ratio, NP is Ratio)))).
 
 
@@ -77,14 +77,9 @@ stats2(konjobjc,_Htag,_FH,_SH,_MORPHH,_Dtag,FD,_SD,_MORPHD,P,NP,_D,_HC-OG) :-
 stats2(pn,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1.06,1.06,_D,_HC).
 stats2(attr,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1.06,1.06,_D,_HC).
 stats2(det,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1.06,1.06,_D,_HC).
+stats2(aux,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1.06,1.06,_D,_HC).
+stats2(avz,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1.06,1.06,_D,_HC).
 
-/*
-%all non-verbal adverbs that are allowed in the grammar should have precedence (only reliable tag pairs have been included in grammar).
-stats2(adv,Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1.1,1.1,_D,_HC) :- \+ nonfinite(Htag), \+ Htag = 'VVFIN', \+ Htag = 'VAFIN', \+ Htag = 'VMFIN', \+ Htag = 'VVIZU'.
-*/
-
-%als auch: exception to rule below
-stats2(adv,_Htag,als,_SH,_MORPHH,_Dtag,auch,_SD,_MORPHD,1,1,_D,_HC).
 
 %non-verbal adverbs get probability from bigram statistics. attention: bigram statistics are distance 1 and may thus not be useful for long-distance relationships
 stats2(adv,Htag,_FH,SH,_MORPHH,Dtag,FD,SD,_MORPHD,P,NP,D,_HC) :- 
@@ -324,16 +319,12 @@ noun_factor(Tag,NF) :- findall(Freq,occurs('*any*',Tag,Freq),ListA),
 
 
 %subjects.
-stats2(subj,_Htag,_FH,SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,NP,_D,HC-_OG) :-
-	lexic(SH,_,HPos),
+stats2(subj,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,NP,_D,HC-_OG) :-
 	lexic(SD,_,DPos),
- 	LeftPos is HPos-1, 
-	(checkPos(LeftPos,_,'KON',_,_)->PunishKon is 0.2;PunishKon is 1), %punishes subjects occurring just after coordinating conjunction: er kommt und sieht laura.
-% 	RealDist is HPos-DPos,
 	DistMod is 1+((50-DPos)*0.0001),
 	getheadandnormalise(HC,Head,_),
 	npidsamb(Head,MORPHD,Dtag,subj,PLabel),
-	P is PLabel*DistMod*PunishKon, NP is PLabel*DistMod*PunishKon.
+	P is PLabel*DistMod, NP is PLabel*DistMod.
 
 
 %accusative objects.
@@ -355,8 +346,9 @@ stats2(objd,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,NP,_D,HC-_OG) :-
 % 	RealDist is HPos-DPos,
 	DistMod is 1+((50-DPos)*0.00005),
 	getheadandnormalise(HC,Head,_),
+    ((verb(Head,_,_,_,Objd,_,_,_,_,_,_,_,_,_,_,_),Objd > 0)->Max is 0.8;Max is 0.06), %we set max values because objd often competes with gmod (das Ende der Vertreibung kommt)
 	npidsamb(Head,MORPHD,Dtag,objd,PLabel),
-	P is PLabel*DistMod, NP is PLabel*DistMod.
+	P is min(Max,PLabel)*DistMod, NP is min(Max,PLabel)*DistMod.
 
 
 %genitive objects
@@ -604,6 +596,12 @@ distModifier(D,gmod,DISTMOD) :- (D > 0, !,
 				DISTMOD is 0.8-D*0.01)
 				;
 				DISTMOD is 1+D*0.01, !.
+
+
+distModifier(D,cj,DISTMOD) :- (D < 12->DISTMOD is max(0.1,exp((1-D)/5));
+                              DISTMOD is 0.1-D*0.001), !.
+
+
 %catchall
 distModifier(D,_Class,DISTMOD) :- DISTMOD is 1-D*0.01.
 

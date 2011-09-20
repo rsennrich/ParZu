@@ -1719,7 +1719,13 @@ head('VVIZU','KOMPX',l,kom,'VVIZU',[FC,_,_,_,_,UG],_,MF,_,MF) :- verbchunklength
 
 
 %(peter) 'und' ->cj-> 'mark'. special: new morphological information is that of dependent, not that of head
-head('KON',Tag,r,cj,Transtag,[_,_,_,Word,_,_],_,MF,_,MF) :- kon_mapping(Tag,Transtag), \+ member(Word,['Sowohl',sowohl,'so|wohl',weder,'Weder',entweder,'Entweder']).
+head2('KON',Tag,r,cj,Transtag,[_,_,HeadWord,_,_,_,_,_],_,MH,_,MH) :- kon_mapping(Tag,Transtag), Transtag \= 'KON_FINVERB', \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder']).
+
+% in "Er kommt und sieht Laura", disallow Laura as subject, but not in "Er kommt und dann sieht Laura ihn"
+head2('KON',Tag,r,cj,'KON_FINVERB',[_,_,HeadWord,_,_,DepRels,_,_],H-D,MH,_,MH) :- 1 is D-H, kon_mapping(Tag,'KON_FINVERB'), \+ member('->subj->', DepRels), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder']).
+
+head2('KON',Tag,r,cj,'KON_FINVERB',[_,_,HeadWord,_,_,_,_,_],H-D,MH,_,MH) :- D-H > 1, kon_mapping(Tag,'KON_FINVERB'), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder']).
+
 
 
 %allows comma before conjunction.
