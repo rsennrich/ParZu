@@ -5,9 +5,10 @@
 %:- open_null_stream(Null),set_prolog_IO(user_input,user_output,Null).
 
 :- set_prolog_flag(encoding,utf8).
-:- set_stream(user_input, encoding(utf8)).
-:- set_stream(user_output, encoding(utf8)).
+:- set_stream(user_input, encoding(utf8));true.
+:- set_stream(user_output, encoding(utf8));true.
 :- system:prompt(_, '').
+:- use_module(library(lists)).
 
 :- dynamic sentno/1, posno/1, w/6, w/4, lvl/4, completed/2, lemmatisation/1, morphology/1,sentdelim/1.
 

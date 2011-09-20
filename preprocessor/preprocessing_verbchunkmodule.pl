@@ -1,8 +1,8 @@
 % :- dynamic sentno/1, posno/1, w/6, w/4, lvl/4, completed/2.
 
 :- set_prolog_flag(encoding,utf8).
-:- set_stream(user_input, encoding(utf8)).
-:- set_stream(user_output, encoding(utf8)).
+:- set_stream(user_input, encoding(utf8));true.
+:- set_stream(user_output, encoding(utf8));true.
 
 %verbchunking, subclause detection, passive detection
 %==============================================================================

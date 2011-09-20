@@ -2,7 +2,9 @@ ParZu - The Zurich Dependency Parser for German (formerly known as Pro3GresDE)
 =============================================================================
 
 A project of the Computational Linguistics Group at the University of Zurich (http://www.cl.uzh.ch).
+
 Project Homepage: http://github.com/rsennrich/parzu
+
 This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation
 
 ABOUT
@@ -23,7 +25,7 @@ REQUIREMENTS
 This software was developed and tested using
 
 Linux (32 and 64 bit)
-SWI-Prolog 5.6
+SWI-Prolog 5.6 (or YAP 6.2 - check the top of the script `parzu` to switch between the two)
 Python 2.6 (also tested on Python 3.1)
 Perl 5.10
 NLTK 2.0b8 (for sentence splitting)
@@ -54,7 +56,7 @@ INSTALLATION
     The files advstats* freq* konjstats* ppstats* and vstats* are created in a temporary directory - move them into the `statistics/` folder to make the system use them.
     With evaluation/create_devsets.py , you can create a development from the same Tüba-D/Z file, and perform quality/regression tests with python evaluation/do_evaluation.py.
 
-5. (OPTIONAL): to speed up the parser initialization, run `statistics/compile.sh`. Repeat this step if you modify the statistics files.
+5. (OPTIONAL): to speed up the parser initialization (with SWI-Prolog), run `statistics/compile.sh`. Repeat this step if you modify the statistics files.
 
 EXAMPLE COMMANDS AND USAGE INFORMATION
 --------------------------------------
@@ -133,6 +135,7 @@ TECHNICAL ISSUES
     word [tab] tag [newline]
     
 - What character encoding does the parser use?
+
   ParZu uses UTF-8 encoding.
 
 LICENSE
@@ -141,12 +144,13 @@ LICENSE
 ParZu is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License (see LICENSE).
 
 The files in `postprocessing/DepSVG` are from Kaarel Kaljurand's DepSVG library and are licensed under the LGPL (https://github.com/Kaljurand/DepSVG)
+
 `preprocessing/tokenizer.perl` and `preprocessing/nonbreaking_prefix.de` are from the Moses toolkit and licensed under the LGPL (http://www.statmt.org/moses/)
 
 PUBLICATIONS
 ------------
 
-The parser is described in 
+The parser is described in:
 
 Rico Sennrich, Gerold Schneider, Martin Volk and Martin Warin (2009): 
    A New Hybrid Dependency Parser for German. In: Proceedings of GSCL Conference, Potsdam.

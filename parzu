@@ -21,6 +21,15 @@ else:
 outputformats = ["oldconll","conll","moses","prolog"]
 
 
+#if you want to use yap (version >= 6.2), change this to 'yap'
+prolog = 'swipl'
+#prolog = 'yap'
+
+#yap and swipl have different command line arguments: this maps to the correct one
+prolog_load = {'yap':'-l',
+         'swipl':'-s'}
+         
+
 ########################
 #Command line argument parser
 
@@ -305,7 +314,7 @@ def preprocess(instream,outstream,options):
     tagfile = open(options['tagfilepath'],'r')
 
     #integrate morph. information and do verb complex analysis
-    preprocessing =  Popen(['swipl', '-q', '-s', os.path.join(sys.path[0],'preprocessor','preprocessing.pl'), '-g', 'retractall(lemmatisation(_)),retractall(morphology(_)),assert(lemmatisation('+ options['morphology'] +')),assert(morphology('+ options['morphology'] +")),retract(sentdelim(_)),assert(sentdelim('"+ options['sentdelim'] +"')),start('" + options['morphpath'] + "'),halt."], stdout=outstream, stdin=tagfile, stderr=options['senderror'])
+    preprocessing =  Popen([prolog, '-q', prolog_load[prolog], os.path.join(sys.path[0],'preprocessor','preprocessing.pl'), '-g', 'retractall(lemmatisation(_)),retractall(morphology(_)),assert(lemmatisation('+ options['morphology'] +')),assert(morphology('+ options['morphology'] +")),retract(sentdelim(_)),assert(sentdelim('"+ options['sentdelim'] +"')),start('" + options['morphpath'] + "'),halt."], stdout=outstream, stdin=tagfile, stderr=options['senderror'])
 
     return preprocessing
 
@@ -323,7 +332,7 @@ def preprocess2(instream,outstream,options):
     treetagger2prolog = Popen(["python", os.path.join(sys.path[0],"preprocessor","treetagger2prolog.py"), '/dev/null',options['sentdelim']], stdin=instream, stdout=PIPE, stderr=options['senderror'])
 
     #integrate morph. information and do verb complex analysis
-    preprocessing =  Popen(['swipl', '-q', '-s', os.path.join(sys.path[0],'preprocessor','preprocessing.pl'), '-g', 'retractall(lemmatisation(_)),retractall(morphology(_)),assert(lemmatisation('+ options['morphology'] +')),assert(morphology('+ options['morphology'] +")),retract(sentdelim(_)),assert(sentdelim('"+ options['sentdelim'] +"')),start('" + options['morphpath'] + "'),halt."], stdout=outstream, stdin=treetagger2prolog.stdout, stderr=options['senderror'])
+    preprocessing =  Popen([prolog, '-q', prolog_load[prolog], os.path.join(sys.path[0],'preprocessor','preprocessing.pl'), '-g', 'retractall(lemmatisation(_)),retractall(morphology(_)),assert(lemmatisation('+ options['morphology'] +')),assert(morphology('+ options['morphology'] +")),retract(sentdelim(_)),assert(sentdelim('"+ options['sentdelim'] +"')),start('" + options['morphpath'] + "'),halt."], stdout=outstream, stdin=treetagger2prolog.stdout, stderr=options['senderror'])
 
     return preprocessing
     
@@ -345,13 +354,13 @@ def parse(instream,outstream,options):
         outputformat = options['outputformat']
     
     #main parsing step
-    args = 'retract(outputformat(_)),assert(outputformat('+ outputformat +")),retract(sentdelim(_)),assert(sentdelim('"+ options['sentdelim'] +"')),retract(returnsentdelim(_)),assert(returnsentdelim("+ options['returnsentdelim'] +')),retract(nbestmode(_)),assert(nbestmode('+ str(options['nbestmode']) +')),retractall(morphology(_)),assert(morphology('+ morphology_mapping[str(options['morphology'])] +')),retractall(lemmatisation(_)),assert(lemmatisation('+ morphology_mapping[str(options['morphology'])] +')),start.'
+    args = 'retract(outputformat(_)),assert(outputformat('+ outputformat +")),retract(sentdelim(_)),assert(sentdelim('"+ options['sentdelim'] +"')),retract(returnsentdelim(_)),assert(returnsentdelim("+ options['returnsentdelim'] +')),retract(nbestmode(_)),assert(nbestmode('+ str(options['nbestmode']) +')),retractall(morphology(_)),assert(morphology('+ morphology_mapping[str(options['morphology'])] +')),retractall(lemmatisation(_)),assert(lemmatisation('+ morphology_mapping[str(options['morphology'])] +')),start,halt.'
     
     if enable_multiprocessing and options['num_processes'] > 1:
-        parsing = Popen(["python", os.path.join(sys.path[0],"core","multiprocessed_parsing.py"), str(options['num_processes']), args, options['sentdelim'], os.path.join(sys.path[0],'core')], stdin=instream,stdout=outstream,stderr=options['senderror'])
+        parsing = Popen(["python", os.path.join(sys.path[0],"core","multiprocessed_parsing.py"), str(options['num_processes']), args, options['sentdelim'], os.path.join(sys.path[0],'core'),prolog, prolog_load[prolog]], stdin=instream,stdout=outstream,stderr=options['senderror'])
 
     else:
-        parsing = Popen(['swipl', '-G128M', '-L128M', '-q', '-s', 'ParZu-parser.pl', '-t', args], cwd=os.path.join(sys.path[0],'core'), stdin=instream, stdout=outstream, stderr=options['senderror'])
+        parsing = Popen([prolog, '-q', '-G128M', '-L128M', prolog_load[prolog], 'ParZu-parser.pl', '-g', args], cwd=os.path.join(sys.path[0],'core'), stdin=instream, stdout=outstream, stderr=options['senderror'])
         
     return parsing
 

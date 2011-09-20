@@ -1,12 +1,11 @@
 :- set_prolog_flag(encoding,utf8).
-:- set_stream(user_input, encoding(utf8)).
-:- set_stream(user_output, encoding(utf8)).
+:- set_stream(user_input, encoding(utf8));true.
+:- set_stream(user_output, encoding(utf8));true.
+:- system:prompt(_, '').
+:- use_module(library(lists)).
 
 
 :- use_module('map_gertwol2stts').
-% :- use_module('cl_lib/map_gertwol2sttstiger').
-% :- use_module('cl_lib/cmdline',[argv_parse/0,usage/0]).
-% :- use_module('cl_lib/list_pred').
 :- dynamic option/1.
 
 

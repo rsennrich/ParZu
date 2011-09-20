@@ -1,8 +1,9 @@
 :- set_prolog_flag(encoding,utf8).
-:- set_stream(user_input, encoding(utf8)).
-:- set_stream(user_output, encoding(utf8)).
+:- set_stream(user_input, encoding(utf8));true.
+:- set_stream(user_output, encoding(utf8));true.
 :- system:prompt(_, '').
 :- style_check(-discontiguous).
+:- use_module(library(lists)).
 
 save_me :- qsave_program('6549_SGML.po',[local=131072,global=131072,trail=65536,argument=65536]).
 
@@ -31,9 +32,9 @@ appos_expand(no). %% expand appos
 
 :- dynamic chart/11, min_len/1, inccount/1, inccount/2, lastpos/1, tops_chart/4, statschart/8, level/1, tried/2, perlevel/1, graphical/1, sentno/1, output/7, outputformat/1,sentdelim/1,returnsentdelim/1,nbestmode/1, morphology/1, lemmatisation/1.
 
-:- index(chart(1,1,1,0,0,0,0,0,0,1,0)). %% only has an effect in SWI
-:- index(head(1,1,1,0,0,0,0,0,0,0)).
-:- index(head2(1,1,1,0,0,0,0,0,0,0)).
+:- index(chart(1,1,1,0,0,0,0,0,0,1,0));true. %% only has an effect in SWI
+:- index(head(1,1,1,0,0,0,0,0,0,0));true.
+:- index(head2(1,1,1,0,0,0,0,0,0,0));true.
 
 :- ensure_loaded('tree_textual.pl').
 :- assert(outputformat(raw)).
@@ -216,9 +217,9 @@ nextlevel(L,MAX) :-
      Gto is Ffrom-1,
      (LA is L-1 -> true; LB is L-1),
      chart( GID,Gfrom,Gto,_,[GPos,GScore,GChunk,_GLen],G,Gtag,_GType,FuncG,LB,MORPHG),
-     bagof(_,sparse(FID,FPos,Ffrom,Fto,F,FChunk,FScore,Ftag,FuncF, MORPHF,
+     sparse(FID,FPos,Ffrom,Fto,F,FChunk,FScore,Ftag,FuncF, MORPHF,
                     GID,GPos,Gfrom,Gto,G,GChunk,GScore,Gtag,FuncG, MORPHG,
-		    L),_)
+		    L)
     )),
     write('End of Level '), write(L), write(' reduced items X: '), perlevel(X), lastpos(LastPos), !, XFact is (X/LastPos), write(X), write('XChunks :'), write(XFact), nl,
     %% has anything managed to reduce at this level? IF NOT, END
@@ -410,7 +411,7 @@ go_textual :-
 collect_sents(end-of-file).
 collect_sents(no-end) :-
     garbage_collect,
-    trim_stacks,
+    (trim_stacks->true;true),
     retractall(statschart(_,_,_,_,_,_,_,_)),
     retractall(inccount(_,_)),
     collect_sent([],Sent,EOF,1),

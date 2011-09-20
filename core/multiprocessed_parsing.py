@@ -123,8 +123,12 @@ if __name__ == "__main__":
         num_parsers = 2
         
     args = sys.argv[2]
-    runCMD = ['swipl', '-G128M', '-L128M', '-q', '-s', 'ParZu-parser.pl', '-t', args]
     sentdelim = sys.argv[3]
     path = sys.argv[4]
+    prolog = sys.argv[5]
+    prolog_load = sys.argv[6]
+    
+    runCMD = [prolog, '-q', '-G128M', '-L128M', prolog_load, 'ParZu-parser.pl', '-t', args]
+
 
     main(init_pipe.stdout,sys.stdout,num_parsers,sentdelim,runCMD,path)

@@ -2097,7 +2097,7 @@ head2(Tag,'APP',r,par,Tag,[_,_,_,_,_,DepRels,_,DID],F-_,HM,_,HM) :- getRange(DID
 head2(Tag,'PPNEB',r,par,Tag,[_,_,_,_,_,_,_,DID],F-_,HM,_,HM) :- getRange(DID,From-_), lastlexical(From,F).
 
 %expressions in parentheses (like this one). pretty complicated rule, since we do not want all brackets (we exclude quotation marks, for instance)
-head2(Tag,Tag2,r,par,Tag,[_,_,_,_,_,[StartBracket,'<-bracket<-'|DepRels],_,DID],F-_,HM,_,HM) :- \+ member(Tag2,['NN','NE','FM']), getRange(DID,From-_), lastlexical(From,F), append(_,['->bracket->',EndBracket],DepRels), StartBracket =.. [_,[X]], EndBracket =.. [_,[Y]], splittag(X,Word,'$('), splittag(Y,Word2,'$('), leftbracket(Word,Class),rightbracket(Word2,Class), Class > 10.
+head2(Tag,Tag2,r,par,Tag,[_,_,_,_,_,[StartBracket,'<-bracket<-'|DepRels],_,DID],F-_,HM,_,HM) :- \+ member(Tag2,['NN','NE','FM']), getRange(DID,From-_), lastlexical(From,F), append(_,['->bracket->',EndBracket],DepRels), StartBracket =.. [_,[X]], EndBracket =.. [_,[Y]], splittag(X,Word,'$('), splittag(Y,Word2,'$('), leftbracket(Word,Class),rightbracket(Word2,Class), name(Class,Chars),name(Int,Chars), Int > 10.
 
 %don't attach parenthetical expressions to commas or parentheses, but to the last word before that.
 lastlexical(From,Last) :- LeftPos is From - 1,
@@ -2284,53 +2284,53 @@ head2('PP','PIS',l,grad,'PP',[_,_,_,_,HRels,DRels,_,_],HPos-DPos,HMorph,_,HMorph
 
 
 %different opening and closing brackets
-head2(Tag,'$(',l,bracket,NewTag,[_,_,_,Lex,_,_,_,_],_,HM,_,HM) :- leftbracket(Lex,Class), concat('BRACKET',Class,TempTag), concat(TempTag,Tag,NewTag).
+head2(Tag,'$(',l,bracket,NewTag,[_,_,_,Lex,_,_,_,_],_,HM,_,HM) :- leftbracket(Lex,Class), atom_concat('BRACKET',Class,TempTag), atom_concat(TempTag,Tag,NewTag).
 
-head2(OldTag,'$(',r,bracket,Tag,[_,_,_,Lex,_,_,_,_],_,HM,_,HM) :- rightbracket(Lex,Class), concat('BRACKET',Class,TempTag), concat(TempTag,Tag,OldTag).
+head2(OldTag,'$(',r,bracket,Tag,[_,_,_,Lex,_,_,_,_],_,HM,_,HM) :- rightbracket(Lex,Class), atom_concat('BRACKET',Class,TempTag), atom_concat(TempTag,Tag,OldTag).
 
-head2(Tag,'$(',l,bracket,NewTag,[_,_,_,Lex,_,_,_,_],_,HM,_,HM) :- concat('BRACKET2',Tag,NewTag), \+ leftbracket(Lex,_), \+ rightbracket(Lex,_).
+head2(Tag,'$(',l,bracket,NewTag,[_,_,_,Lex,_,_,_,_],_,HM,_,HM) :- atom_concat('BRACKET2',Tag,NewTag), \+ leftbracket(Lex,_), \+ rightbracket(Lex,_).
 
-head2(OldTag,'$(',r,bracket,Tag,[_,_,_,Lex,_,_,_,_],_,HM,_,HM) :- concat('BRACKET2',Tag,OldTag), \+ leftbracket(Lex,_), \+ rightbracket(Lex,_).
+head2(OldTag,'$(',r,bracket,Tag,[_,_,_,Lex,_,_,_,_],_,HM,_,HM) :- atom_concat('BRACKET2',Tag,OldTag), \+ leftbracket(Lex,_), \+ rightbracket(Lex,_).
 
 
 
-leftbracket('«',1).
-leftbracket('»',2).
-leftbracket('„',3).
-leftbracket('(',11).
-leftbracket('[',12).
-leftbracket('{',13).
+leftbracket('«','1').
+leftbracket('»','2').
+leftbracket('„','3').
+leftbracket('(','11').
+leftbracket('[','12').
+leftbracket('{','13').
 
 %minux signs, hypens and dashes
 %for syntactic analysis, we don't differentiate between them, since their use may be inconsistent
-leftbracket('-',21).
-leftbracket('‐​',21).
-leftbracket('‑',21).
-leftbracket('‒',21).
-leftbracket('–',21).
-leftbracket('—',21).
-leftbracket('―',21).
+leftbracket('-','21').
+leftbracket('‐​','21').
+leftbracket('‑','21').
+leftbracket('‒','21').
+leftbracket('–','21').
+leftbracket('—','21').
+leftbracket('―','21').
 
-rightbracket('»',1).
-rightbracket('«',2).
-rightbracket('“',3).
-rightbracket(')',11).
-rightbracket(']',12).
-rightbracket('}',13).
+rightbracket('»','1').
+rightbracket('«','2').
+rightbracket('“','3').
+rightbracket(')','11').
+rightbracket(']','12').
+rightbracket('}','13').
 
-rightbracket('-',21).
-rightbracket('‐​',21).
-rightbracket('‑',21).
-rightbracket('‒',21).
-rightbracket('–',21).
-rightbracket('—',21).
-rightbracket('―',21).
+rightbracket('-','21').
+rightbracket('‐​','21').
+rightbracket('‑','21').
+rightbracket('‒','21').
+rightbracket('–','21').
+rightbracket('—','21').
+rightbracket('―','21').
 
 
 %if hyphen/dash is at a clause boundary, don't require them to be paired.
-head2('KOUI','$(',l,badbracket,'KOUI',[_,_,_,Lex,_,_,_,_],F-G,HM,_,HM) :- 1 is F-G, leftbracket(Lex,21).
-head2('KOUS','$(',l,badbracket,'KOUS',[_,_,_,Lex,_,_,_,_],F-G,HM,_,HM) :- 1 is F-G, leftbracket(Lex,21).
-head2('KON','$(',l,badbracket,'KON',[_,_,_,Lex,_,_,_,_],F-G,HM,_,HM) :- 1 is F-G, leftbracket(Lex,21).
+head2('KOUI','$(',l,badbracket,'KOUI',[_,_,_,Lex,_,_,_,_],F-G,HM,_,HM) :- 1 is F-G, leftbracket(Lex,'21').
+head2('KOUS','$(',l,badbracket,'KOUS',[_,_,_,Lex,_,_,_,_],F-G,HM,_,HM) :- 1 is F-G, leftbracket(Lex,'21').
+head2('KON','$(',l,badbracket,'KON',[_,_,_,Lex,_,_,_,_],F-G,HM,_,HM) :- 1 is F-G, leftbracket(Lex,'21').
 
 head2(Tag,'$(',r,badbracket,Tag,[_,_,_,Lex,_,_,_,_],F-G,HM,_,HM) :- -1 is F-G, member(Lex,['"', '\'']).
 
@@ -2447,7 +2447,7 @@ check_agreement(_,_,_,_,_) :- morphology(off), !.
 
 check_agreement(List1,Tag1,List2,Tag2,ListOut) :- \+ var(List1), \+ var(List2),
 	findall(SingleList1, (member(SingleList1,List1), member(SingleList2,List2),unify_morph(SingleList1,Tag1,SingleList2,Tag2)),ListTemp), 
-	list_to_set(ListTemp,ListOut), !, \+ ListTemp = [].
+	sort(ListTemp,ListOut), !, \+ ListTemp = [].
 
 %if first arg is not instantiated, use the instantiated list and convert it.
 check_agreement(_,Tag,List2,Tag2,OutList) :- \+ var(List2), !, convertMorphList(Tag2,List2,Tag,OutList).
@@ -2518,7 +2518,7 @@ unify_case([E],_,_,_,[E]) :- var(E), !.
 %unify_case(?List1,+Tag1,?List2,+Tag2,?ListOut).
 unify_case(List1,Tag1,List2,Tag2,ListOut) :- morphology(MorphType),
 	findall(Morph1, (member(Morph1,List1), get_case(Morph1,Tag1,Case,MorphType),member(Morph2,List2), get_case(Morph2,Tag2,Case,MorphType)), ListTemp), 
-	list_to_set(ListTemp,ListOut), !, \+ ListTemp = [].
+	sort(ListTemp,ListOut), !, \+ ListTemp = [].
 
 
 unify_number(_,_,_,_,_) :- morphology(off), !.
@@ -2530,7 +2530,7 @@ unify_number([E],_,_,_,[E]) :- var(E), !.
 %unify_number(?List1,+Tag1,?List2,+Tag2,?ListOut).
 unify_number(List1,Tag1,List2,Tag2,ListOut) :- morphology(MorphType),
 	findall(Morph1, (member(Morph1,List1), get_number(Morph1,Tag1,Case,MorphType),member(Morph2,List2), get_number(Morph2,Tag2,Case,MorphType)), ListTemp), 
-	list_to_set(ListTemp,ListOut), !, \+ ListTemp = [].
+	sort(ListTemp,ListOut), !, \+ ListTemp = [].
 
 
 
@@ -2544,7 +2544,7 @@ unify_gender([E],_,_,_,[E]) :- var(E), !.
 %unify_gender(?List1,+Tag1,?List2,+Tag2,?ListOut).
 unify_gender(List1,Tag1,List2,Tag2,ListOut) :- morphology(MorphType),
 	findall(Morph1, (member(Morph1,List1), get_gender(Morph1,Tag1,Case,MorphType),member(Morph2,List2), get_gender(Morph2,Tag2,Case,MorphType)), ListTemp), 
-	list_to_set(ListTemp,ListOut), !, \+ ListTemp = [].
+	sort(ListTemp,ListOut), !, \+ ListTemp = [].
 
 
 

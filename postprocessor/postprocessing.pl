@@ -4,9 +4,10 @@
 %   deprecated; functionality is now integrated into parser through postprocessing_module.py
 
 :- set_prolog_flag(encoding,utf8).
-:- set_stream(user_input, encoding(utf8)).
-:- set_stream(user_output, encoding(utf8)).
+:- set_stream(user_input, encoding(utf8));true.
+:- set_stream(user_output, encoding(utf8));true.
 :- system:prompt(_, '').
+:- use_module(library(lists)).
 
 :- dynamic relationIn/5,relationOut/5,sencounter/1, sent/2, analyses/6.
 

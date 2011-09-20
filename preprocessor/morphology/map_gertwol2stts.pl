@@ -51,8 +51,8 @@ option()
 % :- use_module(feedback).
 
 :- set_prolog_flag(encoding,utf8).
-:- set_stream(user_input, encoding(utf8)).
-:- set_stream(user_output, encoding(utf8)).
+:- set_stream(user_input, encoding(utf8));true.
+:- set_stream(user_output, encoding(utf8));true.
 
 :- dynamic option/1.
  %option(debug).
