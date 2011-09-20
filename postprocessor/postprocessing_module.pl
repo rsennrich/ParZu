@@ -113,7 +113,7 @@ transformMorph(_,Morph,Morph) :- !.
 conll_morph(_,Start,Start,In,Out) :- atom_concat(Out,'|',In), !.
 
 conll_morph(List,Start,End,In,Out) :- findall(Val,(member(List2,List),nth1(Start,List2,Val)),Listout), 
-        (member(Var,Listout),var(Var)->Val='_';(list_to_set(Listout,Set),(length(Set,1)->Set = [Val];Val='_'))),
+        (member(Var,Listout),var(Var)->Val='_';(sort(Listout,Set),(length(Set,1)->Set = [Val];Val='_'))),
         atom_concat(In,Val,OutTemp),
         atom_concat(OutTemp,'|',OutTemp2),
         Next is Start + 1,
