@@ -128,7 +128,7 @@ if __name__ == "__main__":
     prolog = sys.argv[5]
     prolog_load = sys.argv[6]
     
-    runCMD = [prolog, '-q', '-G128M', '-L128M', prolog_load, 'ParZu-parser.pl', '-t', args]
+    runCMD = [prolog, '-q', '-G128M', '-L128M', prolog_load, 'ParZu-parser.pl', '-g', args]
 
 
     main(init_pipe.stdout,sys.stdout,num_parsers,sentdelim,runCMD,path)
