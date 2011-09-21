@@ -436,6 +436,7 @@ collect_sents(no-end) :-
     !, %% no backtracking into parser
     pathfinder,
     write('%%END_OF_SENTENCE'),nl,nl,
+    flush_output,
     %% ((graphical(true),\+ object(@frame)) -> !, abort ;
     !, collect_sents(EOF). % cut, this sentence is done
 
