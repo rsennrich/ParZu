@@ -1,7 +1,7 @@
 %	eval.pl	: takes a gold standard and the result of the parsing and evaluates the latter (true positives, false positives, false negatives, precision, recall). more precise than eval.pl (because it takes word positions into account).
 
 :- set_prolog_flag(encoding,utf8).
-- set_stream(user_input, encoding(utf8));true.
+:- set_stream(user_input, encoding(utf8));true.
 :- set_stream(user_output, encoding(utf8));true.
 :- system:prompt(_, '').
 :- use_module(library(lists)).
