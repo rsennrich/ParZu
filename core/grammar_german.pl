@@ -2661,49 +2661,55 @@ getChartInfo(Head,Pos,Word,Lemma,Tag,Morph) :- chart(Pos,Pos,Pos,[[Lemma,Tag,_]]
 
 
 %start unification from the top:
-morph_cleanup2(Rel,HMorph,HTag,DMorph,DTag,HPos,DMorphOut) :- 
+morph_cleanup2(Rel,HMorph,HTag,DMorph,DTag,DPos,HPos,DMorphOut) :- 
               output(HPos,_,_,HTag,HRel,HHPos,HMorph),
               output(HHPos,_,_,HHTag,_,HHHPos,HHMorph), !,
-              morph_cleanup2(HRel,HHMorph,HHTag,HMorph,HTag,HHHPos,HMorphOut),
-              morph_cleanup(Rel,HMorphOut,HTag,DMorph,DTag,HPos,DMorphOut).
+              morph_cleanup2(HRel,HHMorph,HHTag,HMorph,HTag,HHPos,HHHPos,HMorphOut),
+              morph_cleanup(Rel,HMorphOut,HTag,DMorph,DTag,DPos,HPos,DMorphOut).
 
-morph_cleanup2(Rel,HMorph,HTag,DMorph,DTag,HPos,DMorphOut) :- morph_cleanup(Rel,HMorph,HTag,DMorph,DTag,HPos,DMorphOut), !.
+morph_cleanup2(Rel,HMorph,HTag,DMorph,DTag,DPos,HPos,DMorphOut) :- morph_cleanup(Rel,HMorph,HTag,DMorph,DTag,DPos,HPos,DMorphOut), !.
 
 
 %fixes some ugly output because of the bracket rules in the grammar.
-morph_cleanup(Class,HMorph,HTag,DMorph,DTag,HPos,DMorphOut) :- nth1(2,HMorph,X), atomic(X), HMorph = [NewList|_], !, morph_cleanup(Class,NewList,HTag,DMorph,DTag,HPos,DMorphOut). 
-morph_cleanup(Class,HMorph,HTag,DMorph,DTag,HPos,DMorphOut) :- nth1(2,DMorph,X), atomic(X), DMorph = [NewList|_], !, morph_cleanup(Class,HMorph,HTag,NewList,DTag,HPos,DMorphOut).
+morph_cleanup(Class,HMorph,HTag,DMorph,DTag,DPos,HPos,DMorphOut) :- nth1(2,HMorph,X), atomic(X), HMorph = [NewList|_], !, morph_cleanup(Class,NewList,HTag,DMorph,DTag,DPos,HPos,DMorphOut). 
+morph_cleanup(Class,HMorph,HTag,DMorph,DTag,DPos,HPos,DMorphOut) :- nth1(2,DMorph,X), atomic(X), DMorph = [NewList|_], !, morph_cleanup(Class,HMorph,HTag,NewList,DTag,DPos,HPos,DMorphOut).
 
 
-morph_cleanup(root,_,_,DMorph,_,_,DMorph) :- !.
+% morph_cleanup(root,_,_,DMorph,_,_,DMorph) :- !.
 
 
 %don't print morphological analyses that are only used internally.
-morph_cleanup(kon,_,_,_,'KON',_,[_]) :- !.
+morph_cleanup(kon,_,_,_,'KON',_,_,[_]) :- !.
 
 %Some grammatical functions are bound to a specific case. Restrict output morphology to syntactically valid analyses.
-morph_cleanup(subj,HMorph,HTag,DMorph,DTag,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Nom']],'APPR',DMorphTemp), (unify_number(DMorphTemp,DTag,HMorph,HTag,DMorphOut);DMorphOut=DMorphTemp), !.
-morph_cleanup(pred,_,_,DMorph,DTag,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Nom']],'APPR',DMorphOut), !.
-morph_cleanup(obja,_,_,DMorph,DTag,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Akk']],'APPR',DMorphOut), !.
-morph_cleanup(obja2,_,_,DMorph,DTag,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Akk']],'APPR',DMorphOut), !.
-morph_cleanup(grad,_,_,DMorph,DTag,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Akk']],'APPR',DMorphOut), !.
-morph_cleanup(zeit,_,_,DMorph,DTag,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Akk']],'APPR',DMorphOut), !.
-morph_cleanup(objd,_,_,DMorph,DTag,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Dat']],'APPR',DMorphOut), !.
-morph_cleanup(objg,_,_,DMorph,DTag,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Gen']],'APPR',DMorphOut), !.
-morph_cleanup(gmod,_,_,DMorph,DTag,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Gen']],'APPR',DMorphOut), !.
+morph_cleanup(subj,HMorph,HTag,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Nom']],'APPR',DMorphTemp), (unify_number(DMorphTemp,DTag,HMorph,HTag,DMorphOut);DMorphOut=DMorphTemp), !.
+morph_cleanup(pred,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Nom']],'APPR',DMorphOut), !.
+morph_cleanup(obja,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Akk']],'APPR',DMorphOut), !.
+morph_cleanup(obja2,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Akk']],'APPR',DMorphOut), !.
+morph_cleanup(grad,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Akk']],'APPR',DMorphOut), !.
+morph_cleanup(zeit,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Akk']],'APPR',DMorphOut), !.
+morph_cleanup(objd,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Dat']],'APPR',DMorphOut), !.
+morph_cleanup(objg,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Gen']],'APPR',DMorphOut), !.
+morph_cleanup(gmod,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Gen']],'APPR',DMorphOut), !.
 
 %Agreement is checked in grammar, but result is only stored for head. Produce output for dependent here.
-morph_cleanup(attr,HMorph,HTag,DMorph,DTag,_,DMorphOut) :- check_agreement(DMorph,DTag,HMorph,HTag,DMorphOut), !.
-morph_cleanup(det,HMorph,HTag,DMorph,DTag,_,DMorphOut) :- check_agreement(DMorph,DTag,HMorph,HTag,DMorphOut), !.
-morph_cleanup(pn,HMorph,HTag,DMorph,DTag,_,DMorphOut) :- unify_case(DMorph,DTag,HMorph,HTag,DMorphOut), !.
-morph_cleanup(app,HMorph,HTag,DMorph,DTag,_,DMorphOut) :- unify_case(DMorph,DTag,HMorph,HTag,DMorphOut), !.
-morph_cleanup(kon,HMorph,HTag,DMorph,DTag,_,DMorphOut) :- unify_case(DMorph,DTag,HMorph,HTag,DMorphOut), !.
+morph_cleanup(attr,HMorph,HTag,DMorph,DTag,_,_,DMorphOut) :- check_agreement(DMorph,DTag,HMorph,HTag,DMorphOut), !.
+morph_cleanup(det,HMorph,HTag,DMorph,DTag,_,_,DMorphOut) :- check_agreement(DMorph,DTag,HMorph,HTag,DMorphOut), !.
+morph_cleanup(pn,HMorph,HTag,DMorph,DTag,_,_,DMorphOut) :- unify_case(DMorph,DTag,HMorph,HTag,DMorphOut), !.
+morph_cleanup(app,HMorph,HTag,DMorph,DTag,_,_,DMorphOut) :- unify_case(DMorph,DTag,HMorph,HTag,DMorphOut), !.
+morph_cleanup(kon,HMorph,HTag,DMorph,DTag,_,_,DMorphOut) :- unify_case(DMorph,DTag,HMorph,HTag,DMorphOut), !.
 
 %for the latest member in a coordinative chain, unification with the head doesn't work. Find first member of the chain instead.
-morph_cleanup(cj,_,_,DMorph,DTag,HPos,DMorphOut) :- findkonchainhead(HPos,HMorph,HTag), unify_case(DMorph,DTag,HMorph,HTag,DMorphOut), !.
+morph_cleanup(cj,_,_,DMorph,DTag,_,HPos,DMorphOut) :- findkonchainhead(HPos,HMorph,HTag), unify_case(DMorph,DTag,HMorph,HTag,DMorphOut), !.
+
+
+morph_cleanup(_,_,HTag,HMorph,'VAFIN',HPos,_,HMorphOut) :- output(_,_,_,DTag,subj,HPos,DMorph), check_agreement(HMorph,HTag,DMorph,DTag,HMorphOut), !.
+morph_cleanup(_,_,HTag,HMorph,'VMFIN',HPos,_,HMorphOut) :- output(_,_,_,DTag,subj,HPos,DMorph), check_agreement(HMorph,HTag,DMorph,DTag,HMorphOut), !.
+morph_cleanup(_,_,HTag,HMorph,'VVFIN',HPos,_,HMorphOut) :- output(_,_,_,DTag,subj,HPos,DMorph), check_agreement(HMorph,HTag,DMorph,DTag,HMorphOut), !.
+
 
 %catchall
-morph_cleanup(_,_,_,DMorph,_,_,DMorph) :- !.
+morph_cleanup(_,_,_,DMorph,_,_,_,DMorph) :- !.
 
 
 %for the latest member in a coordinative chain, unification with the head doesn't work. Find first member of the chain instead.

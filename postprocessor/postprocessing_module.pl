@@ -10,7 +10,7 @@ postprocess(_,raw) :- retractall(output(_,_,_,_,_,_,_)), !.
 postprocess(Pos,Outputformat) :-
              (output(Pos,Word,Lemma,Tag,Rel,HeadPos,Morph)->true;(chart(Pos,Pos,Pos,[[Lemma,Tag,_]],_,_,_,_,_,_,[Word|Morph]),Rel=root,HeadPos=0,assert(output(Pos,Word,Lemma,Tag,Rel,HeadPos,Morph)))),
              ((output(HeadPos,_,_,HTag,_,_,HMorph)->
-             morph_cleanup2(Rel,HMorph,HTag,Morph,Tag,HeadPos,Morph2));morph_cleanup2(root,_,_,Morph,Tag,_,Morph2)),
+             morph_cleanup2(Rel,HMorph,HTag,Morph,Tag,Pos,HeadPos,Morph2));morph_cleanup2(root,_,_,Morph,Tag,Pos,0,Morph2)),
              retract(output(Pos,Word,Lemma,Tag,Rel,HeadPos,Morph)),
              assert(output(Pos,Word,Lemma,Tag,Rel,HeadPos,Morph2)),
              fixAttachment(Rel,Pos,HeadPos,HeadPos2),
