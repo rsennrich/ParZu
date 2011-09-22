@@ -2284,11 +2284,11 @@ head2('PP','PIS',l,grad,'PP',[_,_,_,_,HRels,DRels,_,_],HPos-DPos,HMorph,_,HMorph
 
 
 %different opening and closing brackets
-head2(Tag,'$(',l,bracket,NewTag,[_,_,_,Lex,_,_,_,_],_,HM,_,HM) :- leftbracket(Lex,Class), atom_concat('BRACKET',Class,TempTag), atom_concat(TempTag,Tag,NewTag).
+head2(Tag,'$(',l,bracket,NewTag,[_,_,_,Lex,_,_,HID,_],_,HM,_,HM) :- leftbracket(Lex,Class), bracketToRight(HID,Lex2), rightbracket(Lex2,Class), atom_concat('BRACKET',Class,TempTag), atom_concat(TempTag,Tag,NewTag).
 
 head2(OldTag,'$(',r,bracket,Tag,[_,_,_,Lex,_,_,_,_],_,HM,_,HM) :- rightbracket(Lex,Class), atom_concat('BRACKET',Class,TempTag), atom_concat(TempTag,Tag,OldTag).
 
-head2(Tag,'$(',l,bracket,NewTag,[_,_,_,Lex,_,_,_,_],_,HM,_,HM) :- atom_concat('BRACKET2',Tag,NewTag), \+ leftbracket(Lex,_), \+ rightbracket(Lex,_).
+head2(Tag,'$(',l,bracket,NewTag,[_,_,_,Lex,_,_,HID,_],_,HM,_,HM) :- bracketToRight(HID,Lex), atom_concat('BRACKET2',Tag,NewTag), \+ leftbracket(Lex,_), \+ rightbracket(Lex,_).
 
 head2(OldTag,'$(',r,bracket,Tag,[_,_,_,Lex,_,_,_,_],_,HM,_,HM) :- atom_concat('BRACKET2',Tag,OldTag), \+ leftbracket(Lex,_), \+ rightbracket(Lex,_).
 
@@ -2723,23 +2723,21 @@ findkonchainhead(HPos,HMorph,HTag) :- output(HPos,_,_,HTag,_,_,HMorph), (var(Hta
 
 %in Verbzweitstellung, only one complement (even adjunct?) can precede the finite verb.
 restrict_vorfeld(Chunk,Dependents) :- member('mainclause',Chunk), 
-				!, %cut the catchall
-				\+ member('<-subj<-', Dependents),
-				\+ member('<-obja<-', Dependents),
-				\+ member('<-objd<-', Dependents),
-				\+ member('<-objg<-', Dependents),
-				\+ member('<-pred<-', Dependents),
-				\+ member('<-objp<-', Dependents),
-% 				\+ member('<-objc<-', Dependents),
-% 				\+ member('<-neb<-', Dependents),
-				\+ member('<-obji<-', Dependents),
-				\+ member('<-pp<-', Dependents),
-				\+ member('<-subjc<-', Dependents),
-				\+ member('<-s<-', Dependents),
-				\+ member('<-zeit<-',Dependents),
-				\+ member('<-kom<-',Dependents),
-				\+ member('<-explsubj<-',Dependents),
-				\+ member('<-explobja<-',Dependents).
+                !, %cut the catchall
+                intersection(Dependents,['<-subj<-',
+                                         '<-obja<-',
+                                         '<-objd<-',
+                                         '<-objg<-',
+                                         '<-pred<-',
+                                         '<-objp<-',
+                                         '<-obji<-',
+                                         '<-pp<-',
+                                         '<-subjc<-',
+                                         '<-s<-',
+                                         '<-zeit<-',
+                                         '<-kom<-',
+                                         '<-explsubj<-',
+                                         '<-explobja<-'],[]). %only succeed if intersection is empty
 
 
 restrict_vorfeld(_,_) :- !. %catchall
@@ -2747,11 +2745,7 @@ restrict_vorfeld(_,_) :- !. %catchall
 
 %restrict_coord/1: makes sure that subjects, objects etc. are not attached to a finite verb if there is a verb coordination in between:
 %example: susi denkt und peter sieht laura. -> 'laura' can't be object of 'denkt'.
-restrict_coord(RelList) :- \+ member('->kon->',RelList),
-	\+ member('->s->',RelList),
-	\+ member('->objc->',RelList),
-	\+ member('->subjc->',RelList),
-	\+ member('->neb->',RelList).
+restrict_coord(RelList) :- intersection(RelList,['->kon->','->s->','->objc->','->subjc->','->neb->'],[]). %only succeed if intersection is empty
 
 
 %======================================================================================
@@ -2768,9 +2762,9 @@ stopToRight(ID) :- getRange(ID,_-To), RightPos is To + 1, checkPos(RightPos,_,Ta
 stopToLeft(ID) :- getRange(ID,From-_), LeftPos is From - 1, checkPos(LeftPos,_,Tag,_,_), (Tag = 'NONE';Tag='$.';sentdelim(Tag)).
 
 
-bracketToRight(ID) :- getRange(ID,_-To), RightPos is To + 1, checkPos(RightPos,_,Tag,_,_), (Tag = 'NONE';Tag='$(').
+bracketToRight(ID,Word) :- getRange(ID,_-To), RightPos is To + 1, checkPos(RightPos,Word,Tag,_,_), (Tag = 'NONE';Tag='$(').
 
-bracketToLeft(ID) :- getRange(ID,From-_), LeftPos is From - 1, checkPos(LeftPos,_,Tag,_,_), (Tag = 'NONE';Tag='$(').
+bracketToLeft(ID,Word) :- getRange(ID,From-_), LeftPos is From - 1, checkPos(LeftPos,Word,Tag,_,_), (Tag = 'NONE';Tag='$(').
 
 
 getRange(ID, From-To) :- chart(ID,From,To,_,_,_,_,_,_,_,_).
