@@ -12,19 +12,6 @@ print_strucs([F|R]) :-
   %% print(F), %% DEBUG CODE; REMOVE.
   print_strucs(R).
 
-prettyprocess_2([],L,[],FL) :-
-    write_trees_fstruc(L,FL),     %%%% new tree-output(from Juri Mengon)
-    !.
-prettyprocess_2([[Struc,_,_,_]|R],L,[FStruc|FR],FL) :- % Recurse
-    prettyprocess_2(R,[Struc|L],FR,[FStruc|FL]).
-    
-write_trees_fstruc([],[]). % End rec.
-write_trees_fstruc([F|R],[FF|FR]) :- % Print single partial strucs. 
-    write_tree(F),       %%%% new tree-output(from Juri Mengon)
-    prettyprint(FF,0),   %%%% hitherto the standard output
-    nl, nl,
-    write_trees_fstruc(R,FR).
-
 %%%%%    write_tree( +Struct)
 %%%%%         displays prolog structure Struct as a tree
 %%%%%         ex: write_tree(s(np(d(le), n(chien)), vp(v(dort)))).

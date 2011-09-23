@@ -5,19 +5,15 @@
 :- style_check(-discontiguous).
 :- use_module(library(lists)).
 
-save_me :- qsave_program('6549_SGML.po',[local=131072,global=131072,trail=65536,argument=65536]).
-
-runtime_entry(start) :- go_textual('./chunkedtext.txt').  %% if providing sicstus standalone runtime version
-
+% Use this to parse stdin
 start :- consult('ParZu_parameters.pl'), load_grammar_german, go_textual.
 
-% USE THIS TO START CORE 
-start_simplistic :- consult('ParZu_parameters.pl'), consult('grammar_german.pl'),
-			write('A sample call is:'),nl, write('go_textual(\'preprocessed_input.pl\'), told.'), nl.
-
+% Use this for to load grammar and then go into interactive mode (i.e. to parse file and/or debug)
 start_german :- consult('ParZu_parameters.pl'), load_grammar_german,
 write('A sample call is:'),nl,  write('go_textual(\'preprocessed_input.pl\'), told.'), nl.
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% set some flags
 intralex(no).
@@ -25,10 +21,6 @@ complement_or_adjunct(no).
 conj_expand(no). %% expand conj in postprocessing
 appos_expand(no). %% expand appos
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%% END of PARAMETERS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 :- dynamic chart/11, min_len/1, inccount/1, inccount/2, lastpos/1, tops_chart/4, statschart/8, level/1, tried/2, perlevel/1, graphical/1, sentno/1, output/7, outputformat/1,sentdelim/1,returnsentdelim/1,nbestmode/1, morphology/1, lemmatisation/1.
 
@@ -64,20 +56,10 @@ load_grammar_german :-
     ensure_loaded('../statistics/vstat_data_nolemma'),
     ensure_loaded('../statistics/freq_data_nolemma')) ; true).
 
-
+%% END of PARAMETERS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%% END OF HEADER
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%% \section{intrachunk}
-%% CUT COMPLETELY
-
-%% end of intrachunk
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%\section{parsing}
-
-%%% sparse( -reduce&c-structure_stack, +input_sentence, -WordPosStack, +LastWordPos, -functional_structure).
 
 % shift is allowed in firstparse, but not in backtrack %% in CYK, make chart entries
 % sparse/6 reads in a sentence by shift/6ing, and nothing else
@@ -89,8 +71,6 @@ sparse(Stack,[[F,Ftag,Chunk,MORPH]|SRest],[Pos|PosList],LastPos,FStack,2) :-    
     append(NFhash,NID,NFID),
     name(FID,NFID),
     appl(FID,Chunk,FChunk),
-    %%writeq(FID), write(','),
-    %% intrachunk0(Chunk,FID,Ftag,C),
     asserta(chart(ID,Pos,Pos,[[F,Ftag,Chunk]],[Pos,1,Chunk,1],F,Ftag,w,FChunk,0,MORPH)), % last arg: F/FChunk?
     shift(Stack,[[F,Ftag,Chunk,MORPH]|SRest],[Pos|PosList],LastPos,FStack,2).  %% shift calls sparse again -> recursion
     
@@ -126,9 +106,8 @@ sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[WFormF|MORPHF],
   %do not assert if alternative is not among n best.
   (ALTERL>=0 ->
     (findall(PruneScore, (chart(_,Gfrom,Fto,_,[_,PruneScore,_,_],_,_,_,_,_,_),\+var(OPScore),PruneScore>OPScore),PruneList),
-    len(PruneList,PruneLen),
+    length(PruneList,PruneLen),
     PruneLen < ALTER + ALTERL);true),
-  %% OGfrom \= OFto,
   asserta(chart(ID,Gfrom,Fto,[[SF,Ftag,FChunk],[SG,Gtag,GChunk]],[FPos,OPScore,FChunk,Len],FFh,Transtag,Type,FuncFTRes,Level,[WFormF|MORPH])),
   (debug(1) -> (write(ID),write(' LEFT'),nl,write_tree(FuncFTRes),nl);true),
   retract(perlevel(X)),
@@ -166,9 +145,8 @@ sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[_|MORPHF],
   %do not assert if alternative is not among n best.
   (ALTERL>=0 ->
     (findall(PruneScore, (chart(_,Gfrom,Fto,_,[_,PruneScore,_,_],_,_,_,_,_,_),\+var(OPScore),PruneScore>OPScore),PruneList),
-    len(PruneList,PruneLen),
+    length(PruneList,PruneLen),
     PruneLen < ALTER + ALTERL);true),
-  %% OGfrom \= OFto,
   asserta(chart(ID,Gfrom,Fto,[[SF,Ftag,FChunk],[SG,Gtag,GChunk]],[GPos,OPScore,GChunk,Len],FGh,Transtag,Type,FuncGTRes,Level,[WFormG|MORPH])),
   (debug(1) -> (write(ID),write(' RIGHT'),nl,write_tree(FuncGTRes),nl);true),
   retract(perlevel(X)),
@@ -180,10 +158,7 @@ sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[_|MORPHF],
 %% initiate the parsing process
 %% sparse/6 -> nextlevel/2 -> sparse/9: sparse/9 reduces all it can on one CYK level
 sparse(Stack,[],_,N,FStruc,_) :-     % NEW FUNCTION IN CYK ::: launch the parsing process (hitherto it was just shifting)
-    % nl, write('END OF ROUND:'), write(Stack), nl,
-    % ultiparse(Stack,[],_,N,FStruc,1),
-    len(Stack,Length),
-    %Length > 1,
+    length(Stack,Length),
     min_len(MinLen),
     Length =< MinLen,
     retractall(min_len(_)),
@@ -195,13 +170,11 @@ sparse(Stack,[],_,N,FStruc,_) :-     % NEW FUNCTION IN CYK ::: launch the parsin
     retractall(lastpos(_)),
     LastPos is N-1,
     assert(lastpos(LastPos)),
-    %% write(' s).'), %% if printing sentence heads
     write('</PROLOG_INTRACHUNK>'), nl, 
     nl, write('END OF ROUND '), write(L), write(' : '), write(LastPos), write(' chunks'), nl, !,
     (debug(2) -> (write_tree(FStruc),nl);true),    
     retractall(perlevel(_)),
     assert(perlevel(0)),
-    %% TEST %% lddq(L1), %% long-distance dep.s such as questions
     %% NEXT LEVEL: SELECT CANDIDATES FROM CHART: foreach chart entry ...
     constant(levels,MAX),
     nextlevel(1,MAX).
@@ -228,7 +201,6 @@ nextlevel(L,MAX) :-
     L1 is L+1,
     retractall(perlevel(_)),
     assert(perlevel(0)),
-    % retractall(commalongest(_,_)),
     !, % CUT, this level is done
     nextlevel(L1,MAX).
 
@@ -237,24 +209,19 @@ nextlevel(L,MAX) :-
 %% use this if you want no pruning ever, for developping
 %prune(_,XFact,ALTER):- !. %% no pruning at all
 
-%% no pruning: will be used as long as complexity low
-%prune(_,XFact,ALTER) :- XFact < (ALTER-1), inccount(X), X < 200, !.
 
 %% mild pruning
 prune(L,XFact,ALTER) :-
     XFact < 100,
     write('fixed pruning keep '),
-    %% constant(alter,ALTER),
-    %% Div is (XFact/10), Div > 0, 
     write(ALTER), nl,
     %% foreach stretch A-Z : discard low prob-half, if there are at least 3 possibilities
     chart(_,Ffrom,Fto,_,[_,_Score,_,_],_,_,_,_,L,_),
     findall((Score,ID), chart(ID,Ffrom,Fto,_,[_,Score,_,_],_,_,_,_,_,_),List),
-    len(List,Len),
+    length(List,Len),
     (Len < ALTER -> fail ;
       (sort(List,SList),
        Till is Len-(ALTER+1),  %% fixed beam length
-       %% Till is Len-(Len/Div),  write(Till), write('/'),write(Len), nl, %% variable beam length
        prunechart(0,Till,SList),
        fail)).
 
@@ -262,16 +229,14 @@ prune(L,XFact,ALTER) :-
 prune(L,XFact,ALTER) :-
     XFact >= 100,
     write('variable pruning at '),
-    %% constant(alter,ALTER),
     Div is (XFact/8), Div > 0, write(Div), nl,
    %% foreach stretch A-Z : discard low prob-half, if there are at least 3 possibilities
     chart(_,Ffrom,Fto,_,[_,_Score,_,_],_,_,_,_,L,_),
     findall((Score,ID), chart(ID,Ffrom,Fto,_,[_,Score,_,_],_,_,_,_,_,_),List),
-    len(List,Len),
+    length(List,Len),
     (Len < ALTER -> fail ;
       (sort(List,SList),
-       %% Till is Len-(ALTER+1),  %% fixed beam length
-       Till is Len-(Len/Div),
+       Till is Len-(Len/Div), %% variable beam length
        Till > 0,
        write(Till), write('/'),write(Len), nl, %% variable beam length
        prunechart(0,Till,SList),
@@ -284,7 +249,6 @@ prunechart(_,_,[]). %eol
 
 prunechart(C,Till,[(_Score,ID)|RList]) :-
     C < Till, !,
-    %displaychart(ID),
     retract(chart(ID,_,_,_,_,_,_,_,_,_,_)),
     C1 is C+1,
     prunechart(C1,Till,RList).
@@ -338,55 +302,12 @@ appl_chunk_r(Head,Dep1,DType,NewStruc) :-
     append(DArgs,[Dep1],NArgs),
     NewStruc=..[Pred|NArgs].
 
-
-    
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%    
-
-is_tag(F) :-
-    name(F,NF),
-    name('_',[U]),
-    memberchk(U,NF).
-
-is_arrow(F) :-
-    name(F,NF),
-    name('>',[U]),
-    memberchk(U,NF).
-
-
-prettyprint([],_).% end rec.
-
-prettyprint(F,Indent) :-
-    atomic(F), 
-    (is_tag(F) ->
-        (nl,LIndent is Indent-1,
-        spaces(LIndent),write( ' ['), write(F), write(']'));
-    is_arrow(F) ->
-        (nl,spaces(Indent),
-        write(F));
-    (nl,spaces(Indent),write(F))
-    ).
-
-prettyprint([F|R],Indent) :- % traverse list
-    prettyprint(F,Indent),
-    prettyprint(R,Indent).
-
-prettyprint(F,Indent) :-        %a(b,c(d)) convert to list:
-    F=..[Pred|Args],            %[a,b,c(d)]
-    NewIndent is Indent+1,
-    prettyprint(Pred,Indent),
-    prettyprint(Args,NewIndent).
-
-spaces(0).    
-spaces(X) :- 
-    X > 0,   % important to stop recursion.
-    write('|    '), 
-    LessX is X-1, 
-    spaces(LessX).
     
     
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Driver Predicates:
 
+%read from file
 go_textual(File) :-
     abolish(perlevel/1),
     retractall(graphical(_)), assert(graphical(false)),
@@ -396,6 +317,7 @@ go_textual(File) :-
     collect_sents(no-end),
     seen.
 
+%read from stdin
 go_textual :-
     abolish(perlevel/1),
     retractall(graphical(_)), assert(graphical(false)),
@@ -407,7 +329,6 @@ go_textual :-
 %% \begin{Input/Output}
 
 %% read in sentence word by word
-%% TODO: XML input (should be easy)
 collect_sents(end-of-file).
 collect_sents(no-end) :-
     garbage_collect,
@@ -426,9 +347,7 @@ collect_sents(no-end) :-
     retractall(level(_)),
     assert(level(0)),
     %write('NEW SENTENCE :: =============================='), nl,
-    %% sparse([],Sent,[0],0,[],1),    %% this prints first solution only
     writeq(sent(Sent)), write('.'), nl,
-    %write('sent_heads( '),
     write('<PROLOG_INTRACHUNK>'), nl,
     assert(lastpos(1)),
     findall(Sent,sparse([],Sent,[1],1,[],2),_),  %% this prints all solutions
@@ -449,11 +368,7 @@ collect_sent(Acc,Sent,EOF,Position) :-
     read_term(T,[syntax_errors(dec10)]),
     process_sent(T,Acc,Sent,EOF,Position).
 
-%%%%%%%%%%%%%%%%%%%%%% IF INPUT IS ABSOLUTELY ERROR-FREE
-%collect_sent(Acc,Sent,EOF) :-
-%    read(T),
-%    process_sent(T,Acc,Sent,EOF).
-
+%%%%%%%%%%%%%%%%%%%%%%
 %% file ends, everything is read in
 process_sent(T,Sent,Sent,end-of-file,_):-
     T == end_of_file,
@@ -480,36 +395,6 @@ process_sent(T,Acc,Sent,no-end,_) :-
     assert(sentno(S1)),
     nl.  % w('S','S',['S_S'],a),nl. for non-stemmed
 
-%% sgml predicate read in: thread through
-process_sent(T,Acc,Sent,no-end,Position) :-
-    T = sgml(SGML),
-    % display(sgml(SGML)),
-    writeq(sgml(SGML)), write('.'), nl, nl,
-    collect_sent(Acc,Sent,no-end,Position).
-
-process_sent(T,Acc,Sent,no-end,Position) :-
-    T = sgml(SGML,Wo),
-    % display(sgml(SGML)),
-    writeq(sgml(SGML,Wo)), write('.'), nl, nl,
-    collect_sent(Acc,Sent,no-end,Position).
-
-process_sent(T,Acc,Sent,no-end,Position) :-
-    T = sid(SGML),
-    %display(sid(SGML)),
-    writeq(sid(SGML)), write('.'), nl, nl,
-    collect_sent(Acc,Sent,no-end,Position).
-
-process_sent(T,Acc,Sent,no-end,Position) :-
-    T = sid(SGML,SGML2),
-    %display(sid(SGML)),
-    writeq(sid(SGML,SGML2)), write('.'), nl, nl,
-    collect_sent(Acc,Sent,no-end,Position).
-
-process_sent(T,Acc,Sent,no-end,Position) :-
-    T = id(_WSJ,SGML),
-    % display(sid(SGML)),
-    writeq(sid(SGML)), write('.'), nl, nl,
-    collect_sent(Acc,Sent,no-end,Position).
 
 %% read in an individual chunk, recursively
 process_sent(w(Head,HeadTag,Chunk,C),Acc,Sent,no-end,Position) :-
@@ -518,23 +403,6 @@ process_sent(w(Head,HeadTag,Chunk,C),Acc,Sent,no-end,Position) :-
      Position1 is Position+1,
     collect_sent(NewAcc,Sent,no-end,Position1).
 
-
-%% Helper Predicates:
-    
-% Standard append/3: append(?L1,?L2,?L3).
-%append([],L,L).
-%append([X|L1],L2,[X|L3]) :-
-%    append(L1,L2,L3).
-
-% Length of a DiffList: dlen(+A-B,-Len).
-dlen(A-B,Len) :-
-    Len is B - A.
-
-% Length of a List: len(+List,-Len).
-len([],0).
-len([_|R],Len) :-
-    len(R,NewLen),
-    Len is NewLen +1.
 
 inc(Y) :-
     retract(inccount(X)),
@@ -559,11 +427,8 @@ pathfinder :-
    ( retractall(inccount(_)),
     assert(inccount(0)),
     longpathfinder(1-Z,[]-MC,1-FinalScore,[]-Strucs),%% new method
-    %pathfinder_l(1-Z,[]-MC,1-FinalScore,[]-Strucs), %% old method
     inc(Count),
     assertz(tops_chart(FinalScore,MC,1-Z,Strucs)),
-    %print_strucs2(Count,FinalScore,MC,1-Z,Strucs),
-    %write(Count), nl,
     (Count > 1000 -> pathcollect([]) ; fail)
     )).%% cutoff at 1000
 
@@ -634,14 +499,10 @@ process_struc(Struc,Head,HeadOfDep) :-
 awriteq(Res) :- writeq(Res), Res =.. ResList, assert(sentrel(ResList)).
 
 
-
-%%% SORT PATHS: | ?- sort([[1.121,2,3],[1.105,1,0]],X).
-%%% X = [[1.105,1,0],[1.121,2,3]]
-
 %%%%longpathfinder(From-To,Missing,Score,Struc).
 longpathfinder(Z-Z,M-M,Sc-Sc,S-S) :- !. 
 longpathfinder(A-Z,MIn-MOut,ScIn-ScOut,SIn-SOut) :-
-  dlen(A-Z,MaxLen),
+  MaxLen is Z-A,
   findlongest(MaxLen,A-Z,A-I-J-Z,MIn-MMid1,ScIn-ScMid1,SIn-SMid1), % find longest chart entry
   (I=A -> (I1 is A, MMid2=MMid1) ; (I1 is I-1, (I1=A -> MMid2=[A|MMid1];MMid2=MMid1) )),
   longpathfinder(A-I1,MMid2-MMid3,ScMid1-ScMid2,SMid1-SMid2),      % left  of found
@@ -656,45 +517,3 @@ findlongest(MaxLen,A-Z,A-I-J-Z,MIn-MOut,ScIn-ScOut,SIn-SOut) :-
   (chart(_,I,J,_,[_,CScore,_,MaxLen],_,_,_,CStruc,_,_), \+ I=J, I>=A, J=<Z, append(SIn,[CStruc],SOut), ScOut is ScIn*CScore, MOut=MIn)
   *-> true;
      (NewMaxLen is MaxLen-1,findlongest(NewMaxLen,A-Z,A-I-J-Z,MIn-MOut,ScIn-ScOut,SIn-SOut)).
-
-    
-
-pathfinder_l(Z-Z,MCIn-MCIn,Score-Score,Struc-Struc) :- !. % end of recursion
-pathfinder_l(A-Z,MCIn-MCOut,ScoreIn-ScoreOut,StrucIn-StrucOut) :-  % path from start
-  pathfinder(A-Z,MCIn-MCOut,ScoreIn-ScoreOut,StrucIn-StrucOut).
-pathfinder_l(A-Z,MCIn-[A|MCOut],ScoreIn-ScoreOut,StrucIn-StrucOut) :- % or path from start + 1
-  A1 is A+1,
-  (A1<Z ->
-   pathfinder(A1-Z,MCIn-MCOut,ScoreIn-ScoreOut,StrucIn-StrucOut);
-   pathfinder(A1-Z,[A1|MCIn]-MCOut,ScoreIn-ScoreOut,StrucIn-StrucOut)). 
-pathfinder_l(A-Z,MCIn-[Z|MCOut],ScoreIn-ScoreOut,StrucIn-StrucOut) :- % or path to end - 1
-  A<Z,
-  Z1 is Z-1,
-  (A<Z1 ->
-   pathfinder(A-Z1,MCIn-MCOut,ScoreIn-ScoreOut,StrucIn-StrucOut);
-   pathfinder(A-Z1,[Z1|MCIn]-MCOut,ScoreIn-ScoreOut,StrucIn-StrucOut)).
-pathfinder(Z-Z,M-M,FS-FS,Strucs-Strucs) :- !.           % end of recursion
-pathfinder(A-Z,MI-MO,ScoreIn-ScoreOut,StrucIn-StrucOut) :-   % direct path
-  chart(_ID,A,Z,_,[_,ZScore,_,Len],_,_,_,ZStruc,_,_),
-  %dlen(A-Z,Len),
-  ScoreMid is ScoreIn * ZScore * Len,
-  append([ZStruc],StrucIn,StrucMid),
-  pathfinder(Z-Z,MI-MO,ScoreMid-ScoreOut,StrucMid-StrucOut).
-pathfinder(A-Z,MI-MO,ScoreIn-ScoreOut,StrucIn-StrucOut) :- % indirect path, decrease from right
-  B is Z-1,
-  A<B,
-  pathfinder_r(A-B-Z,MI-MO,ScoreIn-ScoreOut,StrucIn-StrucOut).
-
-pathfinder_r(A-B-Z,MI-MO,ScoreIn-ScoreOut,StrucIn-StrucOut) :-  % indirect path to end, long first
-  chart(_ID,A,B,_,[_,BScore,_,Len],_,_,_,BStruc,_,_), 
-  %dlen(A-B,Len),
-  ScoreMid is ScoreIn * BScore * Len,
-  append([BStruc],StrucIn,StrucMid),
-  B1 is B+1,
-  (B1<Z ->
-   pathfinder_l(B1-Z,MI-MO,ScoreMid-ScoreOut,StrucMid-StrucOut); 
-   pathfinder_l(B1-Z,[B1|MI]-MO,ScoreMid-ScoreOut,StrucMid-StrucOut)).
-pathfinder_r(A-B-Z,MI-MO,ScoreIn-ScoreOut,StrucIn-StrucOut) :-  % or indirect path to end, long-1 first
-  BB is B-1,
-  A<BB,
-  pathfinder_r(A-BB-Z,MI-MO,ScoreIn-ScoreOut,StrucIn-StrucOut).
