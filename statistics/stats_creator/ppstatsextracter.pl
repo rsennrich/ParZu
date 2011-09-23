@@ -234,7 +234,22 @@ searchgoal(Sen,Pos,nounattach,WordOut,Case) :- (w(Sen,Pos,Word,Tag,'pp',Dep,[Cas
 				      (Tag2='fm';Tag2='ne';Tag2='nn').
 
 
+%morphisto-style APPRART
+splitappr(am,an,_) :- !.
+splitappr(ans,an,_) :- !.
+splitappr(aufs,auf,_) :- !.
+splitappr(beim,bei,_) :- !.
+splitappr(durchs,durch,_) :- !.
+splitappr(im,in,_) :- !.
+splitappr(ins,in,_) :- !.
+splitappr(übers,über,_) :- !.
+splitappr(vom,von,_) :- !.
+splitappr(zum,zu,_) :- !.
+splitappr(zur,zu,_) :- !.
 
+
+%gertwol-style APPRART
+%'in-das' -> 'in' + 'das'
 splitappr(WordI,Word,I) :-
 	atomic(WordI), !,
 	sub_atom(WordI,Before,1,After,'-'),

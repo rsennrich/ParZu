@@ -194,7 +194,7 @@ stats2(objp,_Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,MORPHD,P,P,D,HC-_OG) :-
 	distModifier(D,HeadTag,Dtag,pp,DISTMOD),
 	downcase_atom(FD,FDNorm), %(statistics files are in lower case letters).
 	(splitappr(FDNorm,Prep,_);Prep = FDNorm),
-	(var(MORPHD) -> List = [];findall(Case,member([Case],MORPHD),List)),
+	(var(MORPHD) -> List = [];setof(Case,member([Case],MORPHD),List)),
 	length(List,Len),
 	(Len = 1->(List = [CaseTemp],case_tueba(CaseTemp,Case)); Case = _),
 	get_pp_statistics(Head,HeadTag,Case,Prep,NumPP,NumObjP,NumHead),
@@ -211,7 +211,7 @@ stats2(pp,_Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,MORPHD,P,P,D,HC-_OG) :-
 	distModifier(D,HeadTag,Dtag,pp,DISTMOD),
 	downcase_atom(FD,FDNorm), %(statistics files are in lower case letters).
 	(splitappr(FDNorm,Prep,_);Prep = FDNorm),
-	(var(MORPHD) -> List = [];findall(Case,member([Case],MORPHD),List)),
+	(var(MORPHD) -> List = [];setof(Case,member([Case],MORPHD),List)),
 	length(List,Len),
 	(Len = 1->(List = [CaseTemp],case_tueba(CaseTemp,Case)); Case = _),
 	get_pp_statistics(Head,HeadTag,Case,Prep,NumPP,NumObjP,NumHead),
@@ -248,6 +248,21 @@ get_pp_statistics(Head,HeadTag,Case,Prep,NumPP,NumObjP,NumHead) :-
 	sumlist(ListPP,NumPP), !.
 
 
+%morphisto-style APPRART
+splitappr(am,an,_) :- !.
+splitappr(ans,an,_) :- !.
+splitappr(aufs,auf,_) :- !.
+splitappr(beim,bei,_) :- !.
+splitappr(durchs,durch,_) :- !.
+splitappr(im,in,_) :- !.
+splitappr(ins,in,_) :- !.
+splitappr(übers,über,_) :- !.
+splitappr(vom,von,_) :- !.
+splitappr(zum,zu,_) :- !.
+splitappr(zur,zu,_) :- !.
+
+
+%gertwol-style APPRART
 %'in-das' -> 'in' + 'das'
 splitappr(WordI,Word,I) :-
 	atomic(WordI), !,
@@ -616,17 +631,12 @@ distModifier(D,_Htag,_Dtag,kom,DISTMOD) :- DISTMOD is 1-D*0.04.
 distModifier(D,_Htag,_Dtag,Class,DISTMOD) :- distModifier(D,Class,DISTMOD).
 
 
-%findall might seem unnecessary, but keeps possible variables uninstantiated.
+%make sure that probability mass is distributed among analyses that are morphologically possible.
 testmorphology(List,Tag,Subj,Obja,Objd,Objg,SubjOut,ObjaOut,ObjdOut,ObjgOut) :- 
-			(((findall(_,case_nom(List,Tag),LN), 
-			LN \= [],SubjOut is Subj)	; SubjOut is 0),
-			((findall(_,case_acc(List,Tag),LA), 
-			LA \= [], ObjaOut is Obja)	; ObjaOut is 0),
-			((findall(_,case_dat(List,Tag),LD), 
-			LD \= [], ObjdOut is Objd)	; ObjdOut is 0),
-			((findall(_,case_gen(List,Tag),LG), 
-			LG \= [], ObjgOut is Objg)	; ObjgOut is 0
-			)), !.
+            (case_nom(List,Tag)->SubjOut is Subj;SubjOut is 0),
+            (case_acc(List,Tag)->ObjaOut is Obja;ObjaOut is 0),
+            (case_dat(List,Tag)->ObjdOut is Objd;ObjdOut is 0),
+            (case_gen(List,Tag)->ObjgOut is Objg;ObjgOut is 0), !.
 
 
 
