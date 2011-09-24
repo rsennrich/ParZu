@@ -22,11 +22,12 @@ conj_expand(no). %% expand conj in postprocessing
 appos_expand(no). %% expand appos
 
 
-:- dynamic chart/11, min_len/1, inccount/1, inccount/2, lastpos/1, tops_chart/4, statschart/8, level/1, tried/2, perlevel/1, graphical/1, sentno/1, output/7, outputformat/1,sentdelim/1,returnsentdelim/1,nbestmode/1, morphology/1, lemmatisation/1.
+:- dynamic chart/11, scores/5, min_len/1, inccount/1, inccount/2, lastpos/1, tops_chart/4, statschart/8, level/1, tried/2, perlevel/1, graphical/1, sentno/1, output/7, outputformat/1,sentdelim/1,returnsentdelim/1,nbestmode/1, morphology/1, lemmatisation/1.
 
-:- index(chart(1,1,1,0,0,0,0,0,0,1,0));true. %% only has an effect in SWI
+:- index(chart(1,1,1,0,0,0,0,0,1,0,0));true. %% only has an effect in SWI
 :- index(head(1,1,1,0,0,0,0,0,0,0));true.
 :- index(head2(1,1,1,0,0,0,0,0,0,0));true.
+:- index(scores(1,1,1,1,0));true.
 
 :- ensure_loaded('tree_textual.pl').
 :- assert(outputformat(raw)).
@@ -82,17 +83,14 @@ sparse(Stack,[[F,Ftag,Chunk,MORPH]|SRest],[Pos|PosList],LastPos,FStack,2) :-    
 sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[WFormF|MORPHF],
        GID,GPos,Gfrom,_Gto,FGh,GChunk,GScore,Gtag,FuncG,[_|MORPHG], Level) :-  %% Ffrom \= Gfrom,
   %F(G) = dep to left, reduce-Stack reversed!
-  (tried(FID,GID) -> !, fail; assert(tried(FID,GID))), % already tried
   constant(commit,COMMIT),
   constant(discard,DISCARD),
-  constant(alter,ALTER),
-  constant(alterlocal,ALTERL),
   constant(aggressive_start,MAXCHART),
   constant(aggressive_thresh,THRESH),
   FuncF=..[SF|OF],           % get F pred (FF)
   FuncG=..[SG|OG],           % get G pred (FG)
-  Dist is FPos - GPos,
   head2(Ftag,Gtag,l,Type,Transtag,[FChunk,GChunk,FFh,FGh,OF,OG,FID,GID],FPos-GPos,MORPHF,MORPHG,MORPH),
+  Dist is FPos - GPos,
   (statschart(SF,MORPHF,SG,MORPHG,Type,Prob,Percent,Dist) -> true ; (once(stats2(Type,Ftag,FFh,SF,MORPHF,Gtag,FGh,SG,MORPHG,Prob,Percent,Dist,FChunk-OF)), asserta(statschart(SF,MORPHF,SG,MORPHG,Type,Prob,Percent,Dist)))),
   Prob >= DISCARD,
   %% assert stats
@@ -104,10 +102,12 @@ sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[WFormF|MORPHF],
   inc(ID),
   (ID>MAXCHART -> (((OPScore / ((Len+(Len**sqrt(2)))+(ID/2))) < THRESH) -> (write(' TOO LOW!'),nl,fail);true); true),
   %do not assert if alternative is not among n best.
-  (ALTERL>=0 ->
-    (findall(PruneScore, (chart(_,Gfrom,Fto,_,[_,PruneScore,_,_],_,_,_,_,_,_),\+var(OPScore),PruneScore>OPScore),PruneList),
+  (constant(alterlocal,ALTERL) ->
+    (constant(alter,ALTER),
+    findall(PruneScore, (scores(Gfrom,Fto,_,_,PruneScore),\+var(OPScore),PruneScore>OPScore),PruneList),
     length(PruneList,PruneLen),
     PruneLen < ALTER + ALTERL);true),
+  asserta(scores(Gfrom,Fto,Level,ID,OPScore)),
   asserta(chart(ID,Gfrom,Fto,[[SF,Ftag,FChunk],[SG,Gtag,GChunk]],[FPos,OPScore,FChunk,Len],FFh,Transtag,Type,FuncFTRes,Level,[WFormF|MORPH])),
   (debug(1) -> (write(ID),write(' LEFT'),nl,write_tree(FuncFTRes),nl);true),
   retract(perlevel(X)),
@@ -120,18 +120,15 @@ sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[WFormF|MORPHF],
 sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[_|MORPHF],
        GID,GPos,Gfrom,_Gto,FGh,GChunk,GScore,Gtag,FuncG,[WFormG|MORPHG],Level) :- %% Ffrom \= Gfrom,
   %G(F) = dep to right, reduce-Stack reversed!
-  (tried(GID,FID) -> !, fail; assert(tried(GID,FID))), % already tried
   constant(commit,COMMIT),
   constant(discard,DISCARD),
-  constant(alter,ALTER),
-  constant(alterlocal,ALTERL),
   constant(aggressive_start,MAXCHART),
   constant(aggressive_thresh,THRESH),
   FuncF=..[SF|OF],
   FuncG=..[SG|OG],
   !,
-  Dist is FPos - GPos,
   head2(Gtag,Ftag,r,Type,Transtag,[GChunk,FChunk,FGh,FFh,OG,OF,GID,FID],GPos-FPos, MORPHG,MORPHF,MORPH),
+  Dist is FPos - GPos,
   (statschart(SG,MORPHG,SF,MORPHF,Type,Prob,Percent,Dist) -> true; (once(stats2(Type,Gtag,FGh,SG,MORPHG,Ftag,FFh,SF,MORPHF,Prob,Percent,Dist,GChunk-OG)), asserta(statschart(SG,MORPHG,SF,MORPHF,Type,Prob,Percent,Dist)))),
   Prob >= DISCARD,
   %% assert stats
@@ -143,10 +140,12 @@ sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[_|MORPHF],
   inc(ID),
   (ID>MAXCHART -> (((OPScore / ((Len+(Len**sqrt(2)))+(ID/2))) < THRESH) -> (write(' TOO LOW!'),nl,!,fail);true); true),
   %do not assert if alternative is not among n best.
-  (ALTERL>=0 ->
-    (findall(PruneScore, (chart(_,Gfrom,Fto,_,[_,PruneScore,_,_],_,_,_,_,_,_),\+var(OPScore),PruneScore>OPScore),PruneList),
+  (constant(alterlocal,ALTERL) ->
+    (constant(alter,ALTER),
+    findall(PruneScore, (scores(Gfrom,Fto,_,_,PruneScore),\+var(OPScore),PruneScore>OPScore),PruneList),
     length(PruneList,PruneLen),
     PruneLen < ALTER + ALTERL);true),
+  asserta(scores(Gfrom,Fto,Level,ID,OPScore)),
   asserta(chart(ID,Gfrom,Fto,[[SF,Ftag,FChunk],[SG,Gtag,GChunk]],[GPos,OPScore,GChunk,Len],FGh,Transtag,Type,FuncGTRes,Level,[WFormG|MORPH])),
   (debug(1) -> (write(ID),write(' RIGHT'),nl,write_tree(FuncGTRes),nl);true),
   retract(perlevel(X)),
@@ -216,8 +215,8 @@ prune(L,XFact,ALTER) :-
     write('fixed pruning keep '),
     write(ALTER), nl,
     %% foreach stretch A-Z : discard low prob-half, if there are at least 3 possibilities
-    chart(_,Ffrom,Fto,_,[_,_Score,_,_],_,_,_,_,L,_),
-    findall((Score,ID), chart(ID,Ffrom,Fto,_,[_,Score,_,_],_,_,_,_,_,_),List),
+    scores(Gfrom,Fto,L,_,_Score),
+    findall((Score,ID), scores(Gfrom,Fto,_,ID,Score),List),
     length(List,Len),
     (Len < ALTER -> fail ;
       (sort(List,SList),
@@ -231,8 +230,8 @@ prune(L,XFact,ALTER) :-
     write('variable pruning at '),
     Div is (XFact/8), Div > 0, write(Div), nl,
    %% foreach stretch A-Z : discard low prob-half, if there are at least 3 possibilities
-    chart(_,Ffrom,Fto,_,[_,_Score,_,_],_,_,_,_,L,_),
-    findall((Score,ID), chart(ID,Ffrom,Fto,_,[_,Score,_,_],_,_,_,_,_,_),List),
+    scores(Gfrom,Fto,L,_,_Score),
+    findall((Score,ID), scores(Gfrom,Fto,_,ID,Score),List),
     length(List,Len),
     (Len < ALTER -> fail ;
       (sort(List,SList),
@@ -249,6 +248,7 @@ prunechart(_,_,[]). %eol
 
 prunechart(C,Till,[(_Score,ID)|RList]) :-
     C < Till, !,
+    retract(scores(_,_,_,ID,_)),
     retract(chart(ID,_,_,_,_,_,_,_,_,_,_)),
     C1 is C+1,
     prunechart(C1,Till,RList).
@@ -337,6 +337,7 @@ collect_sents(no-end) :-
     retractall(inccount(_,_)),
     collect_sent([],Sent,EOF,1),
     retractall(min_len(_)),
+    retractall(scores(_,_,_,_,_)),
     retractall(chart(_,_,_,_,_,_,_,_,_,_,_)),
     retractall(tops_chart(_,_,_,_)),
     retractall(tried(_,_)),
