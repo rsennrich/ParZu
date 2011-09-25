@@ -129,9 +129,10 @@ stats2(kon,_Htag,_FH,_SH,_MORPHH,'KONC',_FD,_SD,_MORPHD,P,NP,_D,_HC) :-
 	NP is  0.65.
 
 %coordinations: encourage short distances. Should have precedence over APP
-stats2(kon,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,NP,D,_HC) :-
-	P is  1.06-D*0.05,
-	NP is  1.06-D*0.05.
+stats2(kon,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,NP,D,_HC) :-
+	posModifier(Htag,Dtag,kon,PosMod),
+	P is  PosMod*(1.06-D*0.05),
+	NP is  PosMod*(1.06-D*0.05).
 
 
 
@@ -595,6 +596,8 @@ posModifier(_Htag,_Dtag,kom,0.95) :- !.
 posModifier(_Htag,'OBJC',objc,1) :- !.
 posModifier(_Htag,'RC',objc,0.7) :- !.
 posModifier(_Htag,'QC',objc,1) :- !.
+
+posModifier('ADJA','KON_ADV',kon,0.2) :- !.
 
 
 posModifier(_Htag,_Dtag,_Class,1) :- !. %catchall

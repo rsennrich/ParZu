@@ -1730,13 +1730,18 @@ head('VVIZU','KOMPX',l,kom,'VVIZU',[FC,_,_,_,_,UG],_,MF,_,MF) :- verbchunklength
 
 
 %(peter) 'und' ->cj-> 'mark'. special: new morphological information is that of dependent, not that of head
-head2('KON',Tag,r,cj,Transtag,[_,_,HeadWord,_,_,_,_,_],_,MH,_,MH) :- kon_mapping(Tag,Transtag), Transtag \= 'KON_FINVERB', \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder']).
+head2('KON',Tag,r,cj,Transtag,[_,_,HeadWord,_,_,_,_,_],_,MH,_,MH) :- kon_mapping(Tag,Transtag), Transtag \= 'KON_FINVERB', Transtag \= 'KON_ADV', \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder']).
+
+%seltsam, aber nie albern. "albern" should be coordinated adverb, not "nie".
+head2('KON',Tag,r,cj,'KON_ADV',[_,_,HeadWord,_,_,_,_,_],_-D,MH,_,MH) :- kon_mapping(Tag,'KON_ADV'), RightPos is D+1, checkPos(RightPos,_,Tag2,_,_), \+ kon_mapping(Tag2,'KON_ADV'), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder']).
 
 % in "Er kommt und sieht Laura", disallow Laura as subject, but not in "Er kommt und dann sieht Laura ihn"
 head2('KON',Tag,r,cj,'KON_FINVERB',[_,_,HeadWord,_,_,DepRels,_,_],H-D,MH,_,MH) :- 1 is D-H, kon_mapping(Tag,'KON_FINVERB'), \+ member('->subj->', DepRels), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder']).
 
 head2('KON',Tag,r,cj,'KON_FINVERB',[_,_,HeadWord,_,_,_,_,_],H-D,MH,_,MH) :- D-H > 1, kon_mapping(Tag,'KON_FINVERB'), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder']).
 
+%als Babysitter oder als Anwalt arbeiten
+head2('KON','KOMPX',r,cj,'KON_KOMPX',[_,_,HeadWord,_,_,_,_,_],_,MH,_,MH) :- \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder']).
 
 
 %allows comma before conjunction.
@@ -1783,6 +1788,8 @@ head('ADJA','$,',l,comma,'KON_ADJA',[_,_,_,_,OF,_],_,MF,_,MF) :- nth1(2,OF,'->ko
 
 head(Tag,'$,',l,comma,'KON_PRONOUN',[_,_,_,_,OF,_],_,MF,_,MF) :- kon_mapping(Tag,'KON_PRONOUN'), nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
 
+head(Tag,'$,',l,comma,'KON_PRONOUN_REL',[_,_,_,_,OF,_],_,MF,_,MF) :- kon_mapping(Tag,'KON_PRONOUN_REL'), nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
+
 head(Tag,'$,',l,comma,'KON_PPER',[_,_,_,_,OF,_],_,MF,_,MF) :- kon_mapping(Tag,'KON_PPER'), nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
 
 head(Tag,'$,',l,comma,'KON_FINVERB',[_,_,_,_,OF,_],_,MF,_,MF) :- kon_mapping(Tag,'KON_FINVERB'), nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF), \+ member('->subj->', OF).
@@ -1797,9 +1804,11 @@ head(Tag,'$,',l,comma,'KON_INFVERB',[_,_,_,_,OF,_],_,MF,_,MF) :- kon_mapping(Tag
 
 head('VVIZU','$,',l,comma,'KON_VVIZU',[_,_,_,_,OF,_],_,MF,_,MF) :- nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
 
+head('KOMPX','$,',l,comma,'KON_KOMPX',[_,_,_,_,OF,_],_,MF,_,MF) :- nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
+
 
 %with adjectives, the same is possible even if there is no conjunction at the end "der hochgefährliche, giftige baustoff".
-head('ADJA','$,',l,comma,'KON_ADV',[_,_,_,_,OF,_],_,MF,_,MF) :- \+ member('<-comma<-', OF).
+head('ADJA','$,',l,comma,'KON_ADJA',[_,_,_,_,OF,_],_,MF,_,MF) :- \+ member('<-comma<-', OF).
 
 
 
@@ -1836,10 +1845,6 @@ head('PWS','KON_PRONOUN',r,kon,'PWS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case
 
 head('PWAT','KON_PRONOUN',r,kon,'PWS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PWAT',MF,'PDS',MNew).
 
-head('PRELS','KON_PRONOUN',r,kon,'PRELS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PRELS',MF,'PDS',MNew).
-
-head('PRELAT','KON_PRONOUN',r,kon,'PRELS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PRELAT',MF,'PDS',MNew).
-
 head('PIAT','KON_PRONOUN',r,kon,'PIS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PIAT',MF,'PDS',MNew).
 
 head('PDAT','KON_PRONOUN',r,kon,'PDS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PDAT',MF,'PDS',MNew).
@@ -1851,6 +1856,11 @@ head('PPOSS','KON_PRONOUN',r,kon,'PPOSS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_
 head('PPOSAT','KON_PRONOUN',r,kon,'PPOSS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PPOSAT',MF,'PDS',MNew).
 
 
+head('PRELS','KON_PRONOUN_REL',r,kon,'PRELS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PRELS',MF,'PRELS',MNew).
+
+head('PRELAT','KON_PRONOUN_REL',r,kon,'PRELS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PRELAT',MF,'PRELS',MNew).
+
+
 head('PDS','KON_PPER',r,kon,'PDS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PDS',MF,'PPER',MNew).
 
 head('PIS','KON_PPER',r,kon,'PIS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PIS',MF,'PPER',MNew).
@@ -1860,10 +1870,6 @@ head('PPER','KON_PPER',r,kon,'PPER',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(
 head('PWS','KON_PPER',r,kon,'PWS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PWS',MF,'PPER',MNew).
 
 head('PWAT','KON_PPER',r,kon,'PWS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PWAT',MF,'PPER',MNew).
-
-head('PRELS','KON_PPER',r,kon,'PRELS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PRELS',MF,'PPER',MNew).
-
-head('PRELAT','KON_PPER',r,kon,'PRELS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PRELAT',MF,'PPER',MNew).
 
 head('PIAT','KON_PPER',r,kon,'PIS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PIAT',MF,'PPER',MNew).
 
@@ -1935,6 +1941,9 @@ head('ADJD','KON_ADJA',r,kon,'ADJD',  [_,_,_,_,_,_],_,_,MG,MG).
 
 head('ADJA','KON_ADJA',r,kon,'ADJA',  [_,_,_,_,_,_],_,_,MG,MG).
 
+
+%kokom + kokom
+head('KOMPX','KON_KOMPX',r,kon,'KOMPX',  [_,_,_,_,_,_],_,_,MG,MG).
 
 
 %v*fin + v*fin
@@ -2019,13 +2028,14 @@ kon_mapping('PDS','KON_PRONOUN') :- !.
 kon_mapping('PIS','KON_PRONOUN') :- !.
 kon_mapping('PWS','KON_PRONOUN') :- !.
 kon_mapping('PWAT','KON_PRONOUN') :- !.
-kon_mapping('PRELS','KON_PRONOUN') :- !.
-kon_mapping('PRELAT','KON_PRONOUN') :- !.
 kon_mapping('PIAT','KON_PRONOUN') :- !.
 kon_mapping('PDAT','KON_PRONOUN') :- !.
 kon_mapping('PIDAT','KON_PRONOUN') :- !.
 kon_mapping('PPOSS','KON_PRONOUN') :- !.
 kon_mapping('PPOSAT','KON_PRONOUN') :- !.
+
+kon_mapping('PRELS','KON_PRONOUN_REL') :- !.
+kon_mapping('PRELAT','KON_PRONOUN_REL') :- !.
 
 kon_mapping('VVFIN','KON_FINVERB') :- !.
 kon_mapping('VMFIN','KON_FINVERB') :- !.

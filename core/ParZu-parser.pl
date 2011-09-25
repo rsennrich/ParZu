@@ -22,7 +22,7 @@ conj_expand(no). %% expand conj in postprocessing
 appos_expand(no). %% expand appos
 
 
-:- dynamic chart/11, scores/5, min_len/1, inccount/1, inccount/2, lastpos/1, tops_chart/4, statschart/8, level/1, tried/2, perlevel/1, graphical/1, sentno/1, output/7, outputformat/1,sentdelim/1,returnsentdelim/1,nbestmode/1, morphology/1, lemmatisation/1.
+:- dynamic chart/11, scores/5, min_len/1, inccount/1, inccount/2, lastpos/1, tops_chart/4, statschart/10, level/1, tried/2, perlevel/1, graphical/1, sentno/1, output/7, outputformat/1,sentdelim/1,returnsentdelim/1,nbestmode/1, morphology/1, lemmatisation/1.
 
 :- index(chart(1,1,1,0,0,0,0,0,1,0,0));true. %% only has an effect in SWI
 :- index(head(1,1,1,0,0,0,0,0,0,0));true.
@@ -91,7 +91,7 @@ sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[WFormF|MORPHF],
   FuncG=..[SG|OG],           % get G pred (FG)
   head2(Ftag,Gtag,l,Type,Transtag,[FChunk,GChunk,FFh,FGh,OF,OG,FID,GID],FPos-GPos,MORPHF,MORPHG,MORPH),
   Dist is FPos - GPos,
-  (statschart(SF,MORPHF,SG,MORPHG,Type,Prob,Percent,Dist) -> true ; (once(stats2(Type,Ftag,FFh,SF,MORPHF,Gtag,FGh,SG,MORPHG,Prob,Percent,Dist,FChunk-OF)), asserta(statschart(SF,MORPHF,SG,MORPHG,Type,Prob,Percent,Dist)))),
+  (statschart(SF,Ftag,MORPHF,SG,Gtag,MORPHG,Type,Prob,Percent,Dist) -> true ; (once(stats2(Type,Ftag,FFh,SF,MORPHF,Gtag,FGh,SG,MORPHG,Prob,Percent,Dist,FChunk-OF)), asserta(statschart(SF,Ftag,MORPHF,SG,Gtag,MORPHG,Type,Prob,Percent,Dist)))),
   Prob >= DISCARD,
   %% assert stats
   atom_concat('<-',Type,ND1),atom_concat(ND1,'<-',DType),
@@ -129,7 +129,7 @@ sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[_|MORPHF],
   !,
   head2(Gtag,Ftag,r,Type,Transtag,[GChunk,FChunk,FGh,FFh,OG,OF,GID,FID],GPos-FPos, MORPHG,MORPHF,MORPH),
   Dist is FPos - GPos,
-  (statschart(SG,MORPHG,SF,MORPHF,Type,Prob,Percent,Dist) -> true; (once(stats2(Type,Gtag,FGh,SG,MORPHG,Ftag,FFh,SF,MORPHF,Prob,Percent,Dist,GChunk-OG)), asserta(statschart(SG,MORPHG,SF,MORPHF,Type,Prob,Percent,Dist)))),
+  (statschart(SG,Gtag,MORPHG,SF,Ftag,MORPHF,Type,Prob,Percent,Dist) -> true; (once(stats2(Type,Gtag,FGh,SG,MORPHG,Ftag,FFh,SF,MORPHF,Prob,Percent,Dist,GChunk-OG)), asserta(statschart(SG,Gtag,MORPHG,SF,Ftag,MORPHF,Type,Prob,Percent,Dist)))),
   Prob >= DISCARD,
   %% assert stats
   atom_concat('->',Type,ND1),atom_concat(ND1,'->',DType),  % ->func->
@@ -333,7 +333,7 @@ collect_sents(end-of-file).
 collect_sents(no-end) :-
     garbage_collect,
     (trim_stacks->true;true),
-    retractall(statschart(_,_,_,_,_,_,_,_)),
+    retractall(statschart(_,_,_,_,_,_,_,_,_,_)),
     retractall(inccount(_,_)),
     collect_sent([],Sent,EOF,1),
     retractall(min_len(_)),
