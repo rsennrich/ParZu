@@ -8,6 +8,12 @@
 
 :- style_check(-discontiguous).
 
+:- index(get_case(0,1,0,1));true.
+:- index(get_number(0,1,0,1));true.
+:- index(get_gender(0,1,0,1));true.
+:- index(get_person(0,1,0,1));true.
+:- index(get_degree(0,1,0,1));true.
+
 %======================================================================================
 %determiners
 
@@ -27,6 +33,10 @@ head('NN','PIDAT',l,det,'NN', [_,_,_,_,OF,_],_-G,MF,_,MF) :- \+ member('<-gmod<-
 head('NE','PIDAT',l,det,'NE', [_,_,_,_,OF,_],_-G,MF,_,MF) :- \+ member('<-gmod<-',OF), OldPos is G - 1, \+ checkPos(OldPos,_,'ART',_,_).
 
 head('FM','PIDAT',l,det,'FM', [_,_,_,_,OF,_],_-G,MF,_,MF) :- \+ member('<-gmod<-',OF), OldPos is G - 1, \+ checkPos(OldPos,_,'ART',_,_).
+
+
+%all das; von all denjenigen usw.
+head2('PDS','PIDAT',l,det,'PDS', [_,_,_,all,_,_,_,_],H-D,MH,_,MH) :- 1 is H-D.
 
 
 head('NN','PIAT',l,det,'NN', [_,_,_,_,OF,_],_-G,MF,_,MF) :- \+ member('<-gmod<-',OF), OldPos is G - 1, \+ checkPos(OldPos,_,'ART',_,_).
@@ -206,37 +216,32 @@ head('APPO','PWS',l,pn,'PPQ',[_,_,_,_,OG,_],_,MF,_,MF) :- \+ member('<-pn<-',OG)
 %Subject, only one is allowed    
 
 %subject before finite verb
-head('VVFIN',SUBJ,l,subj,'VVFIN',[FC,_,_,_,UG,OG],_-G,MF,MG,MNew) :- subjcandidate(SUBJ,G), case_nom(MG,SUBJ), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG), (member('->kon->',OG)->MNew=MF;check_agreement(MF,'VVFIN',MG,SUBJ,MNew)).
+head('VVFIN',SUBJ,l,subj,'VVFIN',[FC,_,_,_,UG,OG],_-G,MF,MG,MNew) :- subjcandidate(SUBJ,G), (member('->kon->',OG)->(case_nom(MG,SUBJ),MNew=MF);check_agreement(MF,'VVFIN',MG,SUBJ,MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
-head('VMFIN',SUBJ,l,subj,'VMFIN',[FC,_,_,_,UG,OG],_-G,MF,MG,MNew) :- subjcandidate(SUBJ,G), case_nom(MG,SUBJ), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG), (member('->kon->',OG)->MNew=MF;check_agreement(MF,'VMFIN',MG,SUBJ,MNew)).
+head('VMFIN',SUBJ,l,subj,'VMFIN',[FC,_,_,_,UG,OG],_-G,MF,MG,MNew) :- subjcandidate(SUBJ,G), (member('->kon->',OG)->(case_nom(MG,SUBJ),MNew=MF);check_agreement(MF,'VMFIN',MG,SUBJ,MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
-
-head('VAFIN',SUBJ,l,subj,'VAFIN',[FC,_,_,_,UG,OG],_-G,MF,MG,MNew) :- subjcandidate(SUBJ,G), case_nom(MG,SUBJ), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG), (member('->kon->',OG)->MNew=MF;check_agreement(MF,'VAFIN',MG,SUBJ,MNew)).
-
-
-%subject before infinitive verb with 'zu' (there is no finite verb in infinitive clauses)
-% head('VVIZU',OBJ,l,obja,'VVIZU',[FC,_,_,_,UG,_],__-G,MF,MG,MF) :- objcandidate(OBJ,G), case_acc(MG,OBJ), \+ member('passive',FC), \+ member('<-obja<-',UG), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
+head('VAFIN',SUBJ,l,subj,'VAFIN',[FC,_,_,_,UG,OG],_-G,MF,MG,MNew) :- subjcandidate(SUBJ,G), (member('->kon->',OG)->(case_nom(MG,SUBJ),MNew=MF);check_agreement(MF,'VAFIN',MG,SUBJ,MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 %allow subject before nonfinite verb if no matching finite verb is found in preprocessing (-> chunk has only one element).
-% head('VVPP', SUBJ,l,subj,'NEB',[FC,_,_,_,UG,_],F-G,MF,MG,MF) :- subjcandidate(SUBJ,G), \+ SUBJ = 'CARD', verbchunklength(FC,1), RightPos is F + 1, \+ checkPos(RightPos,_,'KON',_,_), case_nom(MG,SUBJ), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('VVPP', SUBJ,l,subj,'NEB',[FC,_,_,_,UG,_],F-G,MF,MG,MF) :- subjcandidate(SUBJ,G), \+ SUBJ = 'CARD', verbchunklength(FC,1), RightPos is F + 1, \+ checkPos(RightPos,_,'KON',_,_), case_nom(MG,SUBJ), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 %relative pronoun (new transtag 'RC')
-head('VVFIN','PRELS',l,subj,'RC',[FC,_,_,_,UG,OG],_,MF,MG,MNew) :- case_nom(MG,'PRELS'), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG), (member('->kon->',OG)->MNew=MF; check_agreement(MF,'VVFIN',MG,'PRELS',MNew)).
+head('VVFIN','PRELS',l,subj,'RC',[FC,_,_,_,UG,OG],_,MF,MG,MNew) :- (member('->kon->',OG)->(case_nom(MG,'PRELS'),MNew=MF); check_agreement(MF,'VVFIN',MG,'PRELS',MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
-head('VMFIN','PRELS',l,subj,'RC',[FC,_,_,_,UG,OG],_,MF,MG,MNew) :- case_nom(MG,'PRELS'), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG), (member('->kon->',OG)->MNew=MF; check_agreement(MF,'VMFIN',MG,'PRELS',MNew)).
+head('VMFIN','PRELS',l,subj,'RC',[FC,_,_,_,UG,OG],_,MF,MG,MNew) :- (member('->kon->',OG)->(case_nom(MG,'PRELS'),MNew=MF); check_agreement(MF,'VMFIN',MG,'PRELS',MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
-head('VAFIN','PRELS',l,subj,'RC',[FC,_,_,_,UG,OG],_,MF,MG,MNew) :- case_nom(MG,'PRELS'), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG), (member('->kon->',OG)->MNew=MF; check_agreement(MF,'VAFIN',MG,'PRELS',MNew)).
+head('VAFIN','PRELS',l,subj,'RC',[FC,_,_,_,UG,OG],_,MF,MG,MNew) :- (member('->kon->',OG)->(case_nom(MG,'PRELS'),MNew=MF); check_agreement(MF,'VAFIN',MG,'PRELS',MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 %only necessary in case of tagging errors
 head('VVPP','PRELS',l,subj,'RC',[FC,_,_,_,UG,_],_,MF,MG,MF) :- case_nom(MG,'PRELS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 
 %interrogative pronoun (new transtag 'QC')
-head('VVFIN','PWS',l,subj,'QC',[FC,_,_,_,UG,OG],_,MF,MG,MNew) :- case_nom(MG,'PWS'), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG), (member('->kon->',OG)->MNew=MF; check_agreement(MF,'VVFIN',MG,'PWS',MNew)).
+head('VVFIN','PWS',l,subj,'QC',[FC,_,_,_,UG,OG],_,MF,MG,MNew) :- (member('->kon->',OG)->(case_nom(MG,'PWS'),MNew=MF); check_agreement(MF,'VVFIN',MG,'PRELS',MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
-head('VMFIN','PWS',l,subj,'QC',[FC,_,_,_,UG,OG],_,MF,MG,MNew) :- case_nom(MG,'PWS'), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG), (member('->kon->',OG)->MNew=MF; check_agreement(MF,'VMFIN',MG,'PWS',MNew)).
+head('VMFIN','PWS',l,subj,'QC',[FC,_,_,_,UG,OG],_,MF,MG,MNew) :- (member('->kon->',OG)->(case_nom(MG,'PWS'),MNew=MF); check_agreement(MF,'VMFIN',MG,'PWS',MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
-head('VAFIN','PWS',l,subj,'QC',[FC,_,_,_,UG,OG],_,MF,MG,MNew) :- case_nom(MG,'PWS'), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG), (member('->kon->',OG)->MNew=MF; check_agreement(MF,'VAFIN',MG,'PWS',MNew)).
+head('VAFIN','PWS',l,subj,'QC',[FC,_,_,_,UG,OG],_,MF,MG,MNew) :- (member('->kon->',OG)->(case_nom(MG,'PWS'),MNew=MF); check_agreement(MF,'VAFIN',MG,'PWS',MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 
 %interrogative pronoun (new transtag 'QC'); special case with "sein": don't require number agreement (Wer sind die Beatles?)
@@ -269,11 +274,11 @@ head('VVPP','PWS',l,subj,'QC',[FC,_,_,_,UG,_],_,MF,MG,MF) :- case_nom(MG,'PWS'),
 
 
 %subject after finite verb
-head('VVFIN',SUBJ,r,subj,'VVFIN',[_,_,_,_,OF,OG],F-_,MF,MG,MNew)  :- subjcandidate(SUBJ,F), case_nom(MF,SUBJ), restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG), \+ member('<-explsubj<-',OG), \+ member('->explsubj->',OG), \+ member('->objp->',OG), \+ member('->pred->',OG), (member('->kon->',OF)->MNew=MF; check_agreement(MG,'VVFIN',MF,SUBJ,MNew)).
+head('VVFIN',SUBJ,r,subj,'VVFIN',[_,_,_,_,OF,OG],F-_,MF,MG,MNew)  :- subjcandidate(SUBJ,F), (member('->kon->',OF)->(case_nom(MF,SUBJ),MNew=MF); check_agreement(MG,'VVFIN',MF,SUBJ,MNew)), restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG), \+ member('<-explsubj<-',OG), \+ member('->explsubj->',OG), \+ member('->objp->',OG), \+ member('->pred->',OG).
 
-head('VAFIN',SUBJ,r,subj,'VAFIN',[_,_,_,_,OF,OG],F-_,MF,MG,MNew)  :- subjcandidate(SUBJ,F), case_nom(MF,SUBJ), restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG), \+ member('<-explsubj<-',OG), \+ member('->explsubj->',OG), \+ member('->objp->',OG), \+ member('->pred->',OG), (member('->kon->',OF)->MNew=MF; check_agreement(MG,'VAFIN',MF,SUBJ,MNew)).
+head('VAFIN',SUBJ,r,subj,'VAFIN',[_,_,_,_,OF,OG],F-_,MF,MG,MNew)  :- subjcandidate(SUBJ,F), (member('->kon->',OF)->(case_nom(MF,SUBJ),MNew=MF); check_agreement(MG,'VAFIN',MF,SUBJ,MNew)), restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG), \+ member('<-explsubj<-',OG), \+ member('->explsubj->',OG), \+ member('->objp->',OG), \+ member('->pred->',OG).
 
-head('VMFIN',SUBJ,r,subj,'VMFIN',[_,_,_,_,OF,OG],F-_,MF,MG,MNew)  :- subjcandidate(SUBJ,F), case_nom(MF,SUBJ), restrict_coord(OG),  \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG), \+ member('<-explsubj<-',OG), \+ member('->explsubj->',OG), \+ member('->objp->',OG), \+ member('->pred->',OG), (member('->kon->',OF)->MNew=MF; check_agreement(MG,'VMFIN',MF,SUBJ,MNew)).
+head('VMFIN',SUBJ,r,subj,'VMFIN',[_,_,_,_,OF,OG],F-_,MF,MG,MNew)  :- subjcandidate(SUBJ,F), (member('->kon->',OF)->(case_nom(MF,SUBJ),MNew=MF); check_agreement(MG,'VMFIN',MF,SUBJ,MNew)), restrict_coord(OG),  \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG), \+ member('<-explsubj<-',OG), \+ member('->explsubj->',OG), \+ member('->objp->',OG), \+ member('->pred->',OG).
 
 
 %======================================================================================
@@ -484,6 +489,12 @@ head('VMFIN','ADJD',l,pred,'VMFIN',[FC,_,_,_,UG,_],_,MF,_,MF)  :- \+ member('<-p
 head('VVIZU',Dtag,l,pred,'VVIZU',[_,_,_,_,UG,_],_,MF,MG,MF) :- predcand(Dtag), case_nom(MG,Dtag), \+ member('<-pred<-',UG), \+ member('->pred->',UG), \+ member('<-adv<-',UG), \+ member('<-subj<-',UG), \+ member('<-objd<-',UG).
 
 head('VVIZU','ADJD',l,pred,'VVIZU',[_,_,_,_,UG,_],_,MF,_,MF) :- \+ member('<-pred<-',UG), \+ member('->pred->',UG), \+ member('<-adv<-',UG), \+ member('<-subj<-',UG), \+ member('<-objd<-',UG).
+
+
+%das Columbia genannte Raumschiff
+head('ADJA', OBJ,l,pred,'ADJA',[_,_,_,_,OF,_],F-G,MF,MG,MF) :-  1 is F-G, derived_from_ppast(MF,'ADJA'), predcand(OBJ), case_nom(MG,OBJ), \+ member('<-pred<-',OF).
+
+head('ADJD', OBJ,l,pred,'ADJD',[_,_,_,_,OF,_],F-G,MF,MG,MF) :-  1 is F-G, derived_from_ppast(MF,'ADJD'), predcand(OBJ), case_nom(MG,OBJ), \+ member('<-pred<-',OF).
 
 
 
@@ -2497,6 +2508,7 @@ unify_morph(_,_,_,_) :- morphology(off), !.
 %unify_morphs(?List1,+Tag1,?List2,+Tag2).
 %tests for number-person agreement
 unify_morph(List1,Tag1,List2,Tag2) :- morphology(MorphType), morph_finverb(Tag1), !,
+				(MorphType=gertwol->get_case(List2,Tag2,'Nom',MorphType);MorphType=tueba->get_case(List2,Tag2,'n',MorphType)), !,
 				get_number(List2,Tag2,Number,MorphType), get_number(List1,Tag1,Number,MorphType), %number
 				get_person(List2,Tag2,Person,MorphType), get_person(List1,Tag1,Person,MorphType). %person
 

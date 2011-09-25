@@ -23,13 +23,6 @@ stats2(attr,'ADJA',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.3,0.3,_D,_HC).
 stats2(attr,'CARD',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,0.1,_D,_HC).
 
 
-%deverbal adjectives can have same arguments as verbs
-stats2(obja,'ADJA',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,0.1,_D,_HC).
-stats2(obja,'ADJD',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,0.1,_D,_HC).
-stats2(objd,'ADJA',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,0.1,_D,_HC).
-stats2(objd,'ADJD',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,0.1,_D,_HC).
-stats2(zeit,'ADJA',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,0.1,_D,_HC).
-
 %word classes other than articles or attributive pronouns should only be analysed as determiners if there is no other option.
 stats2(det,_Htag,_FH,_SH,_MORPHH,'PRELS',_FD,_SD,_MORPHD,0.45,0.45,_D,_HC).
 stats2(det,_Htag,_FH,_SH,_MORPHH,'PWS',_FD,_SD,_MORPHD,0.3,0.3,_D,_HC).
@@ -125,6 +118,7 @@ getadvprob(_Htag,_Dtag,_DWord,_RealDist,0.15) :- !.
 
 
 %zeit should be lower than app.
+stats2(zeit,'ADJA',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,0.1,_D,_HC).
 stats2(zeit,_Htag,_FH,_SH,_MORPHH,'CARD',_FD,_SD,_MORPHD,0.8,0.8,_D,_HC).
 stats2(zeit,_Htag,_FH,_SH,_MORPHH,'NN',_FD,_SD,_MORPHD,0.2,0.2,_D,_HC).
 
@@ -343,19 +337,22 @@ stats2(subj,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,NP,_D,HC-_OG) :-
 
 
 %accusative objects.
-stats2(obja,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,MORPHD,P,P,_D,HC-_OG) :-
+stats2(obja,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,MORPHD,P,P,_D,HC-_OG) :-
 	getheadandnormalise(HC,Head,_),
-	npidsamb(Head,MORPHD,Dtag,obja,P).
+	npidsamb(Head,MORPHD,Dtag,obja,PTemp),
+	((Htag = 'ADJA';Htag='ADJD')->PosMod is 0.5;PosMod is 1),
+	P is PTemp*PosMod.
 
 
 %accusative objects.
 stats2(obja2,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,MORPHD,P,P,_D,HC-_OG) :-
 	getheadandnormalise(HC,Head,_),
-	npidsamb(Head,MORPHD,Dtag,obja2,P).
-
+	npidsamb(Head,MORPHD,Dtag,obja2,PTemp),
+	((Htag = 'ADJA';Htag='ADJD')->PosMod is 0.5;PosMod is 1),
+	P is PTemp*PosMod.
 
 %dative objects
-stats2(objd,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,NP,_D,HC-_OG) :-
+stats2(objd,Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,NP,_D,HC-_OG) :-
 % 	lexic(SH,_,HPos),
 	lexic(SD,_,DPos),
 % 	RealDist is HPos-DPos,
@@ -363,33 +360,37 @@ stats2(objd,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,NP,_D,HC-_OG) :-
 	getheadandnormalise(HC,Head,_),
     ((verb(Head,_,_,_,Objd,_,_,_,_,_,_,_,_,_,_,_),Objd > 0)->Max is 0.8;Max is 0.06), %we set max values because objd often competes with gmod (das Ende der Vertreibung kommt)
 	npidsamb(Head,MORPHD,Dtag,objd,PLabel),
-	P is min(Max,PLabel)*DistMod, NP is min(Max,PLabel)*DistMod.
+	((Htag = 'ADJA';Htag='ADJD')->PosMod is 0.5;PosMod is 1),
+	P is min(Max,PLabel)*DistMod*PosMod, NP is min(Max,PLabel)*DistMod*PosMod.
 
 
 %genitive objects
 stats2(objg,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,MORPHD,P,P,_D,HC-_OG) :-
 	getheadandnormalise(HC,Head,_),
-	((verb(Head,_,_,_,_,_,Objg,_,_,_,_,_,_,_,_,_),Objg > 0)->Max is 0.8;Max is 0.06), %should always be lower than prob for gmod; if no statistical evidence found, only use if all else is impossible
+	((verb(Head,_,_,_,_,_,Objg,_,_,_,_,_,_,_,_,_),Objg > 0)->Max is 0.4;Max is 0.06), %should always be lower than prob for gmod; if no statistical evidence found, only use if all else is impossible
 	npidsamb(Head,MORPHD,Dtag,objg,PTemp),
 	P is min(Max,PTemp).
 
 %predicate nouns
-stats2(pred,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,NP,_D,HC-_OG) :-
+stats2(pred,Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,NP,_D,HC-_OG) :-
 	(morph_noun(Dtag);morph_pronoun(Dtag)),
 	getheadandnormalise(HC,Head,_),
 	lexic(SD,_,DPos),
 	DistMod is 1+((50-DPos)*0.00005),
 	npidsamb(Head,MORPHD,Dtag,pred,PLabel),
-	P is PLabel*DistMod, NP is PLabel*DistMod.
+	((Htag = 'ADJA';Htag='ADJD')->PosMod is 0.5;PosMod is 1),
+	P is PLabel*DistMod*PosMod, NP is PLabel*DistMod*PosMod.
 
 %disambiguate between subj/obja/objd/objg/pred. Use lexical information of verb and morphology of dependent.
 npidsamb(Head,Morph,Tag,Cand,Prob) :- verb(Head,Occurs,Subj,Obja,Objd,Obja2,Objg,_,_,_,Pred,_,_,_,_,_),
 				      Occurs > 3,
 				      (Obja>Subj->Subj2 is Obja+1;Subj2 is Subj), %fix some statistical outliers: subj should be more probable than obja.
-				      (Pred>Subj2->Pred2 is Subj2-1;Pred2 is Pred),
-				      ((Cand=subj,CandNum=Subj2);(Cand=obja,CandNum=Obja);(Cand=objd,CandNum=Objd);(Cand=objg,CandNum=Objg);(Cand=pred,CandNum=Pred2);(Cand=obja2,CandNum=Obja2)),
-				      testmorphology(Morph,Tag,Subj2,Obja,Objd,Objg,SubjNew,ObjaNew,ObjdNew,ObjgNew),
-				      Prob is CandNum / (SubjNew + ObjaNew + ObjdNew + ObjgNew + 0.1), !.
+				      (Objd>Subj2->Subj3 is Objd+1;Subj3 is Subj2), %fix some statistical outliers: subj should be more probable than obja.
+				      (Pred>Subj3->Pred2 is Subj3-1;Pred2 is Pred),
+				      ((Cand=subj,CandNum=Subj3);(Cand=obja,CandNum=Obja);(Cand=objd,CandNum=Objd);(Cand=objg,CandNum=Objg);(Cand=pred,CandNum=Pred2);(Cand=obja2,CandNum=Obja2)),
+				      testmorphology(Morph,Tag,Subj3,Obja,Objd,Objg,SubjNew,ObjaNew,ObjdNew,ObjgNew),
+				      Total is SubjNew + ObjaNew + ObjdNew + ObjgNew,
+				      (Total > 0 -> Prob is CandNum / Total; fail), !.
 
 %no lexical information found: use constant values.
 npidsamb(_,_,_,subj,0.7) :- !.
