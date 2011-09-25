@@ -2609,12 +2609,13 @@ get_gender(_,_,_,off) :- !.
 
 get_person([_,_,_,Person],'PPER',Person,tueba) :- !.
 get_person([Person,_,_,_],Tag,Person,tueba) :- morph_finverb(Tag), !.
-get_person(_,Tag,'3',tueba) :- \+ morph_finverb(Tag), !.
-
+get_person(_,Tag,'3',tueba) :- \+ morph_finverb(Tag).
+get_person(_,Tag,3,tueba) :- \+ morph_finverb(Tag), !.
 
 get_person([Person,_,_,_],'PPER',Person,gertwol) :- !.
 get_person([Person,_,_,_],Tag,Person,gertwol) :- morph_finverb(Tag), !.
-get_person(_,Tag,'3',gertwol) :- \+ morph_finverb(Tag), !.
+get_person(_,Tag,'3',gertwol) :- \+ morph_finverb(Tag).
+get_person(_,Tag,3,gertwol) :- \+ morph_finverb(Tag), !.
 
 get_person(_,_,_,off) :- !.
 
