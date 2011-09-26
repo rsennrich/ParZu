@@ -36,15 +36,15 @@ prolog_load = {'yap':'-l',
 def usage():
     bold = "\033[1m"
     reset = "\033[0;0m"
-    print(bold + '\\ParZu options\n' + reset)
+    print(bold + '\nParZu options\n' + reset)
     print('\t' + bold + '-h' + reset + ', ' + bold + '--help' + reset)
     print('\t\tprint usage information\n')
     print('\t' + bold + '-i' + reset + ', ' + bold + '--input' + reset + ' type')
     print('\t\tdefine input type. Supported so far:')
     print('\t\t' + bold +'plain' + reset + ': plain text')
-    print('\t\t' + bold +'preprocessed' + reset + ': parser-ready input (generated with output option "preprocessed")\n')
+    print('\t\t' + bold +'preprocessed' + reset + ': parser-ready input (generated with output option "preprocessed")')
     print('\t\t' + bold +'tokenized' + reset + ': tokenized text. one token per line, empty line for sentence boundary')
-    print('\t\t' + bold +'tagged' + reset + ': POS-tagged text. token [tab] tag [newline]')
+    print('\t\t' + bold +'tagged' + reset + ': POS-tagged text. token [tab] tag [newline]\n')
     print('\t' + bold + '-l' + reset + ', ' + bold + '--linewise' + reset)
     print('\t\tparse text line by line (no automatic sentence splitting). This option is automatically enabled for tokenized or tagged input to enforce the original sentence segmentation.\n')
     print('\t' + bold + '-o' + reset + ', ' + bold + '--output' + reset + ' type')
@@ -54,7 +54,7 @@ def usage():
     print('\t\t' + bold +'moses' + reset + ': factored format used by Moses SMT system')
     print('\t\t' + bold +'preprocessed' + reset + ': return preprocessed input (unparsed, but parser-ready)\n')
     print('\t\t' + bold +'prolog' + reset + ': prolog-readable format')
-    print('\t\t' + bold +'raw' + reset + ': parser output without postprocessing (mostly for debugging)')
+    print('\t\t' + bold +'raw' + reset + ': parser output without postprocessing (mostly for debugging)\n')
     print('\t' + bold + '-p'  + reset + ', ' + bold + '--processes' + reset + ' int')
     print('\t\tnumber of parallel parser processes\n')
     print('\t' + bold + '-q'  + reset + ', ' + bold + '--quiet' + reset)
@@ -306,8 +306,9 @@ def preprocess(instream,outstream,options):
             morphisto = Popen(["fst-infl", options['morphisto_model']],stdin=morphin,stdout=PIPE,stderr=options['senderror'])
             morphisto2prolog = Popen(["python", "morphisto2prolog.py"], cwd=os.path.join(sys.path[0],'preprocessor','morphology'),stdin=morphisto.stdout,stdout=morphfile,stderr=options['senderror'])
             morphisto2prolog.wait()
-    else:
-        morphfile.write('gertwol(\'<unknown>\',\'<unknown>\',_,_,_).')
+
+    #having at least one entry makes sure that the preprocessing script doesn't crash
+    morphfile.write('gertwol(\'<unknown>\',\'<unknown>\',_,_,_).')
 
     morphfile.close()
     tagfile.close()
