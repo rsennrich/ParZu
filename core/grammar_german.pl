@@ -1753,11 +1753,11 @@ head(Tag,'ADV',r,kon,Tag,[_,_,'etc.',_,_,_],_,MF,_,MF).
 head(Tag,'ADV',r,kon,Tag,[_,_,'usw.',_,_,_],_,MF,_,MF).
 
 %'und so weiter'
-head2(_,_,l,adv,'CJ',[_,_,weiter,so,_,_,_,_],F-_,_,_,_) :- LeftPos is F-1, checkPos(LeftPos,und,_,_,_).
-head2(_,'CJ',r,cj,'KON_ANY',[_,_,und,weiter,_,_,_,_],_,_,_,_).
+head2(_,_,l,adv,'CJ',[_,_,weiter,so,_,_,_,_],F-_,MH,_,MH) :- LeftPos is F-1, checkPos(LeftPos,und,_,_,_).
+head2(_,'CJ',r,cj,'KON_ANY',[_,_,und,weiter,_,_,_,_],_,MH,_,MH).
 
 %'sondern auch'
-head2(_,_,r,cj,'KON',[_,_,sondern,auch,_,_,_,_],_,_,_,_).
+head2(_,_,r,cj,'KON',[_,_,sondern,auch,_,_,_,_],_,MH,_,MH).
 
 
 %"sowohl als auch" ; "entweder oder"; "weder noch"
