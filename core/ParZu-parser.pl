@@ -14,15 +14,7 @@ write('A sample call is:'),nl,  write('go_textual(\'preprocessed_input.pl\'), to
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%% set some flags
-intralex(no).
-complement_or_adjunct(no).
-conj_expand(no). %% expand conj in postprocessing
-appos_expand(no). %% expand appos
-
-
-:- dynamic chart/11, scores/5, min_len/1, inccount/1, inccount/2, lastpos/1, tops_chart/4, statschart/10, level/1, tried/2, perlevel/1, graphical/1, sentno/1, output/7, outputformat/1,sentdelim/1,returnsentdelim/1,nbestmode/1, morphology/1, lemmatisation/1.
+:- dynamic chart/11, scores/5, inccount/1, lastpos/1, tops_chart/4, statschart/10, perlevel/1, sentno/1, output/7, outputformat/1, sentdelim/1, returnsentdelim/1, nbestmode/1, morphology/1, lemmatisation/1.
 
 :- index(chart(1,1,1,0,0,0,0,0,1,0,0));true. %% only has an effect in SWI
 :- index(head(1,1,1,0,0,0,0,0,0,0));true.
@@ -79,63 +71,36 @@ sparse(Stack,[[F,Ftag,Chunk,MORPH]|SRest],[Pos|PosList],LastPos,FStack,2) :-    
 
 %% sparse/21 this is the core CYK parsing algorithm
 %% main parsing step:
-%% REDUCE LEFT 
 sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[WFormF|MORPHF],
-       GID,GPos,Gfrom,_Gto,FGh,GChunk,GScore,Gtag,FuncG,[_|MORPHG], Level) :-  %% Ffrom \= Gfrom,
-  %F(G) = dep to left, reduce-Stack reversed!
+       GID,GPos,Gfrom,_Gto,FGh,GChunk,GScore,Gtag,FuncG,[WFormG|MORPHG], Level) :-
   constant(commit,COMMIT),
   constant(discard,DISCARD),
   constant(aggressive_start,MAXCHART),
   constant(aggressive_thresh,THRESH),
   FuncF=..[SF|OF],           % get F pred (FF)
   FuncG=..[SG|OG],           % get G pred (FG)
-  head2(Ftag,Gtag,l,Type,Transtag,[FChunk,GChunk,FFh,FGh,OF,OG,FID,GID],FPos-GPos,MORPHF,MORPHG,MORPH),
-  Dist is FPos - GPos,
-  (statschart(SF,Ftag,MORPHF,SG,Gtag,MORPHG,Type,Prob,Percent,Dist) -> true ; (once(stats2(Type,Ftag,FFh,SF,MORPHF,Gtag,FGh,SG,MORPHG,Prob,Percent,Dist,FChunk-OF)), asserta(statschart(SF,Ftag,MORPHF,SG,Gtag,MORPHG,Type,Prob,Percent,Dist)))),
-  Prob >= DISCARD,
-  %% assert stats
-  atom_concat('<-',Type,ND1),atom_concat(ND1,'<-',DType),
-  %% Build Func-Struc:
-  appl_chunk_l(FuncF,FuncG,DType,FuncFTRes),
-  (chart(_,Gfrom,Fto,_,_,_,Transtag,_,FuncFTRes,_,_) -> (fail);true), % alternative path joins in again
-  OPScore is FScore * GScore * Percent, Len is Fto - Gfrom,
-  inc(ID),
-  (ID>MAXCHART -> (((OPScore / ((Len+(Len**sqrt(2)))+(ID/2))) < THRESH) -> (write(' TOO LOW!'),nl,fail);true); true),
-  %do not assert if alternative is not among n best.
-  (constant(alterlocal,ALTERL) ->
-    (constant(alter,ALTER),
-    findall(PruneScore, (scores(Gfrom,Fto,_,_,PruneScore),\+var(OPScore),PruneScore>OPScore),PruneList),
-    length(PruneList,PruneLen),
-    PruneLen < ALTER + ALTERL);true),
-  asserta(scores(Gfrom,Fto,Level,ID,OPScore)),
-  asserta(chart(ID,Gfrom,Fto,[[SF,Ftag,FChunk],[SG,Gtag,GChunk]],[FPos,OPScore,FChunk,Len],FFh,Transtag,Type,FuncFTRes,Level,[WFormF|MORPH])),
-  (debug(1) -> (write(ID),write(' LEFT'),nl,write_tree(FuncFTRes),nl);true),
-  retract(perlevel(X)),
-  X1 is X+1, assert(perlevel(X1)),
-  ((Prob > COMMIT) -> !; true), %% early commitment
-  fail.
-
-%% main parsing step:
-%% REDUCE RIGHT
-sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[_|MORPHF],
-       GID,GPos,Gfrom,_Gto,FGh,GChunk,GScore,Gtag,FuncG,[WFormG|MORPHG],Level) :- %% Ffrom \= Gfrom,
-  %G(F) = dep to right, reduce-Stack reversed!
-  constant(commit,COMMIT),
-  constant(discard,DISCARD),
-  constant(aggressive_start,MAXCHART),
-  constant(aggressive_thresh,THRESH),
-  FuncF=..[SF|OF],
-  FuncG=..[SG|OG],
   !,
-  head2(Gtag,Ftag,r,Type,Transtag,[GChunk,FChunk,FGh,FFh,OG,OF,GID,FID],GPos-FPos, MORPHG,MORPHF,MORPH),
-  Dist is FPos - GPos,
-  (statschart(SG,Gtag,MORPHG,SF,Ftag,MORPHF,Type,Prob,Percent,Dist) -> true; (once(stats2(Type,Gtag,FGh,SG,MORPHG,Ftag,FFh,SF,MORPHF,Prob,Percent,Dist,GChunk-OG)), asserta(statschart(SG,Gtag,MORPHG,SF,Ftag,MORPHF,Type,Prob,Percent,Dist)))),
-  Prob >= DISCARD,
-  %% assert stats
-  atom_concat('->',Type,ND1),atom_concat(ND1,'->',DType),  % ->func->
-  %% Build Func-Struc:
-  appl_chunk_r(FuncG,FuncF,DType,FuncGTRes),
- (chart(_,Gfrom,Fto,_,_,_,Transtag,_,FuncGTRes,_,_) -> (fail); true), % alternative paths join again
+  (
+  %right word is head
+    (head2(Ftag,Gtag,l,Type,Transtag,[FChunk,GChunk,FFh,FGh,OF,OG,FID,GID],FPos-GPos,MORPHF,MORPHG,MORPH),
+     Dist is FPos - GPos,
+     (statschart(SF,Ftag,MORPHF,SG,Gtag,MORPHG,Type,Prob,Percent,Dist) -> true ; (once(stats2(Type,Ftag,FFh,SF,MORPHF,Gtag,FGh,SG,MORPHG,Prob,Percent,Dist,FChunk-OF)), asserta(statschart(SF,Ftag,MORPHF,SG,Gtag,MORPHG,Type,Prob,Percent,Dist)))),
+     Prob >= DISCARD,
+     Dir = l,
+     atom_concat('<-',Type,ND1),atom_concat(ND1,'<-',DType),  % <-func<-
+     appl_chunk_l(FuncF,FuncG,DType,FuncTRes)
+    );
+  %left word is head
+    (head2(Gtag,Ftag,r,Type,Transtag,[GChunk,FChunk,FGh,FFh,OG,OF,GID,FID],GPos-FPos, MORPHG,MORPHF,MORPH),
+     Dist is FPos - GPos,
+     (statschart(SG,Gtag,MORPHG,SF,Ftag,MORPHF,Type,Prob,Percent,Dist) -> true; (once(stats2(Type,Gtag,FGh,SG,MORPHG,Ftag,FFh,SF,MORPHF,Prob,Percent,Dist,GChunk-OG)), asserta(statschart(SG,Gtag,MORPHG,SF,Ftag,MORPHF,Type,Prob,Percent,Dist)))),
+     Prob >= DISCARD,
+     Dir = r,
+     atom_concat('->',Type,ND1),atom_concat(ND1,'->',DType),  % ->func->
+     appl_chunk_r(FuncG,FuncF,DType,FuncTRes)
+    )
+  ),
+  (chart(_,Gfrom,Fto,_,_,_,Transtag,_,FuncTRes,_,_) -> (fail);true), % alternative path joins in again
   OPScore is FScore * GScore * Percent, Len is Fto - Gfrom,
   inc(ID),
   (ID>MAXCHART -> (((OPScore / ((Len+(Len**sqrt(2)))+(ID/2))) < THRESH) -> (write(' TOO LOW!'),nl,!,fail);true); true),
@@ -146,8 +111,10 @@ sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[_|MORPHF],
     length(PruneList,PruneLen),
     PruneLen < ALTER + ALTERL);true),
   asserta(scores(Gfrom,Fto,Level,ID,OPScore)),
-  asserta(chart(ID,Gfrom,Fto,[[SF,Ftag,FChunk],[SG,Gtag,GChunk]],[GPos,OPScore,GChunk,Len],FGh,Transtag,Type,FuncGTRes,Level,[WFormG|MORPH])),
-  (debug(1) -> (write(ID),write(' RIGHT'),nl,write_tree(FuncGTRes),nl);true),
+  (Dir = l -> 
+    asserta(chart(ID,Gfrom,Fto,[[SF,Ftag,FChunk],[SG,Gtag,GChunk]],[FPos,OPScore,FChunk,Len],FFh,Transtag,Type,FuncTRes,Level,[WFormF|MORPH]));
+    asserta(chart(ID,Gfrom,Fto,[[SF,Ftag,FChunk],[SG,Gtag,GChunk]],[GPos,OPScore,GChunk,Len],FGh,Transtag,Type,FuncTRes,Level,[WFormG|MORPH]))
+  ),
   retract(perlevel(X)),
   X1 is X+1, assert(perlevel(X1)),
   ((Prob > COMMIT) -> !; true), %% early commitment
@@ -155,23 +122,13 @@ sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[_|MORPHF],
 
 
 %% initiate the parsing process
-%% sparse/6 -> nextlevel/2 -> sparse/9: sparse/9 reduces all it can on one CYK level
-sparse(Stack,[],_,N,FStruc,_) :-     % NEW FUNCTION IN CYK ::: launch the parsing process (hitherto it was just shifting)
-    length(Stack,Length),
-    min_len(MinLen),
-    Length =< MinLen,
-    retractall(min_len(_)),
+%% sparse/6 -> nextlevel/2 -> sparse/21: sparse/21 reduces all it can on one CYK level
+sparse(_,[],_,N,_,_) :-     % NEW FUNCTION IN CYK ::: launch the parsing process (hitherto it was just shifting)
     retractall(sentrel(_)),
-    assert(min_len(Length)),
-    retract(level(L)),
-    L1 is L+1,
-    assert(level(L1)),
     retractall(lastpos(_)),
     LastPos is N-1,
     assert(lastpos(LastPos)),
-    write('</PROLOG_INTRACHUNK>'), nl, 
-    nl, write('END OF ROUND '), write(L), write(' : '), write(LastPos), write(' chunks'), nl, !,
-    (debug(2) -> (write_tree(FStruc),nl);true),    
+    nl,  
     retractall(perlevel(_)),
     assert(perlevel(0)),
     %% NEXT LEVEL: SELECT CANDIDATES FROM CHART: foreach chart entry ...
@@ -179,21 +136,33 @@ sparse(Stack,[],_,N,FStruc,_) :-     % NEW FUNCTION IN CYK ::: launch the parsin
     nextlevel(1,MAX).
 
 
-% nextlevel -> bagof(sparse/9): reduces all it can on the given CYK level     
-nextlevel(L,MAX) :-
-    L < MAX,
-    constant(alter,ALTER),
-    chart( FID,Ffrom,Fto,_,[FPos,FScore,FChunk,_FLen],F,Ftag,_FType,FuncF,LA,MORPHF), % foreach chart entry
+% nextlevel -> sparse/21: reduces all it can on the given CYK level     
+nextlevel(L,_) :-
+    LA is L-1,
+    chart( FID,Ffrom,Fto,_,[FPos,FScore,FChunk,_FLen],F,Ftag,_FType,FuncF,LA,MORPHF), % foreach new chart entry
+       %try to parse with any left neighbours
+    ( ( Gto is Ffrom-1,
+        chart( GID,Gfrom,Gto,_,[GPos,GScore,GChunk,_],G,Gtag,_,FuncG,_,MORPHG),
+        sparse(FID,FPos,Ffrom,Fto,F,FChunk,FScore,Ftag,FuncF,MORPHF,
+               GID,GPos,Gfrom,Gto,G,GChunk,GScore,Gtag,FuncG,MORPHG,
+               L)
+      );
+       %try to parse with any right neighbours
+      ( Gfrom is Fto+1,
+        chart( GID,Gfrom,Gto,_,[GPos,GScore,GChunk,_],G,Gtag,_,FuncG,LB,MORPHG),
+        LB \= LA, %if both FID and GID are on same level, this has already been done.
+        sparse(GID,GPos,Gfrom,Gto,G,GChunk,GScore,Gtag,FuncG,MORPHG,
+               FID,FPos,Ffrom,Fto,F,FChunk,FScore,Ftag,FuncF,MORPHF,
+               L)
+      )
+    ).
 
-    (FID = 1 -> (!,true); (
-     Gto is Ffrom-1,
-     (LA is L-1 -> true; LB is L-1),
-     chart( GID,Gfrom,Gto,_,[GPos,GScore,GChunk,_GLen],G,Gtag,_GType,FuncG,LB,MORPHG),
-     sparse(FID,FPos,Ffrom,Fto,F,FChunk,FScore,Ftag,FuncF, MORPHF,
-                    GID,GPos,Gfrom,Gto,G,GChunk,GScore,Gtag,FuncG, MORPHG,
-		    L)
-    )),
-    write('End of Level '), write(L), write(' reduced items X: '), perlevel(X), lastpos(LastPos), !, XFact is (X/LastPos), write(X), write('XChunks :'), write(XFact), nl,
+
+nextlevel(L,MAX) :-
+    lastpos(LastPos), 
+    LastPos > 0,
+    constant(alter,ALTER),
+    write('End of Level '), write(L), write(' reduced items X: '), perlevel(X), !, XFact is (X/LastPos), write(X), write('XChunks :'), write(XFact), nl,
     %% has anything managed to reduce at this level? IF NOT, END
     X>0,
     prune(L,XFact,ALTER),
@@ -201,6 +170,7 @@ nextlevel(L,MAX) :-
     retractall(perlevel(_)),
     assert(perlevel(0)),
     !, % CUT, this level is done
+    L1 < MAX,
     nextlevel(L1,MAX).
 
 
@@ -310,7 +280,6 @@ appl_chunk_r(Head,Dep1,DType,NewStruc) :-
 %read from file
 go_textual(File) :-
     abolish(perlevel/1),
-    retractall(graphical(_)), assert(graphical(false)),
     retractall(sentno(_)), assert(sentno(0)),
     open(File, read, Stream,[encoding(utf8)]), 
     set_input(Stream),
@@ -320,7 +289,6 @@ go_textual(File) :-
 %read from stdin
 go_textual :-
     abolish(perlevel/1),
-    retractall(graphical(_)), assert(graphical(false)),
     retractall(sentno(_)), assert(sentno(0)),
     collect_sents(no-end),
     seen.
@@ -334,22 +302,15 @@ collect_sents(no-end) :-
     garbage_collect,
     (trim_stacks->true;true),
     retractall(statschart(_,_,_,_,_,_,_,_,_,_)),
-    retractall(inccount(_,_)),
     collect_sent([],Sent,EOF,1),
-    retractall(min_len(_)),
     retractall(scores(_,_,_,_,_)),
     retractall(chart(_,_,_,_,_,_,_,_,_,_,_)),
     retractall(tops_chart(_,_,_,_)),
-    retractall(tried(_,_)),
     retractall(lastpos(_)),
-    assert(min_len(1000)),
     retractall(inccount(_)),
     assert(inccount(0)),
-    retractall(level(_)),
-    assert(level(0)),
     %write('NEW SENTENCE :: =============================='), nl,
     writeq(sent(Sent)), write('.'), nl,
-    write('<PROLOG_INTRACHUNK>'), nl,
     assert(lastpos(1)),
     findall(Sent,sparse([],Sent,[1],1,[],2),_),  %% this prints all solutions
     % listing(chart), %%%%%%%%%%%%%%%%%%%%%%% debugging
@@ -357,7 +318,6 @@ collect_sents(no-end) :-
     pathfinder,
     write('%%END_OF_SENTENCE'),nl,nl,
     flush_output,
-    %% ((graphical(true),\+ object(@frame)) -> !, abort ;
     !, collect_sents(EOF). % cut, this sentence is done
 
 collect_sents(fail) :- 
@@ -432,6 +392,7 @@ pathfinder :-
     assertz(tops_chart(FinalScore,MC,1-Z,Strucs)),
     (Count > 1000 -> pathcollect([]) ; fail)
     )).%% cutoff at 1000
+
 
 pathfinder :- % endrule
   % ultiparse,
