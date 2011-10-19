@@ -104,12 +104,11 @@ sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[WFormF|MORPHF],
   OPScore is FScore * GScore * Percent, Len is Fto - Gfrom,
   inc(ID),
   (ID>MAXCHART -> (((OPScore / ((Len+(Len**sqrt(2)))+(ID/2))) < THRESH) -> (write(' TOO LOW!'),nl,!,fail);true); true),
-  %do not assert if alternative is not among n best.
-  (constant(alterlocal,ALTERL) ->
-    (constant(alter,ALTER),
-    findall(PruneScore, (scores(Gfrom,Fto,_,_,PruneScore),\+var(OPScore),PruneScore>OPScore),PruneList),
-    length(PruneList,PruneLen),
-    PruneLen < ALTER + ALTERL);true),
+  %do not assert if alternative is not among ALTER best.
+  constant(alter,ALTER),
+  findall(AltScore, (scores(Gfrom,Fto,_,_,AltScore),\+var(OPScore),AltScore>OPScore),AltList),
+  length(AltList,AltLen),
+  AltLen < ALTER,
   asserta(scores(Gfrom,Fto,Level,ID,OPScore)),
   (Dir = l -> 
     asserta(chart(ID,Gfrom,Fto,[[SF,Ftag,FChunk],[SG,Gtag,GChunk]],[FPos,OPScore,FChunk,Len],FFh,Transtag,Type,FuncTRes,Level,[WFormF|MORPH]));
@@ -188,9 +187,9 @@ prune(L,XFact,ALTER) :-
     scores(Gfrom,Fto,L,_,_Score),
     findall((Score,ID), scores(Gfrom,Fto,_,ID,Score),List),
     length(List,Len),
-    (Len < ALTER -> fail ;
+    (Len =< ALTER -> fail ;
       (sort(List,SList),
-       Till is Len-(ALTER+1),  %% fixed beam length
+       Till is Len-(ALTER),  %% fixed beam length
        prunechart(0,Till,SList),
        fail)).
 
@@ -203,7 +202,7 @@ prune(L,XFact,ALTER) :-
     scores(Gfrom,Fto,L,_,_Score),
     findall((Score,ID), scores(Gfrom,Fto,_,ID,Score),List),
     length(List,Len),
-    (Len < ALTER -> fail ;
+    (Len =< ALTER -> fail ;
       (sort(List,SList),
        Till is Len-(Len/Div), %% variable beam length
        Till > 0,
@@ -211,7 +210,7 @@ prune(L,XFact,ALTER) :-
        prunechart(0,Till,SList),
        fail)).
 
- prune(_,_,_) :- !.
+prune(_,_,_) :- !.
 
 %% prunechart: removes as many chart items as told. stops at Till.
 prunechart(_,_,[]). %eol
@@ -223,7 +222,7 @@ prunechart(C,Till,[(_Score,ID)|RList]) :-
     C1 is C+1,
     prunechart(C1,Till,RList).
 
-prunechart(_,_,_). %eorec
+prunechart(_,_,_) :- !.
 
 
 shift(Stack,[[F,Ftag,Chunk,C]|SRest],[Pos|PosList],LastPos,FStack,Shift):-
