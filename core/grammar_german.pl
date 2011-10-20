@@ -1649,7 +1649,10 @@ head('PP','APZR',r,part,'PP',[_,_,_,_,_,_],_,_,MG,MG).
 %======================================================================================
 %ART + PIS ("ein wenig"; "ein anderer") marked as particle
 
-head('PIS','ART',l,part,'PIS',[_,_,_,_,_,_],F-G,MF,_,MF) :- 2 >= F-G.
+head('PIS','ART',l,part,'PIS',[_,_,FF,_,_,_],F-G,MF,_,MF) :- 2 >= F-G, FF \= 'ander'.
+
+% "ein anderer" (with agreement constraints)
+head('PIS','ART',l,part,'PIS',[_,_,'ander',_,_,_],F-G,MF,MG,MNew) :- 2 >= F-G, check_agreement(MF,'PIS',MG,'ART',MNew).
 
 %======================================================================================
 %comparatives
