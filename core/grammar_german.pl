@@ -1733,18 +1733,18 @@ head('VVIZU','KOMPX',l,kom,'VVIZU',[FC,_,_,_,_,UG],_,MF,_,MF) :- verbchunklength
 
 
 %(peter) 'und' ->cj-> 'mark'. special: new morphological information is that of dependent, not that of head
-head2('KON',Tag,r,cj,Transtag,[_,_,HeadWord,_,_,_,_,_],_,MH,_,MH) :- kon_mapping(Tag,Transtag), Transtag \= 'KON_FINVERB', Transtag \= 'KON_ADV', \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder']).
+head2('KON',Tag,r,cj,Transtag,[_,_,HeadWord,_,_,_,_,_],_,_,MD,MD) :- kon_mapping(Tag,Transtag), Transtag \= 'KON_FINVERB', Transtag \= 'KON_ADV', \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder']).
 
 %seltsam, aber nie albern. "albern" should be coordinated adverb, not "nie".
-head2('KON',Tag,r,cj,'KON_ADV',[_,_,HeadWord,_,_,_,_,_],_-D,MH,_,MH) :- kon_mapping(Tag,'KON_ADV'), RightPos is D+1, checkPos(RightPos,_,Tag2,_,_), \+ kon_mapping(Tag2,'KON_ADV'), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder']).
+head2('KON',Tag,r,cj,'KON_ADV',[_,_,HeadWord,_,_,_,_,_],_-D,_,MD,MD) :- kon_mapping(Tag,'KON_ADV'), RightPos is D+1, checkPos(RightPos,_,Tag2,_,_), \+ kon_mapping(Tag2,'KON_ADV'), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder']).
 
 % in "Er kommt und sieht Laura", disallow Laura as subject, but not in "Er kommt und dann sieht Laura ihn"
-head2('KON',Tag,r,cj,'KON_FINVERB',[_,_,HeadWord,_,_,DepRels,_,_],H-D,MH,_,MH) :- 1 is D-H, kon_mapping(Tag,'KON_FINVERB'), \+ member('->subj->', DepRels), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder']).
+head2('KON',Tag,r,cj,'KON_FINVERB',[_,_,HeadWord,_,_,DepRels,_,_],H-D,_,MD,MD) :- 1 is D-H, kon_mapping(Tag,'KON_FINVERB'), \+ member('->subj->', DepRels), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder']).
 
-head2('KON',Tag,r,cj,'KON_FINVERB',[_,_,HeadWord,_,_,_,_,_],H-D,MH,_,MH) :- D-H > 1, kon_mapping(Tag,'KON_FINVERB'), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder']).
+head2('KON',Tag,r,cj,'KON_FINVERB',[_,_,HeadWord,_,_,_,_,_],H-D,_,MD,MD) :- D-H > 1, kon_mapping(Tag,'KON_FINVERB'), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder']).
 
 %als Babysitter oder als Anwalt arbeiten
-head2('KON','KOMPX',r,cj,'KON_KOMPX',[_,_,HeadWord,_,_,_,_,_],_,MH,_,MH) :- \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder']).
+head2('KON','KOMPX',r,cj,'KON_KOMPX',[_,_,HeadWord,_,_,_,_,_],_,_,MD,MD) :- \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder']).
 
 
 %allows comma before conjunction.
@@ -1901,21 +1901,21 @@ head('ART','KON_NOUN',r,kon,'NN',  [_,_,_,_,_,_],_,MF,_,MF).
 
 
 %truncated conjunction. special: morphological information of conjoined object is used.
-head('TRUNC','KON_NOUN',r,kon,'NN',  [_,_,_,_,_,_],_,MF,_,MF).
+head2('TRUNC','KON_NOUN',r,kon,'NN',  [_,_,_,_,_,_,_,_],_,_,MD,MD).
 
 %jahre- bis jahrzehntelange Haft
-head2('TRUNC','KON_ADJA',r,kon,'ADJA', [_,_,_,_,_,_,_,_],_,HM,_,HM).
+head2('TRUNC','KON_ADJA',r,kon,'ADJA', [_,_,_,_,_,_,_,_],_,_,MD,MD).
 
-head2('TRUNC','KON_ADV',r,kon,'ADJD', [_,_,_,_,_,_,_,_],_,HM,_,HM).
+head2('TRUNC','KON_ADV',r,kon,'ADJD', [_,_,_,_,_,_,_,_],_,_,MD,MD).
 
 %er ist hin- und hergefahren
-head2('TRUNC','KON_FINVERB',r,kon,'VVFIN', [_,_,_,_,_,_,_,_],_,HM,_,HM).
+head2('TRUNC','KON_FINVERB',r,kon,'VVFIN', [_,_,_,_,_,_,_,_],_,_,MD,MD).
 
-head2('TRUNC','KON_INFVERB',r,kon,'VVINF', [_,_,_,_,_,_,_,_],_,HM,_,HM).
+head2('TRUNC','KON_INFVERB',r,kon,'VVINF', [_,_,_,_,_,_,_,_],_,_,MD,MD).
 
-head2('TRUNC','KON_PPVERB',r,kon,'VVPP', [_,_,_,_,_,_,_,_],_,HM,_,HM).
+head2('TRUNC','KON_PPVERB',r,kon,'VVPP', [_,_,_,_,_,_,_,_],_,_,MD,MD).
 
-head2('TRUNC','KON_VVIZU',r,kon,'VVIZU', [_,_,_,_,_,_,_,_],_,HM,_,HM).
+head2('TRUNC','KON_VVIZU',r,kon,'VVIZU', [_,_,_,_,_,_,_,_],_,_,MD,MD).
 
 
 
