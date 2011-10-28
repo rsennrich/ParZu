@@ -2471,7 +2471,7 @@ check_agreement(_,_,_,_,_) :- morphology(off), !.
 
 check_agreement(List1,Tag1,List2,Tag2,ListOut) :- \+ var(List1), \+ var(List2),
 	findall(SingleList1, (member(SingleList1,List1), member(SingleList2,List2),unify_morph(SingleList1,Tag1,SingleList2,Tag2)),ListTemp), 
-	sort(ListTemp,ListTemp2), remove_duplicates(ListTemp2,ListOut), !, \+ ListOut = [].
+	sort(ListTemp,ListTemp2), my_remove_duplicates(ListTemp2,ListOut), !, \+ ListOut = [].
 
 %if first arg is not instantiated, use the instantiated list and convert it.
 check_agreement(_,Tag,List2,Tag2,OutList) :- \+ var(List2), !, convertMorphList(Tag2,List2,Tag,OutList).
@@ -2543,7 +2543,7 @@ unify_case([E],_,_,_,[E]) :- var(E), !.
 %unify_case(?List1,+Tag1,?List2,+Tag2,?ListOut).
 unify_case(List1,Tag1,List2,Tag2,ListOut) :- morphology(MorphType),
 	findall(Morph1, (member(Morph1,List1), get_case(Morph1,Tag1,Case,MorphType),member(Morph2,List2), get_case(Morph2,Tag2,Case,MorphType)), ListTemp), 
-	sort(ListTemp,ListTemp2), remove_duplicates(ListTemp2,ListOut), !, \+ ListOut = [].
+	sort(ListTemp,ListTemp2), my_remove_duplicates(ListTemp2,ListOut), !, \+ ListOut = [].
 
 
 unify_number(_,_,_,_,_) :- morphology(off), !.
@@ -2555,7 +2555,7 @@ unify_number([E],_,_,_,[E]) :- var(E), !.
 %unify_number(?List1,+Tag1,?List2,+Tag2,?ListOut).
 unify_number(List1,Tag1,List2,Tag2,ListOut) :- morphology(MorphType),
 	findall(Morph1, (member(Morph1,List1), get_number(Morph1,Tag1,Case,MorphType),member(Morph2,List2), get_number(Morph2,Tag2,Case,MorphType)), ListTemp), 
-	sort(ListTemp,ListTemp2), remove_duplicates(ListTemp2,ListOut), !, \+ ListOut = [].
+	sort(ListTemp,ListTemp2), my_remove_duplicates(ListTemp2,ListOut), !, \+ ListOut = [].
 
 
 
@@ -2569,7 +2569,7 @@ unify_gender([E],_,_,_,[E]) :- var(E), !.
 %unify_gender(?List1,+Tag1,?List2,+Tag2,?ListOut).
 unify_gender(List1,Tag1,List2,Tag2,ListOut) :- morphology(MorphType),
 	findall(Morph1, (member(Morph1,List1), get_gender(Morph1,Tag1,Case,MorphType),member(Morph2,List2), get_gender(Morph2,Tag2,Case,MorphType)), ListTemp), 
-	sort(ListTemp,ListTemp2), remove_duplicates(ListTemp2,ListOut), !, \+ ListOut = [].
+	sort(ListTemp,ListTemp2), my_remove_duplicates(ListTemp2,ListOut), !, \+ ListOut = [].
 
 
 get_case(_,'CARD',_,_) :- !.
@@ -2963,7 +2963,7 @@ splittag(WordI,WordI,_) :- !.
 
 %standard sort only removes duplicates if no variables are involved.
 %we want [[_,'Akk'],[_,'Akk']] to be reduced to [[_,'Akk']]
-remove_duplicates(L,Unique) :- duplicate_check(L,[],Unique).
+my_remove_duplicates(L,Unique) :- duplicate_check(L,[],Unique).
 
 duplicate_check([],Acc,Acc) :- !.
 duplicate_check([H|T],Acc,Unique) :- \+ member(H,Acc), !, duplicate_check(T,[H|Acc],Unique).
