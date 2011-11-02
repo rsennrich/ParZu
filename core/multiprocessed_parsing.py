@@ -13,33 +13,43 @@ from subprocess import Popen, PIPE
 
 class Parser(multiprocessing.Process):
     
-    def __init__(self, task_queue, result_dict,commandlist,commandpath):
+    def __init__(self, task_queue, result_dict,commandlist,commandpath,error_signal):
         multiprocessing.Process.__init__(self)
         self.task_queue = task_queue
         self.result_dict = result_dict
         self.parsing = Popen(commandlist,cwd=commandpath, stdin=PIPE, stdout=PIPE)
+        self.error_signal = error_signal
 
     def run(self):
         while True:
-            self.index,self.next_task = self.task_queue.get()
+            index,next_task = self.task_queue.get()
             
-            if self.next_task is None:
+            if next_task is None:
                 # Poison pill in task queue
                 self.parsing.terminate()
                 break
-
-            self.parsing.stdin.write(self.next_task)
-            self.islocked = 1
-            self.answer = ''
-            while self.islocked:
-                  self.outline = self.parsing.stdout.readline()
-                  self.answer += self.outline
-                  #This signals that parser has finished with the sentence and can begin with the next one
-                  if self.outline == '%%END_OF_SENTENCE\n':
-                      self.islocked = 0
+                
+            self.parsing.stdin.write(next_task)
+                
+            answer = ''
+            while True:
+                outline = self.parsing.stdout.readline()
+                
+                #if we ever reach the end of parsing.stdout, this indicates that the parser process has crashed
+                if not outline:
+                    sys.stderr.write("Parser process {0} has crashed on sentence {1}. If you don't see swipl error message, try parsing sentence in single-processed mode (option -p 1).\n".format(self.parsing.pid,index+1))
+                    self.error_signal.value = 1
+                    self.parsing.terminate()
+                    return
+                
+                answer += outline
+                #This signals that parser has finished with the sentence and can begin with the next one
+                if outline == '%%END_OF_SENTENCE\n':
+                    break
                       
-            self.result_dict[self.index] = self.answer
+            self.result_dict[index] = answer
         return
+
 
 
 #Segments input into sentences and sends them to tasks queue
@@ -67,25 +77,22 @@ def segment_sent(inpipe,tasks,num_parsers,sentdelim,todo):
 
 #Results from all processes are written to shared dictionary
 #this function writes the results and clears memory as soon as possible
-def generate_output(results,todo,outpipe):
+def generate_output(results,todo,outpipe,error_signal):
     
-      i = 0
-      #This is only False if all sentences have been parsed
-      while i < todo.value:
-          
-            #wait till result #i is populated
-            while True:
-                try:
-                    result = results[i]
-                    break
-                except KeyError:
-                    time.sleep(0.1)
-
+    i = 0
+    #This is only False if all sentences have been parsed or swipl crashed
+    while i < todo.value and not error_signal.value:
+        try:
+            result = results[i]
             outpipe.write(result)
             del(results[i])
             i += 1
-      
-      outpipe.close
+        except KeyError:
+            time.sleep(0.1)
+            if error_signal.value:
+                break
+                
+    outpipe.close
 
 #Segments sentences, parses them using num_parsers parallel processes, and combines output of all parser processes
 def main(inpipe,outpipe,num_parsers,sentdelim,commandlist,commandpath):
@@ -96,9 +103,10 @@ def main(inpipe,outpipe,num_parsers,sentdelim,commandlist,commandpath):
       manager = multiprocessing.Manager()
       results = manager.dict()
       todo = manager.Value('i',1)
+      error_signal = manager.Value('i',0)
 
       # Start parsers
-      parsers = [ Parser(tasks, results,commandlist,commandpath)
+      parsers = [ Parser(tasks, results,commandlist,commandpath,error_signal)
                     for i in xrange(num_parsers) ]
       for w in parsers:
           w.start()
@@ -107,7 +115,12 @@ def main(inpipe,outpipe,num_parsers,sentdelim,commandlist,commandpath):
       p = multiprocessing.Process(target=segment_sent, args=(inpipe,tasks,num_parsers,sentdelim,todo))
       p.start()
 
-      generate_output(results,todo,outpipe)
+      generate_output(results,todo,outpipe,error_signal)
+      
+      #prevent hangup when all parser processes crash (which hopefully never happens)
+      for parser in parsers:
+          parser.terminate()
+      p.terminate() 
 
 
 
@@ -129,6 +142,8 @@ if __name__ == "__main__":
     prolog_load = sys.argv[6]
     
     runCMD = [prolog, '-q', '-G128M', '-L128M', prolog_load, 'ParZu-parser.pl', '-g', args]
-
+    
+    if prolog == 'swipl':
+        runCMD += ['-t', 'halt.']
 
     main(init_pipe.stdout,sys.stdout,num_parsers,sentdelim,runCMD,path)
