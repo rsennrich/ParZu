@@ -40,6 +40,7 @@ def get_repr(key,d):
         return '_'
     
 def get_repr2(word):
+    word = word.replace("\\","\\\\")
     return "'"+word.replace("'",r"\'")+"'"
 
 #create a prolog list with morphological information in the right order
