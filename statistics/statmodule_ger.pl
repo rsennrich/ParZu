@@ -229,8 +229,9 @@ ppobjp(_,_,objp,0) :- !.
 
 
 %bilexical disambigation of pp attachment. Formula doesn't make sense stochastically, but we're only interested in which attachment has highest value.
-pplexmod(NumPPOBJP,NumHead,P) :- NumPPOBJP > 0, PTemp is 10*NumPPOBJP / NumHead, PTemp2 is max(0.1,PTemp), P is min(PTemp2,1), !.
+pplexmod(NumPPOBJP,NumHead,P) :- NumPPOBJP > 0, NumHead>0, PTemp is 10*NumPPOBJP / NumHead, PTemp2 is max(0.1,PTemp), P is min(PTemp2,1), !.
 pplexmod(NumPPOBJP,NumHead,P) :- NumPPOBJP = 0, P is max(0,0.25-NumHead/1000), !.
+pplexmod(_,_,0.1) :- !.
 
 %get_pp_statistics(+Head,+HeadTag,+DepMorph,+Prep,-NumPP,-NumObjP,-NumHead)
 get_pp_statistics(Head,HeadTag,Case,Prep,NumPP,NumObjP,NumHead) :- 	
