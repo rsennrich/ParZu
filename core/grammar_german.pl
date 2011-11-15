@@ -1223,6 +1223,9 @@ head2('VMFIN','VVIZU',l,obji,'VMFIN',[FC,GC,_,_,_,_,_,_],H-D,MH,_,MH) :- FC \= G
 %Noun can have infinitive object, but should be separated by comma -> competition with other functions of NNs
 head('NN','VVIZU',r,obji,'NN',[_,_,_,_,OF,_],_,_,MG,MG) :- member('<-comma<-',OF).
 
+%froh, etwas tun zu können
+head('ADV','VVIZU',r,obji,'ADV',[_,_,_,_,OF,_],_,_,MG,MG) :- member('<-comma<-',OF).
+head('ADJD','VVIZU',r,obji,'ADJD',[_,_,_,_,OF,_],_,_,MG,MG) :- member('<-comma<-',OF).
 
 %ein nicht enden wollender Krieg
 head('ADJA', 'VVINF',l,obji,'ADJA',[_,_,'wollend',_,_,_],F-G,MF,_,MF) :- 1 is F-G.
