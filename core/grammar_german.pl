@@ -1684,9 +1684,19 @@ head('KOKOM','VVFIN',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
 
 head('KOKOM','PIS',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
 
-%too many FPs
 
-% head('KOKOM','PPER',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
+head('KOKOM','PPER',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
+ 
+head('KOKOM','PDS',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
+
+head('KOKOM','ADV',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
+
+head('KOKOM','APPR',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
+
+head('KOKOM','APPRART',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
+
+head('KOKOM','CARD',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
+
 
 
 %härter als stahl; kraftvoll wie immer

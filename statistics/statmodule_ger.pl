@@ -521,9 +521,9 @@ stats2(kom,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,P,D,_HC) :-
 
 
 %conjunctions. we will penalize some tag combinations; others get catchall weight.
-stats2(cj,'KON',FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,NP,D,_HC) :- 
+stats2(cj,Htag,FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,NP,D,_HC) :- 
     distModifier(D,cj,DistMod),
-    kon_mapping(Dtag,Kontag),
+    (Htag='KON'->kon_mapping(Dtag,Kontag);Kontag=Dtag),
     cj_penalty(FH,Kontag,Penalty),
     P is DistMod*Penalty,
     NP is DistMod*Penalty.
@@ -543,6 +543,8 @@ cj_penalty(denn,'KON_PRONOUN',0) :- !.
 cj_penalty(denn,'KON_PPER',0) :- !.
 cj_penalty(denn,'KON_NOUN',0) :- !.
 cj_penalty(denn,'KON_ADV',0) :- !.
+
+cj_penalty(_,_,1).
 
 %catchall for now...
 stats2(Rel,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,NP,D,_HC) :- 
