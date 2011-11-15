@@ -1202,7 +1202,7 @@ head('NEB',OBJC,r,subjc,'NEB',[_,_,_,_,_,OG],_,_,MG,MG) :- objcsubjc(OBJC), rest
 head('VVIZU','$,',l,comma,'VVIZU',[_,_,_,_,OF,_],_,MF,_,MF)  :- \+ member('<-comma<-', OF), \+ member('->comma->', OF).
 
 
-%infinitive objects depend on finite verb on their left. exception: topicalisation - implement?
+%infinitive objects depend on finite verb on their left.
 head('VVFIN','VVIZU',r,obji,'VVFIN',[FC,GC,_,_,OF,OG],_,_,MG,MG) :- (\+ FC = GC; member('<-comma<-',OF)), restrict_coord(OG).
 
 head('VAFIN','VVIZU',r,obji,'VAFIN',[FC,GC,_,_,OF,OG],_,_,MG,MG) :- (\+ FC = GC; member('<-comma<-',OF)), restrict_coord(OG).
@@ -1210,6 +1210,15 @@ head('VAFIN','VVIZU',r,obji,'VAFIN',[FC,GC,_,_,OF,OG],_,_,MG,MG) :- (\+ FC = GC;
 head('VMFIN','VVIZU',r,obji,'VMFIN',[FC,GC,_,_,OF,OG],_,_,MG,MG) :- (\+ FC = GC; member('<-comma<-',OF)), restrict_coord(OG).
 
 head('VVIMP','VVIZU',r,obji,'VVIMP',[FC,GC,_,_,OF,OG],_,_,MG,MG) :- (\+ FC = GC; member('<-comma<-',OF)), restrict_coord(OG).
+
+
+%VVIZU to the left of finite verb (topicalized or in subordinated clause)
+head2('VVFIN','VVIZU',l,obji,'VVFIN',[FC,GC,_,_,_,_,_,_],H-D,MH,_,MH) :- FC \= GC, 1 is H-D.
+
+head2('VAFIN','VVIZU',l,obji,'VAFIN',[FC,GC,_,_,_,_,_,_],H-D,MH,_,MH) :- FC \= GC, 1 is H-D.
+
+head2('VMFIN','VVIZU',l,obji,'VMFIN',[FC,GC,_,_,_,_,_,_],H-D,MH,_,MH) :- FC \= GC, 1 is H-D.
+
 
 %Noun can have infinitive object, but should be separated by comma -> competition with other functions of NNs
 head('NN','VVIZU',r,obji,'NN',[_,_,_,_,OF,_],_,_,MG,MG) :- member('<-comma<-',OF).

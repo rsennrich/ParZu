@@ -29,7 +29,7 @@ start(_,_) :- compute_unknown_relations,
 	      printresult(total), !.
 
 %same as normal eval, but gives debug information about every parsing error.
-debug(Gold,Test,Class) :- retractall(result(_,_,_,_,_)),
+start(Gold,Test,Class) :- retractall(result(_,_,_,_,_)),
             assert(mydebug),
             ensure_loaded(Gold),
             ensure_loaded(Test),
