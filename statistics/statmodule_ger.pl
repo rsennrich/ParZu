@@ -34,6 +34,8 @@ stats2(pn,_Htag,_FH,_SH,_MORPHH,'ADJA',_FD,_SD,_MORPHD,0.5,0.5,_D,_HC).
 stats2(pn,_Htag,_FH,_SH,_MORPHH,'CARD',_FD,_SD,_MORPHD,0.5,0.5,_D,_HC).
 
 
+stats2(unknown,_Htag,_FH,_SH,_MORPHH,_,_FD,_SD,_MORPHD,0.1,0.1,_D,_HC).
+
 
 %might be useful in case of tagging errors
 stats2(part,_,_FH,_SH,_MORPHH,'ART',_FD,_SD,_MORPHD,0.9,0.9,_D,_HC).

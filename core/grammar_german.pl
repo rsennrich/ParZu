@@ -2385,6 +2385,18 @@ head2(Tag,'$(',r,badbracket,Tag,[_,_,_,Lex,_,_,_,_],F-G,HM,_,HM) :- -1 is F-G, m
 
 %good: ", \'
 
+
+%======================================================================================
+% Deal with non-words (tag XY)
+
+% this means that non-words will be skipped over
+head2(Tag,'XY',r,unknown,Tag,[_,_,_,_,_,_,_,_],F-G,HM,_,HM) :- -1 is F-G.
+
+% Correctly parse some abbreviated units of measurement, even if they are unknown to tagger.
+head2('XY','CARD',l,attr,'NN',[_,_,HW,_,_,_,_,_],F-G,HM,_,HM) :- member(HW,[m,cm,km,mm,ft,h,min,s,g,kg,mg]), 1 is F-G.
+
+
+
 %======================================================================================
 %catchall included for backwards compatibility
 
