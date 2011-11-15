@@ -2313,6 +2313,8 @@ head2('PIAT','NN',l,grad,'PIAT',[_,_,_,_,HRels,DRels,_,_],HPos-DPos,HMorph,DMorp
 
 head2('PP','NN',l,grad,'PP',[_,_,_,_,HRels,DRels,_,_],HPos-DPos,HMorph,DMorph,HMorph) :- case_acc(DMorph,'NN'), (1 is HPos-DPos;among_dependents(HRels, '_PTKA', 1)), among_dependents(DRels, '_CARD', 1).
 
+head2('ADV','NN',l,grad,'ADV',[_,_,_,_,HRels,DRels,_,_],HPos-DPos,HMorph,DMorph,HMorph) :- case_acc(DMorph,'NN'), (1 is HPos-DPos;among_dependents(HRels, '_PTKA', 1)), among_dependents(DRels, '_CARD', 1).
+
 
 %ein wenig zu alt
 head2('ADJA','PIS',l,grad,'ADJA',[_,_,_,_,HRels,DRels,_,_],HPos-DPos,HMorph,_,HMorph) :- member('<-part<-',DRels), (1 is HPos-DPos;among_dependents(HRels, '_PTKA', 1)).
@@ -2323,6 +2325,7 @@ head2('PIAT','PIS',l,grad,'PIAT',[_,_,_,_,HRels,DRels,_,_],HPos-DPos,HMorph,_,HM
 
 head2('PP','PIS',l,grad,'PP',[_,_,_,_,HRels,DRels,_,_],HPos-DPos,HMorph,_,HMorph) :- member('<-part<-',DRels), (1 is HPos-DPos;among_dependents(HRels, '_PTKA', 1)).
 
+head2('ADV','PIS',l,grad,'ADV',[_,_,_,_,HRels,DRels,_,_],HPos-DPos,HMorph,_,HMorph) :- member('<-part<-',DRels), (1 is HPos-DPos;among_dependents(HRels, '_PTKA', 1)).
 
 
 %======================================================================================
