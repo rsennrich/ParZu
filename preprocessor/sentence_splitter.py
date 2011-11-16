@@ -12,20 +12,21 @@ except:
 
 #modified version of _slices_from_text in nltk/tokenize/punkt.py to process stdin line-by-line instead of requiring string
 def tokenize():
-    last_break = 0
     buf = ''
     for line in sys.stdin:
         buf += line.strip() + ' '
+        last_break = 0
         for match in tokenizer._lang_vars.period_context_re().finditer(buf):
             context = match.group() + match.group('after_tok')
             if tokenizer.text_contains_sentbreak(context):
-                yield buf[0:match.end()]
+                yield buf[last_break:match.end()]
                 if match.group('next_tok'):
                     # next sentence starts after whitespace
-                    buf = buf[match.start('next_tok'):]
+                    last_break = match.start('next_tok')
                 else:
                     # next sentence starts at following punctuation
-                    buf = buf[match.end():]
+                    last_break = match.end()
+        buf = buf[last_break:]
     yield buf
 
 for sent in tokenize():
