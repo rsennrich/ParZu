@@ -39,8 +39,8 @@ Additionally, the parser requires the following software and licenses:
    - Morphisto: http://code.google.com/p/morphisto/ (open source; recommended)
    - Gertwol: http://www2.lingsoft.fi/cgi-bin/gertwol (proprietary; might be deprecated in the future)
 
-For development and testing, we recommend Tüba-D/Z, which you can obtain at http://www.sfs.uni-tuebingen.de/de_tuebadz.shtml
-See INSTALLATION on how to extract and integrate statistical information from Tüba-D/Z into the system.
+For development and testing, we recommend Tüba-D/Z, which you can obtain at http://www.sfs.uni-tuebingen.de/tuebadz.shtml (free download for academic use).
+See the section below on how to extract and integrate statistical information from Tüba-D/Z into the system.
 
 INSTALLATION
 ------------
