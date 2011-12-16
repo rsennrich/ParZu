@@ -72,7 +72,7 @@ while(<STDIN>) {
 		$properties->{$sid}->{$loc}->{"etag"} = $etag;
 
 		### BUG: comment back in if you want to see the morph
-	###	$properties->{$sid}->{$loc}->{"morph"} = $morph;
+		$properties->{$sid}->{$loc}->{"morph"} = $morph;
 
 		$relations->{$sid}->{$head}->{$loc}->{$type} = 1;
 
