@@ -28,7 +28,6 @@ postprocess(Pos,Outputformat) :-
 postprocess(_,_) :- secedges(yes),
               findall(Pos,output(Pos,_,_,_,_,_,_),List),length(List,Len),
               between(1,Len,Pos),
-              
               fail.
 
 %third round: print
@@ -115,7 +114,7 @@ transformMorph(prolog,[Var],_) :- var(Var),!.
 
 transformMorph(conll,[Var],'_') :- var(Var),!.
 
-transformMorph(conll,List,Out) :- is_list(List), member(List2,List),is_list(List2), length(List2,Len), (Len=0->Out='_';(!, End is Len + 1, conll_morph(List,1,End,'',Out))).
+transformMorph(conll,List,Out) :- is_list(List), member(List2,List),is_list(List2), !, length(List2,Len), (Len=0->Out='_';(End is Len + 1, conll_morph(List,1,End,'',Out))).
 
 transformMorph(_,Morph,Morph) :- !.
 
