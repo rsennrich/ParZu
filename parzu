@@ -58,11 +58,13 @@ def usage():
     print('\t' + bold + '-p'  + reset + ', ' + bold + '--processes' + reset + ' int')
     print('\t\tnumber of parallel parser processes\n')
     print('\t' + bold + '-q'  + reset + ', ' + bold + '--quiet' + reset)
-    print('\t\tsend warnings and errors to temporary log file instead of stderr\n')
+    print('\t\tsend warnings and errors to temporary log file instead of stderr')
+    print('\t' + bold + '--secedges' + reset)
+    print('\t\tprint secondary edges (CoNLL format only). Uses the last two columns of the CoNLL depdendency format. These are theoretically reserved for projective heads, so this is a slight abuse of the format.\n')
 
 def load_arguments():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hi:lo:p:q", ["help", "input=", "linewise", "output=", "processes=", "quiet"])
+        opts, args = getopt.getopt(sys.argv[1:], "hi:lo:p:q", ["help", "input=", "linewise", "output=", "processes=", "quiet", "secedges"])
     except getopt.GetoptError as err:
         # print help information and exit:
         print(err) # will print something like "option -a not recognized"
@@ -73,6 +75,7 @@ def load_arguments():
     inputformat = None
     linewise = False
     verbose = True
+    secedges = 'no'
     for o, a in opts:
         if o in ("-h", "--help"):
             usage()
@@ -85,11 +88,13 @@ def load_arguments():
             inputformat = a
         elif o in ("-l", "--linewise"):
             linewise = True
+        elif o in ("--secedges"):
+            secedges = 'yes'
         elif o in ("-q", "--quiet"):
             verbose = False
         else:
             assert False, "unhandled option"
-    return processes,output,inputformat,linewise,verbose
+    return processes,output,inputformat,linewise,verbose,secedges
 
 
 #config file parser
@@ -126,7 +131,7 @@ def process_arguments():
     options = parse_config(sys.path[0] + '/config.ini')
 
     #get command line options
-    arg_processes,arg_output,arg_input,options['linewise'],verbose = load_arguments()
+    arg_processes,arg_output,arg_input,options['linewise'],verbose,options['secedges'] = load_arguments()
 
     if arg_output:
         options['outputformat'] = arg_output
@@ -355,13 +360,13 @@ def parse(instream,outstream,options):
         outputformat = options['outputformat']
     
     #main parsing step
-    args = 'retract(outputformat(_)),assert(outputformat('+ outputformat +")),retract(sentdelim(_)),assert(sentdelim('"+ options['sentdelim'] +"')),retract(returnsentdelim(_)),assert(returnsentdelim("+ options['returnsentdelim'] +')),retract(nbestmode(_)),assert(nbestmode('+ str(options['nbestmode']) +')),retractall(morphology(_)),assert(morphology('+ morphology_mapping[str(options['morphology'])] +')),retractall(lemmatisation(_)),assert(lemmatisation('+ morphology_mapping[str(options['morphology'])] +')),start,halt.'
+    args = 'retract(outputformat(_)),assert(outputformat('+ outputformat +")),retract(sentdelim(_)),assert(sentdelim('"+ options['sentdelim'] +"')),retract(returnsentdelim(_)),assert(returnsentdelim("+ options['returnsentdelim'] +')),retract(nbestmode(_)),assert(nbestmode('+ str(options['nbestmode']) +')),retractall(morphology(_)),assert(morphology('+ morphology_mapping[str(options['morphology'])] +')),retractall(lemmatisation(_)),assert(lemmatisation('+ morphology_mapping[str(options['morphology'])] +')),retractall(secedges(_)),assert(secedges('+ options['secedges'] +')),start,halt.'
     
     if enable_multiprocessing and options['num_processes'] > 1:
         parsing = Popen(["python", os.path.join(sys.path[0],"core","multiprocessed_parsing.py"), str(options['num_processes']), args, options['sentdelim'], os.path.join(sys.path[0],'core'),prolog, prolog_load[prolog]], stdin=instream,stdout=outstream,stderr=options['senderror'])
 
     else:
-        parsing = Popen([prolog, '-q', '-G128M', '-L128M', prolog_load[prolog], 'ParZu-parser.pl', '-g', args], cwd=os.path.join(sys.path[0],'core'), stdin=instream, stdout=outstream, stderr=options['senderror'])
+        parsing = Popen([prolog, '-q', '-G228M', '-L228M', prolog_load[prolog], 'ParZu-parser.pl', '-g', args], cwd=os.path.join(sys.path[0],'core'), stdin=instream, stdout=outstream, stderr=options['senderror'])
         
     return parsing
 

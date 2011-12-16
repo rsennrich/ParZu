@@ -7,6 +7,7 @@
 postprocess(_,raw) :- retractall(output(_,_,_,_,_,_,_)), !.
 
 %all other output formats.
+%first round
 postprocess(Pos,Outputformat) :-
              (output(Pos,Word,Lemma,Tag,Rel,HeadPos,Morph)->true;(chart(Pos,Pos,Pos,[[Lemma,Tag,_]],_,_,_,_,_,_,[Word|Morph]),Rel=root,HeadPos=0,assert(output(Pos,Word,Lemma,Tag,Rel,HeadPos,Morph)))),
              ((output(HeadPos,_,_,HTag,_,_,HMorph)->
@@ -22,15 +23,23 @@ postprocess(Pos,Outputformat) :-
              NewPos is Pos + 1, !,
              postprocess(NewPos,Outputformat).
 
+
+%second round: secondary edges
+postprocess(_,_) :- secedges(yes),
+              findall(Pos,output(Pos,_,_,_,_,_,_),List),length(List,Len),
+              between(1,Len,Pos),
+              
+              fail.
+
+%third round: print
 postprocess(_,Outputformat) :- findall(Pos,output(Pos,_,_,_,_,_,_),List),length(List,Len),
               between(1,Len,Pos),
               output(Pos,Word,Lemma,Tag,Rel,HeadPos,Morph),
               printresult(Outputformat,Pos,Word,Lemma,Tag,Rel,HeadPos,Morph),
               fail.
 
+%fourth round: cleanup
 postprocess(_,_) :- nl,retractall(output(_,_,_,_,_,_,_)), !.
-
-% postprocess(_,_) :- retractall(output(_,_,_,_,_,_,_)), !.
                                  
 
 
@@ -58,6 +67,7 @@ printresult(conll,Pos,DepWord,DepLemma,DepTag,Class,HeadPos,Morph) :-
     transformMorph(conll,Morph,MorphOut),
     (nbestmode(NBEST),NBEST > 0->NewHeadPos is max(0,HeadPos-1);NewHeadPos is HeadPos),
     coarsetag(DepTag,CoarseTag),
+    (secedges(no)->(SecEdgeHead='_',SecEdgeRel='_');(secedge(Pos,SecEdgeHead,SecEdgeRel))),
     write(Pos),
     write('\t'),
     write(DepWord),
@@ -74,9 +84,9 @@ printresult(conll,Pos,DepWord,DepLemma,DepTag,Class,HeadPos,Morph) :-
     write('\t'),
     write(Class),
     write('\t'),
-    write('_'),
+    write(SecEdgeHead),
     write('\t'),
-    write('_'),
+    write(SecEdgeRel),
     nl.
 
 
@@ -212,6 +222,13 @@ fixAttachment(Class,_,HeadPos,Pos) :-
 
 %catchall: leave head unchanged.
 fixAttachment(_,_,Pos,Pos) :- !.
+
+% In AcI, accusative of matrix clause is subject of infinitive clause
+secedge(Pos,SecHeadPos,subj) :- output(Pos,_,_,_,obja,HeadPos,_),
+            output(SecHeadPos,_,_,_,obji,HeadPos,_), !.
+
+%catchall: no secondary edge found
+secedge(_,'_','_') :- !.
 
 
 relative_morphology(HeadPos,RelPos,Tag,Morph) :- output(RelPos,_,_,Tag,_,_,Morph), 
