@@ -900,6 +900,7 @@ head('NE','$,',l,comma,'APPX',[_,_,_,_,OF,_],_,MF,_,MF) :- \+ member('<-comma<-'
 
 head('FM','$,',l,comma,'APPX',[_,_,_,_,OF,_],_,MF,_,MF) :- \+ member('<-comma<-', OF).
 
+head('PIS','$,',l,comma,'APPX',[_,_,_,_,OF,_],_,MF,_,MF) :- \+ member('<-comma<-', OF), member('->gmod->', OF).
 
 
 head2('NN','$,',l,comma,'APP',[_,_,_,_,HRels,_,HID,_],_,HM,_,HM) :- (commaToRight(HID);stopToRight(HID)), \+ member('<-comma<-', HRels).
@@ -929,16 +930,15 @@ head('PPER','APP',r,app,'PPER',[_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PPE
 
 
 %sentence-final appositions.
-%scores go down slightly
-% head2('NN','APPX',r,app,'NN',[_,_,_,_,_,_,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'NN',DepMorph,'NN',TransMorph).
-% 
-% head2('NE','APPX',r,app,'NE',[_,_,_,_,_,_,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'NE',DepMorph,'NN',TransMorph).
-% 
-% head2('FM','APPX',r,app,'FM',[_,_,_,_,_,_,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'FM',DepMorph,'NN',TransMorph).
-% 
-% head2('PIS','APPX',r,app,'PIS',[_,_,_,_,_,_,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'PIS',DepMorph,'NN',TransMorph).
-% 
-% head2('PPER','APPX',r,app,'PPER',[_,_,_,_,_,_,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'PPER',DepMorph,'NN',TransMorph).
+head2('NN','APPX',r,app,'NN',[_,_,_,_,_,_,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'NN',DepMorph,'NN',TransMorph).
+
+head2('NE','APPX',r,app,'NE',[_,_,_,_,_,_,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'NE',DepMorph,'NN',TransMorph).
+
+head2('FM','APPX',r,app,'FM',[_,_,_,_,_,_,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'FM',DepMorph,'NN',TransMorph).
+
+head2('PIS','APPX',r,app,'PIS',[_,_,_,_,_,_,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'PIS',DepMorph,'NN',TransMorph).
+
+head2('PPER','APPX',r,app,'PPER',[_,_,_,_,_,_,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'PPER',DepMorph,'NN',TransMorph).
 
 
 
@@ -1694,9 +1694,7 @@ head('KOKOM','PDS',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
 
 head('KOKOM','ADV',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
 
-head('KOKOM','APPR',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
-
-head('KOKOM','APPRART',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
+head('KOKOM','PP',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
 
 head('KOKOM','CARD',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
 
