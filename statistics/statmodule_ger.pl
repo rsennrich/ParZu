@@ -426,16 +426,17 @@ stats2(pred,_Htag,_FH,_SH,_MORPHH,'ADJD',_FD,_SD,_MORPHD,P,NP,_D,HC-_OG) :-
 stats2(gmod,_Htag,_FH,SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,NP,_D,_HC-_OG) :-
 	\+ morphology(off), %if parsing with morphology turned off, this rule is counterproductive
 	lexic(SH,_,HPos),
-	lexic(SD,_,DPos),
+	lexic(SD,DWord,DPos),
 	RealDist is HPos-DPos,
 	distModifier(RealDist,gmod,DISTMOD), %prefer close attachment and modifier after head noun ("gestern hat der nachbar des mannes peter getroffen")
 	findall(_,case_acc(MORPHD,Dtag),LA),length(LA,LAL), %testing for accusative since there is no article that can be both accusative and genitive. dat/nom: 'eine mitarbeiterin der awo'
 	((	LAL =:= 0, %word not fully ambiguous
 		P is 1*DISTMOD, NP is 1*DISTMOD
 	)
-	; %if word case is fully ambiguous, let's assume genitive is unlikely.
+	; %word case is fully ambiguous
 	(	LAL > 0,
-		P is 0.01*DISTMOD, NP is 0.01*DISTMOD
+        ((Dtag = 'NE',atom_concat(_,s,DWord))->(P is 0.3*DISTMOD, NP is 0.3*DISTMOD); %ambiguous name ending with -s could be genitive
+        (P is 0.01*DISTMOD, NP is 0.01*DISTMOD)) % else, assume that genitive is unlikely
 	)).
 
 stats2(gmod,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,0.1,_D,_HC-_OG) :-
