@@ -237,11 +237,20 @@ head('VVPP','PRELS',l,subj,'RC',[FC,_,_,_,UG,_],_,MF,MG,MF) :- case_nom(MG,'PREL
 
 
 %interrogative pronoun (new transtag 'QC')
-head('VVFIN','PWS',l,subj,'QC',[FC,_,_,_,UG,OG],_,MF,MG,MNew) :- (member('->kon->',OG)->(case_nom(MG,'PWS'),MNew=MF); check_agreement(MF,'VVFIN',MG,'PRELS',MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('VVFIN','PWS',l,subj,'QC',[FC,_,_,_,UG,OG],_,MF,MG,MNew) :- (member('->kon->',OG)->(case_nom(MG,'PWS'),MNew=MF); check_agreement(MF,'VVFIN',MG,'PWS',MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 head('VMFIN','PWS',l,subj,'QC',[FC,_,_,_,UG,OG],_,MF,MG,MNew) :- (member('->kon->',OG)->(case_nom(MG,'PWS'),MNew=MF); check_agreement(MF,'VMFIN',MG,'PWS',MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 head('VAFIN','PWS',l,subj,'QC',[FC,_,_,_,UG,OG],_,MF,MG,MNew) :- (member('->kon->',OG)->(case_nom(MG,'PWS'),MNew=MF); check_agreement(MF,'VAFIN',MG,'PWS',MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+
+
+%"Was" can also be relative
+head('VVFIN','PWS',l,subj,'RC',[FC,_,_,was,UG,_],_,MF,MG,MNew) :- check_agreement(MF,'VVFIN',MG,'PWS',MNew), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('VMFIN','PWS',l,subj,'RC',[FC,_,_,was,UG,_],_,MF,MG,MNew) :- check_agreement(MF,'VMFIN',MG,'PWS',MNew), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('VAFIN','PWS',l,subj,'RC',[FC,_,_,was,UG,_],_,MF,MG,MNew) :- check_agreement(MF,'VAFIN',MG,'PWS',MNew), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('VVFIN','PWS',l,subj,'RC',[FC,_,_,'Was',UG,_],_,MF,MG,MNew) :- check_agreement(MF,'VVFIN',MG,'PWS',MNew), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('VMFIN','PWS',l,subj,'RC',[FC,_,_,'Was',UG,_],_,MF,MG,MNew) :- check_agreement(MF,'VMFIN',MG,'PWS',MNew), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('VAFIN','PWS',l,subj,'RC',[FC,_,_,'Was',UG,_],_,MF,MG,MNew) :- check_agreement(MF,'VAFIN',MG,'PWS',MNew), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 
 %interrogative pronoun (new transtag 'QC'); special case with "sein": don't require number agreement (Wer sind die Beatles?)
@@ -327,6 +336,11 @@ head('VAFIN','PWS',l,obja,'QC',[FC,_,_,_,UG,_],_,MF,MG,MF) :- case_acc(MG,'PWS')
 %only necessary in case of tagging errors
 head('VVPP','PWS',l,obja,'QC',[FC,_,_,_,UG,_],_,MF,MG,MF) :- case_acc(MG,'PWS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('passive',FC), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
 
+
+%"Was" can also be relative (Der Film hat ein Happy-End, was ich sehr schön finde)
+head('VVFIN','PWS',l,obja,'RC',[FC,_,_,_,UG,_],_,MF,_,MF) :- restrict_vorfeld(FC,UG), \+ member('passive',FC), \+ member('<-obja<-',UG), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
+head('VMFIN','PWS',l,obja,'RC',[FC,_,_,_,UG,_],_,MF,_,MF) :- restrict_vorfeld(FC,UG), \+ member('passive',FC), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
+head('VAFIN','PWS',l,obja,'RC',[FC,_,_,_,UG,_],_,MF,_,MF) :- restrict_vorfeld(FC,UG), \+ member('passive',FC), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
 
 
 %object after finite verb.
@@ -1012,34 +1026,6 @@ head('RC','RC',r,rel,'RC',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG).
 head('NEB','RC',r,rel,'NEB',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG).
 
 
-%question clauses can be relative ones
-head('NN','QC',r,rel,'NN',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG).
-
-head('NE','QC',r,rel,'NE',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG).
-
-head('FM','QC',r,rel,'FM',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG).
-
-head('PDS','QC',r,rel,'PDS',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG).
-
-head('PIS','QC',r,rel,'PIS',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG).
-
-head('PPER','QC',r,rel,'PPER',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG).
-
-head('PPOSS','QC',r,rel,'PPOSS',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG).
-
-head('VVFIN','QC',r,rel,'VVFIN',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG).
-
-head('VAFIN','QC',r,rel,'VAFIN',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG).
-
-head('VMFIN','QC',r,rel,'VMFIN',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG).
-
-head('VVIMP','QC',r,rel,'VVIMP',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG).
-
-head('RC','QC',r,rel,'RC',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG).
-
-head('NEB','QC',r,rel,'NEB',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG).
-
-
 %======================================================================================
 %subordinating conjunctions
 
@@ -1305,7 +1291,7 @@ head('VVIZU','PIS',l,adv,'VVIZU',[_,_,_,_,_,_],_,MF,_,MF).
 
 
 
-%interrogative pronoun (new transtag 'QC')
+%interrogative adverb (new transtag 'QC')
 head('VVFIN','PWAV',l,adv,'QC',[_,_,_,_,_,_],_,MF,_,MF).
 
 head('VAFIN','PWAV',l,adv,'QC',[_,_,_,_,_,_],_,MF,_,MF).
@@ -1314,6 +1300,14 @@ head('VMFIN','PWAV',l,adv,'QC',[_,_,_,_,_,_],_,MF,_,MF).
 
 %only necessary in case of tagging errors
 head('VVPP','PWAV',l,adv,'QC',[FC,_,_,_,_,_],_,MF,_,MF) :- verbchunklength(FC,1).
+
+
+%interrogative adverbs starting with "wo" can be relative: Dort, wo es am schönsten ist.
+head('VVFIN','PWAV',l,adv,'RC',[_,_,_,FG,_,_],_,MF,_,MF) :- atom_concat(wo,_,FG);atom_concat('Wo',_,FG).
+
+head('VAFIN','PWAV',l,adv,'RC',[_,_,_,FG,_,_],_,MF,_,MF):- atom_concat(wo,_,FG);atom_concat('Wo',_,FG).
+
+head('VMFIN','PWAV',l,adv,'RC',[_,_,_,FG,_,_],_,MF,_,MF):- atom_concat(wo,_,FG);atom_concat('Wo',_,FG).
 
 
 
