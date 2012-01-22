@@ -2000,6 +2000,15 @@ head('VVIZU','KON_VVIZU',r,kon,'VVIZU',[_,_,_,_,_,_],_,_,MG,MG).
 %vvimp + vvimp
 head('VVIMP','KON_IMPVERB',r,kon,'VVIMP',  [_,_,_,_,_,_],_,_,MG,MG).
 
+%coordinated subclauses
+head('RC','KON_RC',r,kon,'RC',  [_,_,_,_,_,_],_,_,MG,MG).
+
+head('QC','KON_QC',r,kon,'QC',  [_,_,_,_,_,_],_,_,MG,MG).
+
+head('OBJC','KON_OBJC',r,kon,'OBJC',  [_,_,_,_,_,_],_,_,MG,MG).
+
+head('NEB','KON_NEB',r,kon,'NEB',  [_,_,_,_,_,_],_,_,MG,MG).
+
 
 %X, Y und so weiter
 head(Tag,'KON_ANY',r,kon,Tag,  [_,_,_,_,_,_],_,_,MG,MG).
@@ -2075,6 +2084,12 @@ kon_mapping('VMINF','KON_INFVERB') :- !.
 kon_mapping('VAINF','KON_INFVERB') :- !.
 
 kon_mapping('VVIZU','KON_VVIZU') :- !.
+
+kon_mapping('RC','KON_RC') :- !.
+kon_mapping('QC','KON_QC') :- !.
+kon_mapping('NEB','KON_NEB') :- !.
+kon_mapping('OBJC','KON_OBJC') :- !.
+
 
 %======================================================================================
 %quotes/(in)direct speech: tag 's'
