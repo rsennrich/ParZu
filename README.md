@@ -52,7 +52,7 @@ INSTALLATION
 
 3. adjust file paths in the config.ini file. Also define which lemmatisation/morphology you use (if any), and make sure they work.
 
-4. (OPTIONAL): If you have the Tüba-D/Z corpus in the right format (dependencies, CONLL format), you can generate improved statistic files by executing `statistics/create_statistics.sh`. 
+4. (OPTIONAL): If you have the Tüba-D/Z corpus in the right format (dependencies, CONLL format, UTF-8), you can generate improved statistic files by executing `statistics/create_statistics.sh`. 
     The files advstats* freq* konjstats* ppstats* and vstats* are created in a temporary directory - move them into the `statistics/` folder to make the system use them.
     With evaluation/create_devsets.py , you can create a development from the same Tüba-D/Z file, and perform quality/regression tests with python evaluation/do_evaluation.py.
 
@@ -102,8 +102,8 @@ This will parse the first 1000 sentences* of TüBa-D/Z and report the results.
 The numbers reported above were obtained with an older Tüba version and may differ slightly.
 You can use the online demo at http://www.cl.uzh.ch/kitt/parzu/ to check if there are any major regressions in your local install.
 
-TECHNICAL ISSUES
-----------------
+TECHNICAL FAQ
+-------------
 
 - Why doesn't the parser immediately start generating output? (especially when parsing large texts)
 
@@ -137,6 +137,14 @@ TECHNICAL ISSUES
 - What character encoding does the parser use?
 
   ParZu uses UTF-8 encoding.
+
+KNOWN ISSUES
+------------
+
+The TreeTagger does not work correctly with tokenized input or the --linewise option.
+The reason is that sentence boundaries are internally representend through blank lines (in the tokenized format), which the TreeTagger ignores.
+Most other POS taggers (e.g. TnT, Stanford POS tagger, hunpos, CRF++) support the POS tagger input/output format expected by ParZu: one token per line, blank lines for sentence boundaries.
+
 
 LICENSE
 -------
