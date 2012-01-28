@@ -341,9 +341,10 @@ stats2(subj,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,NP,_D,HC-_OG) :-
 
 
 %accusative objects.
-stats2(obja,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,MORPHD,P,P,_D,HC-_OG) :-
+stats2(obja,Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,MORPHD,P,P,_D,HC-_OG) :-
 	getheadandnormalise(HC,Head,_),
-	npidsamb(Head,MORPHD,Dtag,obja,PTemp),
+    ((member(Head,['gibt','geben','geb~en']),FD=es)->PTemp=0.1; %bilexicalized exception: "xxx gibt es": "es" is very unlikely to be obja
+	npidsamb(Head,MORPHD,Dtag,obja,PTemp)),
 	((Htag = 'ADJA';Htag='ADJD')->PosMod is 0.5;PosMod is 1),
 	P is PTemp*PosMod.
 
