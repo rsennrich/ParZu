@@ -22,8 +22,8 @@ outputformats = ["oldconll","conll","moses","prolog"]
 
 
 #if you want to use yap (version >= 6.2), change this to 'yap'
-prolog = 'swipl'
-#prolog = 'yap'
+#prolog = 'swipl'
+prolog = 'yap'
 
 #yap and swipl have different command line arguments: this maps to the correct one
 prolog_load = {'yap':'-l',
@@ -366,7 +366,12 @@ def parse(instream,outstream,options):
         parsing = Popen(["python", os.path.join(sys.path[0],"core","multiprocessed_parsing.py"), str(options['num_processes']), args, options['sentdelim'], os.path.join(sys.path[0],'core'),prolog, prolog_load[prolog]], stdin=instream,stdout=outstream,stderr=options['senderror'])
 
     else:
-        parsing = Popen([prolog, '-q', '-G228M', '-L228M', prolog_load[prolog], 'ParZu-parser.pl', '-g', args], cwd=os.path.join(sys.path[0],'core'), stdin=instream, stdout=outstream, stderr=options['senderror'])
+        runCMD = [prolog, '-q', prolog_load[prolog], 'ParZu-parser.pl', '-g', args]
+        
+        if prolog == 'swipl':
+            runCMD += ['-G248M', '-L248M']
+        
+        parsing = Popen(runCMD, cwd=os.path.join(sys.path[0],'core'), stdin=instream, stdout=outstream, stderr=options['senderror'])
         
     return parsing
 
