@@ -22,8 +22,8 @@ outputformats = ["oldconll","conll","moses","prolog"]
 
 
 #if you want to use yap (version >= 6.2), change this to 'yap'
-#prolog = 'swipl'
-prolog = 'yap'
+prolog = 'swipl'
+#prolog = 'yap'
 
 #yap and swipl have different command line arguments: this maps to the correct one
 prolog_load = {'yap':'-l',
