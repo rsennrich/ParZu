@@ -18,7 +18,7 @@ write('A sample call is:'),nl,  write('go_textual(\'preprocessed_input.pl\'), to
 
 :- index(chart(1,1,1,0,0,0,0,0,1,0,0));true. %% only has an effect in SWI
 :- index(head(1,1,1,0,0,0,0,0,0,0));true.
-:- index(head2(1,1,1,0,0,0,0,0,0,0));true.
+:- index(head(1,1,1,0,0,0,0,0,0,0));true.
 :- index(scores(1,1,1,1,0));true.
 
 :- ensure_loaded('tree_textual.pl').
@@ -83,7 +83,7 @@ sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[WFormF|MORPHF],
   !,
   (
   %right word is head
-    (head2(Ftag,Gtag,l,Type,Transtag,[FChunk,GChunk,FFh,FGh,OF,OG,FID,GID],FPos-GPos,MORPHF,MORPHG,MORPH),
+    (head(Ftag,Gtag,l,Type,Transtag,[FChunk,GChunk,FFh,FGh,OF,OG,FID,GID],FPos-GPos,MORPHF,MORPHG,MORPH),
      Dist is FPos - GPos,
      (statschart(SF,Ftag,MORPHF,SG,Gtag,MORPHG,Type,Prob,Percent,Dist) -> true ; (once(stats2(Type,Ftag,FFh,SF,MORPHF,Gtag,FGh,SG,MORPHG,Prob,Percent,Dist,FChunk-OF)), asserta(statschart(SF,Ftag,MORPHF,SG,Gtag,MORPHG,Type,Prob,Percent,Dist)))),
      Prob >= DISCARD,
@@ -92,7 +92,7 @@ sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[WFormF|MORPHF],
      appl_chunk_l(FuncF,FuncG,DType,FuncTRes)
     );
   %left word is head
-    (head2(Gtag,Ftag,r,Type,Transtag,[GChunk,FChunk,FGh,FFh,OG,OF,GID,FID],GPos-FPos, MORPHG,MORPHF,MORPH),
+    (head(Gtag,Ftag,r,Type,Transtag,[GChunk,FChunk,FGh,FFh,OG,OF,GID,FID],GPos-FPos, MORPHG,MORPHF,MORPH),
      Dist is FPos - GPos,
      (statschart(SG,Gtag,MORPHG,SF,Ftag,MORPHF,Type,Prob,Percent,Dist) -> true; (once(stats2(Type,Gtag,FGh,SG,MORPHG,Ftag,FFh,SF,MORPHF,Prob,Percent,Dist,GChunk-OG)), asserta(statschart(SG,Gtag,MORPHG,SF,Ftag,MORPHF,Type,Prob,Percent,Dist)))),
      Prob >= DISCARD,
