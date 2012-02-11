@@ -961,7 +961,7 @@ head('VVPP','V*INF/PP',l,obji,'VVPP',[_,DC,HW,_,_,_,_,_],_,MH,_,MH) :- modallike
 head('VVIZU','V*INF/PP',l,obji,'VVIZU',[_,DC,HW,_,_,_,_,_],_,MH,_,MH) :- modallike(HW), verbchunklength(DC,1).
 head('VVFIN','VVIZU',l,obji,'VVFIN',[_,DC,HW,_,_,OG,_,_],_,MH,_,MH) :- modallike(HW), \+ member('->comma->', OG), verbchunklength(DC,1).
 
-head('VVFIN','V*INF/PP',r,obji,'VVFIN',[_,DC,HW,_,_,_,_,_],_,MH,_,MH) :- modallike(HW), verbchunklength(DChunk,1).
+head('VVFIN','V*INF/PP',r,obji,'VVFIN',[_,DC,HW,_,_,_,_,_],_,MH,_,MH) :- modallike(HW), verbchunklength(DC,1).
 head('VVFIN','VVIZU',r,obji,'VVFIN',[_,DC,HW,_,_,OF,_,_],_,MH,_,MH) :- modallike(HW), \+ member('<-comma<-', OF), verbchunklength(DC,1).
 
 
