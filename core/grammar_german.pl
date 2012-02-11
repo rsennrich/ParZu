@@ -149,10 +149,10 @@ head('ADV','CARD',l,attr,'ADV', [_,_,'Mal',_,OF,_],_,MF,_,MF) :- \+ member('<-at
 
 
 %'drei andere', 'viele mehr' etc.
-head('PIS','CARD',l,attr,'PIS', [_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G.
-head('PIS','ADJD',l,attr,'PIS', [_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G.
-head('PIS','PIDAT',l,attr,'PIS', [_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G.
-head('PIS','ADJA',l,attr,'PIS', [_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G.
+head('PIS','CARD',l,attr,'PIS', _,F-G,MF,_,MF) :- 1 is F-G.
+head('PIS','ADJD',l,attr,'PIS', _,F-G,MF,_,MF) :- 1 is F-G.
+head('PIS','PIDAT',l,attr,'PIS', _,F-G,MF,_,MF) :- 1 is F-G.
+head('PIS','ADJA',l,attr,'PIS', _,F-G,MF,_,MF) :- 1 is F-G.
 
 %======================================================================================
 %prep(osition)
@@ -171,7 +171,7 @@ head(_,PN,r,pn,'PP',[_,_,_,'Zu',_,OG],F-_,MF,MG,MNew) :- prepcompl(PN,F), unify_
 
 
 %"mit mehr als x" - no distance restriction. (inconsistency in gold standard: pn or kom?)
-head('APPR','KOMPX',r,kom,'PP',[_,_,_,_,_,_],_,_,MG,MG).
+head('APPR','KOMPX',r,kom,'PP',_,_,_,MG,MG).
 
 
 
@@ -574,15 +574,15 @@ head('ART', 'PP',r,pp,'PIS',[_,_,_,_,_,OG],F-G,_,MG,MG) :- 1 is F-G, \+ member('
 
 
 %needs disambiguation, otherwise too many FPs
-head('NN', PRO,r,pp,'NN',[_,_,_,_,_,OG],_,_,MG,MG) :- proadv(PRO), \+ member('->pp->',OG).
+head('NN', 'PAV',r,pp,'NN',[_,_,_,_,_,OG],_,_,MG,MG) :- \+ member('->pp->',OG).
 
-head('NE', PRO,r,pp,'NE',[_,_,_,_,_,OG],_,_,MG,MG) :- proadv(PRO), \+ member('->pp->',OG).
+head('NE', 'PAV',r,pp,'NE',[_,_,_,_,_,OG],_,_,MG,MG) :- \+ member('->pp->',OG).
 
-head('FM', PRO,r,pp,'FM',[_,_,_,_,_,OG],_,_,MG,MG) :- proadv(PRO), \+ member('->pp->',OG).
+head('FM', 'PAV',r,pp,'FM',[_,_,_,_,_,OG],_,_,MG,MG) :- \+ member('->pp->',OG).
 
-head('PIS', PRO,r,pp,'PIS',[_,_,_,_,_,OG],_,_,MG,MG) :- proadv(PRO), \+ member('->pp->',OG).
+head('PIS', 'PAV',r,pp,'PIS',[_,_,_,_,_,OG],_,_,MG,MG) :- \+ member('->pp->',OG).
 
-head('CARD', PRO,r,pp,'CARD',[_,_,_,_,_,OG],_,_,MG,MG) :- proadv(PRO), \+ member('->pp->',OG).
+head('CARD', 'PAV',r,pp,'CARD',[_,_,_,_,_,OG],_,_,MG,MG) :- \+ member('->pp->',OG).
 
 
 
@@ -593,10 +593,9 @@ head('VVIMP', 'PP',r,pp,'VVIMP',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG),
 
 
 
-%there is some inconsistency concerning the tag for pronominal adverbs. I'm including all three possibilities I've encountered.
-head('V*FIN', PRO,r,pp,'V*FIN',[_,_,_,_,_,OG],_,_,MG,MG) :- proadv(PRO), restrict_coord(OG).
+head('V*FIN', 'PAV',r,pp,'V*FIN',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG).
 
-head('VVIMP', PRO,r,pp,'VVIMP',[_,_,_,_,_,OG],_,_,MG,MG) :- proadv(PRO), restrict_coord(OG).
+head('VVIMP', 'PAV',r,pp,'VVIMP',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG).
 
 
 
@@ -614,35 +613,30 @@ head('V*FIN', 'PPREL',l,pp,'RC',[FC,_,_,_,OF,_],_,MF,_,MF) :- restrict_vorfeld(F
 head('V*FIN', 'PPQ',l,pp,'QC',[FC,_,_,_,OF,_],_,MF,_,MF) :- restrict_vorfeld(FC,OF).
 
 
-
-%there is some inconsistency concerning the tag for pronominal adverbs. I'm including all three possibilities I've encountered.
-head('V*FIN', PRO,l,pp,'V*FIN',[FC,_,_,_,OF,_],_,MF,_,MF) :- proadv(PRO), restrict_vorfeld(FC,OF).
+head('V*FIN', 'PAV',l,pp,'V*FIN',[FC,_,_,_,OF,_],_,MF,_,MF) :- restrict_vorfeld(FC,OF).
 
 
 %allow PPs before nonfinite verb if no matching finite verb is found in preprocessing (-> chunk has only one element).
 %example/motivation: das kind, 1999 in cottbus geboren, konnte schon klavier spielen.
 head(NONFIN, 'PP',l,pp,NONFIN,[FC,_,_,_,_,_],_,MF,_,MF) :- nonfinite(NONFIN), verbchunklength(FC,1).
-head(NONFIN, 'PROP',l,pp,NONFIN,[FC,_,_,_,_,_],_,MF,_,MF) :- nonfinite(NONFIN), verbchunklength(FC,1).
 head(NONFIN, 'PAV',l,pp,NONFIN,[FC,_,_,_,_,_],_,MF,_,MF) :- nonfinite(NONFIN), verbchunklength(FC,1).
-head(NONFIN, 'PROAV',l,pp,NONFIN,[FC,_,_,_,_,_],_,MF,_,MF) :- nonfinite(NONFIN), verbchunklength(FC,1).
 
 
 
 %PP premodifying participial adjective (der auf dem boden liegende mann)
-head('ADJA', 'PP',l,pp,'ADJA',[_,_,_,_,_,_],F-_,MF,_,MF) :- \+ endOfNP(F).
-head('ADJD', 'PP',l,pp,'ADJD',[_,_,_,_,_,_],F-_,MF,_,MF) :- \+ endOfNP(F).
+head('ADJA', 'PP',l,pp,'ADJA',_,F-_,MF,_,MF) :- \+ endOfNP(F).
+head('ADJD', 'PP',l,pp,'ADJD',_,F-_,MF,_,MF) :- \+ endOfNP(F).
 
 %daran angedockt
-head('ADJA', PRO,l,pp,'ADJA',[_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G, proadv(PRO).
-%head('ADJD', PRO,l,pp,'ADJD',[_,_,_,_,_,_],_,MF,_,MF) :- proadv(PRO).
+head('ADJA', 'PAV',l,pp,'ADJA',_,F-G,MF,_,MF) :- 1 is F-G.
 
 
 %complex prepositions:
 %bis auf weiteres
-head('APPR', 'PP',r,pp,'PP',[_,_,_,_,_,_],F-G,_,MG,MG) :-  1 is F-G.
+head('APPR', 'PP',r,pp,'PP',_,F-G,_,MG,MG) :-  1 is F-G.
 
 %bis dahin
-head('APPR', PRO,r,pp,'PP',[_,_,_,_,_,_],F-G,_,MG,MG) :-  proadv(PRO),1 is F-G.
+head('APPR', 'PAV',r,pp,'PP',_,F-G,_,MG,MG) :- 1 is F-G.
 
 
 %======================================================================================
@@ -655,10 +649,9 @@ head('V*FIN', 'PP',r,objp,'V*FIN',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG
 head('VVIMP', 'PP',r,objp,'VVIMP',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG), \+ member('<-objp<-',OG), \+ member('->objp->',OG).
 
 
-%there is some inconsistency concerning the tag for pronominal adverbs. I'm including all three possibilities I've encountered.
-head('V*FIN', PRO,r,objp,'V*FIN',[_,_,_,_,_,OG],_,_,MG,MG) :- proadv(PRO), restrict_coord(OG), \+ member('<-objp<-',OG), \+ member('->objp->',OG).
+head('V*FIN', 'PAV',r,objp,'V*FIN',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG), \+ member('<-objp<-',OG), \+ member('->objp->',OG).
 
-head('VVIMP', PRO,r,objp,'VVIMP',[_,_,_,_,_,OG],_,_,MG,MG) :- proadv(PRO), restrict_coord(OG), \+ member('<-objp<-',OG), \+ member('->objp->',OG).
+head('VVIMP', 'PAV',r,objp,'VVIMP',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG), \+ member('<-objp<-',OG), \+ member('->objp->',OG).
 
 
 
@@ -682,9 +675,7 @@ head('ADJA', 'PP',l,objp,'ADJA',[_,_,_,_,OF,_],F-_,MF,_,MF) :- \+ member('<-objp
 head('ADJD', 'PP',l,objp,'ADJD',[_,_,_,_,OF,_],F-_,MF,_,MF) :- \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF),\+ endOfNP(F).
 
 
-
-%there is some inconsistency concerning the tag for pronominal adverbs. I'm including all three possibilities I've encountered.
-head('V*FIN', PRO,l,objp,'V*FIN',[FC,_,_,_,OF,_],_,MF,_,MF) :- proadv(PRO), restrict_vorfeld(FC,OF), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
+head('V*FIN', 'PAV',l,objp,'V*FIN',[FC,_,_,_,OF,_],_,MF,_,MF) :- restrict_vorfeld(FC,OF), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
 
 
 %allow PPs before nonfinite verb if no matching finite verb is found in preprocessing (-> chunk has only one element).
@@ -693,9 +684,9 @@ head('V*INF', 'PP',l,objp,'V*INF',[FC,_,_,_,OF,_],_,MF,_,MF) :- verbchunklength(
 head('V*PP', 'PP',l,objp,'V*PP',[FC,_,_,_,OF,_],_,MF,_,MF) :- verbchunklength(FC,1), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
 head('VVIZU', 'PP',l,objp,'VVIZU',[FC,_,_,_,OF,_],_,MF,_,MF) :- verbchunklength(FC,1), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
 
-head('V*INF', PRO,l,objp,'V*INF',[FC,_,_,_,OF,_],_,MF,_,MF) :- proadv(PRO), verbchunklength(FC,1), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
-head('V*PP', PRO,l,objp,'V*PP',[FC,_,_,_,OF,_],_,MF,_,MF) :- proadv(PRO), verbchunklength(FC,1), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
-head('VVIZU', PRO,l,objp,'VVIZU',[FC,_,_,_,OF,_],_,MF,_,MF) :- proadv(PRO), verbchunklength(FC,1), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
+head('V*INF', 'PAV',l,objp,'V*INF',[FC,_,_,_,OF,_],_,MF,_,MF) :- verbchunklength(FC,1), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
+head('V*PP', 'PAV',l,objp,'V*PP',[FC,_,_,_,OF,_],_,MF,_,MF) :- verbchunklength(FC,1), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
+head('VVIZU', 'PAV',l,objp,'VVIZU',[FC,_,_,_,OF,_],_,MF,_,MF) :- verbchunklength(FC,1), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
 
 
 %======================================================================================
@@ -727,15 +718,15 @@ head('APPX','$,',r,comma,'APP',[_,_,_,_,_,OG],_,_,MG,MG) :- member('<-comma<-', 
 
 
 %appositions that are enclosed by comma are bound to noun on their left.
-head('NN','APP',r,app,'NN',[_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'NN',MF,'NN',MNew).
+head('NN','APP',r,app,'NN',_,_,MF,MG,MNew) :- unify_case(MG,'NN',MF,'NN',MNew).
 
-head('NE','APP',r,app,'NE',[_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'NE',MF,'NN',MNew).
+head('NE','APP',r,app,'NE',_,_,MF,MG,MNew) :- unify_case(MG,'NE',MF,'NN',MNew).
 
-head('FM','APP',r,app,'FM',[_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'FM',MF,'NN',MNew).
+head('FM','APP',r,app,'FM',_,_,MF,MG,MNew) :- unify_case(MG,'FM',MF,'NN',MNew).
 
-head('PIS','APP',r,app,'PIS',[_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PIS',MF,'NN',MNew).
+head('PIS','APP',r,app,'PIS',_,_,MF,MG,MNew) :- unify_case(MG,'PIS',MF,'NN',MNew).
 
-head('PPER','APP',r,app,'PPER',[_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PPER',MF,'NN',MNew).
+head('PPER','APP',r,app,'PPER',_,_,MF,MG,MNew) :- unify_case(MG,'PPER',MF,'NN',MNew).
 
 
 %sentence-final appositions.
@@ -765,7 +756,7 @@ head(HTag,'NN',r,app,HTag,[_,_,_,_,OF,_],_,MF,MG,MNew) :- apphead(HTag), ((membe
 
 head(HTag,'FM',r,app,HTag,[_,_,_,_,OF,_],_,MF,MG,MNew) :- apphead(HTag), ((member('<-bracket<-', OF),member('->bracket->', OF));(\+ member('<-det<-', OF), \+ member('<-attr<-', OF))), unify_case(MF,'FM',MG,HTag,MNew).
 
-head(HTag,'CARD',r,app,HTag,[_,_,_,_,_,_],_,_,MG,MG) :- apphead(HTag).
+head(HTag,'CARD',r,app,HTag,_,_,_,MG,MG) :- apphead(HTag).
 
 
 
@@ -821,9 +812,9 @@ head('NEB','RC',r,rel,'NEB',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG).
 %subordinating conjunctions
 
 %conjunctions: wenn, obwohl etc.
-head('V*FIN','KOUS',l,konjneb,'NEB',[_,_,_,_,_,_],_,MF,_,MF).
+head('V*FIN','KOUS',l,konjneb,'NEB',_,_,MF,_,MF).
 
-head('ADJD','KOUS',l,konjneb,'NEB',[_,_,_,_,_,_],_,MF,_,MF).
+head('ADJD','KOUS',l,konjneb,'NEB',_,_,MF,_,MF).
 
 
 %consider possibility of tagging error
@@ -831,7 +822,7 @@ head('VVPP','KOUS',l,konjneb,'PPNEB',[FC,_,_,_,_,_],_,MF,_,MF) :- verbchunklengt
 head('VVPP','KOKOM',l,konjneb,'PPNEB',[FC,_,_,_,_,_],_,MF,_,MF) :- verbchunklength(FC,1).
 
 %um/statt/ohne + inf
-head('VVIZU','KOUI',l,konjneb,'NEB',[_,_,_,_,_,_],_,MF,_,MF).
+head('VVIZU','KOUI',l,konjneb,'NEB',_,_,MF,_,MF).
 
 
 %ohne daß: whole construction is finite.
@@ -853,9 +844,6 @@ head2('NEB','$,',l,comma,'NEB',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ member(
 
 head2('NEB','$,',r,comma,'NEB',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ member('->comma->', HeadRels).
 
-%allow commas to enclose a subordinated clause
-%head(NONFIN,'$,',r,comma,'NEB',[_,GC,_,_,_,_],_,_,MG,MG) :- nonfinite(NONFIN), length(GC,1).
-
 
 %subordinated clause before main clause
 head('V*FIN','NEB',l,neb,'V*FIN',[FC,_,_,_,OF,_],_,MF,_,MF) :- restrict_vorfeld(FC,OF).
@@ -874,9 +862,9 @@ head('VVIMP','NEB',r,neb,'VVIMP',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG)
 %TODO: quotes. subjc
 
 %clausal objects. mostly dass
-head('V*FIN','KOUS',l,konjobjc,'OBJC',[_,_,_,_,_,_],_,MF,_,MF).
+head('V*FIN','KOUS',l,konjobjc,'OBJC',_,_,MF,_,MF).
 
-head('ADJD','KOUS',l,konjobjc,'OBJC',[_,_,_,_,_,_],_,MF,_,MF).
+head('ADJD','KOUS',l,konjobjc,'OBJC',_,_,MF,_,MF).
 
 
 %consider possibility of tagging error
@@ -890,29 +878,27 @@ head2('KOUS','KOUS',l,konjobjc,'KOUS',[_,_,ob,'Als',_,_,_,_],H-D,MH,_,MH) :- 1 i
 
 %clausal object before main clause. Takes the place of the accusative object (except for reflexive ones. Exception could be implemented, but causes new problems)
 
-head('V*FIN',OBJC,l,objc,'V*FIN',[FC,_,_,_,OF,_],_,MF,_,MF) :- objcsubjc(OBJC), restrict_vorfeld(FC,OF), \+ member('passive',FC), \+ member('<-obja<-',OF), \+ member('->obja->',OF), \+ member('<-objc<-',OF), \+ member('->objc->',OF).
+head('V*FIN','OBJC/SUBJC',l,objc,'V*FIN',[FC,_,_,_,OF,_],_,MF,_,MF) :- restrict_vorfeld(FC,OF), \+ member('passive',FC), \+ member('<-obja<-',OF), \+ member('->obja->',OF), \+ member('<-objc<-',OF), \+ member('->objc->',OF).
 
 
 %clausal object after main clause
-head('V*FIN',OBJC,r,objc,'V*FIN',[_,GC,_,_,_,OG],_,_,MG,MG) :-  objcsubjc(OBJC), \+ member('passive',GC), restrict_coord(OG), (\+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG);conjoined_vp(OG)).
+head('V*FIN','OBJC/SUBJC',r,objc,'V*FIN',[_,GC,_,_,_,OG],_,_,MG,MG) :-  \+ member('passive',GC), restrict_coord(OG), (\+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG);conjoined_vp(OG)).
 
-head('VVIMP',OBJC,r,objc,'VVIMP',[_,GC,_,_,_,OG],_,_,MG,MG) :-  objcsubjc(OBJC), \+ member('passive',GC), restrict_coord(OG),  (\+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG);conjoined_vp(OG)).
+head('VVIMP','OBJC/SUBJC',r,objc,'VVIMP',[_,GC,_,_,_,OG],_,_,MG,MG) :-  \+ member('passive',GC), restrict_coord(OG),  (\+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG);conjoined_vp(OG)).
 
 
 %clausal object doesn't have to depend on main clause:
-head('RC',OBJC,r,objc,'RC',[_,GC,_,_,_,OG],_,_,MG,MG) :-  objcsubjc(OBJC), \+ member('passive',GC), restrict_coord(OG), (\+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG);conjoined_vp(OG)).
+head('RC','OBJC/SUBJC',r,objc,'RC',[_,GC,_,_,_,OG],_,_,MG,MG) :- \+ member('passive',GC), restrict_coord(OG), (\+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG);conjoined_vp(OG)).
 
-head('NEB',OBJC,r,objc,'NEB',[_,GC,_,_,_,OG],_,_,MG,MG) :-  objcsubjc(OBJC), \+ member('passive',GC), restrict_coord(OG), (\+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG);conjoined_vp(OG)).
+head('NEB','OBJC/SUBJC',r,objc,'NEB',[_,GC,_,_,_,OG],_,_,MG,MG) :- \+ member('passive',GC), restrict_coord(OG), (\+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG);conjoined_vp(OG)).
 
 
 %die Möglichkeit, dass...
-head('NN',OBJC,r,objc,'NN',[_,_,_,_,_,OG],_,_,MG,MG) :- objcsubjc(OBJC), \+ member('<-objc<-',OG), \+ member('->objc->',OG).
+head('NN','OBJC/SUBJC',r,objc,'NN',[_,_,_,_,_,OG],_,_,MG,MG) :- \+ member('<-objc<-',OG), \+ member('->objc->',OG).
 
 
 %darauf, dass...
-head('PROP',OBJC,r,objc,'PROP',[_,_,_,_,_,OG],_,_,MG,MG) :- objcsubjc(OBJC), \+ member('<-objc<-',OG), \+ member('->objc->',OG).
-head('PAV',OBJC,r,objc,'PAV',[_,_,_,_,_,OG],_,_,MG,MG) :- objcsubjc(OBJC), \+ member('<-objc<-',OG), \+ member('->objc->',OG).
-head('PROAV',OBJC,r,objc,'PROAV',[_,_,_,_,_,OG],_,_,MG,MG) :- objcsubjc(OBJC), \+ member('<-objc<-',OG), \+ member('->objc->',OG).
+head('PAV','OBJC/SUBJC',r,objc,'PAV',[_,_,_,_,_,OG],_,_,MG,MG) :- \+ member('<-objc<-',OG), \+ member('->objc->',OG).
 
 %allow commas to enclose a clausal object
 head2('OBJC','$,',r,comma,'OBJC',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ member('->comma->', HeadRels).
@@ -925,17 +911,17 @@ head2('OBJC','$,',l,comma,'OBJC',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ membe
 
 %clausal subject before main clause. Takes the place of the subject
 
-head('V*FIN',OBJC,l,subjc,'V*FIN',[FC,_,_,_,OF,_],_,MF,_,MF) :- objcsubjc(OBJC), restrict_vorfeld(FC,OF), \+ member('<-subj<-',OF), \+ member('->subj->',OF), \+ member('<-subjc<-',OF), \+ member('->subjc->',OF).
+head('V*FIN','OBJC/SUBJC',l,subjc,'V*FIN',[FC,_,_,_,OF,_],_,MF,_,MF) :- restrict_vorfeld(FC,OF), \+ member('<-subj<-',OF), \+ member('->subj->',OF), \+ member('<-subjc<-',OF), \+ member('->subjc->',OF).
 
 
 %clausal subject after main clause
-head('V*FIN',OBJC,r,subjc,'V*FIN',[_,_,_,_,_,OG],_,_,MG,MG) :- objcsubjc(OBJC), restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG).
+head('V*FIN','OBJC/SUBJC',r,subjc,'V*FIN',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG).
 
 
 %clausal subject doesn't have to depend on main clause:
-head('RC',OBJC,r,subjc,'RC',[_,_,_,_,_,OG],_,_,MG,MG) :- objcsubjc(OBJC), restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG).
+head('RC','OBJC/SUBJC',r,subjc,'RC',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG).
 
-head('NEB',OBJC,r,subjc,'NEB',[_,_,_,_,_,OG],_,_,MG,MG) :- objcsubjc(OBJC), restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG).
+head('NEB','OBJC/SUBJC',r,subjc,'NEB',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG).
 
 
 
@@ -973,11 +959,14 @@ head('ADJA', 'VVINF',l,obji,'ADJA',[_,_,'wollend',_,_,_],F-G,MF,_,MF) :- 1 is F-
 
 %experimentieren lassen, kommen sehen usw.
 %TüBa sometimes gives the tag "aux". We follow Foth in using obji
-head('VVFIN',NONFIN,l,obji,'VVFIN', [_,GChunk,FF,_,_,OG],_,MF,_,MF) :- modallike(FF), nonfinite(NONFIN), \+ (NONFIN = 'VVIZU', member('->comma->', OG)), verbchunklength(GChunk,1).
-head('VVINF',NONFIN,l,obji,'VVINF', [_,GChunk,FF,_,_,_],_,MF,_,MF) :- modallike(FF), nonfinite(NONFIN), \+ NONFIN = 'VVIZU', verbchunklength(GChunk,1).
-head('VVPP',NONFIN,l,obji,'VVPP', [_,GChunk,FF,_,_,_],_,MF,_,MF) :- modallike(FF), nonfinite(NONFIN), \+ NONFIN = 'VVIZU', verbchunklength(GChunk,1).
-head('VVIZU',NONFIN,l,obji,'VVIZU', [_,GChunk,FF,_,_,_],_,MF,_,MF) :- modallike(FF), nonfinite(NONFIN), \+ NONFIN = 'VVIZU', verbchunklength(GChunk,1).
-head('VVFIN',NONFIN,r,obji,'VVFIN', [FChunk,_,_,FG,OF,_],_,_,MG,MG) :- modallike(FG), nonfinite(NONFIN), \+ (NONFIN = 'VVIZU', member('<-comma<-', OF)), verbchunklength(FChunk,1).
+head('VVFIN','V*INF/PP',l,obji,'VVFIN', [_,GChunk,FF,_,_,_],_,MF,_,MF) :- modallike(FF), verbchunklength(GChunk,1).
+head('VVINF','V*INF/PP',l,obji,'VVINF', [_,GChunk,FF,_,_,_],_,MF,_,MF) :- modallike(FF), verbchunklength(GChunk,1).
+head('VVPP','V*INF/PP',l,obji,'VVPP', [_,GChunk,FF,_,_,_],_,MF,_,MF) :- modallike(FF), verbchunklength(GChunk,1).
+head('VVIZU','V*INF/PP',l,obji,'VVIZU', [_,GChunk,FF,_,_,_],_,MF,_,MF) :- modallike(FF), verbchunklength(GChunk,1).
+head('VVFIN','VVIZU',l,obji,'VVFIN', [_,GChunk,FF,_,_,OG],_,MF,_,MF) :- modallike(FF), \+ member('->comma->', OG), verbchunklength(GChunk,1).
+
+head('VVFIN','V*INF/PP',r,obji,'VVFIN', [FChunk,_,_,FG,_,_],_,_,MG,MG) :- modallike(FG), verbchunklength(FChunk,1).
+head('VVFIN','VVIZU',r,obji,'VVFIN', [FChunk,_,_,FG,OF,_],_,_,MG,MG) :- modallike(FG), \+ member('<-comma<-', OF), verbchunklength(FChunk,1).
 
 
 %full verbs that act like modal verbs
@@ -995,38 +984,38 @@ modallike('hören') :- !.
 
 
 %adverb before finite verb
-head('V*FIN','ADV',l,adv,'V*FIN',[_,_,_,_,_,_],_,MF,_,MF).
+head('V*FIN','ADV',l,adv,'V*FIN',_,_,MF,_,MF).
 
-head('VVIZU','ADV',l,adv,'VVIZU',[_,_,_,_,_,_],_,MF,_,MF).
-
-
-head('V*FIN','ADJD',l,adv,'V*FIN',[_,_,_,_,_,_],_,MF,_,MF).
-
-head('VVIZU','ADJD',l,adv,'VVIZU',[_,_,_,_,_,_],_,MF,_,MF).
+head('VVIZU','ADV',l,adv,'VVIZU',_,_,MF,_,MF).
 
 
-head('V*FIN','PTKNEG',l,adv,'V*FIN',[_,_,_,_,_,_],_,MF,_,MF).
+head('V*FIN','ADJD',l,adv,'V*FIN',_,_,MF,_,MF).
 
-head('VVIZU','PTKNEG',l,adv,'VVIZU',[_,_,_,_,_,_],_,MF,_,MF).
+head('VVIZU','ADJD',l,adv,'VVIZU',_,_,MF,_,MF).
+
+
+head('V*FIN','PTKNEG',l,adv,'V*FIN',_,_,MF,_,MF).
+
+head('VVIZU','PTKNEG',l,adv,'VVIZU',_,_,MF,_,MF).
 
 
 %answer particle. Included because of tagging errors:
 %example: das ist ja toll
-head('V*FIN','PTKANT',l,adv,'V*FIN',[_,_,_,_,_,_],_,MF,_,MF).
+head('V*FIN','PTKANT',l,adv,'V*FIN',_,_,MF,_,MF).
 
-head('VVIZU','PTKANT',l,adv,'VVIZU',[_,_,_,_,_,_],_,MF,_,MF).
+head('VVIZU','PTKANT',l,adv,'VVIZU',_,_,MF,_,MF).
 
 
 
 %weil ich ein wenig schüchtern bin
-head('V*FIN','PIS',l,adv,'V*FIN',[_,_,_,_,_,_],_,MF,_,MF).
+head('V*FIN','PIS',l,adv,'V*FIN',_,_,MF,_,MF).
 
-head('VVIZU','PIS',l,adv,'VVIZU',[_,_,_,_,_,_],_,MF,_,MF).
+head('VVIZU','PIS',l,adv,'VVIZU',_,_,MF,_,MF).
 
 
 
 %interrogative adverb (new transtag 'QC')
-head('V*FIN','PWAV',l,adv,'QC',[_,_,_,_,_,_],_,MF,_,MF).
+head('V*FIN','PWAV',l,adv,'QC',_,_,MF,_,MF).
 
 %only necessary in case of tagging errors
 head('VVPP','PWAV',l,adv,'QC',[FC,_,_,_,_,_],_,MF,_,MF) :- verbchunklength(FC,1).
@@ -1104,17 +1093,17 @@ head('VVIMP','PTKANT',r,adv,'VVIMP',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(
 
 
 %adverbial particles: "am besten"..
-head('ADJD', 'PTKA', l, adv, 'ADJD',[_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G.
+head('ADJD', 'PTKA', l, adv, 'ADJD',_,F-G,MF,_,MF) :- 1 is F-G.
 
-head('ADJA', 'PTKA', l, adv, 'ADJA',[_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G.
+head('ADJA', 'PTKA', l, adv, 'ADJA',_,F-G,MF,_,MF) :- 1 is F-G.
 
-head('ADV', 'PTKA', l, adv, 'ADV',[_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G.
+head('ADV', 'PTKA', l, adv, 'ADV',_,F-G,MF,_,MF) :- 1 is F-G.
 
-head('PIAT', 'PTKA', l, adv, 'PIAT',[_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G.
+head('PIAT', 'PTKA', l, adv, 'PIAT',_,F-G,MF,_,MF) :- 1 is F-G.
 
-head('PIDAT', 'PTKA', l, adv, 'PIDAT',[_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G.
+head('PIDAT', 'PTKA', l, adv, 'PIDAT',_,F-G,MF,_,MF) :- 1 is F-G.
 
-head('PIS', 'PTKA', l, adv, 'PIS',[_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G.
+head('PIS', 'PTKA', l, adv, 'PIS',_,F-G,MF,_,MF) :- 1 is F-G.
 
 
 %'zu' might be mistagged as preposition
@@ -1155,115 +1144,115 @@ head('ADJA','APPR', l, adv, 'ADJD',[_,_,_,'an-der',_,_],F-G,MF,_,MF) :- 1 is F-G
 
 
 %"mehr als x"
-head('KOMPX','ADV',l,adv,'KOMPX', [_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G.
+head('KOMPX','ADV',l,adv,'KOMPX', _,F-G,MF,_,MF) :- 1 is F-G.
 
 
 %sehr gut
-head('ADJD', 'ADV', l, adv, 'ADJD',[_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G.
+head('ADJD', 'ADV', l, adv, 'ADJD',_,F-G,MF,_,MF) :- 1 is F-G.
 
-head('ADJA', 'ADV', l, adv, 'ADJA',[_,_,_,_,_,_],_,MF,_,MF).
+head('ADJA', 'ADV', l, adv, 'ADJA',_,_,MF,_,MF).
 
-head('KOUS', 'ADV', l, adv, 'KOUS',[_,_,_,_,_,_],_,MF,_,MF).
+head('KOUS', 'ADV', l, adv, 'KOUS',_,_,MF,_,MF).
 
-head('NN', 'ADV', l, adv, 'NN',[_,_,_,_,_,_],_,MF,_,MF).
+head('NN', 'ADV', l, adv, 'NN',_,_,MF,_,MF).
 
-head('NE', 'ADV', l, adv, 'NE',[_,_,_,_,_,_],_,MF,_,MF).
+head('NE', 'ADV', l, adv, 'NE',_,_,MF,_,MF).
 
-head('APPR', 'ADV', l, adv, 'APPR',[_,_,_,_,_,_],_,MF,_,MF).
+head('APPR', 'ADV', l, adv, 'APPR',_,_,MF,_,MF).
 
-head('APPRART', 'ADV', l, adv, 'APPRART',[_,_,_,_,_,_],_,MF,_,MF).
+head('APPRART', 'ADV', l, adv, 'APPRART',_,_,MF,_,MF).
 
-head('ADV', 'ADV', l, adv, 'ADV',[_,_,_,_,_,_],_,MF,_,MF).
+head('ADV', 'ADV', l, adv, 'ADV',_,_,MF,_,MF).
 
-head('PTKNEG', 'ADV', l, adv, 'PTKNEG',[_,_,_,_,_,_],_,MF,_,MF).
+head('PTKNEG', 'ADV', l, adv, 'PTKNEG',_,_,MF,_,MF).
 
-head('CARD', 'ADV', l, adv, 'CARD',[_,_,_,_,_,_],_,MF,_,MF).
+head('CARD', 'ADV', l, adv, 'CARD',_,_,MF,_,MF).
 
-head('PDS', 'ADV', l, adv, 'PDS',[_,_,_,_,_,_],_,MF,_,MF).
+head('PDS', 'ADV', l, adv, 'PDS',_,_,MF,_,MF).
 
-head('PIAT', 'ADV', l, adv, 'PIAT',[_,_,_,_,_,_],_,MF,_,MF).
+head('PIAT', 'ADV', l, adv, 'PIAT',_,_,MF,_,MF).
 
-head('PIDAT', 'ADV', l, adv, 'PIDAT',[_,_,_,_,_,_],_,MF,_,MF).
+head('PIDAT', 'ADV', l, adv, 'PIDAT',_,_,MF,_,MF).
 
-head('PIS', 'ADV', l, adv, 'PIS',[_,_,_,_,_,_],_,MF,_,MF).
+head('PIS', 'ADV', l, adv, 'PIS',_,_,MF,_,MF).
 
-head('PPER', 'ADV', l, adv, 'PPER',[_,_,_,_,_,_],_,MF,_,MF).
+head('PPER', 'ADV', l, adv, 'PPER',_,_,MF,_,MF).
 
-% head(Tag, 'ADV', l, adv, Tag,[_,_,_,_,_,_],_,MF,_,MF).
-% head(Tag, 'ADV', r, adv, Tag,[_,_,_,_,_,_],_,MF,_,MF).
+% head(Tag, 'ADV', l, adv, Tag,_,_,MF,_,MF).
+% head(Tag, 'ADV', r, adv, Tag,_,_,MF,_,MF).
 
 
 
-head('ADJA', 'PTKNEG', l, adv, 'ADJA',[_,_,_,_,_,_],_,MF,_,MF).
+head('ADJA', 'PTKNEG', l, adv, 'ADJA',_,_,MF,_,MF).
 
-head('ADJD', 'PTKNEG', l, adv, 'ADJD',[_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G.
+head('ADJD', 'PTKNEG', l, adv, 'ADJD',_,F-G,MF,_,MF) :- 1 is F-G.
 
-head('ADV', 'PTKNEG', l, adv, 'ADV',[_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G.
+head('ADV', 'PTKNEG', l, adv, 'ADV',_,F-G,MF,_,MF) :- 1 is F-G.
 
-head('KOUS', 'PTKNEG', l, adv, 'KOUS',[_,_,_,_,_,_],_,MF,_,MF).
+head('KOUS', 'PTKNEG', l, adv, 'KOUS',_,_,MF,_,MF).
 
-head('CARD', 'PTKNEG', l, adv, 'CARD',[_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G.
+head('CARD', 'PTKNEG', l, adv, 'CARD',_,F-G,MF,_,MF) :- 1 is F-G.
 
-head('NN', 'PTKNEG', l, adv, 'NN',[_,_,_,_,_,_],F-G,MF,_,MF) :- 2 >= F-G.
+head('NN', 'PTKNEG', l, adv, 'NN',_,F-G,MF,_,MF) :- 2 >= F-G.
 
-head('NE', 'PTKNEG', l, adv, 'NE',[_,_,_,_,_,_],F-G,MF,_,MF) :- 2 >= F-G.
+head('NE', 'PTKNEG', l, adv, 'NE',_,F-G,MF,_,MF) :- 2 >= F-G.
 
-head('APPR', 'PTKNEG', l, adv, 'APPR',[_,_,_,_,_,_],F-G,MF,_,MF) :- 2 >= F-G.
+head('APPR', 'PTKNEG', l, adv, 'APPR',_,F-G,MF,_,MF) :- 2 >= F-G.
 
-head('APPRART', 'PTKNEG', l, adv, 'APPRART',[_,_,_,_,_,_],F-G,MF,_,MF) :- 2 >= F-G.
+head('APPRART', 'PTKNEG', l, adv, 'APPRART',_,F-G,MF,_,MF) :- 2 >= F-G.
 
 
 %little hack: use PWAV as transtag to make sure whole thing gets recognised as question
-head('ADJD', 'PWAV', l, adv, 'PWAV',[_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G.
+head('ADJD', 'PWAV', l, adv, 'PWAV',_,F-G,MF,_,MF) :- 1 is F-G.
 
-head('PIDAT', 'PWAV', l, adv, 'PWAV',[_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G.
+head('PIDAT', 'PWAV', l, adv, 'PWAV',_,F-G,MF,_,MF) :- 1 is F-G.
 
 
 %betriebswirtschaftlich günstig
-head('ADJA', 'ADJD', l, adv, 'ADJA',[_,_,_,_,_,_],_,MF,_,MF).
+head('ADJA', 'ADJD', l, adv, 'ADJA',_,_,MF,_,MF).
 
-head('ADJD', 'ADJD', l, adv, 'ADJD',[_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G.
+head('ADJD', 'ADJD', l, adv, 'ADJD',_,F-G,MF,_,MF) :- 1 is F-G.
 
 %most of these are very rare, but there are possibly tagging errors (and not allowing these blocks analysis of non-local dependencies)
-head('KOUS', 'ADJD', l, adv, 'KOUS',[_,_,_,_,_,_],_,MF,_,MF).
+head('KOUS', 'ADJD', l, adv, 'KOUS',_,_,MF,_,MF).
 
-head('NN', 'ADJD', l, adv, 'NN',[_,_,_,_,_,_],_,MF,_,MF).
+head('NN', 'ADJD', l, adv, 'NN',_,_,MF,_,MF).
 
-head('NE', 'ADJD', l, adv, 'NE',[_,_,_,_,_,_],_,MF,_,MF).
+head('NE', 'ADJD', l, adv, 'NE',_,_,MF,_,MF).
 
-head('APPR', 'ADJD', l, adv, 'APPR',[_,_,_,_,_,_],_,MF,_,MF).
+head('APPR', 'ADJD', l, adv, 'APPR',_,_,MF,_,MF).
 
-head('APPRART', 'ADJD', l, adv, 'APPRART',[_,_,_,_,_,_],_,MF,_,MF).
+head('APPRART', 'ADJD', l, adv, 'APPRART',_,_,MF,_,MF).
 
-head('ADV', 'ADJD', l, adv, 'ADV',[_,_,_,_,_,_],_,MF,_,MF).
+head('ADV', 'ADJD', l, adv, 'ADV',_,_,MF,_,MF).
 
-head('PTKNEG', 'ADJD', l, adv, 'PTKNEG',[_,_,_,_,_,_],_,MF,_,MF).
+head('PTKNEG', 'ADJD', l, adv, 'PTKNEG',_,_,MF,_,MF).
 
-head('CARD', 'ADJD', l, adv, 'CARD',[_,_,_,_,_,_],_,MF,_,MF).
+head('CARD', 'ADJD', l, adv, 'CARD',_,_,MF,_,MF).
 
-head('PDS', 'ADJD', l, adv, 'PDS',[_,_,_,_,_,_],_,MF,_,MF).
+head('PDS', 'ADJD', l, adv, 'PDS',_,_,MF,_,MF).
 
-head('PIAT', 'ADJD', l, adv, 'PIAT',[_,_,_,_,_,_],_,MF,_,MF).
+head('PIAT', 'ADJD', l, adv, 'PIAT',_,_,MF,_,MF).
 
-head('PIDAT', 'ADJD', l, adv, 'PIDAT',[_,_,_,_,_,_],_,MF,_,MF).
+head('PIDAT', 'ADJD', l, adv, 'PIDAT',_,_,MF,_,MF).
 
-head('PIS', 'ADJD', l, adv, 'PIS',[_,_,_,_,_,_],_,MF,_,MF).
+head('PIS', 'ADJD', l, adv, 'PIS',_,_,MF,_,MF).
 
-head('PPER', 'ADJD', l, adv, 'PPER',[_,_,_,_,_,_],_,MF,_,MF).
+head('PPER', 'ADJD', l, adv, 'PPER',_,_,MF,_,MF).
 
 
 %seit wann
 %little hack: use PWAV as transtag to make sure whole thing gets recognised as question
-head('APPR','PWAV',r,adv,'PWAV',[_,_,_,_,_,_],F-G,_,MG,MG) :- 1 is F-G.
+head('APPR','PWAV',r,adv,'PWAV',_,F-G,_,MG,MG) :- 1 is F-G.
 
 
 %'seit heute'.
-head('APPR','ADV',r,adv,'PP',[_,_,_,_,_,_],F-G,_,MG,MG) :- 1 is F-G, endOfNP(F).
-head('APPRART','ADV',r,adv,'PP',[_,_,_,_,_,_],F-G,_,MG,MG) :- 1 is F-G, endOfNP(F).
+head('APPR','ADV',r,adv,'PP',_,F-G,_,MG,MG) :- 1 is F-G, endOfNP(F).
+head('APPRART','ADV',r,adv,'PP',_,F-G,_,MG,MG) :- 1 is F-G, endOfNP(F).
 
-head('PTKNEG', 'ADV', r, adv, 'PTKNEG',[_,_,_,_,_,_],F-G,_,MG,MG) :- 1 is F-G.
-head('PWAV', 'ADV', r, adv, 'PWAV',[_,_,_,_,_,_],F-G,_,MG,MG) :- 1 is F-G.
-head('PWS', 'ADV', r, adv, 'PWS',[_,_,_,_,_,_],F-G,_,MG,MG) :- 1 is F-G.
+head('PTKNEG', 'ADV', r, adv, 'PTKNEG',_,F-G,_,MG,MG) :- 1 is F-G.
+head('PWAV', 'ADV', r, adv, 'PWAV',_,F-G,_,MG,MG) :- 1 is F-G.
+head('PWS', 'ADV', r, adv, 'PWS',_,F-G,_,MG,MG) :- 1 is F-G.
 
 %sowohl als auch...
 head(_,'ADV',r,adv,'KON',[_,_,auch,als,_,_],F-G,_,MG,MG) :- 1 is F-G.
@@ -1272,7 +1261,7 @@ head(_,'ADV',r,adv,'KON',[_,_,auch,als,_,_],F-G,_,MG,MG) :- 1 is F-G.
 %nur, weil ich es sage.
 head('PTKNEG', '$,', r, comma, 'ADVKOUS',[_,_,_,_,OF,_],_,MF,_,MF) :- \+ member('<-comma<-', OF).
 head('ADV', '$,', r, comma, 'ADVKOUS',[_,_,_,_,OF,_],_,MF,_,MF) :- \+ member('<-comma<-', OF).
-head('KOUS', 'ADVKOUS', l, adv, 'KOUS',[_,_,_,_,_,_],_,MF,_,MF).
+head('KOUS', 'ADVKOUS', l, adv, 'KOUS',_,_,MF,_,MF).
 
 %======================================================================================
 %auxiliary verbs
@@ -1281,45 +1270,49 @@ head('KOUS', 'ADVKOUS', l, adv, 'KOUS',[_,_,_,_,_,_],_,MF,_,MF).
 
 %rules only work if verb chunking done in preprocessing.
 
-head('VAFIN',NONFIN,r,aux,'VAFIN', [FChunk,GChunk,_,_,OF,_],_,_,MG,MG) :- nonfinite(NONFIN), \+ (NONFIN = 'VVIZU', member('<-comma<-', OF)), FChunk = GChunk.
+head('VAFIN','V*INF/PP',r,aux,'VAFIN', [Chunk,Chunk,_,_,_,_],_,_,MG,MG).
 
-head('VMFIN',NONFIN,r,aux,'VMFIN', [FChunk,GChunk,_,_,OF,_],_,_,MG,MG) :- nonfinite(NONFIN), \+ (NONFIN = 'VVIZU', member('<-comma<-', OF)), FChunk = GChunk.
+head('VMFIN','V*INF/PP',r,aux,'VMFIN', [Chunk,Chunk,_,_,_,_],_,_,MG,MG).
+
+head('VAFIN','VVIZU',r,aux,'VAFIN', [Chunk,Chunk,_,_,OF,_],_,_,MG,MG) :- \+ member('<-comma<-', OF).
+
+head('VMFIN','VVIZU',r,aux,'VMFIN', [Chunk,Chunk,_,_,OF,_],_,_,MG,MG) :- \+ member('<-comma<-', OF).
 
 
-head('VAFIN',NONFIN,l,aux,'VAFIN', [FChunk,GChunk,_,_,_,OG],_,MF,_,MF) :- nonfinite(NONFIN), \+ (NONFIN = 'VVIZU', member('->comma->', OG)), FChunk = GChunk.
 
-head('VMFIN',NONFIN,l,aux,'VMFIN', [FChunk,GChunk,_,_,_,OG],_,MF,_,MF) :- nonfinite(NONFIN), \+ (NONFIN = 'VVIZU', member('->comma->', OG)), FChunk = GChunk.
+head('VAFIN','V*INF/PP',l,aux,'VAFIN', [Chunk,Chunk,_,_,_,_],_,MF,_,MF).
+
+head('VMFIN','V*INF/PP',l,aux,'VMFIN', [Chunk,Chunk,_,_,_,_],_,MF,_,MF).
+
+head('VAFIN','VVIZU',l,aux,'VAFIN', [Chunk,Chunk,_,_,_,OG],_,MF,_,MF) :- \+ member('<-comma<-', OG).
+
+head('VMFIN','VVIZU',l,aux,'VMFIN', [Chunk,Chunk,_,_,_,OG],_,MF,_,MF) :- \+ member('<-comma<-', OG).
 
 
 % FChunk = GChunk (preprocessing) may fail in cases such as "er muss erreichbar sein und *telefonieren können*"
-head('V*INF',NONFIN,l,aux,'V*INF', [FChunk,GChunk,_,_,_,_],_,MF,_,MF) :- nonfinite(NONFIN), \+ NONFIN = 'VVIZU', verbchunklength(FChunk,1), verbchunklength(GChunk,1).
-head('V*PP',NONFIN,l,aux,'V*PP', [FChunk,GChunk,_,_,_,_],_,MF,_,MF) :- nonfinite(NONFIN), \+ NONFIN = 'VVIZU', verbchunklength(FChunk,1), verbchunklength(GChunk,1).
+head('V*INF','V*INF/PP',l,aux,'V*INF', [FChunk,GChunk,_,_,_,_],_,MF,_,MF) :- verbchunklength(FChunk,1), verbchunklength(GChunk,1).
+head('V*PP','V*INF/PP',l,aux,'V*PP', [FChunk,GChunk,_,_,_,_],_,MF,_,MF) :- verbchunklength(FChunk,1), verbchunklength(GChunk,1).
 
 
 %"um geprüft zu werden / um haben zu wollen".
-head('VVIZU','VAINF',l,aux,'VVIZU', [FChunk,GChunk,_,_,_,_],_,MF,_,MF) :- FChunk = GChunk.
-head('VVIZU','VAPP',l,aux,'VVIZU', [FChunk,GChunk,_,_,_,_],_,MF,_,MF) :- FChunk = GChunk.
-head('VVIZU','VMINF',l,aux,'VVIZU', [FChunk,GChunk,_,_,_,_],_,MF,_,MF) :- FChunk = GChunk.
-head('VVIZU','VMPP',l,aux,'VVIZU', [FChunk,GChunk,_,_,_,_],_,MF,_,MF) :- FChunk = GChunk.
-head('VVIZU','VVINF',l,aux,'VVIZU', [FChunk,GChunk,_,_,_,_],_,MF,_,MF) :- FChunk = GChunk.
-head('VVIZU','VVPP',l,aux,'VVIZU', [FChunk,GChunk,_,_,_,_],_,MF,_,MF) :- FChunk = GChunk.
+head('VVIZU','V*INF/PP',l,aux,'VVIZU', [Chunk,Chunk,_,_,_,_],_,MF,_,MF).
 
 
 
 %======================================================================================
 %verb particles
 
-head('VVFIN','PTKVZ',l,avz,'VVFIN', [_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G.
+head('VVFIN','PTKVZ',l,avz,'VVFIN', _,F-G,MF,_,MF) :- 1 is F-G.
 
 head('VVFIN','PTKVZ',r,avz,'VVFIN',[_,_,_,_,_,OG],_,_,MG,MG) :- restrict_coord(OG).
 
 
 %new transtag to simplify other attachment rules. 
-head('V*INF','PTKZU',l,part,'VVIZU',[_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G.
+head('V*INF','PTKZU',l,part,'VVIZU',_,F-G,MF,_,MF) :- 1 is F-G.
 
 
 %die zu erwartenden Störmanöver
-head('ADJA','PTKZU',l,part,'ADJA',[_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G.
+head('ADJA','PTKZU',l,part,'ADJA',_,F-G,MF,_,MF) :- 1 is F-G.
 
 %might be useful in case of tagging errors
 %head('ADJA','APPR',l,part,'ADJA',[_,_,_,'zu',_,_],F-G,MF,_,MF) :- 1 is F-G.
@@ -1331,7 +1324,7 @@ head('ADJA','PTKZU',l,part,'ADJA',[_,_,_,_,_,_],F-G,MF,_,MF) :- 1 is F-G.
 
 %(doesn't exist in exploration corpus).
 
-head('PP','APZR',r,part,'PP',[_,_,_,_,_,_],_,_,MG,MG).
+head('PP','APZR',r,part,'PP',_,_,_,MG,MG).
 
 
 %======================================================================================
@@ -1347,32 +1340,32 @@ head('PIS','ART',l,part,'PIS',[_,_,'ander',_,_,_],F-G,MF,MG,MNew) :- 2 >= F-G, c
 
 
 
-head('KOKOM','NN',r,cj,'KOMPX', [_,_,_,_,_,_],_,_,MG,MG).
+head('KOKOM','NN',r,cj,'KOMPX', _,_,_,MG,MG).
 
-head('KOKOM','NE',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
+head('KOKOM','NE',r,cj,'KOMPX',_,_,_,MG,MG).
 
-head('KOKOM','FM',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
+head('KOKOM','FM',r,cj,'KOMPX',_,_,_,MG,MG).
 
-head('KOKOM','ADJA',r,cj,'KOMPX',[_,_,_,_,_,_],_-G,_,MG,MG) :- endOfNP(G).
+head('KOKOM','ADJA',r,cj,'KOMPX',_,_-G,_,MG,MG) :- endOfNP(G).
 
-head('KOKOM','ADJD',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
+head('KOKOM','ADJD',r,cj,'KOMPX',_,_,_,MG,MG).
 
-head('KOKOM','PP',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
+head('KOKOM','PP',r,cj,'KOMPX',_,_,_,MG,MG).
 
-head('KOKOM','VVFIN',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
+head('KOKOM','VVFIN',r,cj,'KOMPX',_,_,_,MG,MG).
 
-head('KOKOM','PIS',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
+head('KOKOM','PIS',r,cj,'KOMPX',_,_,_,MG,MG).
 
 
-head('KOKOM','PPER',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
+head('KOKOM','PPER',r,cj,'KOMPX',_,_,_,MG,MG).
  
-head('KOKOM','PDS',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
+head('KOKOM','PDS',r,cj,'KOMPX',_,_,_,MG,MG).
 
-head('KOKOM','ADV',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
+head('KOKOM','ADV',r,cj,'KOMPX',_,_,_,MG,MG).
 
-head('KOKOM','PP',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
+head('KOKOM','PP',r,cj,'KOMPX',_,_,_,MG,MG).
 
-head('KOKOM','CARD',r,cj,'KOMPX',[_,_,_,_,_,_],_,_,MG,MG).
+head('KOKOM','CARD',r,cj,'KOMPX',_,_,_,MG,MG).
 
 
 
@@ -1381,22 +1374,22 @@ head('ADJA','KOMPX',r,kom,'ADJA',[_,_,Komp,_,_,_],_,_,MG,MG) :- Komp=als -> degr
 
 head('ADJD','KOMPX',r,kom,'ADJD',[_,_,Komp,_,_,_],_,_,MG,MG) :- Komp=als -> degree_comp(MG,'ADJD');true.
 
-head('ADV','KOMPX',r,kom,'ADV',[_,_,_,_,_,_],F-G,_,MG,MG) :- 1 is F-G.
+head('ADV','KOMPX',r,kom,'ADV',_,F-G,_,MG,MG) :- 1 is F-G.
 
 
 %ein Mann wie stahl
-head('NN','KOMPX',r,kom,'NN',[_,_,_,_,_,_],_,_,MG,MG).
+head('NN','KOMPX',r,kom,'NN',_,_,_,MG,MG).
 
-head('NE','KOMPX',r,kom,'NE',[_,_,_,_,_,_],_,_,MG,MG).
+head('NE','KOMPX',r,kom,'NE',_,_,_,MG,MG).
 
-head('FM','KOMPX',r,kom,'FM',[_,_,_,_,_,_],_,_,MG,MG).
+head('FM','KOMPX',r,kom,'FM',_,_,_,MG,MG).
 
 
 %so etwas wie Würde
-head('PIS','KOMPX',r,kom,'PIS',[_,_,_,_,_,_],F-G,_,MG,MG) :- 1 is F-G.
+head('PIS','KOMPX',r,kom,'PIS',_,F-G,_,MG,MG) :- 1 is F-G.
 
 %Er als Tierfreund
-head('PPER','KOMPX',r,kom,'PPER',[_,_,_,_,_,_],F-G,_,MG,MG) :- case_nom(MG,'PPER'), 1 is F-G.
+head('PPER','KOMPX',r,kom,'PPER',_,F-G,_,MG,MG) :- case_nom(MG,'PPER'), 1 is F-G.
 
 
 
@@ -1480,17 +1473,15 @@ head(Tag,'$,',l,comma,'KON_PRONOUN_REL',[_,_,_,_,OF,_],_,MF,_,MF) :- kon_mapping
 
 head(Tag,'$,',l,comma,'KON_PPER',[_,_,_,_,OF,_],_,MF,_,MF) :- kon_mapping(Tag,'KON_PPER'), nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
 
-head(Tag,'$,',l,comma,'KON_FINVERB',[_,_,_,_,OF,_],_,MF,_,MF) :- kon_mapping(Tag,'KON_FINVERB'), nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF), \+ member('->subj->', OF).
+head('V*FIN','$,',l,comma,'KON_FINVERB',[_,_,_,_,OF,_],_,MF,_,MF) :- nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF), \+ member('->subj->', OF).
 
 head('VVIZU','$,',l,comma,'KON_VVIZU',[_,_,_,_,OF,_],_,MF,_,MF) :- nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF), \+ member('->subj->', OF).
 
 head('VVIMP','$,',l,comma,'KON_IMPVERB',[_,_,_,_,OF,_],_,MF,_,MF) :- nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
 
-head(Tag,'$,',l,comma,'KON_PPVERB',[_,_,_,_,OF,_],_,MF,_,MF) :- kon_mapping(Tag,'KON_PPVERB'), nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
+head('V*PP','$,',l,comma,'KON_PPVERB',[_,_,_,_,OF,_],_,MF,_,MF) :- nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
 
-head(Tag,'$,',l,comma,'KON_INFVERB',[_,_,_,_,OF,_],_,MF,_,MF) :- kon_mapping(Tag,'KON_INFVERB'), nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
-
-head('VVIZU','$,',l,comma,'KON_VVIZU',[_,_,_,_,OF,_],_,MF,_,MF) :- nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
+head('V*INF','$,',l,comma,'KON_INFVERB',[_,_,_,_,OF,_],_,MF,_,MF) :- nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
 
 head('KOMPX','$,',l,comma,'KON_KOMPX',[_,_,_,_,OF,_],_,MF,_,MF) :- nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
 
@@ -1501,87 +1492,87 @@ head('ADJA','$,',l,comma,'KON_ADJA',[_,_,_,_,OF,_],_,MF,_,MF) :- \+ member('<-co
 
 
 %noun + noun/pronoun
-head('NN','KON_PRONOUN',r,kon,'NN',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'NN',MF,'PDS',MNew).
+head('NN','KON_PRONOUN',r,kon,'NN',  _,_,MF,MG,MNew) :- unify_case(MG,'NN',MF,'PDS',MNew).
 
-head('NE','KON_PRONOUN',r,kon,'NE',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'NE',MF,'PDS',MNew).
+head('NE','KON_PRONOUN',r,kon,'NE',  _,_,MF,MG,MNew) :- unify_case(MG,'NE',MF,'PDS',MNew).
 
-head('FM','KON_PRONOUN',r,kon,'FM',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'FM',MF,'PDS',MNew).
-
-
-head('NN','KON_PPER',r,kon,'NN',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'NN',MF,'PPER',MNew).
-
-head('NE','KON_PPER',r,kon,'NE',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'NE',MF,'PPER',MNew).
-
-head('FM','KON_PPER',r,kon,'FM',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'FM',MF,'PPER',MNew).
+head('FM','KON_PRONOUN',r,kon,'FM',  _,_,MF,MG,MNew) :- unify_case(MG,'FM',MF,'PDS',MNew).
 
 
-head('NN','KON_NOUN',r,kon,'NN',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'NN',MF,'NN',MNew).
+head('NN','KON_PPER',r,kon,'NN',  _,_,MF,MG,MNew) :- unify_case(MG,'NN',MF,'PPER',MNew).
 
-head('NE','KON_NOUN',r,kon,'NE',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'NE',MF,'NN',MNew).
+head('NE','KON_PPER',r,kon,'NE',  _,_,MF,MG,MNew) :- unify_case(MG,'NE',MF,'PPER',MNew).
 
-head('FM','KON_NOUN',r,kon,'FM',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'FM',MF,'NN',MNew).
+head('FM','KON_PPER',r,kon,'FM',  _,_,MF,MG,MNew) :- unify_case(MG,'FM',MF,'PPER',MNew).
+
+
+head('NN','KON_NOUN',r,kon,'NN',  _,_,MF,MG,MNew) :- unify_case(MG,'NN',MF,'NN',MNew).
+
+head('NE','KON_NOUN',r,kon,'NE',  _,_,MF,MG,MNew) :- unify_case(MG,'NE',MF,'NN',MNew).
+
+head('FM','KON_NOUN',r,kon,'FM',  _,_,MF,MG,MNew) :- unify_case(MG,'FM',MF,'NN',MNew).
 
 
 %pronoun + noun/pronoun
-head('PDS','KON_PRONOUN',r,kon,'PDS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PDS',MF,'PDS',MNew).
+head('PDS','KON_PRONOUN',r,kon,'PDS',  _,_,MF,MG,MNew) :- unify_case(MG,'PDS',MF,'PDS',MNew).
 
-head('PIS','KON_PRONOUN',r,kon,'PIS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PIS',MF,'PDS',MNew).
+head('PIS','KON_PRONOUN',r,kon,'PIS',  _,_,MF,MG,MNew) :- unify_case(MG,'PIS',MF,'PDS',MNew).
 
-head('PPER','KON_PRONOUN',r,kon,'PPER',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PPER',MF,'PDS',MNew).
+head('PPER','KON_PRONOUN',r,kon,'PPER',  _,_,MF,MG,MNew) :- unify_case(MG,'PPER',MF,'PDS',MNew).
 
-head('PWS','KON_PRONOUN',r,kon,'PWS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PWS',MF,'PDS',MNew).
+head('PWS','KON_PRONOUN',r,kon,'PWS',  _,_,MF,MG,MNew) :- unify_case(MG,'PWS',MF,'PDS',MNew).
 
-head('PWAT','KON_PRONOUN',r,kon,'PWS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PWAT',MF,'PDS',MNew).
+head('PWAT','KON_PRONOUN',r,kon,'PWS',  _,_,MF,MG,MNew) :- unify_case(MG,'PWAT',MF,'PDS',MNew).
 
-head('PIAT','KON_PRONOUN',r,kon,'PIS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PIAT',MF,'PDS',MNew).
+head('PIAT','KON_PRONOUN',r,kon,'PIS',  _,_,MF,MG,MNew) :- unify_case(MG,'PIAT',MF,'PDS',MNew).
 
-head('PDAT','KON_PRONOUN',r,kon,'PDS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PDAT',MF,'PDS',MNew).
+head('PDAT','KON_PRONOUN',r,kon,'PDS',  _,_,MF,MG,MNew) :- unify_case(MG,'PDAT',MF,'PDS',MNew).
 
-head('PIDAT','KON_PRONOUN',r,kon,'PDS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PIDAT',MF,'PDS',MNew).
+head('PIDAT','KON_PRONOUN',r,kon,'PDS',  _,_,MF,MG,MNew) :- unify_case(MG,'PIDAT',MF,'PDS',MNew).
 
-head('PPOSS','KON_PRONOUN',r,kon,'PPOSS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PPOSS',MF,'PDS',MNew).
+head('PPOSS','KON_PRONOUN',r,kon,'PPOSS',  _,_,MF,MG,MNew) :- unify_case(MG,'PPOSS',MF,'PDS',MNew).
 
-head('PPOSAT','KON_PRONOUN',r,kon,'PPOSS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PPOSAT',MF,'PDS',MNew).
-
-
-head('PRELS','KON_PRONOUN_REL',r,kon,'PRELS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PRELS',MF,'PRELS',MNew).
-
-head('PRELAT','KON_PRONOUN_REL',r,kon,'PRELS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PRELAT',MF,'PRELS',MNew).
+head('PPOSAT','KON_PRONOUN',r,kon,'PPOSS',  _,_,MF,MG,MNew) :- unify_case(MG,'PPOSAT',MF,'PDS',MNew).
 
 
-head('PDS','KON_PPER',r,kon,'PDS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PDS',MF,'PPER',MNew).
+head('PRELS','KON_PRONOUN_REL',r,kon,'PRELS',  _,_,MF,MG,MNew) :- unify_case(MG,'PRELS',MF,'PRELS',MNew).
 
-head('PIS','KON_PPER',r,kon,'PIS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PIS',MF,'PPER',MNew).
-
-head('PPER','KON_PPER',r,kon,'PPER',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PPER',MF,'PPER',MNew).
-
-head('PWS','KON_PPER',r,kon,'PWS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PWS',MF,'PPER',MNew).
-
-head('PWAT','KON_PPER',r,kon,'PWS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PWAT',MF,'PPER',MNew).
-
-head('PIAT','KON_PPER',r,kon,'PIS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PIAT',MF,'PPER',MNew).
-
-head('PDAT','KON_PPER',r,kon,'PDS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PDAT',MF,'PPER',MNew).
-
-head('PIDAT','KON_PPER',r,kon,'PDS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PIDAT',MF,'PPER',MNew).
-
-head('PPOSS','KON_PPER',r,kon,'PPOSS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PPOSS',MF,'PPER',MNew).
-
-head('PPOSAT','KON_PPER',r,kon,'PPOSS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PPOSAT',MF,'PPER',MNew).
+head('PRELAT','KON_PRONOUN_REL',r,kon,'PRELS',  _,_,MF,MG,MNew) :- unify_case(MG,'PRELAT',MF,'PRELS',MNew).
 
 
-head('PDS','KON_NOUN',r,kon,'PDS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PDS',MF,'NN',MNew).
+head('PDS','KON_PPER',r,kon,'PDS',  _,_,MF,MG,MNew) :- unify_case(MG,'PDS',MF,'PPER',MNew).
 
-head('PIS','KON_NOUN',r,kon,'PIS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PIS',MF,'NN',MNew).
+head('PIS','KON_PPER',r,kon,'PIS',  _,_,MF,MG,MNew) :- unify_case(MG,'PIS',MF,'PPER',MNew).
 
-head('PPER','KON_NOUN',r,kon,'PPER',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PPER',MF,'NN',MNew).
+head('PPER','KON_PPER',r,kon,'PPER',  _,_,MF,MG,MNew) :- unify_case(MG,'PPER',MF,'PPER',MNew).
 
-% head('PWS','KON_NOUN',r,kon,'PWS',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PWS',MF,'NN',MNew).
+head('PWS','KON_PPER',r,kon,'PWS',  _,_,MF,MG,MNew) :- unify_case(MG,'PWS',MF,'PPER',MNew).
+
+head('PWAT','KON_PPER',r,kon,'PWS',  _,_,MF,MG,MNew) :- unify_case(MG,'PWAT',MF,'PPER',MNew).
+
+head('PIAT','KON_PPER',r,kon,'PIS',  _,_,MF,MG,MNew) :- unify_case(MG,'PIAT',MF,'PPER',MNew).
+
+head('PDAT','KON_PPER',r,kon,'PDS',  _,_,MF,MG,MNew) :- unify_case(MG,'PDAT',MF,'PPER',MNew).
+
+head('PIDAT','KON_PPER',r,kon,'PDS',  _,_,MF,MG,MNew) :- unify_case(MG,'PIDAT',MF,'PPER',MNew).
+
+head('PPOSS','KON_PPER',r,kon,'PPOSS',  _,_,MF,MG,MNew) :- unify_case(MG,'PPOSS',MF,'PPER',MNew).
+
+head('PPOSAT','KON_PPER',r,kon,'PPOSS',  _,_,MF,MG,MNew) :- unify_case(MG,'PPOSAT',MF,'PPER',MNew).
+
+
+head('PDS','KON_NOUN',r,kon,'PDS',  _,_,MF,MG,MNew) :- unify_case(MG,'PDS',MF,'NN',MNew).
+
+head('PIS','KON_NOUN',r,kon,'PIS',  _,_,MF,MG,MNew) :- unify_case(MG,'PIS',MF,'NN',MNew).
+
+head('PPER','KON_NOUN',r,kon,'PPER',  _,_,MF,MG,MNew) :- unify_case(MG,'PPER',MF,'NN',MNew).
+
+% head('PWS','KON_NOUN',r,kon,'PWS',  _,_,MF,MG,MNew) :- unify_case(MG,'PWS',MF,'NN',MNew).
 % 
-% head('PWAT','KON_NOUN',r,kon,'PWAT',  [_,_,_,_,_,_],_,MF,MG,MNew) :- unify_case(MG,'PWAT',MF,'NN',MNew).
+% head('PWAT','KON_NOUN',r,kon,'PWAT',  _,_,MF,MG,MNew) :- unify_case(MG,'PWAT',MF,'NN',MNew).
 
 %ein und derselbe Job
-head('ART','KON_NOUN',r,kon,'NN',  [_,_,_,_,_,_],_,MF,_,MF).
+head('ART','KON_NOUN',r,kon,'NN',  _,_,MF,_,MF).
 
 
 
@@ -1605,67 +1596,67 @@ head2('TRUNC','KON_VVIZU',r,kon,'VVIZU', [_,_,_,_,_,_,_,_],_,_,MD,MD).
 
 
 %card + card
-head('CARD','KON_CARD',r,kon,'CARD',  [_,_,_,_,_,_],_,_,MG,MG).
+head('CARD','KON_CARD',r,kon,'CARD',  _,_,_,MG,MG).
 
 
 %adv/adjd/pp/adja + adv/adjd/pp
-head('ADV','KON_ADV',r,kon,'ADV',  [_,_,_,_,_,_],_,_,MG,MG).
+head('ADV','KON_ADV',r,kon,'ADV',  _,_,_,MG,MG).
 
-head('PWAV','KON_ADV',r,kon,'PWAV',  [_,_,_,_,_,_],_,_,MG,MG).
+head('PWAV','KON_ADV',r,kon,'PWAV',  _,_,_,MG,MG).
 
-head('ADJD','KON_ADV',r,kon,'ADJD',  [_,_,_,_,_,_],_,_,MG,MG).
+head('ADJD','KON_ADV',r,kon,'ADJD',  _,_,_,MG,MG).
 
-head('PP','KON_ADV',r,kon,'PP',  [_,_,_,_,_,_],_,_,MG,MG).
+head('PP','KON_ADV',r,kon,'PP',  _,_,_,MG,MG).
 
-head('PPQ','KON_ADV',r,kon,'PPQ',  [_,_,_,_,_,_],_,_,MG,MG).
+head('PPQ','KON_ADV',r,kon,'PPQ',  _,_,_,MG,MG).
 
-head('PPREL','KON_ADV',r,kon,'PPREL',  [_,_,_,_,_,_],_,_,MG,MG).
+head('PPREL','KON_ADV',r,kon,'PPREL',  _,_,_,MG,MG).
 
-head('ADJA','KON_ADV',r,kon,'ADJA',  [_,_,_,_,_,_],_,_,MG,MG).
+head('ADJA','KON_ADV',r,kon,'ADJA',  _,_,_,MG,MG).
 
 
 %adjd/adja + /adja
-head('ADJD','KON_ADJA',r,kon,'ADJD',  [_,_,_,_,_,_],_,_,MG,MG).
+head('ADJD','KON_ADJA',r,kon,'ADJD',  _,_,_,MG,MG).
 
-head('ADJA','KON_ADJA',r,kon,'ADJA',  [_,_,_,_,_,_],_,_,MG,MG).
+head('ADJA','KON_ADJA',r,kon,'ADJA',  _,_,_,MG,MG).
 
 
 %kokom + kokom
-head('KOMPX','KON_KOMPX',r,kon,'KOMPX',  [_,_,_,_,_,_],_,_,MG,MG).
+head('KOMPX','KON_KOMPX',r,kon,'KOMPX',  _,_,_,MG,MG).
 
 
 %v*fin + v*fin
-head('V*FIN','KON_FINVERB',r,kon,'V*FIN',  [_,_,_,_,_,_],_,_,MG,MG).
+head('V*FIN','KON_FINVERB',r,kon,'V*FIN',  _,_,_,MG,MG).
 
 
 
 %v*pp + v*pp
-head('V*PP','KON_PPVERB',r,kon,'V*PP',  [_,_,_,_,_,_],_,_,MG,MG).
+head('V*PP','KON_PPVERB',r,kon,'V*PP',  _,_,_,MG,MG).
 
 
 
 
 %v*inf + v*inf
-head('V*INF','KON_INFVERB',r,kon,'V*INF',  [_,_,_,_,_,_],_,_,MG,MG) .
+head('V*INF','KON_INFVERB',r,kon,'V*INF',  _,_,_,MG,MG) .
 
-head('VVIZU','KON_VVIZU',r,kon,'VVIZU',[_,_,_,_,_,_],_,_,MG,MG).
+head('VVIZU','KON_VVIZU',r,kon,'VVIZU',_,_,_,MG,MG).
 
 
 %vvimp + vvimp
-head('VVIMP','KON_IMPVERB',r,kon,'VVIMP',  [_,_,_,_,_,_],_,_,MG,MG).
+head('VVIMP','KON_IMPVERB',r,kon,'VVIMP',  _,_,_,MG,MG).
 
 %coordinated subclauses
-head('RC','KON_RC',r,kon,'RC',  [_,_,_,_,_,_],_,_,MG,MG).
+head('RC','KON_RC',r,kon,'RC',  _,_,_,MG,MG).
 
-head('QC','KON_QC',r,kon,'QC',  [_,_,_,_,_,_],_,_,MG,MG).
+head('QC','KON_QC',r,kon,'QC',  _,_,_,MG,MG).
 
-head('OBJC','KON_OBJC',r,kon,'OBJC',  [_,_,_,_,_,_],_,_,MG,MG).
+head('OBJC','KON_OBJC',r,kon,'OBJC',  _,_,_,MG,MG).
 
-head('NEB','KON_NEB',r,kon,'NEB',  [_,_,_,_,_,_],_,_,MG,MG).
+head('NEB','KON_NEB',r,kon,'NEB',  _,_,_,MG,MG).
 
 
 %X, Y und so weiter
-head(Tag,'KON_ANY',r,kon,Tag,  [_,_,_,_,_,_],_,_,MG,MG).
+head(Tag,'KON_ANY',r,kon,Tag,  _,_,_,MG,MG).
 
 
 %Der 9./10. Mai
@@ -2005,19 +1996,39 @@ head2(Gtag,Ftag,r,Type,Transtag,[GChunk,FChunk,FGh,FFh,OG,OF,_,_],GPos-FPos,MORP
 
 head2(Ftag,Gtag,l,Type,Transtag,[FChunk,GChunk,FFh,FGh,OF,OG,_,_],FPos-GPos,MORPHF,MORPHG,MORPH) :- head(Ftag,Gtag,l,Type,Transtag,[FChunk,GChunk,FFh,FGh,OF,OG],FPos-GPos, MORPHF,MORPHG, MORPH).
 
+%======================================================================================
+%tag transformations; allows us to map different tags to one for rule-lookup, which makes rules more maintainable.
 
-head2('VAINF', OBJ,Dir,Rel,Transtag2,L,F-G,MA,MB,MC) :- head2('V*INF', OBJ,Dir,Rel,Transtag,L,F-G,MA,MB,MC), (Transtag='V*INF'->Transtag2='VAINF';Transtag2=Transtag).
-head2('VVINF', OBJ,Dir,Rel,Transtag2,L,F-G,MA,MB,MC) :- head2('V*INF', OBJ,Dir,Rel,Transtag,L,F-G,MA,MB,MC), (Transtag='V*INF'->Transtag2='VVINF';Transtag2=Transtag).
-head2('VMINF', OBJ,Dir,Rel,Transtag2,L,F-G,MA,MB,MC) :- head2('V*INF', OBJ,Dir,Rel,Transtag,L,F-G,MA,MB,MC), (Transtag='V*INF'->Transtag2='VMINF';Transtag2=Transtag).
+head2('VAINF', OBJ,Dir,Rel,Transtag2,L,D,MA,MB,MC) :- head2('V*INF', OBJ,Dir,Rel,Transtag,L,D,MA,MB,MC), (Transtag='V*INF'->Transtag2='VAINF';Transtag2=Transtag).
+head2('VVINF', OBJ,Dir,Rel,Transtag2,L,D,MA,MB,MC) :- head2('V*INF', OBJ,Dir,Rel,Transtag,L,D,MA,MB,MC), (Transtag='V*INF'->Transtag2='VVINF';Transtag2=Transtag).
+head2('VMINF', OBJ,Dir,Rel,Transtag2,L,D,MA,MB,MC) :- head2('V*INF', OBJ,Dir,Rel,Transtag,L,D,MA,MB,MC), (Transtag='V*INF'->Transtag2='VMINF';Transtag2=Transtag).
 
-head2('VAPP', OBJ,Dir,Rel,Transtag2,L,F-G,MA,MB,MC) :- head2('V*PP', OBJ,Dir,Rel,Transtag,L,F-G,MA,MB,MC), (Transtag='V*PP'->Transtag2='VAPP';Transtag2=Transtag).
-head2('VVPP', OBJ,Dir,Rel,Transtag2,L,F-G,MA,MB,MC) :- head2('V*PP', OBJ,Dir,Rel,Transtag,L,F-G,MA,MB,MC), (Transtag='V*PP'->Transtag2='VVPP';Transtag2=Transtag).
-head2('VMPP', OBJ,Dir,Rel,Transtag2,L,F-G,MA,MB,MC) :- head2('V*PP', OBJ,Dir,Rel,Transtag,L,F-G,MA,MB,MC), (Transtag='V*PP'->Transtag2='VMPP';Transtag2=Transtag).
+head2('VAPP', OBJ,Dir,Rel,Transtag2,L,D,MA,MB,MC) :- head2('V*PP', OBJ,Dir,Rel,Transtag,L,D,MA,MB,MC), (Transtag='V*PP'->Transtag2='VAPP';Transtag2=Transtag).
+head2('VVPP', OBJ,Dir,Rel,Transtag2,L,D,MA,MB,MC) :- head2('V*PP', OBJ,Dir,Rel,Transtag,L,D,MA,MB,MC), (Transtag='V*PP'->Transtag2='VVPP';Transtag2=Transtag).
+head2('VMPP', OBJ,Dir,Rel,Transtag2,L,D,MA,MB,MC) :- head2('V*PP', OBJ,Dir,Rel,Transtag,L,D,MA,MB,MC), (Transtag='V*PP'->Transtag2='VMPP';Transtag2=Transtag).
 
 
-head2('VAFIN', OBJ,Dir,Rel,Transtag2,L,F-G,MA,MB,MC) :- head2('V*FIN', OBJ,Dir,Rel,Transtag,L,F-G,MA,MB,MC), (Transtag='V*FIN'->Transtag2='VAFIN';Transtag2=Transtag).
-head2('VVFIN', OBJ,Dir,Rel,Transtag2,L,F-G,MA,MB,MC) :- head2('V*FIN', OBJ,Dir,Rel,Transtag,L,F-G,MA,MB,MC), (Transtag='V*FIN'->Transtag2='VVFIN';Transtag2=Transtag).
-head2('VMFIN', OBJ,Dir,Rel,Transtag2,L,F-G,MA,MB,MC) :- head2('V*FIN', OBJ,Dir,Rel,Transtag,L,F-G,MA,MB,MC), (Transtag='V*FIN'->Transtag2='VMFIN';Transtag2=Transtag).
+head2('VAFIN', OBJ,Dir,Rel,Transtag2,L,D,MA,MB,MC) :- head2('V*FIN', OBJ,Dir,Rel,Transtag,L,D,MA,MB,MC), (Transtag='V*FIN'->Transtag2='VAFIN';Transtag2=Transtag).
+head2('VVFIN', OBJ,Dir,Rel,Transtag2,L,D,MA,MB,MC) :- head2('V*FIN', OBJ,Dir,Rel,Transtag,L,D,MA,MB,MC), (Transtag='V*FIN'->Transtag2='VVFIN';Transtag2=Transtag).
+head2('VMFIN', OBJ,Dir,Rel,Transtag2,L,D,MA,MB,MC) :- head2('V*FIN', OBJ,Dir,Rel,Transtag,L,D,MA,MB,MC), (Transtag='V*FIN'->Transtag2='VMFIN';Transtag2=Transtag).
+
+
+head2(Tag, 'VVINF',Dir,Rel,Transtag,L,D,MA,MB,MC) :- head2(Tag, 'V*INF/PP',Dir,Rel,Transtag,L,D,MA,MB,MC).
+head2(Tag, 'VVPP' ,Dir,Rel,Transtag,L,D,MA,MB,MC) :- head2(Tag, 'V*INF/PP',Dir,Rel,Transtag,L,D,MA,MB,MC).
+head2(Tag, 'VAINF',Dir,Rel,Transtag,L,D,MA,MB,MC) :- head2(Tag, 'V*INF/PP',Dir,Rel,Transtag,L,D,MA,MB,MC).
+head2(Tag, 'VAPP' ,Dir,Rel,Transtag,L,D,MA,MB,MC) :- head2(Tag, 'V*INF/PP',Dir,Rel,Transtag,L,D,MA,MB,MC).
+head2(Tag, 'VMINF',Dir,Rel,Transtag,L,D,MA,MB,MC) :- head2(Tag, 'V*INF/PP',Dir,Rel,Transtag,L,D,MA,MB,MC).
+head2(Tag, 'VMPP' ,Dir,Rel,Transtag,L,D,MA,MB,MC) :- head2(Tag, 'V*INF/PP',Dir,Rel,Transtag,L,D,MA,MB,MC).
+
+
+%there is some inconsistency concerning the tag for pronominal adverbs. This maps 'PROP' and 'PROAV' to 'PAV' internally (doesn't affect output)
+head2(Tag, 'PROP' ,Dir,Rel,Transtag,L,D,MA,MB,MC) :- head2(Tag, 'PAV',Dir,Rel,Transtag,L,D,MA,MB,MC).
+head2(Tag, 'PROAV',Dir,Rel,Transtag,L,D,MA,MB,MC) :- head2(Tag, 'PAV',Dir,Rel,Transtag,L,D,MA,MB,MC).
+
+%tags that can be clausal subject/object
+head2(Tag, 'OBJC' ,Dir,Rel,Transtag,L,D,MA,MB,MC) :- head2(Tag, 'OBJC/SUBJC',Dir,Rel,Transtag,L,D,MA,MB,MC).
+head2(Tag, 'RC',Dir,Rel,Transtag,L,D,MA,MB,MC) :- head2(Tag, 'OBJC/SUBJC',Dir,Rel,Transtag,L,D,MA,MB,MC).
+head2(Tag, 'QC' ,Dir,Rel,Transtag,L,D,MA,MB,MC) :- head2(Tag, 'OBJC/SUBJC',Dir,Rel,Transtag,L,D,MA,MB,MC).
 
 %======================================================================================
 %morphological rules
@@ -2538,15 +2549,7 @@ detcan('PIAT',_).
 detcan('PPOSAT',_).
 detcan('PDAT',_).
 
-%sentences that can be clausal subject/object
-objcsubjc('OBJC').
-objcsubjc('RC').
-objcsubjc('QC').
 
-%pronominal adverbs (inconsistent)
-proadv('PROP').
-proadv('PAV').
-proadv('PROAV').
 
 
 %check each member of a list.
