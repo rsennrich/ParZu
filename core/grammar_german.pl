@@ -1815,7 +1815,7 @@ head('V*PP', 'NZEIT',l,zeit,'V*PP',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- verbchunkl
 head('VVIZU', 'NZEIT',l,zeit,'VVIZU',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- verbchunklength(FC,1), case_acc(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 
 %der 1995 verstorbene Künstler
-head('ADJA', 'CARD',l,zeit,'ADJA',[_,_,_,_,UG,_,_,_],_,MH,_,MH) :-  (derived_from_ppres(MF,'ADJA');derived_from_ppast(MF,'ADJA')), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('ADJA', 'CARD',l,zeit,'ADJA',[_,_,_,_,UG,_,_,_],_,MH,_,MH) :-  (derived_from_ppres(MH,'ADJA');derived_from_ppast(MH,'ADJA')), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 head('ADJA', 'CARD',l,zeit,'ADJA',[_,_,_,Lemma,UG,_,_,_],_,MF,MG,MF) :- (derived_from_ppres(MF,'ADJA');derived_from_ppast(MF,'ADJA')), zeitcand(Lemma), case_acc(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 head('ADJA', 'NZEIT',l,zeit,'ADJA',[_,_,_,_,UG,_,_,_],_,MF,MG,MF) :-  (derived_from_ppres(MF,'ADJA');derived_from_ppast(MF,'ADJA')), case_acc(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 
