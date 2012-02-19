@@ -168,7 +168,7 @@ buildmorphology(Word,Tag,[Word|ListOut]) :- (\+ (gertwol(Word,Lemma,_,_, _), \+ 
 buildmorphology(Word,'NN',[Word|ListOut]) :- findall(Morph,gertwol(Word,_,'NN',Morph,_),ListTemp),
 				      findall([Gender,Case,Number,_],gertwol(Word,_,'ADJA',[_,Gender,Case,Number,'Sw'],_),ListTemp2),
 				      append(ListTemp,ListTemp2,ListTemp3),
-				      (is_uninstantiated(ListTemp3) -> ListOut = [_] ; translatemorphs(ListTemp3,'NN', ListTemp4), sort(ListTemp4,ListOut)), !.
+				      (is_uninstantiated(ListTemp3) -> ListOut = [_] ; translatemorphs(ListTemp3,'NN', ListTemp4), sort(ListTemp4,ListTemp5), my_remove_duplicates(ListTemp5,ListOut)), !.
 
 %exception: viele/wenige are PIS/PIDAT in TreeTagger, but ADJA in Gertwol
 buildmorphology(Word,Tag,[Word|ListOut]) :- (Tag = 'PIS';Tag='PIDAT'),
@@ -184,14 +184,14 @@ buildmorphology(Word,'APPR',[Word|ListOut2]) :- findall(Morph,gertwol(Word,_,'AP
 
 %adjectives; include information on whether it's a participial one or not:
 buildmorphology(Word,'ADJA',[Word|ListOut]) :- findall([Deg,Gender,Case,Number,Class,Original],gertwol(Word,_,'ADJA',[Deg,Gender,Case,Number,Class],Original),ListTemp),
-                    (is_uninstantiated(ListTemp) -> ListOut = [_] ; translatemorphs(ListTemp,'ADJA', ListTemp2), sort(ListTemp2,ListOut)), !.
+                    (is_uninstantiated(ListTemp) -> ListOut = [_] ; translatemorphs(ListTemp,'ADJA', ListTemp2), sort(ListTemp2,ListTemp3), my_remove_duplicates(ListTemp3,ListOut)), !.
 
 buildmorphology(Word,'ADJD',[Word|ListOut]) :- findall([Degree,Original],gertwol(Word,_,'ADJD',[Degree],Original),ListTemp),
-                    (is_uninstantiated(ListTemp) -> ListOut = [_] ; translatemorphs(ListTemp,'ADJD', ListTemp2), sort(ListTemp2,ListOut)), !.
+                    (is_uninstantiated(ListTemp) -> ListOut = [_] ; translatemorphs(ListTemp,'ADJD', ListTemp2), sort(ListTemp2,ListTemp3), my_remove_duplicates(ListTemp3,ListOut)), !.
 
 % general case:
 buildmorphology(Word,Tag,[Word|ListOut]) :- findall(Morph,gertwol(Word,_,Tag,Morph,_),ListTemp),
-                                        (is_uninstantiated(ListTemp) -> ListOut = [_] ; translatemorphs(ListTemp,Tag, ListTemp2), sort(ListTemp2,ListOut)), !.
+                                        (is_uninstantiated(ListTemp) -> ListOut = [_] ; translatemorphs(ListTemp,Tag, ListTemp2), sort(ListTemp2,ListTemp3), my_remove_duplicates(ListTemp3,ListOut)), !.
 
 translatemorphs([],_,[]) :- !. %break condition.
 
@@ -289,6 +289,15 @@ spellingvariation(Word,OutWord) :- name(Word,Chars),
                                          append(Start,After,NewChars))))),
                                name(NewWord,NewChars),
                                spellingvariation(NewWord,OutWord).
+
+
+%standard sort only removes duplicates if no variables are involved.
+%we want [[_,'Akk'],[_,'Akk']] to be reduced to [[_,'Akk']]
+my_remove_duplicates(L,Unique) :- duplicate_check(L,[],Unique).
+
+duplicate_check([],Acc,Acc) :- !.
+duplicate_check([H|T],Acc,Unique) :- \+ member(H,Acc), !, duplicate_check(T,[H|Acc],Unique).
+duplicate_check([_|T],Acc,Unique) :- duplicate_check(T,Acc,Unique).
 
 %==============================================================================
 
