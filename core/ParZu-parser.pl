@@ -14,10 +14,9 @@ write('A sample call is:'),nl,  write('go_textual(\'preprocessed_input.pl\'), to
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-:- dynamic chart/11, scores/5, inccount/1, lastpos/1, tops_chart/4, statschart/10, perlevel/1, sentno/1, output/7, outputformat/1, sentdelim/1, returnsentdelim/1, nbestmode/1, morphology/1, lemmatisation/1.
+:- dynamic chart/10, scores/5, inccount/1, lastpos/1, tops_chart/4, statschart/8, perlevel/1, sentno/1, output/7, outputformat/1, sentdelim/1, returnsentdelim/1, nbestmode/1, morphology/1, lemmatisation/1.
 
-:- index(chart(1,1,1,0,0,0,0,0,1,0,0));true. %% only has an effect in SWI
-:- index(head(1,1,1,0,0,0,0,0,0,0));true.
+:- index(chart(1,1,1,0,0,0,0,1,0,0));true. %% only has an effect in SWI
 :- index(head(1,1,1,0,0,0,0,0,0,0));true.
 :- index(scores(1,1,1,1,0));true.
 
@@ -65,7 +64,7 @@ sparse(Stack,[[F,Ftag,Chunk,MORPH]|SRest],[Pos|PosList],LastPos,FStack,2) :-    
     append(NFhash,NID,NFID),
     name(FID,NFID),
     appl(FID,Chunk,FChunk),
-    asserta(chart(ID,Pos,Pos,[[F,Ftag,Chunk]],[Pos,1,Chunk,1],F,Ftag,w,FChunk,0,MORPH)), % last arg: F/FChunk?
+    asserta(chart(ID,Pos,Pos,[Pos,1,Chunk,1],F,Ftag,w,FChunk,0,MORPH)), % last arg: F/FChunk?
     shift(Stack,[[F,Ftag,Chunk,MORPH]|SRest],[Pos|PosList],LastPos,FStack,2).  %% shift calls sparse again -> recursion
     
 
@@ -85,7 +84,7 @@ sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[WFormF|MORPHF],
   %right word is head
     (head(Ftag,Gtag,l,Type,Transtag,[FChunk,GChunk,FFh,FGh,OF,OG,FID,GID],FPos-GPos,MORPHF,MORPHG,MORPH),
      Dist is FPos - GPos,
-     (statschart(SF,Ftag,MORPHF,SG,Gtag,MORPHG,Type,Prob,Percent,Dist) -> true ; (once(stats2(Type,Ftag,FFh,SF,MORPHF,Gtag,FGh,SG,MORPHG,Prob,Percent,Dist,FChunk-OF)), asserta(statschart(SF,Ftag,MORPHF,SG,Gtag,MORPHG,Type,Prob,Percent,Dist)))),
+     (statschart(SF,SG,Type,Ftag,MORPHF,Gtag,MORPHG,Prob) -> true ; (once(stats2(Type,Ftag,FFh,SF,MORPHF,Gtag,FGh,SG,MORPHG,Prob,Percent,Dist,FChunk-OF)), asserta(statschart(SF,SG,Type,Ftag,MORPHF,Gtag,MORPHG,Prob)))),
      Prob >= DISCARD,
      Dir = l,
      atom_concat('<-',Type,ND1),atom_concat(ND1,'<-',DType),  % <-func<-
@@ -94,15 +93,15 @@ sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[WFormF|MORPHF],
   %left word is head
     (head(Gtag,Ftag,r,Type,Transtag,[GChunk,FChunk,FGh,FFh,OG,OF,GID,FID],GPos-FPos, MORPHG,MORPHF,MORPH),
      Dist is FPos - GPos,
-     (statschart(SG,Gtag,MORPHG,SF,Ftag,MORPHF,Type,Prob,Percent,Dist) -> true; (once(stats2(Type,Gtag,FGh,SG,MORPHG,Ftag,FFh,SF,MORPHF,Prob,Percent,Dist,GChunk-OG)), asserta(statschart(SG,Gtag,MORPHG,SF,Ftag,MORPHF,Type,Prob,Percent,Dist)))),
+     (statschart(SG,SF,Type,Gtag,MORPHG,Ftag,MORPHF,Prob) -> true; (once(stats2(Type,Gtag,FGh,SG,MORPHG,Ftag,FFh,SF,MORPHF,Prob,Percent,Dist,GChunk-OG)), asserta(statschart(SG,SF,Type,Gtag,MORPHG,Ftag,MORPHF,Prob)))),
      Prob >= DISCARD,
      Dir = r,
      atom_concat('->',Type,ND1),atom_concat(ND1,'->',DType),  % ->func->
      appl_chunk_r(FuncG,FuncF,DType,FuncTRes)
     )
   ),
-  (chart(_,Gfrom,Fto,_,_,_,Transtag,_,FuncTRes,_,_) -> (fail);true), % alternative path joins in again
-  OPScore is FScore * GScore * Percent, Len is Fto - Gfrom,
+  (chart(_,Gfrom,Fto,_,_,Transtag,_,FuncTRes,_,_) -> (fail);true), % alternative path joins in again
+  OPScore is FScore * GScore * Prob, Len is Fto - Gfrom,
   inc(ID),
   (ID>MAXCHART -> (((OPScore / ((Len+(Len**sqrt(2)))+(ID/2))) < THRESH) -> (write(' TOO LOW!'),nl,!,fail);true); true),
   %do not assert if alternative is not among ALTER best.
@@ -112,8 +111,8 @@ sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[WFormF|MORPHF],
   AltLen < ALTER,
   asserta(scores(Gfrom,Fto,Level,ID,OPScore)),
   (Dir = l -> 
-    asserta(chart(ID,Gfrom,Fto,[[SF,Ftag,FChunk],[SG,Gtag,GChunk]],[FPos,OPScore,FChunk,Len],FFh,Transtag,Type,FuncTRes,Level,[WFormF|MORPH]));
-    asserta(chart(ID,Gfrom,Fto,[[SF,Ftag,FChunk],[SG,Gtag,GChunk]],[GPos,OPScore,GChunk,Len],FGh,Transtag,Type,FuncTRes,Level,[WFormG|MORPH]))
+    asserta(chart(ID,Gfrom,Fto,[FPos,OPScore,FChunk,Len],FFh,Transtag,Type,FuncTRes,Level,[WFormF|MORPH]));
+    asserta(chart(ID,Gfrom,Fto,[GPos,OPScore,GChunk,Len],FGh,Transtag,Type,FuncTRes,Level,[WFormG|MORPH]))
   ),
   retract(perlevel(X)),
   X1 is X+1, assert(perlevel(X1)),
@@ -139,17 +138,17 @@ sparse(_,[],_,N,_,_) :-     % NEW FUNCTION IN CYK ::: launch the parsing process
 % nextlevel -> sparse/21: reduces all it can on the given CYK level     
 nextlevel(L,_) :-
     LA is L-1,
-    chart( FID,Ffrom,Fto,_,[FPos,FScore,FChunk,_FLen],F,Ftag,_FType,FuncF,LA,MORPHF), % foreach new chart entry
+    chart( FID,Ffrom,Fto,[FPos,FScore,FChunk,_FLen],F,Ftag,_FType,FuncF,LA,MORPHF), % foreach new chart entry
        %try to parse with any left neighbours
     ( ( Gto is Ffrom-1,
-        chart( GID,Gfrom,Gto,_,[GPos,GScore,GChunk,_],G,Gtag,_,FuncG,_,MORPHG),
+        chart( GID,Gfrom,Gto,[GPos,GScore,GChunk,_],G,Gtag,_,FuncG,_,MORPHG),
         sparse(FID,FPos,Ffrom,Fto,F,FChunk,FScore,Ftag,FuncF,MORPHF,
                GID,GPos,Gfrom,Gto,G,GChunk,GScore,Gtag,FuncG,MORPHG,
                L)
       );
        %try to parse with any right neighbours
       ( Gfrom is Fto+1,
-        chart( GID,Gfrom,Gto,_,[GPos,GScore,GChunk,_],G,Gtag,_,FuncG,LB,MORPHG),
+        chart( GID,Gfrom,Gto,[GPos,GScore,GChunk,_],G,Gtag,_,FuncG,LB,MORPHG),
         LB \= LA, %if both FID and GID are on same level, this has already been done.
         sparse(GID,GPos,Gfrom,Gto,G,GChunk,GScore,Gtag,FuncG,MORPHG,
                FID,FPos,Ffrom,Fto,F,FChunk,FScore,Ftag,FuncF,MORPHF,
@@ -219,7 +218,7 @@ prunechart(_,_,[]). %eol
 prunechart(C,Till,[(_Score,ID)|RList]) :-
     C < Till, !,
     retract(scores(_,_,_,ID,_)),
-    retract(chart(ID,_,_,_,_,_,_,_,_,_,_)),
+    retract(chart(ID,_,_,_,_,_,_,_,_,_)),
     C1 is C+1,
     prunechart(C1,Till,RList).
 
@@ -301,10 +300,10 @@ collect_sents(end-of-file).
 collect_sents(no-end) :-
     garbage_collect,
     (trim_stacks->true;true),
-    retractall(statschart(_,_,_,_,_,_,_,_,_,_)),
+    retractall(statschart(_,_,_,_,_,_,_,_)),
     collect_sent([],Sent,EOF,1),
     retractall(scores(_,_,_,_,_)),
-    retractall(chart(_,_,_,_,_,_,_,_,_,_,_)),
+    retractall(chart(_,_,_,_,_,_,_,_,_,_)),
     retractall(tops_chart(_,_,_,_)),
     retractall(lastpos(_)),
     retractall(inccount(_)),
@@ -476,6 +475,6 @@ findlongest(0,A-Z,A-A-Z-Z,_MIn-[A-Z],S-S,Sc-Sc) :- !.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%SWI VERSION %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 findlongest(MaxLen,A-Z,A-I-J-Z,MIn-MOut,ScIn-ScOut,SIn-SOut) :-
-  (chart(_,I,J,_,[_,CScore,_,MaxLen],_,_,_,CStruc,_,_), \+ I=J, I>=A, J=<Z, append(SIn,[CStruc],SOut), ScOut is ScIn*CScore, MOut=MIn)
+  (chart(_,I,J,[_,CScore,_,MaxLen],_,_,_,CStruc,_,_), \+ I=J, I>=A, J=<Z, append(SIn,[CStruc],SOut), ScOut is ScIn*CScore, MOut=MIn)
   *-> true;
      (NewMaxLen is MaxLen-1,findlongest(NewMaxLen,A-Z,A-I-J-Z,MIn-MOut,ScIn-ScOut,SIn-SOut)).

@@ -343,7 +343,7 @@ stats2(subj,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,NP,_D,HC-_OG) :-
 %accusative objects.
 stats2(obja,Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,MORPHD,P,P,_D,HC-_OG) :-
 	getheadandnormalise(HC,Head,_),
-    ((member(Head,['gibt','geben','geb~en']),FD=es)->PTemp=0.1; %bilexicalized exception: "xxx gibt es": "es" is very unlikely to be obja
+    ((member(Head,['gibt','geben']),FD=es)->PTemp=0.1; %bilexicalized exception: "xxx gibt es": "es" is very unlikely to be obja
 	npidsamb(Head,MORPHD,Dtag,obja,PTemp)),
 	((Htag = 'ADJA';Htag='ADJD')->PosMod is 0.5;PosMod is 1),
 	P is PTemp*PosMod.
@@ -495,7 +495,7 @@ stats2(s,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,NP,_D,HC-_OG) :-
 stats2(par,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,_MORPHD,P,NP,_D,_HC-_OG) :-
 	(Dtag='PAR';Dtag='QUOTE'),
 	lexic(SD,_,DPos),
-	chart(DPos,DPos,DPos,[[_,_,HC]],_,_,_,_,_,_,_),
+	chart(DPos,DPos,DPos,[_,_,HC,_],_,_,_,_,_,_),
 	getheadandnormalise(HC,Head,_),
 	((	verb(Head,Occurs,_,_,_,_,_,_,_,_,_,_,_,_,Quote,_),
 		Occurs > 3,

@@ -70,7 +70,7 @@ write_tree( Struct) :-
      analyse( Tree, [n( Func, Pos), List_Succ], L, R) :-
           Tree =.. [FuncTemp, Succ],
           is_list(Succ),
-	  (	(lexic(FuncTemp,Lemma,SenPos), chart(SenPos,SenPos,SenPos,[[_,Tag,_]],_,_,_,_,_,_,[Func|_])
+	  (	(lexic(FuncTemp,Lemma,SenPos), chart(SenPos,SenPos,SenPos,_,_,Tag,_,_,_,[Func|_])
 		)
 	  	; 
 		Func = FuncTemp
@@ -97,7 +97,7 @@ write_tree( Struct) :-
 
      analyse( Tree, [n( Func, Pos), List_Succ], L, R) :-
           Tree =.. [FuncTemp|Succ],
-	  (	(lexic(FuncTemp,_,SenPos), chart(SenPos,SenPos,SenPos,_,_,_,_,_,_,_,[Func|_])
+	  (	(lexic(FuncTemp,_,SenPos), chart(SenPos,SenPos,SenPos,_,_,_,_,_,_,[Func|_])
 		)
 	  	; 
 		Func = FuncTemp
