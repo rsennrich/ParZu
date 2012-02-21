@@ -46,7 +46,7 @@ def usage():
     print('\t\t' + bold +'tokenized' + reset + ': tokenized text. one token per line, empty line for sentence boundary')
     print('\t\t' + bold +'tagged' + reset + ': POS-tagged text. token [tab] tag [newline]\n')
     print('\t' + bold + '-l' + reset + ', ' + bold + '--linewise' + reset)
-    print('\t\tparse text line by line (no automatic sentence splitting). This option is automatically enabled for tokenized or tagged input to enforce the original sentence segmentation.\n')
+    print('\t\tparse text line by line (suppress automatic sentence splitting).\n')
     print('\t' + bold + '-o' + reset + ', ' + bold + '--output' + reset + ' type')
     print('\t\tdefine output type. Supported so far:')
     print('\t\t' + bold +'conll' + reset + ': CoNLL 2007 data format')
@@ -148,9 +148,6 @@ def process_arguments():
         print("Error: Input option not recognized: " + options['inputformat'] + "\n")
         usage()
         sys.exit(2)
-        
-    if options['inputformat'] in ["tokenized","tagged"]:
-        options['linewise'] = True
 
     if arg_processes:
         options['processes'] = arg_processes
@@ -174,9 +171,8 @@ def process_arguments():
     if options['nbestmode']:
         options['nbest_cutoff'] = float(options['nbest_cutoff'])
         
-    if options['linewise']:
-        options['sentdelim'] = '$newline'
-        options['returnsentdelim'] = 'no'
+    options['sentdelim'] = '$newline'
+    options['returnsentdelim'] = 'no'
     
     if options['tempdir'] == 'local':
         options['tempdir'] = os.path.join(sys.path[0],'tmp')
@@ -255,11 +251,11 @@ def tokenize(instream,outstream,options):
     
     options['senderror'].write("Starting tokenizer\n")
     
-    if options['sentdelim'] != '$newline':
+    if options['linewise']:
+        tokenizer_in = instream
+    else:
         sentences = Popen(["python", os.path.join(sys.path[0],"preprocessor","sentence_splitter.py")], stdin=instream, stdout=PIPE, stderr=options['senderror'])
         tokenizer_in = sentences.stdout
-    else:
-        tokenizer_in = instream
     
     tokenizer = Popen(["perl", os.path.join(sys.path[0],"preprocessor","tokenizer.perl"), "-l","de"], stdin=tokenizer_in, stdout=outstream, stderr=options['senderror'])
     

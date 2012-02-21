@@ -10,20 +10,19 @@ uniquedict = {}
 gertwol = open(gertwolinpath,'w')
 
 pos = ''
-#format conversion
+#format conversion into Prolog format
 for line in sys.stdin:
     linelist = line.split()
-    if not linelist: # skip empty lines
-        if sentdelim == '$newline':
-            print("w('ENDOFLINE','"+sentdelim+"',['._"+sentdelim+"'],'ENDOFLINE').")
+    if not linelist: # empty lines mark sentence boundaries
+        print("w('ENDOFSENTENCE','"+sentdelim+"',['._"+sentdelim+"'],'ENDOFSENTENCE').")
         continue
     if len(linelist) == 1:
-      word = linelist[0].replace("\\","\\\\").replace("'","\\'")
+      word = linelist[0].replace("\\","\\\\").replace("'","\\'") #escape Prolog meta characters
       pos = 'XY'
       sys.stderr.write('Error: No tag provided: {0}'.format(line))
     else:
-      word = linelist[0].replace("\\","\\\\").replace("'","\\'")
-      pos = linelist[1].replace("\\","\\\\").replace("'","\\'")
+      word = linelist[0].replace("\\","\\\\").replace("'","\\'") #escape Prolog meta characters
+      pos = linelist[1].replace("\\","\\\\").replace("'","\\'") #escape Prolog meta characters
     newline = "w('" + word + "','" + pos + "',['" + word + '_' + pos + "'],'" + word + "').\n"
     print(newline),
 
@@ -43,8 +42,7 @@ for line in sys.stdin:
          uniquedict[sharplist[i]+'ß'+sharplist[i+1]]=0
 
 
-if pos != sentdelim:
-   print("w('ENDOFDOC','"+sentdelim+"',['._"+sentdelim+"'],'ENDOFDOC').")
+print("w('ENDOFDOC','"+sentdelim+"',['._"+sentdelim+"'],'ENDOFDOC').")
 
 for item in uniquedict.keys():
     gertwol.write(item + '\n')

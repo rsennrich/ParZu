@@ -141,9 +141,10 @@ TECHNICAL FAQ
 KNOWN ISSUES
 ------------
 
-The TreeTagger does not work correctly with tokenized input or the --linewise option.
-The reason is that sentence boundaries are internally representend through blank lines (in the tokenized format), which the TreeTagger ignores.
-Most other POS taggers (e.g. TnT, Stanford POS tagger, hunpos, CRF++) support the POS tagger input/output format expected by ParZu: one token per line, blank lines for sentence boundaries.
+Internally, ParZu uses the following format as input/output for tagging: one token per line, blank lines for sentence boundaries.
+Most POS taggers (e.g. TnT, Stanford POS tagger, hunpos, CRF++) support this format; the TreeTagger, however, uses SGML tags instead.
+Instead of calling the TreeTagger directly, use `preprocessing/treetagger-wrapper.py`, which converts between the different formats.
+If you want to use the TreeTagger, set the paths to the TreeTagger binary and the German UTF-8 model in `preprocessing/treetagger-wrapper.py`.
 
 
 LICENSE
