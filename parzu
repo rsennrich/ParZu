@@ -270,11 +270,11 @@ def tag(instream,outstream,options):
     options['senderror'].write("Starting POS-tagger\n")
     
     if options['nbestmode']:
-        tagger = Popen(options["taggercmd"]+['-n',str(options['nbestmode'])], stdin=instream, stdout=PIPE, stderr=options['senderror'])
+        tagger = Popen(options["taggercmd"]+['-n',str(options['nbestmode'])], stdin=instream, stdout=PIPE, stderr=options['senderror'],cwd=sys.path[0])
         tagger_formatted = Popen(['python',os.path.join(sys.path[0],"preprocessor","prune_nbest.py"),str(options['nbest_cutoff'])], stdin=tagger.stdout, stdout=outstream, stderr=options['senderror'])
 
     else:
-        tagger_formatted = Popen(options['taggercmd'], stdin=instream, stdout=outstream, stderr=options['senderror']) 
+        tagger_formatted = Popen(options['taggercmd'], stdin=instream, stdout=outstream, stderr=options['senderror'],cwd=sys.path[0]) 
 
     return tagger_formatted
 
