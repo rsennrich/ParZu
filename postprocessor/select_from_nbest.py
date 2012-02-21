@@ -13,7 +13,7 @@ def identify_newsent(line,outputformat):
     if outputformat == 'prolog' and "'#0'" in line and line.split(',',2)[1].strip()=='1':
         return True
         
-    elif outputformat == 'conll' and line.startswith("1   #0   #0"):
+    elif outputformat == 'conll' and line.startswith("1\t#0\t#0"):
         return True
         
     elif outputformat == 'moses' and line.startswith('#0|'):
@@ -37,7 +37,7 @@ def feature_extract(sentbuf,outputformat):
     elif outputformat == 'conll':
         prob = float(sentbuf[0].split()[3].rstrip())
         featurelist.append(prob)
-        root_count = sum((item.count('root \n') for item in sentbuf))-sum((item.count(' $. ') for item in sentbuf))-sum((item.count(' $, ') for item in sentbuf))-sum((item.count(' $( ') for item in sentbuf))
+        root_count = sum((item.count('\troot\t') for item in sentbuf))-sum((item.count('\t$.\t') for item in sentbuf))-sum((item.count('\t$,\t') for item in sentbuf))-sum((item.count('\t$(\t') for item in sentbuf))
         featurelist.append(max(1,root_count))
         return featurelist
         
@@ -119,7 +119,7 @@ def produce_output(i,sentence,outputformat):
         for j,line in enumerate(sentence):
             if j == 0:
                 continue
-            print("{0}   {1}".format(j,line.split(' ',1)[-1])),
+            print("{0}\t{1}".format(j,line.split('\t',1)[-1])),
         print('')
 
     elif outputformat == 'moses':
