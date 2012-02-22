@@ -781,27 +781,27 @@ head('QC','$,',r,comma,'QC',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ member('->
 
 %attaches relative clause to last noun, pronoun or verb. better attachment strategies only available through morphological information and in postprocessing ("er hat den Mann aus Zürich gekannt, der gestorben ist")
 
-head('NN','RC',r,rel,'NN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG).
+head('NN','RC',r,rel,'NN',[_,_,_,_,OG,DepRels,_,_],_,MH,_,MH) :- restrict_coord(OG), member('<-comma<-', DepRels).
 
-head('NE','RC',r,rel,'NE',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG).
+head('NE','RC',r,rel,'NE',[_,_,_,_,OG,DepRels,_,_],_,MH,_,MH) :- restrict_coord(OG), member('<-comma<-', DepRels).
 
-head('FM','RC',r,rel,'FM',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG).
+head('FM','RC',r,rel,'FM',[_,_,_,_,OG,DepRels,_,_],_,MH,_,MH) :- restrict_coord(OG), member('<-comma<-', DepRels).
 
-head('PDS','RC',r,rel,'PDS',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG).
+head('PDS','RC',r,rel,'PDS',[_,_,_,_,OG,DepRels,_,_],_,MH,_,MH) :- restrict_coord(OG), member('<-comma<-', DepRels).
 
-head('PIS','RC',r,rel,'PIS',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG).
+head('PIS','RC',r,rel,'PIS',[_,_,_,_,OG,DepRels,_,_],_,MH,_,MH) :- restrict_coord(OG), member('<-comma<-', DepRels).
 
-head('PPER','RC',r,rel,'PPER',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG).
+head('PPER','RC',r,rel,'PPER',[_,_,_,_,OG,DepRels,_,_],_,MH,_,MH) :- restrict_coord(OG), member('<-comma<-', DepRels).
 
-head('PPOSS','RC',r,rel,'PPOSS',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG).
+head('PPOSS','RC',r,rel,'PPOSS',[_,_,_,_,OG,DepRels,_,_],_,MH,_,MH) :- restrict_coord(OG), member('<-comma<-', DepRels).
 
-head('V*FIN','RC',r,rel,'VVFIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG).
+head('V*FIN','RC',r,rel,'VVFIN',[_,_,_,_,OG,DepRels,_,_],_,MH,_,MH) :- restrict_coord(OG), member('<-comma<-', DepRels).
 
-head('VVIMP','RC',r,rel,'VVIMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG).
+head('VVIMP','RC',r,rel,'VVIMP',[_,_,_,_,OG,DepRels,_,_],_,MH,_,MH) :- restrict_coord(OG), member('<-comma<-', DepRels).
 
-head('RC','RC',r,rel,'RC',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG).
+head('RC','RC',r,rel,'RC',[_,_,_,_,OG,DepRels,_,_],_,MH,_,MH) :- restrict_coord(OG), member('<-comma<-', DepRels).
 
-head('NEB','RC',r,rel,'NEB',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG).
+head('NEB','RC',r,rel,'NEB',[_,_,_,_,OG,DepRels,_,_],_,MH,_,MH) :- restrict_coord(OG), member('<-comma<-', DepRels).
 
 
 %======================================================================================
