@@ -28,7 +28,6 @@ Linux (32 and 64 bit)
 SWI-Prolog 5.6 (or YAP 6.2 - check the top of the script `parzu` to switch between the two)
 Python 2.6 (also tested on Python 3.1)
 Perl 5.10
-NLTK 2.0b8 (for sentence splitting)
 
 It may work in different environments, but there is no guarantee. Any contributions to improve cross-plattform compatibility are welcome.
 
@@ -46,7 +45,7 @@ INSTALLATION
 ------------
 
 1. Install all requirements. In Ubuntu Linux, all are available in the repositories:
-    sudo apt-get install python-nltk swi-prolog sfst
+    sudo apt-get install swi-prolog sfst
 
 2. unpack (or git clone) the directory to your target directory.
 
@@ -155,6 +154,8 @@ ParZu is free software; you can redistribute it and/or modify it under the terms
 The files in `postprocessing/DepSVG` are from Kaarel Kaljurand's DepSVG library and are licensed under the LGPL (https://github.com/Kaljurand/DepSVG)
 
 `preprocessing/tokenizer.perl` and `preprocessing/nonbreaking_prefix.de` are from the Moses toolkit and licensed under the LGPL (http://www.statmt.org/moses/)
+
+`preprocessing/punkt_tokenizer.py` is from the NLTK and licensed under the Apache License 2.0 (https://github.com/nltk/nltk)
 
 PUBLICATIONS
 ------------

@@ -254,7 +254,7 @@ def tokenize(instream,outstream,options):
     if options['linewise']:
         tokenizer_in = instream
     else:
-        sentences = Popen(["python", os.path.join(sys.path[0],"preprocessor","sentence_splitter.py")], stdin=instream, stdout=PIPE, stderr=options['senderror'])
+        sentences = Popen(["python", os.path.join(sys.path[0],"preprocessor","punkt_tokenizer.py")], stdin=instream, stdout=PIPE, stderr=options['senderror'])
         tokenizer_in = sentences.stdout
     
     tokenizer = Popen(["perl", os.path.join(sys.path[0],"preprocessor","tokenizer.perl"), "-l","de"], stdin=tokenizer_in, stdout=outstream, stderr=options['senderror'])
