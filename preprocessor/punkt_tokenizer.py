@@ -30,6 +30,7 @@ import re
 import sys
 import math
 import punkt_data_german
+import codecs
 from collections import defaultdict
 
 FreqDist = None
@@ -1493,5 +1494,8 @@ if __name__ == "__main__":
     tokenizer._params.ortho_context = punkt_data_german.ortho_context
     tokenizer._params.abbrev_types = punkt_data_german.abbrev_types
     tokenizer._params.sent_starters = punkt_data_german.sent_starters
+    
+    if sys.version_info < (3,):
+        sys.stdin = codecs.getreader('UTF-8')(sys.stdin)
     
     tokenizer.tokenize_fobj(sys.stdin)
