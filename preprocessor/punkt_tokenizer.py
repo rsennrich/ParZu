@@ -1469,10 +1469,11 @@ class PunktSentenceTokenizer(PunktBaseClass):
 
 
     
-    def tokenize_fobj(self,fobj):
-        """Tokenize file object and print output (one sentence per line)"""
-        for sent in self._slices_from_fobj(sys.stdin):
-            print((sent.replace('\n','').strip()))
+    def tokenize_fobj(self,fobj_in,fobj_out):
+        """Tokenize file object and write output to other file object (one sentence per line)"""
+        for sent in self._slices_from_fobj(fobj_in):
+            sys.stdout.write(sent.replace('\n','').strip()+'\n')
+
 
 
 
@@ -1497,5 +1498,6 @@ if __name__ == "__main__":
     
     if sys.version_info < (3,):
         sys.stdin = codecs.getreader('UTF-8')(sys.stdin)
+        sys.stdout = codecs.getwriter('UTF-8')(sys.stdout)
     
-    tokenizer.tokenize_fobj(sys.stdin)
+    tokenizer.tokenize_fobj(sys.stdin,sys.stdout)
