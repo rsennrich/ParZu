@@ -9,7 +9,7 @@ ADV - ADVERB
 
 Adverbial function (includes adverbial adjectives, negations, and similar)
 
-Er kommt *spät*
+    Er kommt *spät*
 
 
 APP - APPOSITION
@@ -167,7 +167,7 @@ OBJP - PREPOSITIONAL OBJECT
 
 prepositional phrase that is complement
 
-Er ging mit ihr *ins* Kino
+    Er ging mit ihr *ins* Kino
 
 
 PAR - PARENTHETICAL EXPRESSIONS
