@@ -76,6 +76,8 @@ The dependency labels implemented in ParZu are described in:
 
 Killian A. Foth. 2005. Eine umfassende Contraint-Dependenz-Grammatik des Deutschen. University of Hamburg.
 
+A short overview is given in `LABELS.md`.
+
 ON QUALITY AND TESTING
 ----------------------
 
