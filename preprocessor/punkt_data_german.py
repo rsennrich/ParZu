@@ -56,7 +56,7 @@ sent_starters = set(['aber', 'abgesehen', 'all', 'allerdings', 'am', 'andernfall
                  'wieso', 'wir', 'wo', 'worum', 'während', 'zudem', 'zwar', 'zweitens',
                  'ähnlich', 'ähnliches', 'überdies'])
                  
-ortho_context_d = {'a': 46,
+ortho_context = defaultdict(int,{'a': 46,
     'a-': 4,
     'a-fonds-perdu-beitrags': 4,
     'a-jour-': 4,
@@ -60315,6 +60315,4 @@ ortho_context_d = {'a': 46,
     'üppig': 32,
     'üppigem': 32,
     'üppigen': 32,
-    'üsserschwiiz': 4}
-
-ortho_context = defaultdict(int,ortho_context_d)
+    'üsserschwiiz': 4})
