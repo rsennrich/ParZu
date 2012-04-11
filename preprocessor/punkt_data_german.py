@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+from collections import defaultdict
 
 abbrev_types = set(['48f', '69f', 'a.d', 'abs', 'bd', 'bst', 'bt', 'bzw', 'bü',
                 'c', 'chr', 'crz', 'cs', 'd.h', 'dk', 'dr', 'etc', 'f', 'fem',
@@ -55,7 +56,7 @@ sent_starters = set(['aber', 'abgesehen', 'all', 'allerdings', 'am', 'andernfall
                  'wieso', 'wir', 'wo', 'worum', 'während', 'zudem', 'zwar', 'zweitens',
                  'ähnlich', 'ähnliches', 'überdies'])
                  
-ortho_context = {'a': 46,
+ortho_context_d = {'a': 46,
     'a-': 4,
     'a-fonds-perdu-beitrags': 4,
     'a-jour-': 4,
@@ -60315,3 +60316,5 @@ ortho_context = {'a': 46,
     'üppigem': 32,
     'üppigen': 32,
     'üsserschwiiz': 4}
+
+ortho_context = defaultdict(int,ortho_context_d)
