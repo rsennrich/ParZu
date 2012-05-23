@@ -27,7 +27,7 @@ write('A sample call is:'),nl,  write('go_textual(\'preprocessed_input.pl\'), to
 :- assert(nbestmode(0)).
 :- assert(morphology(gertwol)).
 :- assert(lemmatisation(gertwol)).
-:- assert(secedges(no)).
+:- assert(extrainfo(no)).
 
 % debug(2). % show new best res.
 % debug(1). % show all reduce steps

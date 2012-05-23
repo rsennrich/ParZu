@@ -2,11 +2,10 @@
 %   Rico Sennrich
 %   take the parser output, convert it into the right format and do some postprocessing (non-projective dependencies)
 
-:- dynamic morphclean/1.
+:- dynamic morphclean/1, projectivehead/2.
 
 postprocess(_,raw) :- retractall(output(_,_,_,_,_,_,_)), !.
 
-%all other output formats.
 %first round
 postprocess(Pos,Outputformat) :-
              (output(Pos,Word,Lemma,Tag,Rel,HeadPos,Morph)->true;(chart(Pos,Pos,Pos,_,Lemma,Tag,_,_,_,[Word|Morph]),Rel=root,HeadPos=0,assert(output(Pos,Word,Lemma,Tag,Rel,HeadPos,Morph)))),
@@ -17,28 +16,22 @@ postprocess(Pos,Outputformat) :-
              fixAttachment(Rel,Pos,HeadPos,HeadPos2),
              transcodeRel(Rel,NewRel),
              (NewRel=root->HeadPos3=0;HeadPos3=HeadPos2),
-%              printresult(Outputformat,Pos,Word,Lemma,Tag,NewRel,OutputPos,MorphOut),
              retract(output(Pos,Word,Lemma,Tag,Rel,HeadPos,Morph3)),
              assert(output(Pos,Word,Lemma,Tag,NewRel,HeadPos3,Morph3)),
+             assert(projectivehead(Pos,HeadPos)),
              NewPos is Pos + 1, !,
              postprocess(NewPos,Outputformat).
 
 
-%second round: secondary edges
-postprocess(_,_) :- secedges(yes),
-              findall(Pos,output(Pos,_,_,_,_,_,_),List),length(List,Len),
-              between(1,Len,Pos),
-              fail.
-
-%third round: print
+%second round: print
 postprocess(_,Outputformat) :- findall(Pos,output(Pos,_,_,_,_,_,_),List),length(List,Len),
               between(1,Len,Pos),
               output(Pos,Word,Lemma,Tag,Rel,HeadPos,Morph),
               printresult(Outputformat,Pos,Word,Lemma,Tag,Rel,HeadPos,Morph),
               fail.
 
-%fourth round: cleanup
-postprocess(_,_) :- nl,retractall(output(_,_,_,_,_,_,_)), !.
+%third round: cleanup
+postprocess(_,_) :- nl,retractall(output(_,_,_,_,_,_,_)), retractall(projectivehead(_,_)), !.
                                  
 
 
@@ -66,7 +59,9 @@ printresult(conll,Pos,DepWord,DepLemma,DepTag,Class,HeadPos,Morph) :-
     transformMorph(conll,Morph,MorphOut),
     (nbestmode(NBEST),NBEST > 0->NewHeadPos is max(0,HeadPos-1);NewHeadPos is HeadPos),
     coarsetag(DepTag,CoarseTag),
-    (secedges(no)->(SecEdgeHead='_',SecEdgeRel='_');(secedge(Pos,SecEdgeHead,SecEdgeRel))),
+    (extrainfo(secedges)->(secedge(Pos,ExtraHead,ExtraRel));
+    (extrainfo(projective)->(projectivehead(Pos,ExtraHead),ExtraRel=Class);
+    extrainfo(no)->(ExtraHead='_',ExtraRel='_'))),
     write(Pos),
     write('\t'),
     write(DepWord),
@@ -83,9 +78,9 @@ printresult(conll,Pos,DepWord,DepLemma,DepTag,Class,HeadPos,Morph) :-
     write('\t'),
     write(Class),
     write('\t'),
-    write(SecEdgeHead),
+    write(ExtraHead),
     write('\t'),
-    write(SecEdgeRel),
+    write(ExtraRel),
     nl.
 
 
