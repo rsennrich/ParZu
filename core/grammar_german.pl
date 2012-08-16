@@ -1246,9 +1246,34 @@ head('APPR','PWAV',r,adv,'PWAV',_,G-F,MH,_,MH) :- 1 is F-G.
 head('APPR','ADV',r,adv,'PP',_,G-F,MH,_,MH) :- 1 is F-G, endOfNP(F).
 head('APPRART','ADV',r,adv,'PP',_,G-F,MH,_,MH) :- 1 is F-G, endOfNP(F).
 
+
+%postmodifying adverbs:
+head('NN','ADV',r,adv,'NN',_,_,MH,_,MH).
+head('NE','ADV',r,adv,'NE',_,_,MH,_,MH).
+head('PP','ADV',r,adv,'PP',_,_,MH,_,MH).
+head('PPER','ADV',r,adv,'PPER',_,_,MH,_,MH).
+head('PIS','ADV',r,adv,'PIS',_,_,MH,_,MH).
+head('PDS','ADV',r,adv,'PDS',_,_,MH,_,MH).
 head('PTKNEG', 'ADV',r, adv, 'PTKNEG',_,G-F,MH,_,MH) :- 1 is F-G.
 head('PWAV', 'ADV',r, adv, 'PWAV',_,G-F,MH,_,MH) :- 1 is F-G.
 head('PWS', 'ADV',r, adv, 'PWS',_,G-F,MH,_,MH) :- 1 is F-G.
+head('PAV', 'ADV',r, adv, 'PAV',_,G-F,MH,_,MH) :- 1 is F-G.
+head('ADJD','ADV',r,adv,'ADJD',_,_,MH,_,MH).
+
+head('NN','PTKNEG',r,adv,'NN',_,_,MH,_,MH).
+head('NE','PTKNEG',r,adv,'NE',_,_,MH,_,MH).
+head('PP','PTKNEG',r,adv,'PP',_,_,MH,_,MH).
+head('PPER','PTKNEG',r,adv,'PPER',_,_,MH,_,MH).
+head('PIS','PTKNEG',r,adv,'PIS',_,_,MH,_,MH).
+head('PDS','PTKNEG',r,adv,'PDS',_,_,MH,_,MH).
+head('PWAV', 'PTKNEG',r, adv, 'PWAV',_,G-F,MH,_,MH) :- 1 is F-G.
+head('PWS', 'PTKNEG',r, adv, 'PWS',_,G-F,MH,_,MH) :- 1 is F-G.
+head('ADJD','PTKNEG',r,adv,'ADJD',_,G-F,MH,_,MH) :- 1 is F-G.
+
+%sich selbst
+head('PRF', 'ADV',r, adv, 'PRF',[_,_,_,selbst,_,_,_,_],G-F,MH,_,MH) :- 1 is F-G.
+head('PRF', 'ADV',r, adv, 'PRF',[_,_,_,allein,_,_,_,_],G-F,MH,_,MH) :- 1 is F-G.
+
 
 %sowohl als auch...
 head(_,'ADV',r,adv,'KON',[_,_,als,auch,_,_,_,_],G-F,MH,_,MH) :- 1 is F-G.
