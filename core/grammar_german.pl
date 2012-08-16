@@ -1181,21 +1181,21 @@ head('PPER', 'ADV',l, adv, 'PPER',_,_,MH,_,MH).
 
 head('ADJA', 'PTKNEG',l, adv, 'ADJA',_,_,MH,_,MH).
 
-head('ADJD', 'PTKNEG',l, adv, 'ADJD',_,F-G,MH,_,MH) :- 1 is F-G.
+head('ADJD', 'PTKNEG',l, adv, 'ADJD',_,_,MH,_,MH).
 
-head('ADV', 'PTKNEG',l, adv, 'ADV',_,F-G,MH,_,MH) :- 1 is F-G.
+head('ADV', 'PTKNEG',l, adv, 'ADV',_,_,MH,_,MH).
 
 head('KOUS', 'PTKNEG',l, adv, 'KOUS',_,_,MH,_,MH).
 
-head('CARD', 'PTKNEG',l, adv, 'CARD',_,F-G,MH,_,MH) :- 1 is F-G.
+head('CARD', 'PTKNEG',l, adv, 'CARD',_,_,MH,_,MH).
 
-head('NN', 'PTKNEG',l, adv, 'NN',_,F-G,MH,_,MH) :- 2 >= F-G.
+head('NN', 'PTKNEG',l, adv, 'NN',_,_,MH,_,MH).
 
-head('NE', 'PTKNEG',l, adv, 'NE',_,F-G,MH,_,MH) :- 2 >= F-G.
+head('NE', 'PTKNEG',l, adv, 'NE',_,_,MH,_,MH).
 
-head('APPR', 'PTKNEG',l, adv, 'APPR',_,F-G,MH,_,MH) :- 2 >= F-G.
+head('APPR', 'PTKNEG',l, adv, 'APPR',_,_,MH,_,MH).
 
-head('APPRART', 'PTKNEG',l, adv, 'APPRART',_,F-G,MH,_,MH) :- 2 >= F-G.
+head('APPRART', 'PTKNEG',l, adv, 'APPRART',_,_,MH,_,MH).
 
 
 %little hack: use PWAV as transtag to make sure whole thing gets recognised as question
@@ -1254,10 +1254,10 @@ head('PP','ADV',r,adv,'PP',_,_,MH,_,MH).
 head('PPER','ADV',r,adv,'PPER',_,_,MH,_,MH).
 head('PIS','ADV',r,adv,'PIS',_,_,MH,_,MH).
 head('PDS','ADV',r,adv,'PDS',_,_,MH,_,MH).
-head('PTKNEG', 'ADV',r, adv, 'PTKNEG',_,G-F,MH,_,MH) :- 1 is F-G.
-head('PWAV', 'ADV',r, adv, 'PWAV',_,G-F,MH,_,MH) :- 1 is F-G.
-head('PWS', 'ADV',r, adv, 'PWS',_,G-F,MH,_,MH) :- 1 is F-G.
-head('PAV', 'ADV',r, adv, 'PAV',_,G-F,MH,_,MH) :- 1 is F-G.
+head('PTKNEG', 'ADV',r, adv, 'PTKNEG',_,_,MH,_,MH).
+head('PWAV', 'ADV',r, adv, 'PWAV',_,_,MH,_,MH).
+head('PWS', 'ADV',r, adv, 'PWS',_,_,MH,_,MH).
+head('PAV', 'ADV',r, adv, 'PAV',_,_,MH,_,MH).
 head('ADJD','ADV',r,adv,'ADJD',_,_,MH,_,MH).
 
 head('NN','PTKNEG',r,adv,'NN',_,_,MH,_,MH).
@@ -1266,9 +1266,9 @@ head('PP','PTKNEG',r,adv,'PP',_,_,MH,_,MH).
 head('PPER','PTKNEG',r,adv,'PPER',_,_,MH,_,MH).
 head('PIS','PTKNEG',r,adv,'PIS',_,_,MH,_,MH).
 head('PDS','PTKNEG',r,adv,'PDS',_,_,MH,_,MH).
-head('PWAV', 'PTKNEG',r, adv, 'PWAV',_,G-F,MH,_,MH) :- 1 is F-G.
-head('PWS', 'PTKNEG',r, adv, 'PWS',_,G-F,MH,_,MH) :- 1 is F-G.
-head('ADJD','PTKNEG',r,adv,'ADJD',_,G-F,MH,_,MH) :- 1 is F-G.
+head('PWAV', 'PTKNEG',r, adv, 'PWAV',_,_,MH,_,MH).
+head('PWS', 'PTKNEG',r, adv, 'PWS',_,_,MH,_,MH).
+head('ADJD','PTKNEG',r,adv,'ADJD',_,_,MH,_,MH).
 
 %sich selbst
 head('PRF', 'ADV',r, adv, 'PRF',[_,_,_,selbst,_,_,_,_],G-F,MH,_,MH) :- 1 is F-G.
