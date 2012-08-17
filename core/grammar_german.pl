@@ -540,7 +540,7 @@ head('V*FIN','PPER',l,explobja,'V*FIN',[FC,_,_,'es',UG,_,_,_],_,MH,_,MH) :- \+ m
 %allows prepositional phrases to be enclosed by commas
 head('PP','$,',l,comma,'PP',[_,_,_,_,HRels,_,HID,_],_,HM,_,HM) :- commaToRight(HID), \+ member('<-comma<-', HRels).
 
-head('PP','$,',r,comma,'PP',[_,_,_,_,HRels,_,_,_],_,HM,_,HM) :- member('<-comma<-', HRels), \+ member('->comma->', HRels).
+head('PP','$,',r,comma,'PP',[_,_,_,_,HRels,_,_,_],_,HM,_,HM) :- (member('<-comma<-', HRels);member('->kon->', HRels)), \+ member('->comma->', HRels).
 
 
 %prepositional phrases postmodifying a np or pronoun
@@ -1635,6 +1635,11 @@ head('PPREL','KON_ADV',r,kon,'PPREL',  _,_,MH,_,MH).
 
 head('ADJA','KON_ADV',r,kon,'ADJA',  _,_,MH,_,MH).
 
+%für und mit X
+head('APPR','KON_ADV',r,kon,'PP',  _,_,MH,_,MH).
+
+head('APPRART','KON_ADV',r,kon,'PP',  _,_,MH,_,MH).
+
 
 %adjd/adja + /adja
 head('ADJD','KON_ADJA',r,kon,'ADJD',  _,_,MH,_,MH).
@@ -1963,7 +1968,7 @@ leftbracket('(','11').
 leftbracket('[','12').
 leftbracket('{','13').
 
-%minux signs, hypens and dashes
+%minus signs, hypens and dashes
 %for syntactic analysis, we don't differentiate between them, since their use may be inconsistent
 leftbracket('-','21').
 leftbracket('‐​','21').
@@ -1997,6 +2002,9 @@ head('KON','$(',l,badbracket,'KON',[_,_,_,Lex,_,_,_,_],F-G,HM,_,HM) :- 1 is F-G,
 head(Tag,'$(',r,badbracket,Tag,[_,_,_,Lex,_,_,_,_],F-G,HM,_,HM) :- -1 is F-G, member(Lex,['"', '\'']).
 
 %good: ", \'
+
+%PP may be sentence-final and separated from its head by a dash
+head(Tag,'$(',l,badbracket,Tag,[_,_,_,Lex,_,_,HID,_],_,HM,_,HM) :- leftbracket(Lex,'21'), member(Tag,['PP']), stopToRight(HID).
 
 
 %======================================================================================
