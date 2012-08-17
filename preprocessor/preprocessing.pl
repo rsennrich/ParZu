@@ -157,9 +157,11 @@ tagstart(_,_) :- !.
 
 buildmorphology(Word,_, [Word|[_]]) :- morphology(none), !.
 
-%exception: deren and dessen as attributive relative pronouns don't need to agree with their heads.
+%exception: deren and dessen as attributive pronouns don't need to agree with their heads.
 buildmorphology(dessen,'PRELAT',[dessen,_]) :-  !.
 buildmorphology(deren,'PRELAT',[deren,_]) :- !.
+buildmorphology(dessen,'PDAT',[dessen,_]) :-  !.
+buildmorphology(deren,'PDAT',[deren,_]) :- !.
 
 %try spelling variations if word doesn't exist in Gertwol.
 buildmorphology(Word,Tag,[Word|ListOut]) :- (\+ (gertwol(Word,Lemma,_,_, _), \+ Lemma = '<unknown>')->(spellingvariation(Word,NewWord), \+ NewWord = Word,buildmorphology(NewWord,Tag,[_|ListOut]));fail).
