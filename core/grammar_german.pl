@@ -939,7 +939,7 @@ head('VVIMP','VVIZU',r,obji,'VVIMP',[GC,FC,_,_,OG,OF,_,_],_,MH,_,MH) :- (\+ FC =
 
 
 %VVIZU to the left of finite verb (topicalized or in subordinated clause)
-head('V*FIN','VVIZU',l,obji,'V*FIN',[FC,GC,_,_,_,_,_,_],H-D,MH,_,MH) :- FC \= GC, 1 is H-D.
+head('V*FIN','VVIZU',l,obji,'V*FIN',[FC,GC,_,_,OF,_,_,_],H-D,MH,_,MH) :- FC \= GC, 1 is H-D, restrict_vorfeld(FC,OF).
 
 
 %Noun can have infinitive object, but should be separated by comma -> competition with other functions of NNs
@@ -980,38 +980,38 @@ modallike('hören') :- !.
 
 
 %adverb before finite verb
-head('V*FIN','ADV',l,adv,'V*FIN',_,_,MH,_,MH).
+head('V*FIN','ADV',l,adv,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF).
 
 head('VVIZU','ADV',l,adv,'VVIZU',_,_,MH,_,MH).
 
 
-head('V*FIN','ADJD',l,adv,'V*FIN',_,_,MH,_,MH).
+head('V*FIN','ADJD',l,adv,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF).
 
 head('VVIZU','ADJD',l,adv,'VVIZU',_,_,MH,_,MH).
 
 
-head('V*FIN','PTKNEG',l,adv,'V*FIN',_,_,MH,_,MH).
+head('V*FIN','PTKNEG',l,adv,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF).
 
 head('VVIZU','PTKNEG',l,adv,'VVIZU',_,_,MH,_,MH).
 
 
 %answer particle. Included because of tagging errors:
 %example: das ist ja toll
-head('V*FIN','PTKANT',l,adv,'V*FIN',_,_,MH,_,MH).
+head('V*FIN','PTKANT',l,adv,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF).
 
 head('VVIZU','PTKANT',l,adv,'VVIZU',_,_,MH,_,MH).
 
 
 
 %weil ich ein wenig schüchtern bin
-head('V*FIN','PIS',l,adv,'V*FIN',_,_,MH,_,MH).
+head('V*FIN','PIS',l,adv,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF).
 
 head('VVIZU','PIS',l,adv,'VVIZU',_,_,MH,_,MH).
 
 
 
 %interrogative adverb (new transtag 'QC')
-head('V*FIN','PWAV',l,adv,'QC',_,_,MH,_,MH).
+head('V*FIN','PWAV',l,adv,'QC',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF).
 
 %only necessary in case of tagging errors
 head('VVPP','PWAV',l,adv,'QC',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1).
@@ -1278,11 +1278,6 @@ head('PRF', 'ADV',r, adv, 'PRF',[_,_,_,allein,_,_,_,_],G-F,MH,_,MH) :- 1 is F-G.
 %sowohl als auch...
 head(_,'ADV',r,adv,'KON',[_,_,als,auch,_,_,_,_],G-F,MH,_,MH) :- 1 is F-G.
 
-
-%nur, weil ich es sage.
-head('PTKNEG', '$,',r, comma, 'ADVKOUS',[_,_,_,_,_,OF,_,_],_,_,MF,MF) :- \+ member('<-comma<-', OF).
-head('ADV', '$,',r, comma, 'ADVKOUS',[_,_,_,_,_,OF,_,_],_,_,MF,MF) :- \+ member('<-comma<-', OF).
-head('KOUS', 'ADVKOUS',l, adv, 'KOUS',_,_,MH,_,MH).
 
 %======================================================================================
 %auxiliary verbs
@@ -1779,7 +1774,7 @@ head('VVIMP','QUOTE',r,s,'VVIMP',[GC,FC,_,_,OG,_,_,_],_,MH,_,MH) :- member('main
 
 
 %quote before head clause -> we want a subject to make sure it isn't something like "A tat B, sagte aber C"
-head('V*FIN','QUOTE',l,s,'V*FIN',[FC,GC,_,_,OF,_,_,_],_,MH,_,MH) :- member('mainclause',FC),member('mainclause',GC), member('->subj->',OF), \+ member('->s->',OF), \+ member('<-s<-',OF), \+ member('<-objc<-',OF), \+ member('->objc->',OF), \+ member('<-obja<-',OF), \+ member('->obja->',OF),\+ member('->kon->',OF).
+head('V*FIN','QUOTE',l,s,'V*FIN',[FC,GC,_,_,OF,_,_,_],_,MH,_,MH) :- member('mainclause',FC),member('mainclause',GC), restrict_vorfeld(FC,OF), member('->subj->',OF), \+ member('->s->',OF), \+ member('<-s<-',OF), \+ member('<-objc<-',OF), \+ member('->objc->',OF), \+ member('<-obja<-',OF), \+ member('->obja->',OF),\+ member('->kon->',OF).
 
 
 %======================================================================================
@@ -2447,6 +2442,7 @@ restrict_vorfeld(Chunk,Dependents) :- member('mainclause',Chunk),
                                          '<-zeit<-',
                                          '<-kom<-',
                                          '<-explsubj<-',
+                                         '<-adv<-',
                                          '<-explobja<-'],[]). %only succeed if intersection is empty
 
 
