@@ -104,16 +104,15 @@ getadvprob(_,'PIS',_,_,0) :- !.
 
 getadvprob(_,'ADVKOUS',_,_,0.1) :- !.
 
-%using constant value for verbs (should be default behaviour)
-getadvprob(Htag,_,_,_,0.55) :- (nonfinite(Htag);Htag = 'VVFIN';Htag = 'VAFIN';Htag = 'VMFIN';Htag = 'VVIZU'), !.
-
-%use lexical disambiguation for some special constructions (e.g. adverbs modifying adverbs: noch heute)
-getadvprob(Htag,_Dtag,DWord,RealDist,POSMod) :- (Htag = 'KOMPX' -> HTL = 'kokom' ; downcase_atom(Htag,HTL)), 
+%lexical disambiguation based on number of times the adverb occurs with different POS.
+getadvprob(Htag,_Dtag,DWord,RealDist,POSMod) :- (Htag = 'KOMPX' -> HTL = 'kokom' ; Htag = 'PP' -> HTL = 'appr' ; downcase_atom(Htag,HTL)), 
 		    downcase_atom(DWord,DWordL), 
 		    (RealDist > 0->advbigramleft(DWordL,HTL,Total,ADV); advbigramright(DWordL,HTL,Total,ADV)),
 		      (Total > 10; ADV > 0),
 		      POSMod is ADV / Total, !.
 
+%backoff probability for verbs
+getadvprob(Htag,_,_,_,0.55) :- (nonfinite(Htag);Htag = 'VVFIN';Htag = 'VAFIN';Htag = 'VMFIN';Htag = 'VVIZU'), !.
 
 %catchall
 getadvprob(_Htag,_Dtag,_DWord,_RealDist,0.15) :- !.
