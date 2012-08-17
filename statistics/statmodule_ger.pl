@@ -76,7 +76,7 @@ stats2(aux,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1.06,1.06,_D,_HC).
 stats2(avz,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1.06,1.06,_D,_HC).
 
 
-%non-verbal adverbs get probability from bigram statistics. attention: bigram statistics are distance 1 and may thus not be useful for long-distance relationships
+%adverbs
 stats2(adv,Htag,_FH,SH,_MORPHH,Dtag,FD,SD,_MORPHD,P,NP,D,_HC) :- 
     lexic(SH,_,HPos),
     lexic(SD,_,DPos),
@@ -102,12 +102,10 @@ getadvprob(_,'PIS',DWord,RealDist,P) :- member(DWord,['bißchen',bisschen,wenig]
 
 getadvprob(_,'PIS',_,_,0) :- !.
 
-getadvprob(_,'ADVKOUS',_,_,0.1) :- !.
-
 %lexical disambiguation based on number of times the adverb occurs with different POS.
 getadvprob(Htag,_Dtag,DWord,RealDist,POSMod) :- (Htag = 'KOMPX' -> HTL = 'kokom' ; Htag = 'PP' -> HTL = 'appr' ; downcase_atom(Htag,HTL)), 
 		    downcase_atom(DWord,DWordL), 
-		    (RealDist > 0->advbigramleft(DWordL,HTL,Total,ADV); advbigramright(DWordL,HTL,Total,ADV)),
+		    (RealDist > 0->advbigramleft(DWordL,HTL,Total,ADV); advbigramright(HTL,DWordL,Total,ADV)),
 		      (Total > 10; ADV > 0),
 		      POSMod is ADV / Total, !.
 
