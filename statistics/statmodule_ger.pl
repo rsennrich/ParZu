@@ -182,16 +182,34 @@ stats2(app,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,NP,D,_HC-OG):-
 	NP is DISTMOD*POSMOD*DEPMOD*LexMod.
 
 
+%special case: adverbial pronoun as dependent
+stats2(objp,_Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,_MORPHD,P,P,D,HC-_OG) :-
+        adverbial_pronoun(Dtag), !,
+        getheadandnormalise(HC,Head,HeadTagTemp),
+        combineverbtags(HeadTagTemp,HeadTag),
+        distModifier(D,HeadTag,Dtag,objp,DISTMOD),
+        downcase_atom(FD,FDNorm), %(statistics files are in lower case letters).
+        get_pp_statistics(Head,HeadTag,_,FDNorm,NumPP1,NumObjP1,NumHead),
+        (derive_prep_from_pav(FDNorm,Prep)->get_pp_statistics(Head,HeadTag,_,Prep,NumPP2,NumObjP2,_);(NumPP2=0,NumObjP2=0)),
+        NumPP is NumPP1 + NumPP2,
+        NumObjP is NumObjP1 + NumObjP2,
+        NumPPOBJP is NumPP + NumObjP,
+        ppPosMod(FDNorm,_,HeadTag,POSMOD),
+        ppobjp(NumPP,NumObjP,objp,PPOBJP), 
+        pplexmod(NumPPOBJP,NumHead,LEXMOD),
+        P is PPOBJP*(DISTMOD*0.15+POSMOD*0.35+LEXMOD*0.5). %probability space is split up between 3 disambiguation methods, weights set by hand
+
+
+%general case
 stats2(objp,_Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,MORPHD,P,P,D,HC-_OG) :-
 	getheadandnormalise(HC,Head,HeadTagTemp),
 	combineverbtags(HeadTagTemp,HeadTag),
 	distModifier(D,HeadTag,Dtag,pp,DISTMOD),
 	downcase_atom(FD,FDNorm), %(statistics files are in lower case letters).
 	(splitappr(FDNorm,Prep,_);Prep = FDNorm),
-        (adverbial_pronoun(Dtag)->Case=_;
 	(var(MORPHD) -> List = [];setof(Case,member([Case],MORPHD),List)),
 	length(List,Len),
-	(Len = 1->(List = [CaseTemp],case_tueba(CaseTemp,Case)); Case = _)),
+	(Len = 1->(List = [CaseTemp],case_tueba(CaseTemp,Case)); Case = _),
 	get_pp_statistics(Head,HeadTag,Case,Prep,NumPP,NumObjP,NumHead),
 	NumPPOBJP is NumPP + NumObjP,
 	ppPosMod(Prep,Case,HeadTag,POSMOD),
@@ -200,16 +218,34 @@ stats2(objp,_Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,MORPHD,P,P,D,HC-_OG) :-
 %         depModifier(OG,pp,DEPMOD),
 	P is PPOBJP*(DISTMOD*0.15+POSMOD*0.35+LEXMOD*0.5). %probability space is split up between 3 disambiguation methods, weights set by hand
 
+	
+%special case: adverbial pronoun as dependent
+stats2(pp,_Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,_MORPHD,P,P,D,HC-_OG) :-
+        adverbial_pronoun(Dtag), !,
+        getheadandnormalise(HC,Head,HeadTagTemp),
+        combineverbtags(HeadTagTemp,HeadTag),
+        distModifier(D,HeadTag,Dtag,pp,DISTMOD),
+        downcase_atom(FD,FDNorm), %(statistics files are in lower case letters).
+        get_pp_statistics(Head,HeadTag,_,FDNorm,NumPP1,NumObjP1,NumHead),
+        (derive_prep_from_pav(FDNorm,Prep)->get_pp_statistics(Head,HeadTag,_,Prep,NumPP2,NumObjP2,_);(NumPP2=0,NumObjP2=0)),
+        NumPP is NumPP1 + NumPP2,
+        NumObjP is NumObjP1 + NumObjP2,
+        NumPPOBJP is NumPP + NumObjP,
+        ppPosMod(FDNorm,_,HeadTag,POSMOD),
+        ppobjp(NumPP,NumObjP,pp,PPOBJP), 
+        pplexmod(NumPPOBJP,NumHead,LEXMOD),
+        P is PPOBJP*(DISTMOD*0.15+POSMOD*0.35+LEXMOD*0.5). %probability space is split up between 3 disambiguation methods, weights set by hand
+
+%general case
 stats2(pp,_Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,MORPHD,P,P,D,HC-_OG) :- 
 	getheadandnormalise(HC,Head,HeadTagTemp),
 	combineverbtags(HeadTagTemp,HeadTag),
 	distModifier(D,HeadTag,Dtag,pp,DISTMOD),
 	downcase_atom(FD,FDNorm), %(statistics files are in lower case letters).
 	(splitappr(FDNorm,Prep,_);Prep = FDNorm),
-        (adverbial_pronoun(Dtag)->Case=_;
 	(var(MORPHD) -> List = [];setof(Case,member([Case],MORPHD),List)),
 	length(List,Len),
-	(Len = 1->(List = [CaseTemp],case_tueba(CaseTemp,Case)); Case = _)),
+	(Len = 1->(List = [CaseTemp],case_tueba(CaseTemp,Case)); Case = _),
 	get_pp_statistics(Head,HeadTag,Case,Prep,NumPP,NumObjP,NumHead),
 	NumPPOBJP is NumPP + NumObjP,
 	ppPosMod(Prep,Case,HeadTag,POSMOD),
@@ -271,6 +307,21 @@ splitappr(WordI,Word,I) :-
 
 splitappr(WordI,WordI,_) :- !.
 
+
+%some adverbial pronouns are placeholders for prepositional phrases (darin, dafür)
+%get corresponding preposition here to do statistics with it.
+derive_prep_from_pav(PAV,Prep) :-
+        sub_atom(PAV,0,3,2,'dar'),
+        atom_length(PAV,Len),
+        NewLen is Len-3,
+        sub_atom(PAV,3,NewLen,_,Prep), !.
+
+
+derive_prep_from_pav(PAV,Prep) :-
+        sub_atom(PAV,0,2,2,'da'),
+        atom_length(PAV,Len),
+        NewLen is Len-2,
+        sub_atom(PAV,2,NewLen,_,Prep), !.
 
 
 %non-lexical disambiguation of pp attachment: only consider preposition and PoS of head.
