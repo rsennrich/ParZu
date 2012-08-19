@@ -188,9 +188,10 @@ stats2(objp,_Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,MORPHD,P,P,D,HC-_OG) :-
 	distModifier(D,HeadTag,Dtag,pp,DISTMOD),
 	downcase_atom(FD,FDNorm), %(statistics files are in lower case letters).
 	(splitappr(FDNorm,Prep,_);Prep = FDNorm),
+        (adverbial_pronoun(Dtag)->Case=_;
 	(var(MORPHD) -> List = [];setof(Case,member([Case],MORPHD),List)),
 	length(List,Len),
-	(Len = 1->(List = [CaseTemp],case_tueba(CaseTemp,Case)); Case = _),
+	(Len = 1->(List = [CaseTemp],case_tueba(CaseTemp,Case)); Case = _)),
 	get_pp_statistics(Head,HeadTag,Case,Prep,NumPP,NumObjP,NumHead),
 	NumPPOBJP is NumPP + NumObjP,
 	ppPosMod(Prep,Case,HeadTag,POSMOD),
@@ -205,9 +206,10 @@ stats2(pp,_Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,MORPHD,P,P,D,HC-_OG) :-
 	distModifier(D,HeadTag,Dtag,pp,DISTMOD),
 	downcase_atom(FD,FDNorm), %(statistics files are in lower case letters).
 	(splitappr(FDNorm,Prep,_);Prep = FDNorm),
+        (adverbial_pronoun(Dtag)->Case=_;
 	(var(MORPHD) -> List = [];setof(Case,member([Case],MORPHD),List)),
 	length(List,Len),
-	(Len = 1->(List = [CaseTemp],case_tueba(CaseTemp,Case)); Case = _),
+	(Len = 1->(List = [CaseTemp],case_tueba(CaseTemp,Case)); Case = _)),
 	get_pp_statistics(Head,HeadTag,Case,Prep,NumPP,NumObjP,NumHead),
 	NumPPOBJP is NumPP + NumObjP,
 	ppPosMod(Prep,Case,HeadTag,POSMOD),

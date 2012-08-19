@@ -2569,7 +2569,9 @@ detcan('PIAT',_).
 detcan('PPOSAT',_).
 detcan('PDAT',_).
 
-
+adverbial_pronoun('PROP').
+adverbial_pronoun('PAV').
+adverbial_pronoun('PROAV').
 
 
 %check each member of a list.
