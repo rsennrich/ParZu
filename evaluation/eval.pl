@@ -92,14 +92,20 @@ fp(Sentence, Class) :-	test(Class,Sentence,_,HeadPos,_,DepPos),
 		w(Sentence,HeadPos,_,_,_,_)
 	   ),
     ((mydebug ->
-    w(Sentence, DepPos, _, _, ClassTrue, _),
+    w(Sentence, DepPos, _, DepTag, ClassTrue, _),
+    w(Sentence,HeadPos,_,HeadTag,_,_),
     write('false class: '),
     write(Sentence),
     write(': '),
     write(DepPos),
+    write(' ('),
+    write(DepTag),
+    write(')'),
     write(' - '),
     write(HeadPos),
-    write(' - '),
+    write(' ('),
+    write(HeadTag),
+    write(') gold class: '),
     write(ClassTrue),
     nl);true),
 	result(Class,TP,FP,FN,WA),
@@ -115,6 +121,7 @@ fn(Sentence, Class) :-	w(Sentence, DepPos,_, DepTag, Class, HeadPos),
 		w(Sentence,HeadPos,_,HeadTag,_,_),
 	\+ test(Class,Sentence,_,HeadPos,_,DepPos),
     ((mydebug ->
+    (test(WrongClass,Sentence,_,_,_,DepPos)->true;WrongClass='root'),
     write('not found: '),
     write(Sentence),
     write(': '),
@@ -126,7 +133,8 @@ fn(Sentence, Class) :-	w(Sentence, DepPos,_, DepTag, Class, HeadPos),
     write(HeadPos),
     write(' ('),
     write(HeadTag),
-    write(')'),
+    write(') test class: '),
+    write(WrongClass),
     nl);true),
 	result(Class,TP,FP,FN,WA),
 	FNNew is FN + 1,
@@ -199,7 +207,8 @@ unattached(Sentence, Class) :- w(Sentence,DepPos,_,Tag,Class,HeadPos),
     write(HeadPos),
     write(' ('),
     write(Tag2),
-    write(')'),
+    write(') '),
+    write(Class),
     nl.
 
 printresult(total) :- result(total,TP,FP,FN,WA,NA),
@@ -218,21 +227,22 @@ printresult(total) :- result(total,TP,FP,FN,WA,NA),
 		nl,
 		write('precision: '),
 		(	(	(TP + FP) > 0,
-				Precision is TP / (TP + FP)
+				Precision is TP / (TP + FP),
+				format('~4f', Precision)
 			)
 			;
-			Precision = 'division by 0 error'
+			write('division by 0 error')
+			
 		),
-		write(Precision),
 		nl,
 		write('recall: '),
 		(	(	(TP + FN + NA) > 0,
-				Recall is TP / (TP + FN + NA)
+				Recall is TP / (TP + FN + NA),
+				format('~4f', Recall)
 			)
 			;
-			Recall = 'division by 0 error'
+                        write('division by 0 error')
 		),
-		write(Recall),
 		nl, !.
 
 printresult(Class) :- result(Class,TP,FP,FN,WA),
@@ -249,21 +259,21 @@ printresult(Class) :- result(Class,TP,FP,FN,WA),
 		nl,
 		write('precision: '),
 		(	(	(TP + FP) > 0,
-				Precision is TP / (TP + FP)
+				Precision is TP / (TP + FP),
+                                format('~4f', Precision)
 			)
 			;
-			Precision = 'division by 0 error'
+                        write('division by 0 error')
 		),
-		write(Precision),
 		nl,
 		write('recall: '),
 		(	(	(TP + FN) > 0,
-				Recall is TP / (TP + FN)
+				Recall is TP / (TP + FN),
+                                format('~4f', Recall)
 			)
 			;
-			Recall = 'division by 0 error'
+                        write('division by 0 error')
 		),
-		write(Recall),
 		nl, !.
 
 
