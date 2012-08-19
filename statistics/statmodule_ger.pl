@@ -643,7 +643,7 @@ distModifier(D,_Htag,_Dtag,Class,DISTMOD) :- distModifier(D,Class,DISTMOD).
 
 %make sure that probability mass is distributed among analyses that are morphologically possible.
 testmorphology(List,Tag,Subj,Obja,Objd,Objg,SubjOut,ObjaOut,ObjdOut,ObjgOut) :- 
-            (case_nom(List,Tag)->SubjOut is Subj;SubjOut is 0),
+            ((case_nom(List,Tag), Tag \= 'PRF')->SubjOut is Subj;SubjOut is 0),
             (case_acc(List,Tag)->ObjaOut is Obja;ObjaOut is 0),
             (case_dat(List,Tag)->ObjdOut is Objd;ObjdOut is 0),
             (case_gen(List,Tag)->ObjgOut is Objg;ObjgOut is 0), !.
