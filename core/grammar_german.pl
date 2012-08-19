@@ -580,6 +580,7 @@ head('PIS', 'PAV',r,pp,'PIS',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('->pp->'
 
 head('CARD', 'PAV',r,pp,'CARD',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('->pp->',OG).
 
+head('ADJD', 'PAV',r,pp,'ADJD',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('->pp->',OG).
 
 
 %prepositional phrase after verb
@@ -625,6 +626,17 @@ head('ADJD', 'PP',l,pp,'ADJD',_,F-_,MH,_,MH) :- \+ endOfNP(F).
 
 %daran angedockt
 head('ADJA', 'PAV',l,pp,'ADJA',_,F-G,MH,_,MH) :- 1 is F-G.
+
+
+%darunter viele Kinder
+head('NN', 'PAV',l,pp,'NN',_,_,MH,_,MH).
+head('NE', 'PAV',l,pp,'NE',_,_,MH,_,MH).
+
+
+%pp premodifying comparative clause:
+%es erweist sich als Schnäppchen und im Idealfall als Kauf des Lebens
+head('KOMPX', 'PP',l,pp,'KOMPX',_,_,MH,_,MH).
+head('KOMPX', 'PAV',l,pp,'KOMPX',F-G,MH,_,MH) :- 1 is F-G.
 
 
 %complex prepositions:
@@ -1499,7 +1511,7 @@ head('V*PP','$,',l,comma,'KON_PPVERB',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- nth1(2,OF
 
 head('V*INF','$,',l,comma,'KON_INFVERB',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
 
-head('KOMPX','$,',l,comma,'KON_KOMPX',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
+head('KOMPX','$,',l,comma,'KON_KOMPX',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- member('->kon->',OF), \+ member('<-comma<-', OF).
 
 
 %with adjectives, the same is possible even if there is no conjunction at the end "der hochgefährliche, giftige baustoff".
