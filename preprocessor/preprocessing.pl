@@ -259,6 +259,16 @@ getlemma(Word,'NN',Lemma,'NE') :- gertwol(Word,Lemma,'NE',_Analysis, _), \+ Lemm
 getlemma(Word,'NN',Lemma,'ADJD') :- gertwol(Word,Lemma,'ADJD',_Analysis, _), \+ Lemma = '<unknown>', \+ (name(Word,WordChars), member(45,WordChars)), !.
 getlemma(Word,'NE',Lemma,'ADJD') :- gertwol(Word,Lemma,'ADJD',_Analysis, _), \+ Lemma = '<unknown>', \+ (name(Word,WordChars), member(45,WordChars)), !.
 
+
+% Gertwol doesn't distinguish between modal/auxiliary/full verbs
+getlemma(Word,'VAFIN',Lemma,'VAFIN') :- morphology(gertwol), gertwol(Word,Lemma,'VVFIN',_Analysis,_), \+ Lemma = '<unknown>', !.
+getlemma(Word,'VAINF',Lemma,'VAINF') :- morphology(gertwol), gertwol(Word,Lemma,'VVINF',_Analysis,_), \+ Lemma = '<unknown>', !.
+getlemma(Word,'VAPP',Lemma,'VAPP') :- morphology(gertwol), gertwol(Word,Lemma,'VVPP',_Analysis,_), \+ Lemma = '<unknown>', !.
+getlemma(Word,'VMFIN',Lemma,'VMFIN') :- morphology(gertwol), gertwol(Word,Lemma,'VVFIN',_Analysis,_), \+ Lemma = '<unknown>', !.
+getlemma(Word,'VMINF',Lemma,'VMINF') :- morphology(gertwol), gertwol(Word,Lemma,'VVINF',_Analysis,_), \+ Lemma = '<unknown>', !.
+getlemma(Word,'VMPP',Lemma,'VMPP') :- morphology(gertwol), gertwol(Word,Lemma,'VVPP',_Analysis,_), \+ Lemma = '<unknown>', !.
+
+
 %next case: POS tag from Gertwol overrides TreeTagger. Free choice
 % getlemma(Word,Tag,Lemma,NewTag) :- gertwol(Word,Lemma,NewTag,_Analysis, _), \+ Lemma = '<unknown>',
 % 				      \+ member(Tag,['FM','PTKNEG','PWAV','ITJ']), %in case of conflict, we sometimes want to prefer TreeTagger tags.
