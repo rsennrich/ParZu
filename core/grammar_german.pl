@@ -2393,7 +2393,7 @@ morph_cleanup(Class,HMorph,HTag,DMorph,DTag,DPos,HPos,DMorphOut) :- nth1(2,DMorp
 
 
 %don't print morphological analyses that are only used internally.
-morph_cleanup(kon,_,_,_,'KON',_,_,[_]) :- !.
+morph_cleanup(_,_,_,_,'KON',_,_,[_]) :- !.
 
 %Some grammatical functions are bound to a specific case. Restrict output morphology to syntactically valid analyses.
 morph_cleanup(subj,HMorph,HTag,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Nom']],'APPR',DMorphTemp), (unify_number(DMorphTemp,DTag,HMorph,HTag,DMorphOut);DMorphOut=DMorphTemp), !.
