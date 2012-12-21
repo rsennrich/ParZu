@@ -523,11 +523,8 @@ head('V*FIN','PPER',r,explobja,'V*FIN',[GC,_,_,'es',OG,_,_,_],_,MH,_,MH)  :- res
 
 
 %EXPL before finite verb - takes position of SUBJ
-head('V*FIN','PPER',l,explsubj,'V*FIN',[FC,_,_,'es',UG,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,UG), (member('->subjc->',UG);member('->obji->',UG)), \+ member('<-subj<-',UG), \+ member('->subj->',UG).
-
-
-%same, but with upper-case 'Es'
-head('V*FIN','PPER',l,explsubj,'V*FIN',[FC,_,_,'Es',UG,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,UG), member('->subjc->',UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG).
+head('V*FIN','PPER',l,explsubj,'V*FIN',[FC,_,_,'es',UG,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,UG), (member('->subj->',UG);member('->subjc->',UG);member('->obji->',UG)).
+head('V*FIN','PPER',l,explsubj,'V*FIN',[FC,_,_,'Es',UG,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,UG), (member('->subj->',UG);member('->subjc->',UG);member('->obji->',UG)).
 
 
 %EXPL before finite verb - takes position of OBJA (only possible in Verbletztstellung)
