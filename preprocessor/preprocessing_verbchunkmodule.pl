@@ -41,7 +41,7 @@ idstart(Sentence,Pos,LVL) :- w(Sentence,Pos,_Word,Tag,[String],_),
 				(Tag = 'VAFIN' ; Tag = 'VMFIN'),
 				assert(lvl(LVL,Pos,String,head)),
 				NewPos is Pos + 1,
-				idmain(Sentence, NewPos, LVL,EndPos), 
+				idmain(Sentence, NewPos, LVL,EndPos, yes), 
 				findfreelvl(LVL, NewLVL),
 				idstart(Sentence,EndPos,NewLVL), !.
 
@@ -99,10 +99,10 @@ idstart(Sentence,Pos,LVL) :- sentdelim(SentDelim),
 idstart(_,_,_) :- !.
 
 
-%idmain(+Sentence,+Pos,+LVL,-EndPos): if a finite verb is found in Verbzweitstellung, this clauses searches for non-finite verbs or verbal particles dependent from it. 
+%idmain(+Sentence,+Pos,+LVL,-EndPos, +ExpectFullVerb): if a finite verb is found in Verbzweitstellung, this clauses searches for non-finite verbs or verbal particles dependent from it. 
 
 %non-finite full verb found. make sure that the finite verb is not a full verb itself and enter the third search strategy (getverbgroup).
-idmain(Sentence, Pos, LVL, EndPos) :- w(Sentence,Pos,_Word,Tag,[String],_),
+idmain(Sentence, Pos, LVL, EndPos, _) :- w(Sentence,Pos,_Word,Tag,[String],_),
 			  fullverbcand(Tag),
 			  headAuxiliar(Sentence,LVL),
 			  assert(lvl(LVL,Pos,String,full)), !,
@@ -110,14 +110,14 @@ idmain(Sentence, Pos, LVL, EndPos) :- w(Sentence,Pos,_Word,Tag,[String],_),
 
 
 %verbal particle found. This stops the search for more dependents.
-idmain(Sentence, Pos, LVL, EndPos) :- w(Sentence,Pos,_Word,Tag,[String],_),
+idmain(Sentence, Pos, LVL, EndPos, _) :- w(Sentence,Pos,_Word,Tag,[String],_),
 			  Tag = 'PTKVZ',
 			  assert(lvl(LVL,Pos,String,ptkvz)), 
 			  EndPos is Pos + 1, !.
 
 
 %other finite verb found. Check for possibility of tagging error.
-idmain(Sentence, Pos, LVL, EndPos) :- w(Sentence,Pos,Word,Tag,_,_),
+idmain(Sentence, Pos, LVL, EndPos, yes) :- w(Sentence,Pos,Word,Tag,_,_),
 			  finverb(Tag), 
 			  headAuxiliar(Sentence,LVL),
 			  nofinkon(Sentence,Pos),
@@ -131,28 +131,28 @@ idmain(Sentence, Pos, LVL, EndPos) :- w(Sentence,Pos,Word,Tag,_,_),
 
 
 %other finite verb found. This stops the search for more dependents.
-idmain(Sentence, Pos, _LVL, Pos) :- w(Sentence,Pos,_Word,Tag,_,_),
+idmain(Sentence, Pos, _LVL, Pos, _) :- w(Sentence,Pos,_Word,Tag,_,_),
 			  finverb(Tag), !.
 
 %sentence ends. This stops the search for more dependents.
-idmain(Sentence,Pos,_,Pos) :- w(Sentence,Pos,_,'$.',_,_), !.
+idmain(Sentence,Pos,_,Pos, _) :- w(Sentence,Pos,_,'$.',_,_), !.
 
 %sentence ends. This stops the search for more dependents.
-idmain(Sentence,Pos,_,Pos) :- sentdelim(SentDelim),
+idmain(Sentence,Pos,_,Pos, _) :- sentdelim(SentDelim),
                         w(Sentence,Pos,_,SentDelim,_,_), !.
 
 %embedded subordinated clause found. The algorithm first completes this embedded clause and then continues searching for dependents.
-idmain(Sentence, Pos, LVL, EndPos) :- w(Sentence,Pos,_Word,Tag,_,_),
+idmain(Sentence, Pos, LVL, EndPos, ExpectFullVerb) :- w(Sentence,Pos,_Word,Tag,_,_),
 			  functtag(Tag),
 		    	  findfreelvl(LVL, NewLVL),
 			  assert(lvl(NewLVL,Pos,Tag,x)),
 			  NewPos is Pos + 1, !,
 			  idsub(Sentence,NewPos, NewLVL,SubEnd),
-			  idmain(Sentence,SubEnd,LVL,EndPos).
+			  idmain(Sentence,SubEnd,LVL,EndPos, ExpectFullVerb).
 
 
 %embedded infinitive clause found. The algorithm first completes this embedded clause and then continues searching for dependents.
-idmain(Sentence, Pos, LVL, EndPos) :- w(Sentence,Pos,_,'PTKZU',_,_),
+idmain(Sentence, Pos, LVL, EndPos, _) :- w(Sentence,Pos,_,'PTKZU',_,_),
 		    	  findfreelvl(LVL, NewLVL),
 			  NewPos is Pos + 1, !,
 			  assert(lvl(NewLVL,Pos,'PTKZU',ptkzu)),
@@ -161,7 +161,7 @@ idmain(Sentence, Pos, LVL, EndPos) :- w(Sentence,Pos,_,'PTKZU',_,_),
 
 
 %infinitive verbs. only accept if head lemma is "sein"
-idmain(Sentence, Pos, LVL, EndPos) :- w(Sentence,Pos,_,'VVIZU',[String],_),
+idmain(Sentence, Pos, LVL, EndPos, _) :- w(Sentence,Pos,_,'VVIZU',[String],_),
 			      lvl(LVL,_,String2,head),
 			      jointag(sein,'VAFIN',String2),
 			  headAuxiliar(Sentence,LVL),
@@ -169,8 +169,8 @@ idmain(Sentence, Pos, LVL, EndPos) :- w(Sentence,Pos,_,'VVIZU',[String],_),
 			  getverbgroupmain(Sentence,LVL,Pos, EndPos).
 
 
-%probably ist + predicate. This stops the search for more dependents.
-idmain(Sentence,Pos,LVL,Pos) :- w(Sentence,Pos,_,'$,',_,_), 
+%probably ist + predicate. ExpectFullVerb set to 'no', so if you find finite verb after this, don't consider it a possible tagging error.
+idmain(Sentence,Pos,LVL,EndPos, _) :- w(Sentence,Pos,_,'$,',_,_), 
 			      lvl(LVL,_,String,head),
 			      jointag(sein,'VAFIN',String),
 			      ((LeftPos is Pos - 1,
@@ -179,18 +179,19 @@ idmain(Sentence,Pos,LVL,Pos) :- w(Sentence,Pos,_,'$,',_,_),
 			      (RightPos is Pos + 1,
 			      w(Sentence,RightPos,_,Tag,_,_),
 			      member(Tag,['ADV','KON','$(']))
-			      ), !.
-
+			      ),
+            NewPos is Pos + 1, !,
+            idmain(Sentence,NewPos,LVL, EndPos, no).
 
 %nothing found, but sentence continues. Increment by one and continue search recursively.
-idmain(Sentence,Pos,LVL, EndPos) :- sentdelim(SentDelim),
+idmain(Sentence,Pos,LVL, EndPos, ExpectFullVerb) :- sentdelim(SentDelim),
                 w(Sentence,XPos,_,SentDelim,_,_), 
                 XPos > Pos,
 			   NewPos is Pos + 1, !,
-			   idmain(Sentence,NewPos,LVL, EndPos).
+			   idmain(Sentence,NewPos,LVL, EndPos, ExpectFullVerb).
 
 %catchall. should not be needed, since recursive clause should always succeed.
-idmain(_,Pos,_,Pos) :- !.
+idmain(_,Pos,_,Pos, _) :- !.
 
 
 
@@ -198,7 +199,7 @@ idmain(_,Pos,_,Pos) :- !.
 
 %idmainzu(+Sentence,+Pos,+LVL,+LVL2,-EndPos): if a finite verb is found in Verbzweitstellung, and there is an embedded infinitive clause, check if it belongs to the main clause.
 idmainzu(Sentence,Pos,LVL,LVL2,EndPos) :- w(Sentence,Pos,_,Tag,_,_),
-					  (verbtag(Tag)->idmain(Sentence,Pos,LVL,EndPos);
+					  (verbtag(Tag)->idmain(Sentence,Pos,LVL,EndPos, yes);
 					  (((lvl(LVL,HeadPos,_,head),\+ (w(Sentence,XPos,_,'$,',_,_), HeadPos < XPos, XPos < Pos)) % no comma allowed between head and infinitive verb (otherwise it probably is infinitive object)
 					   ->shift_lvl(LVL2,LVL);true)
 					  ,EndPos=Pos)).
@@ -332,7 +333,7 @@ idsub(Sentence, Pos, LVL, EndPos) :- w(Sentence,Pos,_Word,Tag,[String],_),
 				assert(lvl(LVL,Pos,String,head)),
 				NewPos is Pos + 1, !,
                 sentdelim(SentDelim),
- 				(((Tag = 'VAFIN'; Tag ='VMFIN'),lvl(LVL,_,Type,x),member(Type,['PWS','PWAT','PWAV']),w(Sentence,NewPos,_,Tag2,_,_),\+ member(Tag2,['KON','$,','$.',SentDelim]))->idmain(Sentence, NewPos, LVL,EndPos);EndPos=NewPos). %V2 Stellung ist possible in clauses beginning with PWS, for example.
+ 				(((Tag = 'VAFIN'; Tag ='VMFIN'),lvl(LVL,_,Type,x),member(Type,['PWS','PWAT','PWAV']),w(Sentence,NewPos,_,Tag2,_,_),\+ member(Tag2,['KON','$,','$.',SentDelim]))->idmain(Sentence, NewPos, LVL,EndPos, yes);EndPos=NewPos). %V2 Stellung ist possible in clauses beginning with PWS, for example.
 
 
 
