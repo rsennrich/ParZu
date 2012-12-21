@@ -615,6 +615,10 @@ head('V*FIN', 'PAV',l,pp,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorf
 head(NONFIN, 'PP',l,pp,NONFIN,[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- nonfinite(NONFIN), verbchunklength(FC,1).
 head(NONFIN, 'PAV',l,pp,NONFIN,[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- nonfinite(NONFIN), verbchunklength(FC,1).
 
+%allow PPs after nonfinite verb if no matching finite verb is found in preprocessing (-> chunk has only one element).
+%example/motivation: das kind, geboren in cottbus, konnte schon klavier spielen
+head(NONFIN, 'PP',r,pp,NONFIN,[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- nonfinite(NONFIN), verbchunklength(FC,1).
+head(NONFIN, 'PAV',r,pp,NONFIN,[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- nonfinite(NONFIN), verbchunklength(FC,1).
 
 
 %PP premodifying participial adjective (der auf dem boden liegende mann)
@@ -859,6 +863,22 @@ head('V*FIN','NEB',r,neb,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord
 
 head('VVIMP','NEB',r,neb,'VVIMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG).
 
+
+
+%participle construction
+head('VVPP','$,',l,comma,'VVPP',[HC,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ member('<-comma<-', HeadRels), verbchunklength(HC,1).
+
+head('VVPP','$,',r,comma,'VVPP',[HC,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ member('->comma->', HeadRels), verbchunklength(HC,1).
+
+% before main clause
+%einige Bedingungen vorausgesetzt, kannst du gerne kommen.
+head('V*FIN','VVPP',l,neb,'V*FIN',[FC,DC,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF), verbchunklength(DC,1).
+
+%after main clause
+%du kannst gerne kommen, einige Bedingungen vorausgesetzt.
+head('V*FIN','VVPP',r,neb,'V*FIN',[_,DC,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), verbchunklength(DC,1), \+ member('->aux->', OG).
+
+head('VVIMP','VVPP',r,neb,'VVIMP',[_,DC,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), verbchunklength(DC,1), \+ member('->aux->', OG).
 
 
 %======================================================================================
@@ -1868,6 +1888,12 @@ head('VVIMP','NN',r,zeit,'VVIMP',[_,_,_,Lemma,OG,_,_,_],_,MG,MF,MG) :- zeitcand(
 head('V*FIN','NZEIT',r,zeit,'V*FIN',[_,_,_,_,OG,_,_,_],_,MG,MF,MG) :- case_acc(MF,'NN'), \+ member('<-zeit<-',OG), \+ member('->zeit->',OG), restrict_coord(OG).
 
 head('VVIMP','NZEIT',r,zeit,'VVIMP',[_,_,_,_,OG,_,_,_],_,MG,MF,MG) :- case_acc(MF,'NN'), \+ member('<-zeit<-',OG), \+ member('->zeit->',OG), restrict_coord(OG).
+
+
+head('V*INF', 'NN',r,zeit,'V*INF',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('V*PP', 'NN',r,zeit,'V*PP',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('VVIZU', 'NN',r,zeit,'VVIZU',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+
 
 
 zeitcand('Montag').
