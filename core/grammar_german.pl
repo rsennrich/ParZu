@@ -882,6 +882,15 @@ head('V*FIN','VVPP',r,neb,'V*FIN',[_,DC,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coo
 head('VVIMP','VVPP',r,neb,'VVIMP',[_,DC,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), verbchunklength(DC,1), \+ member('->aux->', OG).
 
 
+
+%conjunction-less subordinated clause (marked by verb-first word order)
+head('V*FIN','$,',r,comma,'NEBCONJLESS',[HC,_,_,_,HeadRels,_,HID,_],_,HM,_,HM) :- stopToLeft(HID), member('mainclause',HC), restrict_vorfeld(HC,HeadRels), \+ member('->comma->', HeadRels).
+head('V*FIN','NEBCONJLESS',l,neb,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- (restrict_vorfeld(FC,OF); member('<-adv<-',OF)).
+
+% other direction (conjunction-less clause after main clause) causes too many false positives; left out for now
+% head('V*FIN','$,',l,comma,'NEBCONJLESS',[_,_,_,_,_,H-D,_,_],_,HM,_,HM) :- 1 is H-D.
+% head('V*FIN','NEBCONJLESS',r,neb,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG).
+
 %======================================================================================
 %clausal object
 %dass, ob, indirect questions, quotes.

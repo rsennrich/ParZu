@@ -16,6 +16,8 @@
 :- dynamic noun_factor_chart/2.
 :- style_check(-discontiguous).
 
+:- ensure_loaded('../core/helper_predicates.pl').
+
 %word classes other than nouns are penalised so that they are only chosen as head of an NP if there is no better alternative (removed from grammar for now, since too many FPs).
 stats2(det,'ADJA',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,0.1,_D,_HC).
 stats2(det,'CARD',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.3,0.3,_D,_HC).
@@ -494,6 +496,10 @@ stats2(gmod,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,0.1,_D,_HC-_OG) :-
 	morphology(off).
 
 %subordinated clauses:
+stats2(neb,_Htag,_FH,_SH,_MORPHH,'NEBCONJLESS',_FD,_SD,_MORPHD,P,NP,_D,_HC) :-
+        P is 0.75, %should be higher than probability for 'kon'
+        NP is 0.75.
+
 stats2(neb,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,NP,D,_HC) :-
 	P is 0.3 - D*0.01, 
 	NP is 0.3 - D*0.01.
