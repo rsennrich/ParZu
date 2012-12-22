@@ -3,6 +3,7 @@
 %%head(HeadTag,DepTag,Dir,Type,Transtag,[HeadChunk,DepChunk,HeadWord,DepWord,HeadRels,DepRels,HeadID,DepID],HeadPos-DepPos,HeadMorph,DepMorph,TransMorph)
 
 :- style_check(-discontiguous).
+:- ensure_loaded('helper_predicates.pl').
 
 :- index(get_case(0,1,0,1));true.
 :- index(get_number(0,1,0,1));true.
@@ -984,6 +985,8 @@ head('ADJA', 'VVINF',l,obji,'ADJA',[_,_,'wollend',_,_,_,_,_],F-G,MH,_,MH) :- 1 i
 
 %experimentieren lassen, kommen sehen usw.
 %TüBa sometimes gives the tag "aux". We follow Foth in using obji
+%currently, no distinction between infinitive and past participle (although obji is misleading for the latter):
+%"er bleibt stehen", "er bleibt geschlossen"
 head('VVFIN','V*INF/PP',l,obji,'VVFIN',[_,DC,HW,_,_,_,_,_],_,MH,_,MH) :- modallike(HW), verbchunklength(DC,1).
 head('VVINF','V*INF/PP',l,obji,'VVINF',[_,DC,HW,_,_,_,_,_],_,MH,_,MH) :- modallike(HW), verbchunklength(DC,1).
 head('VVPP','V*INF/PP',l,obji,'VVPP',[_,DC,HW,_,_,_,_,_],_,MH,_,MH) :- modallike(HW), verbchunklength(DC,1).
@@ -993,16 +996,6 @@ head('VVFIN','VVIZU',l,obji,'VVFIN',[_,DC,HW,_,_,OG,_,_],_,MH,_,MH) :- modallike
 head('VVFIN','V*INF/PP',r,obji,'VVFIN',[_,DC,HW,_,_,_,_,_],_,MH,_,MH) :- modallike(HW), verbchunklength(DC,1).
 head('VVFIN','VVIZU',r,obji,'VVFIN',[_,DC,HW,_,_,OF,_,_],_,MH,_,MH) :- modallike(HW), \+ member('<-comma<-', OF), verbchunklength(DC,1).
 
-
-%full verbs that act like modal verbs
-modallike('lassen') :- !.
-modallike('bleiben') :- !.
-modallike('gehen') :- !.
-modallike('helfen') :- !.
-modallike('lehren') :- !.
-modallike('lernen') :- !.
-modallike('sehen') :- !.
-modallike('hören') :- !.
 
 %======================================================================================
 %adverbs. needs to be more permissive later on.
@@ -1894,59 +1887,6 @@ head('V*INF', 'NN',r,zeit,'V*INF',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,M
 head('V*PP', 'NN',r,zeit,'V*PP',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 head('VVIZU', 'NN',r,zeit,'VVIZU',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 
-
-
-zeitcand('Montag').
-zeitcand('Dienstag').
-zeitcand('Mittwoch').
-zeitcand('Donnerstag').
-zeitcand('Freitag').
-zeitcand('Samstag').
-zeitcand('Sonntag').
-
-zeitcand('Januar').
-zeitcand('Februar').
-zeitcand('März').
-zeitcand('April').
-zeitcand('Mai').
-zeitcand('Juni').
-zeitcand('Juli').
-zeitcand('August').
-zeitcand('September').
-zeitcand('Oktober').
-zeitcand('November').
-zeitcand('Dezember').
-
-zeitcand('Sekunde').
-zeitcand('Minute').
-zeitcand('Stunde').
-zeitcand('Tag').
-zeitcand('Woche').
-zeitcand('Monat').
-zeitcand('Jahr').
-zeitcand('Jahrzehnt').
-zeitcand('Jahrhundert').
-zeitcand('Jahrtausend').
-
-zeitcand('Morgen').
-zeitcand('Mittag').
-zeitcand('Nachmittag').
-zeitcand('Vormittag').
-zeitcand('Abend').
-zeitcand('Nacht').
-
-zeitcand('Frühling').
-zeitcand('Sommer').
-zeitcand('Herbst').
-zeitcand('Winter').
-
-zeitcand('Quartal').
-zeitcand('Trimester').
-zeitcand('Semester').
-zeitcand('Saison').
-zeitcand('Zeit').
-
-zeitcand('Mal').
 
 
 %======================================================================================

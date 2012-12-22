@@ -4,6 +4,8 @@
 :- set_stream(user_input, encoding(utf8));true.
 :- set_stream(user_output, encoding(utf8));true.
 
+:- ensure_loaded('../core/helper_predicates.pl').
+
 %verbchunking, subclause detection, passive detection
 %==============================================================================
 
@@ -389,7 +391,7 @@ getverbgroupmain(Sentence, LVL, Pos, EndPos) :- NewPos is Pos + 1,
 				  w(Sentence,NewPos,Word,Tag,[String],_),
 				  fullverbcand(Tag),
 				  getlemma(Word,Tag,Lemma,Tag),
-                  member(Lemma,['lassen','bleiben','sehen','hören','helfen','lehren','lernen','gehen']),
+				  modallike(Lemma),
 				  retract(lvl(LVL,_, _,full)),
 				  assert(lvl(LVL,NewPos, String,full)), !,
 				 getverbgroupmain(Sentence,LVL,NewPos,EndPos).
