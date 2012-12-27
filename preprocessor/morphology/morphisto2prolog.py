@@ -16,22 +16,25 @@ map_stts['REL'] = 'PREL'
 map_stts['WPRO'] = 'PW'
 map_stts['PPRO'] = 'PPER'
 map_stts['PREP/ART'] = 'APPRART'
+map_stts['PREPART'] = 'APPRART'
 map_stts['PREP'] = 'APPR'
 map_stts['ORD'] = 'ADJA'
 map_stts['POSTP'] = 'APPO'
 map_stts['CIRCP'] = 'APZR'
+map_stts['VPART'] = 'PTKVZ'
 map_stts['VPRE'] = 'PTKVZ'
 map_stts['PROADV'] = 'PAV'
 map_stts['INTJ'] = 'ITJ'
 map_stts['SYMBOL'] = 'XY'
 map_stts['WADV'] = 'PWAV'
 map_stts['CHAR'] = 'XY'
+map_stts['NPROP'] = 'NE'
 
 word = ''
 re_mainclass = re.compile(u'<\+(.*?)>')
 re_any = re.compile(u'<(.*?)>')
 re_segment = re.compile(u'<([A-Z]*?)>')
-re_last = re.compile(u'(?:^|\W)(\w+?)(?:<\w*>)*?<\+',re.UNICODE)
+re_last = re.compile(u'(?:^|\W)([\w\.]+?)(?:<[\w\-\^]*>)*?<\+',re.UNICODE)
 
 def get_repr(key,d):
     if key in d:
@@ -82,7 +85,7 @@ def create_morph(word,pos,args):
         morph = "[{number}]".format(number=get_repr('number',args))
    
     else:
-        if not pos in ['ADV','CARD','ITJ','PTKVZ','PAV','PTKA','PTKZU','PTKANT','PTKNEG','PTKVZ','PWAV','KOUS','KOKOM','KON','KOUI','TRUNC','VVPP','VAPP','VMPP','VAINF','VMINF','VVINF','VVIZU','XY']:
+        if not pos in ['ADV','CARD','ITJ','PTKVZ','PAV','PTKA','PTKZU','PTKANT','PTKNEG','PTKVZ','PWAV','KOUS','KOKOM','KON','KOUI','TRUNC','VVPP','VAPP','VMPP','VAINF','VMINF','VVINF','VVIZU','XY','$(','$,','$.']:
             sys.stderr.write('undefined PoS: ' + str(pos) + '\n')
         morph = '_'
         
@@ -106,13 +109,16 @@ def extract(line):
         elif feature in ['Nom','Akk','Dat','Gen']:
             d['case'] = feature
         
+        elif feature == 'Acc':
+            d['case'] = 'Akk'
+        
         elif feature in ['Sw','St','St/Mix']:
             d['declension'] = feature
             
         elif feature in ['Pos','Comp','Sup']:
             d['grade'] = feature
             
-        elif feature in ['Ind','Konj']:
+        elif feature in ['Ind','Konj','Subj']:
             d['aspect'] = feature
             
         elif feature in ['1','2','3']:
@@ -159,7 +165,7 @@ def get_true_pos(raw_pos,line):
                 pos += 'INF'
         elif '<PPast>' in line:
             pos += 'PP'
-        elif '<Ind>' in line or '<Konj>' in line:
+        elif '<Ind>' in line or '<Konj>' in line or '<Subj>' in line:
             pos += 'FIN'
             
         elif '<Imp>' in line:
@@ -181,32 +187,32 @@ def get_true_pos(raw_pos,line):
     #map pronouns to stts tagset
     elif pos in ['PD','PI','PP','PREL','PW','PPOS']:
         
-        if '<pro>' in line:
-            if pos == 'PI' and '<mD>' in line:
+        if '<pro>' in line or '<Pro>' in line:
+            if pos == 'PI' and ('<mD>' in line or '<Invar>' in line):
                 pos2 = pos + 'DAT'
             else:
                 pos2 = pos + 'AT'
             pos += 'S'
-        elif '<subst>' in line:
+        elif '<subst>' in line or '<Subst>' in line:
             pos += 'S'
         else:
-            if pos == 'PI' and '<mD>' in line:
+            if pos == 'PI' and ('<mD>' in line or '<Invar>' in line):
                 pos += 'DAT'
             else:
                 pos += 'AT'
            
-    elif raw_pos == 'KONJ':
-        if '<Vgl>' in line:
+    elif raw_pos == 'KONJ' or raw_pos == 'CONJ':
+        if '<Vgl>' in line or '<Compar>' in line:
             pos = 'KOKOM'
         elif '<Inf>' in line:
             pos = 'KOUI'
         elif '<Sub>' in line:
             pos = 'KOUS'
-        elif '<Kon>' in line:
+        elif '<Kon>' in line or '<Coord>' in line:
             pos = 'KON'
             
-    elif raw_pos == 'PTKL':
-        if '<Ant>' in line:
+    elif raw_pos == 'PTKL' or raw_pos == 'PTCL':
+        if '<Ant>' in line or '<Ans>' in line:
             pos = 'PTKANT'
         elif '<Neg>' in line:
             pos = 'PTKNEG'
@@ -218,12 +224,20 @@ def get_true_pos(raw_pos,line):
             pos = 'PTKVZ'
           
     elif pos == 'PPER':
-        if '<refl>' in line:
+        if '<refl>' in line or '<Refl>' in line:
             pos = 'PRF'
-        elif '<prfl>' in line:
+        elif '<prfl>' in line or '<Prfl>' in line:
             pos = 'PRF'
             pos2 = 'PPER'
             
+    elif pos == 'PUNCT' or pos == 'IP':
+        if '<Left>' in line or '<Right>' in line or '<links>' in line or '<rechts>' in line:
+            pos = '$('
+        elif '<Norm>' in line:
+            pos = '$.'
+        elif '<Comma>' in line or '<Komma>' in line:
+            pos = '$,'
+
     return pos,pos2
 
 
@@ -249,6 +263,15 @@ def getlemma(line,word,pos):
             return last_morpheme
     
     lemma = re_any.sub('',line) #delete all markup, leaving what we'll use as lemma
+
+
+    #SMOR started giving the same lemma to er/sie/es; keep the distinction for now
+    #(this is slightly redundant, since we can get the same info from the gender, but the grammar looks at the lemma at the moment to find cases of expletive 'es')
+    if lemma == 'sie' and '<Neut>' in line:
+        lemma = 'es'
+    elif lemma == 'sie' and '<Masc>' in line:
+        lemma = 'er'
+
     return lemma[0] + lemma[1:].lower()
 
 
@@ -312,9 +335,8 @@ for line in sys.stdin:
 
     pos,pos2 = get_true_pos(raw_pos,line)
            
+    #we analyse the present participle as adverb/adjective, and discard this analysis (which has no equivalent in STTS)
     if pos == 'VV' and '<PPres>' in line:
-        continue
-    elif pos == 'IP':
         continue
            
     extracted_morph = extract(line)

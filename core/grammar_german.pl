@@ -1134,29 +1134,29 @@ head('PIS', 'PTKA',l, adv, 'PIS',_,F-G,MH,_,MH) :- 1 is F-G.
 
 
 %'zu' might be mistagged as preposition
-head('ADJD', _,l, adv, 'ADJD',[_,_,_,zu,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('ADJD', 'APPR',l, adv, 'ADJD',[_,_,_,zu,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
 
-head('ADJA', _,l, adv, 'ADJA',[_,_,_,zu,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('ADJA', 'APPR',l, adv, 'ADJA',[_,_,_,zu,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
 
-head('ADV', _,l, adv, 'ADV',[_,_,_,zu,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('ADV', 'APPR',l, adv, 'ADV',[_,_,_,zu,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
 
-head('PIAT', _,l, adv, 'PIAT',[_,_,_,zu,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('PIAT', 'APPR',l, adv, 'PIAT',[_,_,_,zu,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
 
-head('PIDAT', _,l, adv, 'PIDAT',[_,_,_,zu,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('PIDAT', 'APPR',l, adv, 'PIDAT',[_,_,_,zu,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
 
-head('PIS', _,l, adv, 'PIS',[_,_,_,zu,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('PIS', 'APPR',l, adv, 'PIS',[_,_,_,zu,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
 
-head('ADJD', _,l, adv, 'ADJD',[_,_,_,'Zu',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('ADJD', 'APPR',l, adv, 'ADJD',[_,_,_,'Zu',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
 
-head('ADJA', _,l, adv, 'ADJA',[_,_,_,'Zu',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('ADJA', 'APPR',l, adv, 'ADJA',[_,_,_,'Zu',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
 
-head('ADV', _,l, adv, 'ADV',[_,_,_,'Zu',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('ADV', 'APPR',l, adv, 'ADV',[_,_,_,'Zu',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
 
-head('PIAT', _,l, adv, 'PIAT',[_,_,_,'Zu',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('PIAT', 'APPR',l, adv, 'PIAT',[_,_,_,'Zu',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
 
-head('PIDAT', _,l, adv, 'PIDAT',[_,_,_,'Zu',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('PIDAT', 'APPR',l, adv, 'PIDAT',[_,_,_,'Zu',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
 
-head('PIS', _,l, adv, 'PIS',[_,_,_,'Zu',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('PIS', 'APPR',l, adv, 'PIS',[_,_,_,'Zu',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
 
 
 %dealing with mistaggings of 'am' as in 'am besten' (at the moment, pn/pp usually has better prob than adv/adv).
