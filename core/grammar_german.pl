@@ -11,6 +11,8 @@
 :- index(get_person(0,1,0,1));true.
 :- index(get_degree(0,1,0,1));true.
 
+correct_mistagging(yes).
+
 %======================================================================================
 %determiners
 
@@ -57,11 +59,11 @@ head('NE','PRELAT',l,det,'PRELS',[_,_,_,_,OF,_,_,_],_,MF,MG,MNew) :- \+ member('
 head('FM','PRELAT',l,det,'PRELS',[_,_,_,_,OF,_,_,_],_,MF,MG,MNew) :- \+ member('<-det<-',OF), \+ member('<-gmod<-',OF), check_agreement(MF,'FM',MG,'PRELAT',MNew).
 
 %ungrammatical in theory, but tagging errors possible
-head('NN','PRELS',l,det,'PRELS',[_,_,_,_,OF,OG,_,_],_,MF,MG,MNew) :- \+ member('<-det<-',OF), \+ member('<-det<-',OG), \+ member('<-gmod<-',OF), check_agreement(MF,'NN',MG,'PRELS',MNew).
+head('NN','PRELS',l,det,'PRELS',[_,_,_,_,OF,OG,_,_],_,MF,MG,MNew) :- correct_mistagging(yes), \+ member('<-det<-',OF), \+ member('<-det<-',OG), \+ member('<-gmod<-',OF), check_agreement(MF,'NN',MG,'PRELS',MNew).
 
-head('NE','PRELS',l,det,'PRELS',[_,_,_,_,OF,OG,_,_],_,MF,MG,MNew) :- \+ member('<-det<-',OF),\+ member('<-det<-',OG), \+ member('<-gmod<-',OF), check_agreement(MF,'NE',MG,'PRELS',MNew).
+head('NE','PRELS',l,det,'PRELS',[_,_,_,_,OF,OG,_,_],_,MF,MG,MNew) :- correct_mistagging(yes), \+ member('<-det<-',OF),\+ member('<-det<-',OG), \+ member('<-gmod<-',OF), check_agreement(MF,'NE',MG,'PRELS',MNew).
 
-head('FM','PRELS',l,det,'PRELS',[_,_,_,_,OF,OG,_,_],_,MF,MG,MNew) :- \+ member('<-det<-',OF), \+ member('<-det<-',OG), \+ member('<-gmod<-',OF), check_agreement(MF,'FM',MG,'PRELS',MNew).
+head('FM','PRELS',l,det,'PRELS',[_,_,_,_,OF,OG,_,_],_,MF,MG,MNew) :- correct_mistagging(yes), \+ member('<-det<-',OF), \+ member('<-det<-',OG), \+ member('<-gmod<-',OF), check_agreement(MF,'FM',MG,'PRELS',MNew).
 
 
 %some word classes can be head of noun phrase if noun is missing. 
@@ -78,11 +80,11 @@ head('NE','PWAT',l,det,'PWS',[_,_,_,_,OF,_,_,_],_,MF,MG,MNew) :- check_agreement
 head('FM','PWAT',l,det,'PWS',[_,_,_,_,OF,_,_,_],_,MF,MG,MNew) :- check_agreement(MF,'FM',MG,'PWAT',MNew), \+ member('<-det<-',OF), \+ member('<-gmod<-',OF).
 
 %ungrammatical in theory, but tagging errors possible
-head('NN','PWS',l,det,'PWS',[_,_,_,_,OF,_,_,_],_,MF,MG,MNew) :- check_agreement(MF,'NN',MG,'PWS',MNew), \+ member('<-det<-',OF), \+ member('<-gmod<-',OF).
+head('NN','PWS',l,det,'PWS',[_,_,_,_,OF,_,_,_],_,MF,MG,MNew) :- correct_mistagging(yes), check_agreement(MF,'NN',MG,'PWS',MNew), \+ member('<-det<-',OF), \+ member('<-gmod<-',OF).
 
-head('NE','PWS',l,det,'PWS',[_,_,_,_,OF,_,_,_],_,MF,MG,MNew) :- check_agreement(MF,'NE',MG,'PWS',MNew), \+ member('<-det<-',OF), \+ member('<-gmod<-',OF).
+head('NE','PWS',l,det,'PWS',[_,_,_,_,OF,_,_,_],_,MF,MG,MNew) :- correct_mistagging(yes), check_agreement(MF,'NE',MG,'PWS',MNew), \+ member('<-det<-',OF), \+ member('<-gmod<-',OF).
 
-head('FM','PWS',l,det,'PWS',[_,_,_,_,OF,_,_,_],_,MF,MG,MNew) :- check_agreement(MF,'FM',MG,'PWS',MNew), \+ member('<-det<-',OF), \+ member('<-gmod<-',OF).
+head('FM','PWS',l,det,'PWS',[_,_,_,_,OF,_,_,_],_,MF,MG,MNew) :- correct_mistagging(yes), check_agreement(MF,'FM',MG,'PWS',MNew), \+ member('<-det<-',OF), \+ member('<-gmod<-',OF).
 
 
 %some word classes can be head of noun phrase if noun is missing. 
@@ -158,13 +160,13 @@ head('PIS','ADJA',l,attr,'PIS', _,F-G,MH,_,MH) :- 1 is F-G.
 head('APPR',PN,r,pn,'PP',[_,_,_,_,OG,_,_,_],_-F,MG,MF,MNew) :- prepcompl(PN,F), unify_case(MG,'APPR',MF,PN,MNew), \+ member('->pn->',OG).
 
 %bis auf weiteres - may be mistagged.
-head(_,'PP',r,pn,'PP',[_,_,bis,_,_,_,_,_],G-F,MH,_,MH) :- 1 is F-G.
-head(_,'PP',r,pn,'PP',[_,_,'Bis',_,_,_,_,_],G-F,MH,_,MH) :- 1 is F-G.
+head(_,'PP',r,pn,'PP',[_,_,bis,_,_,_,_,_],G-F,MH,_,MH) :- correct_mistagging(yes), 1 is F-G.
+head(_,'PP',r,pn,'PP',[_,_,'Bis',_,_,_,_,_],G-F,MH,_,MH) :- correct_mistagging(yes), 1 is F-G.
 
 
 %zu might be mistagged as PTKA/PTKZU/PTKVZ
-head(_,PN,r,pn,'PP',[_,_,zu,_,OG,_,_,_],_-F,MG,MF,MNew) :- prepcompl(PN,F), unify_case(MG,'APPR',MF,PN,MNew), \+ member('->pn->',OG).
-head(_,PN,r,pn,'PP',[_,_,'Zu',_,OG,_,_,_],_-F,MG,MF,MNew) :- prepcompl(PN,F), unify_case(MG,'APPR',MF,PN,MNew), \+ member('->pn->',OG).
+head(_,PN,r,pn,'PP',[_,_,zu,_,OG,_,_,_],_-F,MG,MF,MNew) :- correct_mistagging(yes), prepcompl(PN,F), unify_case(MG,'APPR',MF,PN,MNew), \+ member('->pn->',OG).
+head(_,PN,r,pn,'PP',[_,_,'Zu',_,OG,_,_,_],_-F,MG,MF,MNew) :- correct_mistagging(yes), prepcompl(PN,F), unify_case(MG,'APPR',MF,PN,MNew), \+ member('->pn->',OG).
 
 
 %"mit mehr als x" - no distance restriction. (inconsistency in gold standard: pn or kom?)
@@ -222,7 +224,7 @@ head('VVPP', SUBJ,l,subj,'NEB',[FC,_,_,_,UG,_,_,_],F-G,MF,MG,MF) :- subjcandidat
 head('V*FIN','PRELS',l,subj,'RC',[FC,_,_,_,UG,OG,_,_],_,MF,MG,MNew) :- (member('->kon->',OG)->(case_nom(MG,'PRELS'),MNew=MF); check_agreement(MF,'VVFIN',MG,'PRELS',MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 %only necessary in case of tagging errors
-head('VVPP','PRELS',l,subj,'RC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_nom(MG,'PRELS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('VVPP','PRELS',l,subj,'RC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- correct_mistagging(yes), case_nom(MG,'PRELS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 
 %interrogative pronoun (new transtag 'QC')
@@ -258,7 +260,7 @@ head('VAFIN','PPER',r,subj,'VAFIN',[_,_,waren,es,UG,_,_,_],_,MH,_,MH) :- restric
 
 
 %only necessary in case of tagging errors
-head('VVPP','PWS',l,subj,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_nom(MG,'PWS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('VVPP','PWS',l,subj,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- correct_mistagging(yes), case_nom(MG,'PWS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 
 %subject after finite verb
@@ -284,7 +286,7 @@ head('V*PP', OBJ,l,obja,'V*PP',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidate
 head('V*FIN','PRELS',l,obja,'RC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_acc(MG,'PRELS'), restrict_vorfeld(FC,UG), \+ member('passive',FC), \+ member('<-obja<-',UG), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
 
 %only necessary in case of tagging errors
-head('VVPP','PRELS',l,obja,'RC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_acc(MG,'PRELS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('passive',FC), \+ member('<-obja<-',UG), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
+head('VVPP','PRELS',l,obja,'RC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- correct_mistagging(yes), case_acc(MG,'PRELS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('passive',FC), \+ member('<-obja<-',UG), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
 
 
 
@@ -292,7 +294,7 @@ head('VVPP','PRELS',l,obja,'RC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_acc(MG,'
 head('V*FIN','PWS',l,obja,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_acc(MG,'PWS'), restrict_vorfeld(FC,UG), \+ member('passive',FC), \+ member('<-obja<-',UG), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
 
 %only necessary in case of tagging errors
-head('VVPP','PWS',l,obja,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_acc(MG,'PWS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('passive',FC), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
+head('VVPP','PWS',l,obja,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- correct_mistagging(yes), case_acc(MG,'PWS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('passive',FC), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
 
 
 %"Was" can also be relative (Der Film hat ein Happy-End, was ich sehr schön finde)
@@ -328,7 +330,7 @@ head('V*PP', OBJ,l,obja2,'V*PP',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidat
 head('V*FIN','PRELS',l,obja2,'RC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_acc(MG,'PRELS'), restrict_vorfeld(FC,UG), \+ member('passive',FC), \+ member('<-obja2<-',UG), \+ member('->obja2->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
 
 %only necessary in case of tagging errors
-head('VVPP','PRELS',l,obja2,'RC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_acc(MG,'PRELS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('passive',FC), \+ member('<-obja2<-',UG), \+ member('->obja2->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
+head('VVPP','PRELS',l,obja2,'RC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- correct_mistagging(yes), case_acc(MG,'PRELS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('passive',FC), \+ member('<-obja2<-',UG), \+ member('->obja2->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
 
 
 
@@ -336,7 +338,7 @@ head('VVPP','PRELS',l,obja2,'RC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_acc(MG,
 head('V*FIN','PWS',l,obja2,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_acc(MG,'PWS'), restrict_vorfeld(FC,UG), \+ member('passive',FC), \+ member('<-obja2<-',UG), \+ member('->obja2->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
 
 %only necessary in case of tagging errors
-head('VVPP','PWS',l,obja2,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_acc(MG,'PWS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('passive',FC), \+ member('->obja2->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
+head('VVPP','PWS',l,obja2,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- correct_mistagging(yes), case_acc(MG,'PWS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('passive',FC), \+ member('->obja2->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
 
 
 
@@ -365,7 +367,7 @@ head('V*PP', OBJ,l,objd,'V*PP',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidate
 head('V*FIN','PRELS',l,objd,'RC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_dat(MG,'PRELS'), restrict_vorfeld(FC,UG), \+ member('<-objd<-',UG), \+ member('->objd->',UG).
 
 %only necessary in case of tagging errors
-head('VVPP','PRELS',l,objd,'RC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_dat(MG,'PRELS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('<-objd<-',UG), \+ member('->objd->',UG).
+head('VVPP','PRELS',l,objd,'RC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- correct_mistagging(yes), case_dat(MG,'PRELS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('<-objd<-',UG), \+ member('->objd->',UG).
 
 
 
@@ -373,7 +375,7 @@ head('VVPP','PRELS',l,objd,'RC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_dat(MG,'
 head('V*FIN','PWS',l,objd,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_dat(MG,'PWS'), restrict_vorfeld(FC,UG), \+ member('<-objd<-',UG), \+ member('->objd->',UG).
 
 %only necessary in case of tagging errors
-head('VVPP','PWS',l,objd,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_dat(MG,'PWS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('<-objd<-',UG), \+ member('->objd->',UG).
+head('VVPP','PWS',l,objd,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- correct_mistagging(yes), case_dat(MG,'PWS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('<-objd<-',UG), \+ member('->objd->',UG).
 
 
 %die der partei nahestehenden wähler
@@ -449,14 +451,14 @@ head('VVIZU', OBJ,l,objg,'VVIZU',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandida
 head('V*FIN','PRELS',l,objg,'RC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_gen(MG,'PRELS'), restrict_vorfeld(FC,UG), \+ member('<-objg<-',UG), \+ member('->objg->',UG).
 
 %only necessary in case of tagging errors
-head('VVPP','PRELS',l,objg,'RC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_gen(MG,'PRELS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('<-objg<-',UG), \+ member('->objg->',UG).
+head('VVPP','PRELS',l,objg,'RC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- correct_mistagging(yes), case_gen(MG,'PRELS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('<-objg<-',UG), \+ member('->objg->',UG).
 
 
 %interrogative pronoun (new transtag 'QC')
 head('V*FIN','PWS',l,objg,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_gen(MG,'PWS'), restrict_vorfeld(FC,UG), \+ member('<-objg<-',UG), \+ member('->objg->',UG).
 
 %only necessary in case of tagging errors
-head('VVPP','PWS',l,objg,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_gen(MG,'PWS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('<-objg<-',UG), \+ member('->objg->',UG).
+head('VVPP','PWS',l,objg,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- correct_mistagging(yes), case_gen(MG,'PWS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('<-objg<-',UG), \+ member('->objg->',UG).
 
 
 %object after finite verb.
@@ -828,8 +830,8 @@ head('ADJD','KOUS',l,konjneb,'NEB',_,_,MH,_,MH).
 
 
 %consider possibility of tagging error
-head('VVPP','KOUS',l,konjneb,'PPNEB',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1).
-head('VVPP','KOKOM',l,konjneb,'PPNEB',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1).
+head('VVPP','KOUS',l,konjneb,'PPNEB',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), verbchunklength(FC,1).
+head('VVPP','KOKOM',l,konjneb,'PPNEB',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), verbchunklength(FC,1).
 
 %um/statt/ohne + inf
 head('VVIZU','KOUI',l,konjneb,'NEB',_,_,MH,_,MH).
@@ -903,7 +905,7 @@ head('ADJD','KOUS',l,konjobjc,'OBJC',_,_,MH,_,MH).
 
 
 %consider possibility of tagging error
-head('VVPP','KOUS',l,konjobjc,'OBJC',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1).
+head('VVPP','KOUS',l,konjobjc,'OBJC',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), verbchunklength(FC,1).
 
 
 % als ob: same idea as "ohne dass"
@@ -1028,9 +1030,9 @@ head('VVIZU','PTKNEG',l,adv,'VVIZU',_,_,MH,_,MH).
 
 %answer particle. Included because of tagging errors:
 %example: das ist ja toll
-head('V*FIN','PTKANT',l,adv,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF).
+head('V*FIN','PTKANT',l,adv,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), restrict_vorfeld(FC,OF).
 
-head('VVIZU','PTKANT',l,adv,'VVIZU',_,_,MH,_,MH).
+head('VVIZU','PTKANT',l,adv,'VVIZU',_,_,MH,_,MH) :- correct_mistagging(yes).
 
 
 
@@ -1045,7 +1047,7 @@ head('VVIZU','PIS',l,adv,'VVIZU',_,_,MH,_,MH).
 head('V*FIN','PWAV',l,adv,'QC',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF).
 
 %only necessary in case of tagging errors
-head('VVPP','PWAV',l,adv,'QC',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1).
+head('VVPP','PWAV',l,adv,'QC',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), verbchunklength(FC,1).
 
 
 %interrogative adverbs starting with "wo" can be relative: Dort, wo es am schönsten ist.
@@ -1111,9 +1113,9 @@ head('PWS','PIS',r,adv,'PWS',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG)
 
 %answer particle. Included because of tagging errors:
 %example: das ist ja toll
-head('V*FIN','PTKANT',r,adv,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG).
+head('V*FIN','PTKANT',r,adv,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), restrict_coord(OG).
 
-head('VVIMP','PTKANT',r,adv,'VVIMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG).
+head('VVIMP','PTKANT',r,adv,'VVIMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), restrict_coord(OG).
 
 
 %'nonverbal' adverbials: inclusion of tag pairs based on bigram statistics (only tag pairs with high probability of 'adv' included). other possibility: include more/all pairs here and give them lower probability value.
@@ -1134,39 +1136,39 @@ head('PIS', 'PTKA',l, adv, 'PIS',_,F-G,MH,_,MH) :- 1 is F-G.
 
 
 %'zu' might be mistagged as preposition
-head('ADJD', 'APPR',l, adv, 'ADJD',[_,_,_,zu,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('ADJD', 'APPR',l, adv, 'ADJD',[_,_,_,zu,_,_,_,_],F-G,MH,_,MH) :- correct_mistagging(yes), 1 is F-G.
 
-head('ADJA', 'APPR',l, adv, 'ADJA',[_,_,_,zu,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('ADJA', 'APPR',l, adv, 'ADJA',[_,_,_,zu,_,_,_,_],F-G,MH,_,MH) :- correct_mistagging(yes), 1 is F-G.
 
-head('ADV', 'APPR',l, adv, 'ADV',[_,_,_,zu,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('ADV', 'APPR',l, adv, 'ADV',[_,_,_,zu,_,_,_,_],F-G,MH,_,MH) :- correct_mistagging(yes), 1 is F-G.
 
-head('PIAT', 'APPR',l, adv, 'PIAT',[_,_,_,zu,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('PIAT', 'APPR',l, adv, 'PIAT',[_,_,_,zu,_,_,_,_],F-G,MH,_,MH) :- correct_mistagging(yes), 1 is F-G.
 
-head('PIDAT', 'APPR',l, adv, 'PIDAT',[_,_,_,zu,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('PIDAT', 'APPR',l, adv, 'PIDAT',[_,_,_,zu,_,_,_,_],F-G,MH,_,MH) :- correct_mistagging(yes), 1 is F-G.
 
-head('PIS', 'APPR',l, adv, 'PIS',[_,_,_,zu,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('PIS', 'APPR',l, adv, 'PIS',[_,_,_,zu,_,_,_,_],F-G,MH,_,MH) :- correct_mistagging(yes), 1 is F-G.
 
-head('ADJD', 'APPR',l, adv, 'ADJD',[_,_,_,'Zu',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('ADJD', 'APPR',l, adv, 'ADJD',[_,_,_,'Zu',_,_,_,_],F-G,MH,_,MH) :- correct_mistagging(yes), 1 is F-G.
 
-head('ADJA', 'APPR',l, adv, 'ADJA',[_,_,_,'Zu',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('ADJA', 'APPR',l, adv, 'ADJA',[_,_,_,'Zu',_,_,_,_],F-G,MH,_,MH) :- correct_mistagging(yes), 1 is F-G.
 
-head('ADV', 'APPR',l, adv, 'ADV',[_,_,_,'Zu',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('ADV', 'APPR',l, adv, 'ADV',[_,_,_,'Zu',_,_,_,_],F-G,MH,_,MH) :- correct_mistagging(yes), 1 is F-G.
 
-head('PIAT', 'APPR',l, adv, 'PIAT',[_,_,_,'Zu',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('PIAT', 'APPR',l, adv, 'PIAT',[_,_,_,'Zu',_,_,_,_],F-G,MH,_,MH) :- correct_mistagging(yes), 1 is F-G.
 
-head('PIDAT', 'APPR',l, adv, 'PIDAT',[_,_,_,'Zu',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('PIDAT', 'APPR',l, adv, 'PIDAT',[_,_,_,'Zu',_,_,_,_],F-G,MH,_,MH) :- correct_mistagging(yes), 1 is F-G.
 
-head('PIS', 'APPR',l, adv, 'PIS',[_,_,_,'Zu',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('PIS', 'APPR',l, adv, 'PIS',[_,_,_,'Zu',_,_,_,_],F-G,MH,_,MH) :- correct_mistagging(yes), 1 is F-G.
 
 
 %dealing with mistaggings of 'am' as in 'am besten' (at the moment, pn/pp usually has better prob than adv/adv).
-head('ADJD','APPR',l, adv, 'ADJD',[_,_,_,am,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('ADJD','APPR',l, adv, 'ADJD',[_,_,_,am,_,_,_,_],F-G,MH,_,MH) :- correct_mistagging(yes), 1 is F-G.
 
-head('ADJD','APPR',l, adv, 'ADJD',[_,_,_,'an-der',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('ADJD','APPR',l, adv, 'ADJD',[_,_,_,'an-der',_,_,_,_],F-G,MH,_,MH) :- correct_mistagging(yes), 1 is F-G.
 
-head('ADJA','APPR',l, adv, 'ADJD',[_,_,_,am,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('ADJA','APPR',l, adv, 'ADJD',[_,_,_,am,_,_,_,_],F-G,MH,_,MH) :- correct_mistagging(yes), 1 is F-G.
 
-head('ADJA','APPR',l, adv, 'ADJD',[_,_,_,'an-der',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('ADJA','APPR',l, adv, 'ADJD',[_,_,_,'an-der',_,_,_,_],F-G,MH,_,MH) :- correct_mistagging(yes), 1 is F-G.
 
 
 
