@@ -14,7 +14,7 @@ write('A sample call is:'),nl,  write('go_textual(\'preprocessed_input.pl\'), to
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-:- dynamic chart/10, scores/5, inccount/1, lastpos/1, tops_chart/4, statschart/8, perlevel/1, sentno/1, output/7, outputformat/1, sentdelim/1, returnsentdelim/1, nbestmode/1, morphology/1, lemmatisation/1.
+:- dynamic chart/10, scores/5, inccount/1, lastpos/1, tops_chart/4, statschart/8, perlevel/1, sentno/1, output/7, outputformat/1, sentdelim/1, returnsentdelim/1, nbestmode/1, morphology/1, lemmatisation/1, case_nom/2, case_acc/2, case_dat/2, case_gen/2, gender_neut/2.
 
 :- index(chart(1,1,1,0,0,0,0,1,0,0));true. %% only has an effect in SWI
 :- index(head(1,1,1,0,0,0,0,0,0,0));true.
