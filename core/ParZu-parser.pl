@@ -84,7 +84,7 @@ sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[WFormF|MORPHF],
   %right word is head
     (head(Ftag,Gtag,l,Type,Transtag,[FChunk,GChunk,FFh,FGh,OF,OG,FID,GID],FPos-GPos,MORPHF,MORPHG,MORPH),
      Dist is FPos - GPos,
-     (statschart(SF,SG,Type,Ftag,MORPHF,Gtag,MORPHG,Prob) -> true ; (once(stats2(Type,Ftag,FFh,SF,MORPHF,Gtag,FGh,SG,MORPHG,Prob,Percent,Dist,FChunk-OF)), asserta(statschart(SF,SG,Type,Ftag,MORPHF,Gtag,MORPHG,Prob)))),
+     (statschart(SF,SG,Type,Ftag,MORPHF,Gtag,MORPHG,Prob) -> true ; (once(stats2(Type,Ftag,FFh,SF,MORPHF,Gtag,FGh,SG,MORPHG,Prob,Dist,FChunk-OF)), asserta(statschart(SF,SG,Type,Ftag,MORPHF,Gtag,MORPHG,Prob)))),
      Prob >= DISCARD,
      Dir = l,
      atom_concat('<-',Type,ND1),atom_concat(ND1,'<-',DType),  % <-func<-
@@ -93,7 +93,7 @@ sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[WFormF|MORPHF],
   %left word is head
     (head(Gtag,Ftag,r,Type,Transtag,[GChunk,FChunk,FGh,FFh,OG,OF,GID,FID],GPos-FPos, MORPHG,MORPHF,MORPH),
      Dist is FPos - GPos,
-     (statschart(SG,SF,Type,Gtag,MORPHG,Ftag,MORPHF,Prob) -> true; (once(stats2(Type,Gtag,FGh,SG,MORPHG,Ftag,FFh,SF,MORPHF,Prob,Percent,Dist,GChunk-OG)), asserta(statschart(SG,SF,Type,Gtag,MORPHG,Ftag,MORPHF,Prob)))),
+     (statschart(SG,SF,Type,Gtag,MORPHG,Ftag,MORPHF,Prob) -> true; (once(stats2(Type,Gtag,FGh,SG,MORPHG,Ftag,FFh,SF,MORPHF,Prob,Dist,GChunk-OG)), asserta(statschart(SG,SF,Type,Gtag,MORPHG,Ftag,MORPHF,Prob)))),
      Prob >= DISCARD,
      Dir = r,
      atom_concat('->',Type,ND1),atom_concat(ND1,'->',DType),  % ->func->
