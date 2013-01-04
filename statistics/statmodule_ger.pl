@@ -153,29 +153,17 @@ stats2(bracket,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.5,_D,_HC).
 
 stats2(badbracket,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.65,_D,_HC).
 
-%appositions: encourage short distances.
-stats2(app,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,_HC-OG):-
-% commented out: effect is minimal.
-%     downcase_atom(FH,FHNorm), %(statistics files are in lower case letters).
-%     downcase_atom(FD,FDNorm), %(statistics files are in lower case letters).
-%     (1 is D,
-%         ((appbigram(FH,FD,Total,AsAPP),
-%         Total > 0,
-%         LexMod is AsAPP / Total)
-%         ;
-%         ((appunigram(FH,As1,As1APP,_,_);(As1 is 0, As1APP is 0)),
-%         (appunigram(FD,_,_,As2,As2APP); (As2 is 0, As2APP is 0)),
-%         Total is As1 + As2,
-%         Total > 0,
-%         (As1 > 0 -> Val1 is As1APP / As1; Val1 is 0.9),
-%         (As2 > 0 -> Val2 is As2APP / As2; Val2 is 0.9),
-%         LexMod is (Val1 + Val2) / 2))
-%     ;LexMod is 0.9),
-    LexMod is 1,
-	(Dtag = 'APP' -> POSMOD is 1;posModifier(Htag,Dtag,app,POSMOD)),
-	(Dtag = 'APP' -> DISTMOD is 0.8 - D*0.01;distModifier(D,app,DISTMOD)),
-	depModifier(OG,app,DEPMOD),
-	P is DISTMOD*POSMOD*DEPMOD*LexMod.
+%loose apposition
+stats2(app_loose,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,D,_HC-_OG) :-
+    distModifier(D,app_loose,DISTMOD),
+    P is DISTMOD.
+
+%close appositions: encourage short distances.
+stats2(app_close,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,_HC-OG) :-
+    posModifier(Htag,Dtag,app_close,POSMOD),
+    distModifier(D,app_close,DISTMOD),
+    depModifier(OG,app_close,DEPMOD),
+    P is DISTMOD*POSMOD*DEPMOD.
 
 
 %special case: adverbial pronoun as dependent
@@ -623,18 +611,20 @@ attachptkvz(PTKVZ,HC,HeadOut,HeadTagOut) :- append(NewHC,[_],HC),
                        atom_concat(PTKVZ,HeadTemp,HeadOut), !.
 
 %allows probability modifications according to dependents of the head.
-depModifier(OG,app,0) :- member('->app->',OG), !.
+depModifier(OG,app_close,0) :- (member('->app_close->',OG);member('->app_loose->',OG)), !.
 % depModifier(OG,pp,0.8) :- nth1(Pos,OG,'->pred->'), PosPred is Pos + 1, nth1(PosPred,OG,Pred), Pred =.. [Head|_], lexic(Head,_,HeadPos), checkPos(HeadPos,_,Tag,_,_), member(Tag,['NN','NE','ADV']), !.
 depModifier(_,_,1) :- !.
 
 %allows to modify likelihood for certain head/dependent combinations.
-posModifier('PPER',_,app,0.01) :- !.
-posModifier('PIS',_,app,0.3) :- !.
-posModifier('NN','NN',app,0.4) :- !.
-posModifier('NE','NN',app,0.6) :- !.
-posModifier(_Htag,'NN',app,0.75) :- !.
-posModifier('NE','NE',app,1.9) :- !.
-posModifier(_Htag,'NE',app,1.2) :- !.
+posModifier('PPER',_,app_close,0.05) :- !.
+posModifier('PIS',_,app_close,0.3) :- !.
+posModifier('NN','NN',app_close,0.4) :- !.
+posModifier('NE','NN',app_close,0.2) :- !.
+posModifier(_Htag,'NN',app_close,0.75) :- !.
+posModifier('NE','NE',app_close,1.9) :- !.
+posModifier(_Htag,'NE',app_close,1.2) :- !.
+posModifier(_Htag,_Dtag,app_close,1) :- !.
+
 
 posModifier(Htag,_Dtag,kom,1) :- (Htag = 'VVFIN'; Htag='VAFIN';Htag='VMFIN'), !.
 posModifier('ADV',_Dtag,kom,0.3) :- !.
@@ -652,11 +642,13 @@ posModifier(_Htag,_Dtag,_Class,1) :- !. %catchall
 
 %allows to modify likelihood for certain distances.
 
-distModifier(D,app,DISTMOD) :- 	(D < 6, !,
+distModifier(D,app_close,DISTMOD) :- 	(D < 6, !,
 				DISTMOD is 1-((D-1)/5)
 				)
 				;
 				DISTMOD is 0.2-D*0.001, !.
+
+distModifier(D,app_loose,DISTMOD) :- DISTMOD is (0.8 - D*0.01).
 
 distModifier(D,gmod,DISTMOD) :- (D > 0, !,
 				DISTMOD is 0.8-D*0.01)

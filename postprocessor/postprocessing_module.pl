@@ -146,6 +146,9 @@ transcodeRel(konjobjc,konj) :- !.
 transcodeRel(obja2,obja) :- !.
 transcodeRel(objc2,objc) :- !.
 
+transcodeRel(app_loose,app) :- !.
+transcodeRel(app_close,app) :- !.
+
 transcodeRel(Class,root) :- \+ relclass(Class), !.
 
 transcodeRel(Class,Class) :- !.
@@ -242,7 +245,8 @@ relclass(obja).
 relclass(obja2).
 relclass(objd).
 relclass(gmod).
-relclass(app).
+relclass(app_loose).
+relclass(app_close).
 relclass(pp).
 relclass(pn).
 relclass(attr).
