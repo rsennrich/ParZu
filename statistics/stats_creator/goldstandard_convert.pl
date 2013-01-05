@@ -1,10 +1,10 @@
 /*	goldstandard_convert.pl : has two major purposes:
 		 1) everything that is marked as an auxiliary verb (relation 'AUX') 
-		passes its dependents up to its own head. Objects, predicates etc. are made direct dependents of the finite verb in the grammar to prevent crossing dependencies. This is needed for the gold standard and the extraction of distance statistics.
+		passes its dependents up to its own head. Objects, predicates etc. are made direct dependents of the finite verb in the grammar to prevent crossing dependencies. This could be used for the extraction of distance statistics.
 
 		2) non-finite full verb are made the head of complex verb phrases (instead of the finite auxiliary or modal verb). This is needed for the extraction of lexical statistics.
 
-    best run the conversion three times: first with mode 'raise', then with mode 'swap', then with mode 'raise' again
+    currently, the script is run three times: first with mode 'raise', then with mode 'swap', then with mode 'raise' again
     */
 
 :- dynamic w/7, x/7.
@@ -94,18 +94,10 @@ raise(_, X, 'AUX') :- \+ X = 'PART'.
 
 % Tag1/Funct1 are those of the dependent, Tag2/Funct2 of the head
 % swap(?Tag1, ?Funct1, ?Tag2, ?Funct2)
-swap(_, Head, 'VVINF', 'AUX') :- vphead(Head).
-swap(_, Head, 'VVPP', 'AUX') :- vphead(Head).
-
-
-%function tags that identify the head of a vp (if the pos tag belongs to a verb, that is).
-vphead('ROOT').
-vphead('NEB').
-vphead('OBJC').
-vphead('REL').
-vphead('KON').
-vphead('S').
+swap(HTag, Head, 'VVINF', 'AUX') :- vpfin(HTag).
+swap(HTag, Head, 'VVPP', 'AUX') :- vpfin(HTag).
 
 %finite verbs that are usually in auxiliary function and can be swapped with non-finite fullverb
 vpfin('VMFIN').
 vpfin('VAFIN').
+vpfin('VVFIN').

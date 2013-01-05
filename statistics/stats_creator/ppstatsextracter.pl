@@ -17,8 +17,8 @@ start(In, Outfile,Outfile2) :- retractall(w(_,_,_,_,_,_,_)),
     totalloop,
 	combineloop,
 	writedown(Out),
-	close(Out),
     writedown2(Out2),
+        close(Out),
     close(Out2).
 
 
@@ -75,23 +75,11 @@ statloop. %catchall
 combineloop :- occurstemp(Word,_,_), 
 	        combinetags(Word,all), fail.
 
-combineloop :- occurs(Word,Tag,_), 
-		(Tag = 'vvinf'; Tag = 'vvfin'; Tag = 'vvpp'; Tag = 'vvizu'; Tag = 'vvimp';Tag='v'),
-		haspptemp(Word,_,_,Case,_),
+combineloop :- haspptemp(Word,_,_,Case,_),
 		combinetags(Word,pp,Case), fail.
 
-combineloop :-	occurs(Word,Tag,_), 
-		(Tag = 'vvinf'; Tag = 'vvfin'; Tag = 'vvpp'; Tag = 'vvizu'; Tag = 'vvimp';Tag='v'),
-		hasobjptemp(Word,_,_,Case,_),
+combineloop :-	hasobjptemp(Word,_,_,Case,_),
 		combinetags(Word,objp,Case), fail.
-
-combineloop :- occurs(Word,Tag,_), 
-		retract(haspptemp(Word,Tag,Word2,Case,Num)),
-		assertz(haspp(Word,Tag,Word2,Case,Num)), fail.
-
-combineloop :- occurs(Word,Tag,_), 
-		retract(hasobjptemp(Word,Tag,Word2,Case,Num)),
-		assertz(hasobjp(Word,Tag,Word2,Case,Num)), fail.
 
 combineloop :- !.
 
@@ -154,55 +142,44 @@ gettotal(hasobjp) :-
     sumlist(ListHead,NumHead), assert(hasobjptemp('*any*','*any*','*any*','*any*',NumHead)), !.
 
 
+combinetags(Word,all) :- occurstemp(Word,Tag,Length),
+            (verbtag(Tag)->(NewTag=v,combinetags(Word,all,0,NewLength));(retract(occurstemp(Word,Tag,Length)),NewTag=Tag,NewLength=Length)), !,
+            assertz(occurs(Word,NewTag,NewLength)).
 
-combinetags(Word,all) :- occurstemp(Word,Tag,Num),
-			\+ (Tag = 'vvinf'; Tag = 'vvfin'; Tag = 'vvpp'; Tag = 'vvizu'; Tag = 'vvimp'),
-			 retract(occurstemp(Word,Tag,Num)),
-			 assertz(occurs(Word,Tag,Num)), !.
+combinetags(Word,all,AccuIn,AccuOut) :- occurstemp(Word,Tag,Length),
+                         verbtag(Tag), !,
+                         retract(occurstemp(Word,Tag,Length)),
+                         NewLength is Length+AccuIn,
+                         combinetags(Word,all,NewLength,AccuOut).
 
-combinetags(Word,all) :- (occurstemp(Word,'vvinf',Length1);Length1 is 0),
-		    (occurstemp(Word,'vvfin',Length2);Length2 is 0),
-		    (occurstemp(Word,'vvpp',Length3);Length3 is 0),
-		    (occurstemp(Word,'vvizu',Length4);Length4 is 0),
-		    (occurstemp(Word,'vvimp',Length5);Length5 is 0),
-		    NewLength is Length1 + Length2 + Length3 +Length4 +Length5,
-		    (retract(occurstemp(Word,'vvinf',_));true),
-		    (retract(occurstemp(Word,'vvfin',_));true),
-		    (retract(occurstemp(Word,'vvpp',_));true),
-		    (retract(occurstemp(Word,'vvizu',_));true),
-		    (retract(occurstemp(Word,'vvimp',_));true),
-		    (NewLength = 0;
-		    (assertz(occurs(Word,'v',NewLength)))), !.
+combinetags(_Word,all,Accu,Accu) :- !.
 
 
-combinetags(Word,pp,Case) :- (haspptemp(Word,'vvinf',Word2,Case,Length1);Length1 is 0),
-		    (haspptemp(Word,'vvfin',Word2,Case,Length2);Length2 is 0),
-		    (haspptemp(Word,'vvpp',Word2,Case,Length3);Length3 is 0),
-		    (haspptemp(Word,'vvizu',Word2,Case,Length4);Length4 is 0),
-		    (haspptemp(Word,'vvimp',Word2,Case,Length5);Length5 is 0),
-		    NewLength is Length1 + Length2 + Length3 +Length4 +Length5,
-		    (retract(haspptemp(Word,'vvinf',Word2,Case,_));true),
-		    (retract(haspptemp(Word,'vvfin',Word2,Case,_));true),
-		    (retract(haspptemp(Word,'vvpp',Word2,Case,_));true),
-		    (retract(haspptemp(Word,'vvizu',Word2,Case,_));true),
-		    (retract(haspptemp(Word,'vvimp',Word2,Case,_));true),
-		    (NewLength = 0;
-		    (assertz(haspp(Word,'v',Word2,Case,NewLength)))), !.
+combinetags(Word,pp,Case) :- haspptemp(Word,Tag,Word2,Case,Length),
+            (verbtag(Tag)->(NewTag=v,combinetags(Word,pp,Word2,Case,0,NewLength));(retract(haspptemp(Word,Tag,Word2,Case,Length)),NewTag=Tag,NewLength=Length)), !,
+            assertz(haspp(Word,NewTag,Word2,Case,NewLength)).
+
+combinetags(Word,pp,Word2,Case,AccuIn,AccuOut) :- haspptemp(Word,Tag,Word2,Case,Length),
+                         verbtag(Tag), !,
+                         retract(haspptemp(Word,Tag,Word2,Case,Length)),
+                         NewLength is Length+AccuIn,
+                         combinetags(Word,pp,Word2,Case,NewLength,AccuOut).
+
+combinetags(_Word,pp,_Word2,_Case,Accu,Accu) :- !.
 
 
-combinetags(Word,objp,Case) :- (hasobjptemp(Word,'vvinf',Word2,Case,Length1);Length1 is 0),
-		    (hasobjptemp(Word,'vvfin',Word2,Case,Length2);Length2 is 0),
-		    (hasobjptemp(Word,'vvpp',Word2,Case,Length3);Length3 is 0),
-		    (hasobjptemp(Word,'vvizu',Word2,Case,Length4);Length4 is 0),
-		    (hasobjptemp(Word,'vvimp',Word2,Case,Length5);Length5 is 0),
-		    NewLength is Length1 + Length2 + Length3 +Length4 +Length5,
-		    (retract(hasobjptemp(Word,'vvinf',Word2,Case,_));true),
-		    (retract(hasobjptemp(Word,'vvfin',Word2,Case,_));true),
-		    (retract(hasobjptemp(Word,'vvpp',Word2,Case,_));true),
-		    (retract(hasobjptemp(Word,'vvizu',Word2,Case,_));true),
-		    (retract(hasobjptemp(Word,'vvimp',Word2,Case,_));true),
-		    (NewLength = 0;
-		    (assertz(hasobjp(Word,'v',Word2,Case,NewLength)))), !.
+
+combinetags(Word,objp,Case) :- hasobjptemp(Word,Tag,Word2,Case,Length),
+            (verbtag(Tag)->(NewTag=v,combinetags(Word,objp,Word2,Case,0,NewLength));(retract(hasobjptemp(Word,Tag,Word2,Case,Length)),NewTag=Tag,NewLength=Length)), !,
+            assertz(hasobjp(Word,NewTag,Word2,Case,NewLength)).
+
+combinetags(Word,objp,Word2,Case,AccuIn,AccuOut) :- hasobjptemp(Word,Tag,Word2,Case,Length),
+                         verbtag(Tag), !,
+                         retract(hasobjptemp(Word,Tag,Word2,Case,Length)),
+                         NewLength is Length+AccuIn,
+                         combinetags(Word,objp,Word2,Case,NewLength,AccuOut).
+
+combinetags(_Word,objp,_Word2,_Case,Accu,Accu) :- !.
 
 
 %searchgoal(?Sen,?Pos,?Class,?Word). Usually called by bagof.
@@ -316,6 +293,7 @@ writedown(_) :- !.
 verbtag('vvinf').
 verbtag('vainf').
 verbtag('vminf').
+verbtag('vvfin').
 verbtag('vvinf').
 verbtag('vafin').
 verbtag('vmfin').
