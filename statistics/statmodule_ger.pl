@@ -13,7 +13,6 @@
 % If you start tinkering with the numbers (a more theoretically founded system would be welcome), always check with a development set that you don't break anything.
 
 
-:- dynamic noun_factor_chart/2.
 :- style_check(-discontiguous).
 
 :- ensure_loaded('../core/helper_predicates.pl').
@@ -167,86 +166,39 @@ stats2(app_close,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,MORPHD,P,D,_HC-OG) :-
     P is DISTMOD*POSMOD*DEPMOD*MORPHMOD.
 
 
-%special case: adverbial pronoun as dependent
-stats2(objp,_Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,_MORPHD,P,D,HC-_OG) :-
-        adverbial_pronoun(Dtag), !,
+stats2(objp,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,P,D,HC-OG) :-
+        statsppobjp(objp,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,P,D,HC-OG).
+
+stats2(pp,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,P,D,HC-OG) :-
+        statsppobjp(pp,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,P,D,HC-OG).
+
+statsppobjp(Rel,_Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,MORPHD,P,D,HC-_OG) :-
         getheadandnormalise(HC,Head,HeadTagTemp),
-        combineverbtags(HeadTagTemp,HeadTag),
-        distModifier(D,HeadTag,Dtag,objp,DISTMOD),
+        (verbtag(HeadTagTemp)->HeadTag=v;HeadTag=HeadTagTemp),
+        distModifier(D,HeadTag,Dtag,Rel,DISTMOD),
         downcase_atom(FD,FDNorm), %(statistics files are in lower case letters).
-        get_pp_statistics(Head,HeadTag,_,FDNorm,NumPP1,NumObjP1,NumHead),
-        (derive_prep_from_pav(FDNorm,Prep)->get_pp_statistics(Head,HeadTag,_,Prep,NumPP2,NumObjP2,_);(NumPP2=0,NumObjP2=0)),
+        (splitappr(FDNorm,Prep,_),!;Prep = FDNorm),
+        (var(MORPHD) -> List = [];setof(Case,member([Case],MORPHD),List)),
+        ((List = [CaseTemp], \+ var(CaseTemp))->(case_tueba(CaseTemp,Case)); Case = _),
+        get_pp_statistics(Head,HeadTag,Case,Prep,NumPP1,NumObjP1,NumHead),
+        ((adverbial_pronoun(Dtag),derive_prep_from_pav(Prep,Prep2))->get_pp_statistics(Head,HeadTag,Case,Prep2,NumPP2,NumObjP2,_);(NumPP2=0,NumObjP2=0)),
         NumPP is NumPP1 + NumPP2,
         NumObjP is NumObjP1 + NumObjP2,
         NumPPOBJP is NumPP + NumObjP,
-        ppPosMod(FDNorm,_,HeadTag,POSMOD),
-        ppobjp(NumPP,NumObjP,objp,PPOBJP), 
+        ppPosMod(Prep,Case,HeadTag,POSMOD),
+        ppobjp(NumPP,NumObjP,Rel,PPOBJP),
         pplexmod(NumPPOBJP,NumHead,LEXMOD),
-        P is PPOBJP*(DISTMOD*0.15+POSMOD*0.35+LEXMOD*0.5). %probability space is split up between 3 disambiguation methods, weights set by hand
-
-
-%general case
-stats2(objp,_Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,MORPHD,P,D,HC-_OG) :-
-	getheadandnormalise(HC,Head,HeadTagTemp),
-	combineverbtags(HeadTagTemp,HeadTag),
-	distModifier(D,HeadTag,Dtag,pp,DISTMOD),
-	downcase_atom(FD,FDNorm), %(statistics files are in lower case letters).
-	(splitappr(FDNorm,Prep,_);Prep = FDNorm),
-	(var(MORPHD) -> List = [];setof(Case,member([Case],MORPHD),List)),
-	length(List,Len),
-	(Len = 1->(List = [CaseTemp],case_tueba(CaseTemp,Case)); Case = _),
-	get_pp_statistics(Head,HeadTag,Case,Prep,NumPP,NumObjP,NumHead),
-	NumPPOBJP is NumPP + NumObjP,
-	ppPosMod(Prep,Case,HeadTag,POSMOD),
-	ppobjp(NumPP,NumObjP,objp,PPOBJP), 
-	pplexmod(NumPPOBJP,NumHead,LEXMOD),
-%         depModifier(OG,pp,DEPMOD),
-	P is PPOBJP*(DISTMOD*0.15+POSMOD*0.35+LEXMOD*0.5). %probability space is split up between 3 disambiguation methods, weights set by hand
-
-	
-%special case: adverbial pronoun as dependent
-stats2(pp,_Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,_MORPHD,P,D,HC-_OG) :-
-        adverbial_pronoun(Dtag), !,
-        getheadandnormalise(HC,Head,HeadTagTemp),
-        combineverbtags(HeadTagTemp,HeadTag),
-        distModifier(D,HeadTag,Dtag,pp,DISTMOD),
-        downcase_atom(FD,FDNorm), %(statistics files are in lower case letters).
-        get_pp_statistics(Head,HeadTag,_,FDNorm,NumPP1,NumObjP1,NumHead),
-        (derive_prep_from_pav(FDNorm,Prep)->get_pp_statistics(Head,HeadTag,_,Prep,NumPP2,NumObjP2,_);(NumPP2=0,NumObjP2=0)),
-        NumPP is NumPP1 + NumPP2,
-        NumObjP is NumObjP1 + NumObjP2,
-        NumPPOBJP is NumPP + NumObjP,
-        ppPosMod(FDNorm,_,HeadTag,POSMOD),
-        ppobjp(NumPP,NumObjP,pp,PPOBJP), 
-        pplexmod(NumPPOBJP,NumHead,LEXMOD),
-        P is PPOBJP*(DISTMOD*0.15+POSMOD*0.35+LEXMOD*0.5). %probability space is split up between 3 disambiguation methods, weights set by hand
-
-%general case
-stats2(pp,_Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,MORPHD,P,D,HC-_OG) :-
-	getheadandnormalise(HC,Head,HeadTagTemp),
-	combineverbtags(HeadTagTemp,HeadTag),
-	distModifier(D,HeadTag,Dtag,pp,DISTMOD),
-	downcase_atom(FD,FDNorm), %(statistics files are in lower case letters).
-	(splitappr(FDNorm,Prep,_);Prep = FDNorm),
-	(var(MORPHD) -> List = [];setof(Case,member([Case],MORPHD),List)),
-	length(List,Len),
-	(Len = 1->(List = [CaseTemp],case_tueba(CaseTemp,Case)); Case = _),
-	get_pp_statistics(Head,HeadTag,Case,Prep,NumPP,NumObjP,NumHead),
-	NumPPOBJP is NumPP + NumObjP,
-	ppPosMod(Prep,Case,HeadTag,POSMOD),
-	ppobjp(NumPP,NumObjP,pp,PPOBJP),
-	pplexmod(NumPPOBJP,NumHead,LEXMOD),
-%         depModifier(OG,pp,DEPMOD), %disfavours PP attached to verb after pred.
-	P is PPOBJP*(DISTMOD*0.15+POSMOD*0.35+LEXMOD*0.5). %probability space is split up between 3 disambiguation methods, weights set by hand
+        noun_factor(HeadTag,NF),
+        P is PPOBJP*min(1,DISTMOD*0.25+POSMOD*0.3+LEXMOD*NF*0.6).
 
 
 %ppobjp/4 decides whether construction is 'pp' or 'objp'.
-ppobjp(NumPP,NumObjP,pp,0.15) :- NumPP > 0, (NumPP < NumObjP;NumPP = NumObjP), !.
-ppobjp(NumPP,NumObjP,pp,1) :- NumPP > 0, NumPP > NumObjP, !.
-ppobjp(_,_,pp,0.85) :- !.
+ppobjp(NumPP,NumObjP,pp,0.15) :- NumPP+NumObjP > 0, NumPP =< NumObjP, !.
+ppobjp(NumPP,NumObjP,pp,1) :- NumPP+NumObjP > 0, NumPP > NumObjP, !.
+ppobjp(_,_,pp,1) :- !.
 
-ppobjp(NumPP,NumObjP,objp,0.95) :- NumObjP > 0, (NumPP < NumObjP;NumPP = NumObjP), !.
-ppobjp(NumPP,NumObjP,objp,0) :- NumObjP > 0, NumPP > NumObjP, !.
+ppobjp(NumPP,NumObjP,objp,0.95) :- NumPP+NumObjP > 0, NumPP =< NumObjP, !.
+ppobjp(NumPP,NumObjP,objp,0) :- NumPP+NumObjP > 0, NumPP > NumObjP, !.
 ppobjp(_,_,objp,0) :- !.
 
 
@@ -256,8 +208,8 @@ pplexmod(NumPPOBJP,NumHead,P) :- NumPPOBJP = 0, P is max(0,0.25-NumHead/1000), !
 pplexmod(_,_,0.1) :- !.
 
 %get_pp_statistics(+Head,+HeadTag,+DepMorph,+Prep,-NumPP,-NumObjP,-NumHead)
-get_pp_statistics(Head,HeadTag,Case,Prep,NumPP,NumObjP,NumHead) :- 	
-	((HeadTag='card';HeadTag='ne')->Head2='*any*';Head2=Head),
+get_pp_statistics(Head,HeadTag,Case,Prep,NumPP,NumObjP,NumHead) :-
+	((HeadTag='card';HeadTag='ne')->Head2='*any*';Head2=Head), %assume that names/numbers are interchangeable
 	findall(NumHead,occurs(Head2,HeadTag,NumHead),ListHead),
 	sumlist(ListHead,NumHead),
 	findall(NumObjP,hasobjp(Head2,HeadTag,Prep,Case,NumObjP),ListObjP),
@@ -265,6 +217,10 @@ get_pp_statistics(Head,HeadTag,Case,Prep,NumPP,NumObjP,NumHead) :-
 	findall(NumPP,haspp(Head2,HeadTag,Prep,Case,NumPP),ListPP),
 	sumlist(ListPP,NumPP), !.
 
+
+%statistics are slightly biased against noun heads; compensate this.
+noun_factor(nn,1.2) :- !.
+noun_factor(_,0.8) :- !.
 
 %morphisto-style APPRART
 splitappr(am,an,_) :- !.
@@ -311,59 +267,17 @@ derive_prep_from_pav(PAV,Prep) :-
 
 %non-lexical disambiguation of pp attachment: only consider preposition and PoS of head.
 %ppPosMod(+Prep,?Case,+HeadTag,-P)
-ppPosMod(Prep,Case,HeadTag,P) :- verbtag(HeadTag),
-				 findall(Freq,haspp('*any*','v',Prep,Case,Freq),ListV1),
-				 sumlist(ListV1,FreqV1),
-				 findall(Freq,hasobjp('*any*','v',Prep,Case,Freq),ListV2),
-				 sumlist(ListV2,FreqV2),
-				 FreqV is FreqV1 + FreqV2,
-				 findall(FreqX,(haspp('*any*','nn',Prep,Case,FreqX)),ListX1),
-				 sumlist(ListX1,FreqX1),
-				 findall(FreqX,(hasobjp('*any*','nn',Prep,Case,FreqX)),ListX2),
-				 sumlist(ListX2,FreqX2),
-			    Freq is FreqV+FreqX1+FreqX2, 
-			    (Freq < 5->PTemp is 0.6;PTemp is FreqV/Freq),
-			    PTemp2 is max(0,PTemp), P is min(PTemp2,1), !.
-
-ppPosMod(Prep,Case,Tag,P) :- findall(Freq,haspp('*any*','v',Prep,Case,Freq),ListV1),
-				 findall(Freq,hasobjp('*any*','v',Prep,Case,Freq),ListV2),
-				 sumlist(ListV1,FreqV1),
-				 sumlist(ListV2,FreqV2),
-				 FreqV is FreqV1 + FreqV2,
-				 findall(Freq,haspp('*any*',Tag,Prep,Case,Freq),ListN1),
-				 sumlist(ListN1,FreqN1),
-				 findall(Freq,hasobjp('*any*',Tag,Prep,Case,Freq),ListN2),
-				 sumlist(ListN2,FreqN2),
-				 FreqN is FreqN1 + FreqN2,
-				 noun_factor(Tag,NF),
-			    Freq is FreqV+FreqN*NF,
-			    (Freq < 5->PTemp is 0.4;PTemp is FreqN*NF/Freq),
-			    PTemp2 is max(0,PTemp), P is min(PTemp2,1), !.
-
-ppPosMod(_,_,_,0) :- !.
-
-
-%noun factor (as described in Martin Volk 2002: Combining unsupervised and supervised methods for PP attachment disambiguation)
-%generalised to work with all tags (except for verbs, whose probabilities are unmodified).
-%noun_factor(+Tag,-NF)
-noun_factor(Tag,NF) :- noun_factor_chart(Tag,NF), !.
-
-noun_factor(Tag,NF) :- findall(Freq,occurs('*any*',Tag,Freq),ListA),
-		    sumlist(ListA,FreqA),
-		    findall(Freq,(occurs('*any*',v,Freq)),ListB),
-		    sumlist(ListB,FreqB),
-		    findall(Freq,haspp('*any*',Tag,_,_,Freq),List1),
-			sumlist(List1,Freq1),
-		    findall(Freq,hasobjp('*any*',Tag,_,_,Freq),List2),
-			sumlist(List2,Freq2),
-		    FreqY is Freq1 + Freq2,
-		    findall(Freq,(haspp('*any*',v,_,_,Freq)),ListX1),
-			sumlist(ListX1,FreqX1),
-		    findall(Freq,(hasobjp('*any*',v,_,_,Freq)),ListX2),
-			sumlist(ListX2,FreqX2),
-			FreqX is FreqX1 + FreqX2,
-            (FreqY =:= 0->NF is 1;NF is FreqX/FreqB*FreqA/FreqY), 
-		    assert(noun_factor_chart(Tag,NF)), !.
+ppPosMod(Prep,Case,Tag,P) :- findall(MyFreq,(haspp('*any*','*any*',Prep,Case,MyFreq), Case \= '*any*'),List1),
+				 findall(MyFreq,(hasobjp('*any*','*any*',Prep,Case,MyFreq), Case \= '*any*'),List2),
+				 sumlist(List1,Freq1),
+				 sumlist(List2,Freq2),
+				 Freq is Freq1 + Freq2,
+				 findall(MyFreq,haspp('*any*',Tag,Prep,Case,MyFreq),ListTag1),
+				 findall(MyFreq,hasobjp('*any*',Tag,Prep,Case,MyFreq),ListTag2),
+				 sumlist(ListTag1,FreqTag1),
+				 sumlist(ListTag2,FreqTag2),
+				 FreqTag is FreqTag1 + FreqTag2,
+				 (Freq < 5->P is 0.5;P is FreqTag/Freq).
 
 
 %subjects.
@@ -602,13 +516,6 @@ getheadandnormalise(HC,HeadOut,HeadTagOut) :- 	last(HC,Main),
 	), !.
 
 
-combineverbtags('vvinf','v') :- !.
-combineverbtags('vvfin','v') :- !.
-combineverbtags('vvpp','v') :- !.
-combineverbtags('vvizu','v') :- !.
-combineverbtags('vvimp','v') :- !.
-combineverbtags(X,X) :- !.
-
 %attachptkvz(+Particle,+HeadChunk,?HeadOut,?HeadTagOut).
 attachptkvz(PTKVZ,HC,HeadOut,HeadTagOut) :- append(NewHC,[_],HC),
 					   getheadandnormalise(NewHC,HeadTemp,HeadTagOut),
@@ -668,7 +575,7 @@ distModifier(D,_Class,DISTMOD) :- DISTMOD is 1-D*0.01.
 
 
 %distmodifier depending on tags
-distModifier(D,Htag,_Dtag,pp,DISTMOD) :- (nountag(Htag);nametag(Htag)), DISTMOD is 1-D*0.2.
+distModifier(D,Htag,_Dtag,pp,DISTMOD) :- (nountag(Htag);nametag(Htag)),DISTMOD is 1-D*0.2, !.
 
 distModifier(D,Htag,_Dtag,kom,DISTMOD) :- (Htag = 'VVFIN'; Htag='VAFIN';Htag='VMFIN'), DISTMOD is 1-D*0.01.
 distModifier(D,_Htag,_Dtag,kom,DISTMOD) :- DISTMOD is 1-D*0.04.
@@ -690,6 +597,7 @@ verbtag('v').
 verbtag('vvinf').
 verbtag('vainf').
 verbtag('vminf').
+verbtag('vvfin').
 verbtag('vvinf').
 verbtag('vafin').
 verbtag('vmfin').
