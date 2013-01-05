@@ -368,7 +368,7 @@ noun_factor(Tag,NF) :- findall(Freq,occurs('*any*',Tag,Freq),ListA),
 %subjects.
 stats2(subj,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,_D,HC-_OG) :-
 	lexic(SD,_,DPos),
-	DistMod is 1+((50-DPos)*0.0001),
+	(Dtag='PWS'->DistMod is 1;DistMod is 1+((50-DPos)*0.0001)),
 	getheadandnormalise(HC,Head,_),
 	npidsamb(Head,MORPHD,Dtag,subj,PLabel),
 	P is PLabel*DistMod.
