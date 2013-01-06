@@ -60,9 +60,9 @@ def usage():
     print('\t' + bold + '-q'  + reset + ', ' + bold + '--quiet' + reset)
     print('\t\tsend warnings and errors to temporary log file instead of stderr')
     print('\t' + bold + '--projective' + reset)
-    print('\t\talso print projective output (CoNLL format only). Uses the last two columns of the CoNLL depdendency format.')
+    print('\t\talso print projective output. Uses the last two columns of the CoNLL depdendency format (or two extra arguments in the Prolog format).')
     print('\t' + bold + '--secedges' + reset)
-    print('\t\talso print secondary edges (CoNLL format only). Uses the last two columns of the CoNLL depdendency format.\n')
+    print('\t\talso print secondary edges. Uses the last two columns of the CoNLL depdendency format (or two extra arguments in the Prolog format).\n')
 
 def load_arguments():
     try:
@@ -90,12 +90,12 @@ def load_arguments():
             inputformat = a
         elif o in ("-l", "--linewise"):
             linewise = True
-        elif o in ("--secedges"):
+        elif o in ("--secedges",):
             if extrainfo == 'projective':
                 sys.stderr.write('Error: Cannot display secondary edges and projective tree at same time. Aborting.')
                 sys.exit()
             extrainfo = 'secedges'
-        elif o in ("--projective"):
+        elif o in ("--projective",):
             if extrainfo == 'secedges':
                 sys.stderr.write('Error: Cannot display secondary edges and projective tree at same time. Aborting.')
                 sys.exit()

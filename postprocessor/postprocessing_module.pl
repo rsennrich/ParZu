@@ -89,9 +89,11 @@ printresult(conll,Pos,DepWord,DepLemma,DepTag,Class,HeadPos,Morph) :-
 printresult(prolog,Pos,Word,Lemma,Tag,Rel,HeadPos,Morph) :- 
     transformMorph(prolog,Morph,MorphOut),
     (nbestmode(NBEST),NBEST > 0->NewHeadPos is max(0,HeadPos-1);NewHeadPos is HeadPos),
-%     Output =.. [Rel,Word,Lemma,Tag,Pos,HeadPos,MorphOut],
-%     writeq(Output), write('.'),nl.
-     writeq(word(Pos,Word,Lemma,Tag,Rel,NewHeadPos,MorphOut)), write('.'),nl.
+    (extrainfo(secedges)->(secedge(Pos,ExtraHead,ExtraRel));
+    (extrainfo(projective)->(projectivehead(Pos,ExtraHead),ExtraRel=Rel);
+    extrainfo(no)->(ExtraHead='_',ExtraRel='_'))),
+    (extrainfo(no)->writeq(word(Pos,Word,Lemma,Tag,Rel,NewHeadPos,MorphOut));
+    writeq(word(Pos,Word,Lemma,Tag,Rel,NewHeadPos,MorphOut,ExtraRel,ExtraHead))), write('.'),nl.
 
 %print results in moses format. default.
 printresult(moses,_,Word,_,Tag,Rel,HeadPos,_) :- 
