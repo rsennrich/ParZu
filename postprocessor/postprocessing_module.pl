@@ -4,6 +4,8 @@
 
 :- dynamic morphclean/1, projectivehead/2.
 
+:- ensure_loaded('../core/helper_predicates').
+
 postprocess(_,raw) :- retractall(output(_,_,_,_,_,_,_)), !.
 
 %first round
@@ -32,7 +34,6 @@ postprocess(_,Outputformat) :- findall(Pos,output(Pos,_,_,_,_,_,_),List),length(
 
 %third round: cleanup
 postprocess(_,_) :- nl,retractall(output(_,_,_,_,_,_,_)), retractall(projectivehead(_,_)), !.
-                                 
 
 
 %print results in pseudo-conll format.
@@ -220,8 +221,11 @@ fixAttachment(Class,_,HeadPos,Pos) :-
 %catchall: leave head unchanged.
 fixAttachment(_,_,Pos,Pos) :- !.
 
-% In AcI, accusative of matrix clause is subject of infinitive clause
-secedge(Pos,SecHeadPos,subj) :- output(Pos,_,_,_,obja,HeadPos,_),
+%control verbs (subject/object of matrix clause is subject of infinitive clause)
+secedge(Pos,SecHeadPos,subj) :- output(Pos,_,_,_,Rel,HeadPos,_),
+            output(HeadPos,_,HeadLemma,_,_,_,_),
+            (output(_PTKVZPos,_,PTKVZWord,_,avz,_,_)->atom_concat(PTKVZWord,HeadLemma,TrueHeadLemma);TrueHeadLemma=HeadLemma),
+            control(Rel,TrueHeadLemma),
             output(SecHeadPos,_,_,_,obji,HeadPos,_), !.
 
 %catchall: no secondary edge found
