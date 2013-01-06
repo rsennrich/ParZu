@@ -93,7 +93,9 @@ printresult(prolog,Pos,Word,Lemma,Tag,Rel,HeadPos,Morph) :-
     (extrainfo(projective)->(projectivehead(Pos,ExtraHead),ExtraRel=Rel);
     extrainfo(no)->(ExtraHead='_',ExtraRel='_'))),
     (extrainfo(no)->writeq(word(Pos,Word,Lemma,Tag,Rel,NewHeadPos,MorphOut));
-    writeq(word(Pos,Word,Lemma,Tag,Rel,NewHeadPos,MorphOut,ExtraRel,ExtraHead))), write('.'),nl.
+    ((ExtraHead='_'->ExtraHeadOut='-';ExtraHeadOut=ExtraHead),
+    (ExtraRel='_'->ExtraRelOut='-';ExtraRelOut=ExtraRel),
+    writeq(word(Pos,Word,Lemma,Tag,Rel,NewHeadPos,MorphOut,ExtraRelOut,ExtraHeadOut)))), write('.'),nl.
 
 %print results in moses format. default.
 printresult(moses,_,Word,_,Tag,Rel,HeadPos,_) :- 
