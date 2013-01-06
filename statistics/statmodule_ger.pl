@@ -395,7 +395,7 @@ stats2(gmod,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC-_OG) :- morph
 stats2(neb,_Htag,_FH,_SH,_MORPHH,'NEBCONJLESS',_FD,_SD,_MORPHD,P,_D,_HC) :- P is 0.75. %should be higher than probability for 'kon'
 
 stats2(neb,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,D,_HC) :- P is 0.3 - D*0.01.
-stats2(rel,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,D,_HC) :- P is 0.7 - D*0.01.
+stats2(rel,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,D,_HC) :- P is 0.4 - D*0.01.
 stats2(subjc,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.2,_D,_HC).
 
 %ObjC: probability higher than other subordinated structures unless valency information shows that verb doesn't have clausal object.
@@ -458,7 +458,7 @@ stats2(par,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,_MORPHD,P,_D,_HC-_OG) :-
 	)).
 
 
-stats2(par,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,_D,_HC-_OG) :- P is 0.1.
+stats2(par,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.3,_D,_HC-_OG).
 
 %comparatives
 %prefer attachment to verb, unless NN/ADJ is very close. *tiny* improvement over baseline...
