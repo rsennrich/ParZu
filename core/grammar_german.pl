@@ -175,7 +175,7 @@ head('APPR','KOMPX',r,kom,'PP',_,_,MH,_,MH).
 
 
 %relative clause
-head('APPR','PRELAT',r,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MG,MF,MNew) :- unify_case(MG,'APPR',MF,'PRELS',MNew), \+ member('->pn->',OG).
+head('APPR','PRELAT',r,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MG,MF,MNew) :- correct_mistagging(yes), unify_case(MG,'APPR',MF,'PRELS',MNew), \+ member('->pn->',OG).
 
 head('APPR','PRELS',r,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MG,MF,MNew) :- unify_case(MG,'APPR',MF,'PRELS',MNew), \+ member('->pn->',OG).
 
@@ -189,7 +189,7 @@ head('APPRART',PN,r,pn,'PP',[_,_,_,_,OG,_,_,_],_-F,MG,_,MNew) :- prepcompl(PN,F)
 
 
 %relative clause
-head('APPRART','PRELAT',r,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MG,_,MNew) :- convertMorphList('APPRART',MG,'APPR',MNew), \+ member('->pn->',OG).
+head('APPRART','PRELAT',r,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MG,_,MNew) :- correct_mistagging(yes), convertMorphList('APPRART',MG,'APPR',MNew), \+ member('->pn->',OG).
 
 head('APPRART','PRELS',r,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MG,_,MNew) :- convertMorphList('APPRART',MG,'APPR',MNew), \+ member('->pn->',OG).
 
@@ -207,7 +207,7 @@ head('APPO',PN,l,pn,'PP',[_,_,_,_,OG,_,_,_],_-G,MH,_,MH) :- prepcompl(PN,G), \+ 
 %relative clause
 head('APPO','PRELS',l,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('<-pn<-',OG).
 
-head('APPO','PRELAT',l,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('<-pn<-',OG).
+head('APPO','PRELAT',l,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), \+ member('<-pn<-',OG).
 
 head('APPO','PWS',l,pn,'PPQ',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('<-pn<-',OG).
 
@@ -231,8 +231,10 @@ head('VVPP','PRELS',l,subj,'RC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- correct_mista
 head('V*FIN','PWS',l,subj,'QC',[FC,_,_,_,UG,OG,_,_],_,MF,MG,MNew) :- (member('->kon->',OG)->(case_nom(MG,'PWS'),MNew=MF); check_agreement(MF,'VVFIN',MG,'PWS',MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 
-%"Was" can also be relative
-head('V*FIN','PWS',l,subj,'RC',[FC,_,_,was,UG,_,_,_],_,MF,MG,MNew) :- check_agreement(MF,'VVFIN',MG,'PWS',MNew), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+%"Was" can be (mis)tagged PWS or PRELS
+head('V*FIN','PWS',l,subj,'RC',[FC,_,_,was,UG,_,_,_],_,MF,MG,MNew) :- correct_mistagging(yes), check_agreement(MF,'VVFIN',MG,'PWS',MNew), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('V*FIN','PRELS',l,subj,'QC',[FC,_,_,was,UG,_,_,_],_,MF,MG,MNew) :- correct_mistagging(yes), check_agreement(MF,'VVFIN',MG,'PRELS',MNew), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+
 
 %interrogative pronoun (new transtag 'QC'); special case with "sein": don't require number agreement (Wer sind die Beatles?)
 head('VAFIN','PWS',l,subj,'QC',[FC,_,sein,_,UG,_,_,_],_,MF,MG,MF) :- case_nom(MG,'PWS'), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
@@ -297,8 +299,10 @@ head('V*FIN','PWS',l,obja,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_acc(MG,'P
 head('VVPP','PWS',l,obja,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- correct_mistagging(yes), case_acc(MG,'PWS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('passive',FC), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
 
 
-%"Was" can also be relative (Der Film hat ein Happy-End, was ich sehr schön finde)
-head('V*FIN','PWS',l,obja,'RC',[FC,_,_,was,UG,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,UG), \+ member('passive',FC), \+ member('<-obja<-',UG), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
+%"Was" can be relative (Der Film hat ein Happy-End, was ich sehr schön finde) or interrogative (Ich frage mich, was er da tut)
+head('V*FIN','PWS',l,obja,'RC',[FC,_,_,was,UG,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), restrict_vorfeld(FC,UG), \+ member('passive',FC), \+ member('<-obja<-',UG), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
+head('V*FIN','PRELS',l,obja,'QC',[FC,_,_,was,UG,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), restrict_vorfeld(FC,UG), \+ member('passive',FC), \+ member('<-obja<-',UG), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
+
 
 %object after finite verb.
 head('V*FIN',OBJ,r,obja,'V*FIN',[GC,_,_,_,OG,_,_,_],_-F,MG,MF,MG)  :- objcandidate(OBJ,F), case_acc(MF,OBJ), \+ member('passive',GC), restrict_coord(OG), \+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG), \+ member('<-obji<-',OG), \+ member('->obji->',OG), \+ member('<-s<-',OG), \+ member('->s->',OG), \+ member('->objp->',OG), \+ member('<-explobja<-',OG), \+ member('->explobja->',OG).
@@ -1050,9 +1054,9 @@ head('V*FIN','PWAV',l,adv,'QC',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfel
 head('VVPP','PWAV',l,adv,'QC',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), verbchunklength(FC,1).
 
 
-%interrogative adverbs starting with "wo" can be relative: Dort, wo es am schönsten ist.
-head('V*FIN','PWAV',l,adv,'RC',[_,_,_,FG,_,_,_,_],_,MH,_,MH) :- atom_concat(wo,_,FG).
-
+%"wo" can be relative (der Ort, wo es am schönsten ist), or interrogative (ich frage mich, wo du bist).
+head('V*FIN','PWAV',l,adv,'RC',[_,_,_,wo,_,_,_,_],_,MH,_,MH) :- correct_mistagging(yes).
+head('V*FIN','PRELS',l,adv,'QC',[_,_,_,wo,_,_,_,_],_,MH,_,MH) :- correct_mistagging(yes).
 
 
 %allow adverbs before nonfinite verb if no matching finite verb is found in preprocessing (-> chunk has only one element).
@@ -2033,7 +2037,6 @@ head(Tag, 'PROAV',Dir,Rel,Transtag,L,D,MA,MB,MC) :- head(Tag, 'PAV',Dir,Rel,Tran
 
 %tags that can be clausal subject/object
 head(Tag, 'OBJC' ,Dir,Rel,Transtag,L,D,MA,MB,MC) :- head(Tag, 'OBJC/SUBJC',Dir,Rel,Transtag,L,D,MA,MB,MC).
-head(Tag, 'RC',Dir,Rel,Transtag,L,D,MA,MB,MC) :- head(Tag, 'OBJC/SUBJC',Dir,Rel,Transtag,L,D,MA,MB,MC).
 head(Tag, 'QC' ,Dir,Rel,Transtag,L,D,MA,MB,MC) :- head(Tag, 'OBJC/SUBJC',Dir,Rel,Transtag,L,D,MA,MB,MC).
 
 %======================================================================================

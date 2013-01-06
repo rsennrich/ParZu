@@ -631,7 +631,6 @@ posModifier('ADV',_Dtag,kom,0.3) :- !.
 posModifier(_Htag,_Dtag,kom,0.95) :- !.
 
 posModifier(_Htag,'OBJC',objc,1) :- !.
-posModifier(_Htag,'RC',objc,0.7) :- !.
 posModifier(_Htag,'QC',objc,1) :- !.
 
 posModifier('ADJA','KON_ADV',kon,0.2) :- !.
