@@ -226,11 +226,26 @@ fixAttachment(Class,_,HeadPos,Pos) :-
 fixAttachment(_,_,Pos,Pos) :- !.
 
 %control verbs (subject/object of matrix clause is subject of infinitive clause)
-secedge(Pos,SecHeadPos,subj) :- output(Pos,_,_,_,Rel,HeadPos,_),
-            output(HeadPos,_,HeadLemma,_,_,_,_),
+
+%subject may have auxiliary verb as head; use corresponding full verb to check for control
+secedge(Pos,SecHeadPos,subj) :- output(Pos,_,_,_,subj,HeadPos,_),
+            output(HeadPos,_,_,_,_,_,_),
+            chart(HeadPos,HeadPos,HeadPos,[_,_,HC,_],_,_,_,_,_,_),
+            (member(passive,HC)->ControlType=obja;ControlType=subj), % treat passive subject as accusative object for purpose of control (sie zwingt ihn -> er wurde gezwungen)
+            last(HC,FullVerb),
+            getPosition(FullVerb,HeadPos,TrueHeadPos),
+            output(TrueHeadPos,_,HeadLemma,_,_,_,_),
             (output(_PTKVZPos,_,PTKVZWord,_,avz,_,_)->atom_concat(PTKVZWord,HeadLemma,TrueHeadLemma);TrueHeadLemma=HeadLemma),
-            control(Rel,TrueHeadLemma),
-            output(SecHeadPos,_,_,_,obji,HeadPos,_), !.
+            control(ControlType,TrueHeadLemma),
+            output(SecHeadPos,_,_,_,obji,TrueHeadPos,_), !.
+
+
+%general case (subj/obja/objd depending directly on full verb)
+secedge(Pos,SecHeadPos,subj) :- output(Pos,_,_,_,Rel,HeadPos,_),
+             output(HeadPos,_,HeadLemma,_,_,_,_),
+             (output(_PTKVZPos,_,PTKVZWord,_,avz,_,_)->atom_concat(PTKVZWord,HeadLemma,TrueHeadLemma);TrueHeadLemma=HeadLemma),
+             control(Rel,TrueHeadLemma),
+             output(SecHeadPos,_,_,_,obji,HeadPos,_), !.
 
 %catchall: no secondary edge found
 secedge(_,'_','_') :- !.
