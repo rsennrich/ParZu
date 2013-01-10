@@ -114,7 +114,7 @@ control(subj,'vorstellen') :- !.
 control(subj,'wagen') :- !.
 control(subj,'weigern') :- !.
 control(subj,'wissen') :- !.
-control(objd,'wünschen') :- !.
+control(subj,'wünschen') :- !.
 control(subj,'zugeben') :- !.
 control(subj,'zusagen') :- !.
 control(subj,'zusichern') :- !.
@@ -124,6 +124,7 @@ control(subj,'zusichern') :- !.
 control(obja,'anhalten') :- !.
 control(obja,'anmahnen') :- !.
 control(obja,'anregen') :- !.
+control(obja,'anweisen') :- !.
 control(obja,'auffordern') :- !.
 control(obja,'aufrufen') :- !.
 control(obja,'beauftragen') :- !.

@@ -60,9 +60,9 @@ def usage():
     print('\t' + bold + '-q'  + reset + ', ' + bold + '--quiet' + reset)
     print('\t\tsend warnings and errors to temporary log file instead of stderr')
     print('\t' + bold + '--projective' + reset)
-    print('\t\talso print projective output. Uses the last two columns of the CoNLL depdendency format (or two extra arguments in the Prolog format).')
+    print('\t\talso print projective output. Uses the last two columns of the CoNLL dependency format (or two extra arguments in the Prolog format).')
     print('\t' + bold + '--secedges' + reset)
-    print('\t\talso print secondary edges. Uses the last two columns of the CoNLL depdendency format (or two extra arguments in the Prolog format).\n')
+    print('\t\talso print secondary edges. Uses the last two columns of the CoNLL dependency format (or two extra arguments in the Prolog format).\n')
 
 def load_arguments():
     try:
