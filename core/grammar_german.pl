@@ -1452,8 +1452,26 @@ head('V*FIN','KOMPX',r,kom,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coo
 head('VVIMP','KOMPX',r,kom,'VVIMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG).
 
 
-head('V*FIN','KOMPX',l,kom,'V*FIN',[FC,_,_,_,_,UG,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,UG).
+%pre-modifying comparatives
 
+%wie immer kraftvoll
+head('ADJA','KOMPX',l,kom,'ADJA',[_,_,_,Komp,_,_,_,_],_,MH,_,MH) :- Komp=als -> degree_comp(MH,'ADJA');true.
+
+head('ADJD','KOMPX',l,kom,'ADJD',[_,_,_,Komp,_,_,_,_],_,MH,_,MH) :- Komp=als -> degree_comp(MH,'ADJD');true.
+
+head('PP','KOMPX',l,kom,'PP',[_,_,_,Komp,_,_,_,_],_,MH,_,MH) :- Komp=als -> degree_comp(MH,'ADJD');true.
+
+
+%als nächstes mein Lieblingslied
+head('NN','KOMPX',l,kom,'NN',_,_,MH,_,MH).
+
+head('NE','KOMPX',l,kom,'NE',_,_,MH,_,MH).
+
+head('FM','KOMPX',l,kom,'FM',_,_,MH,_,MH).
+
+
+
+head('V*FIN','KOMPX',l,kom,'V*FIN',[FC,_,_,_,_,UG,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,UG).
 
 head('V*INF','KOMPX',l,kom,'V*INF',[FC,_,_,_,_,UG,_,_],_,MH,_,MH) :- verbchunklength(FC,1), restrict_vorfeld(FC,UG).
 head('V*PP','KOMPX',l,kom,'V*PP',[FC,_,_,_,_,UG,_,_],_,MH,_,MH) :- verbchunklength(FC,1), restrict_vorfeld(FC,UG).

@@ -547,8 +547,11 @@ stats2(par,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,_D,_HC-_OG) :- P is 0.1
 
 %comparatives
 %prefer attachment to verb, unless NN/ADJ is very close. *tiny* improvement over baseline...
-stats2(kom,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,_HC) :-
-    distModifier(D,Htag,Dtag,kom,DistMod),
+stats2(kom,Htag,_FH,SH,_MORPHH,Dtag,_FD,SD,_MORPHD,P,D,_HC) :-
+    lexic(SH,_,HPos),
+    lexic(SD,_,DPos),
+    RealDist is HPos-DPos,
+    ((RealDist > 0, member(Htag,['NN','NE','FM','ADJD','ADJA', 'PP']))-> DistMod = 0.1-0.001*RealDist;distModifier(D,Htag,Dtag,kom,DistMod)),
     posModifier(Htag,Dtag,kom,PosMod),
     P is DistMod*PosMod.
 
