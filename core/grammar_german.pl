@@ -1662,8 +1662,10 @@ head('PPER','KON_NOUN',r,kon,'PPER',  _,_,MG,MF,MNew) :- unify_case(MG,'PPER',MF
 % head('PWAT','KON_NOUN',r,kon,'PWAT',  _,_,MG,MF,MNew) :- unify_case(MG,'PWAT',MF,'NN',MNew).
 
 %ein und derselbe Job
-head('ART','KON_NOUN',r,kon,'NN',  _,_,_,MF,MF).
+head('ART','KON_PRONOUN',r,kon,'ART',  _,_,_,MF,MNew) :- convertMorphList('PIS',MF,'ART',MNew).
 
+%der oder die nächste
+head('ART','KON_ART',r,kon,'ART',  _,_,_,MF,MF).
 
 
 %truncated conjunction. special: morphological information of conjoined object is used.
@@ -1797,6 +1799,8 @@ kon_mapping('PDAT','KON_PRONOUN') :- !.
 kon_mapping('PIDAT','KON_PRONOUN') :- !.
 kon_mapping('PPOSS','KON_PRONOUN') :- !.
 kon_mapping('PPOSAT','KON_PRONOUN') :- !.
+
+kon_mapping('ART','KON_ART') :- !.
 
 kon_mapping('PRELS','KON_PRONOUN_REL') :- !.
 kon_mapping('PRELAT','KON_PRONOUN_REL') :- !.
@@ -2221,9 +2225,9 @@ convertMorphList(Tag,[List|RestIn],Tag2,[ListOut|RestOut]) :-
 
 %not complete, just those word classes that are needed. Takes information and creates a list in the desired format.
 createMorph('ADJA',Gen,Case,Number,[_,Gen,Case,Number,_,_]) :- morphology(gertwol), !.
+createMorph('ART',Gen,Case,Number,[_,Gen,Case,Number]) :- morphology(gertwol).
 createMorph(Tag,Gen,Case,Number,[Gen,Case,Number]) :- morphology(gertwol),
 		(morph_noun(Tag);morph_pronoun(Tag)), !.
-
 
 
 unify_morph(_,_,_,_) :- morphology(off), !.
