@@ -29,12 +29,12 @@ stats2(attr,'CARD',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC).
 stats2(det,_Htag,_FH,_SH,_MORPHH,'PRELS',_FD,_SD,_MORPHD,0.45,_D,_HC).
 stats2(det,_Htag,_FH,_SH,_MORPHH,'PWS',_FD,_SD,_MORPHD,0.3,_D,_HC).
 
+stats2(pn,'PTKA',_FH,_SH,_MORPHH,_DTag,_FD,_SD,_MORPHD,0.5,_D,_HC). %is only in grammar in case of tagging errors; should not be preferred
 stats2(pn,_Htag,_FH,_SH,_MORPHH,'ADV',_FD,_SD,_MORPHD,0.5,_D,_HC).
 stats2(pn,_Htag,_FH,_SH,_MORPHH,'ADJD',_FD,_SD,_MORPHD,0.5,_D,_HC).
 stats2(pn,_Htag,_FH,_SH,_MORPHH,'PP',_FD,_SD,_MORPHD,0.5,_D,_HC).
 stats2(pn,_Htag,_FH,_SH,_MORPHH,'ADJA',_FD,_SD,_MORPHD,0.5,_D,_HC).
 stats2(pn,_Htag,_FH,_SH,_MORPHH,'CARD',_FD,_SD,_MORPHD,0.5,_D,_HC).
-
 
 stats2(unknown,_Htag,_FH,_SH,_MORPHH,_,_FD,_SD,_MORPHD,0.1,_D,_HC).
 
@@ -77,7 +77,6 @@ stats2(det,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1.06,_D,_HC).
 stats2(aux,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1.06,_D,_HC).
 stats2(avz,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1.06,_D,_HC).
 
-
 %adverbs
 stats2(adv,Htag,_FH,SH,_MORPHH,Dtag,FD,SD,_MORPHD,P,D,_HC) :-
     lexic(SH,_,HPos),
@@ -94,6 +93,7 @@ stats2(adv,Htag,_FH,SH,_MORPHH,Dtag,FD,SD,_MORPHD,P,D,_HC) :-
 getadvprob(_,'PIS',all,RealDist,P) :- P is 0.2-RealDist*0.003, !.
 getadvprob(_,'PIS',alle,RealDist,P) :- P is 0.2-RealDist*0.003, !.
 getadvprob(_,'PIS',alles,RealDist,P) :- P is 0.2-RealDist*0.003, !.
+getadvprob(_,'PWAV',_,_,1) :- !.
 
 %ein bisschen traurig
 getadvprob(_,'PIS',DWord,RealDist,P) :- member(DWord,['bißchen',bisschen,wenig]), P is 0.2+RealDist*0.003, !.

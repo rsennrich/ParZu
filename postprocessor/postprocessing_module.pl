@@ -314,6 +314,7 @@ leavealone(pp).
 leavealone(adv).
 leavealone(konjneb).
 leavealone(konjobjc).
+leavealone(koord).
 
 
 

@@ -1330,11 +1330,6 @@ head('ADJD','PTKNEG',r,adv,'ADJD',_,_,MH,_,MH).
 head('PRF', 'ADV',r, adv, 'PRF',[_,_,_,selbst,_,_,_,_],G-F,MH,_,MH) :- 1 is F-G.
 head('PRF', 'ADV',r, adv, 'PRF',[_,_,_,allein,_,_,_,_],G-F,MH,_,MH) :- 1 is F-G.
 
-
-%sowohl als auch...
-head(_,'ADV',r,adv,'KON',[_,_,als,auch,_,_,_,_],G-F,MH,_,MH) :- 1 is F-G.
-
-
 %======================================================================================
 %auxiliary verbs
 
@@ -1402,10 +1397,10 @@ head('PP','APZR',r,part,'PP',_,_,MH,_,MH).
 %======================================================================================
 %ART + PIS ("ein wenig"; "ein anderer") marked as particle
 
-head('PIS','ART',l,part,'PIS',[_,_,FF,_,_,_,_,_],F-G,MH,_,MH) :- 2 >= F-G, FF \= 'ander'.
+head('PIS','ART',l,part,'PIS',[_,_,HeadWord,_,_,_,_,_],F-G,MH,_,MH) :- 2 >= F-G, \+ member(HeadWord,['ander','andere','anderen','anderem']).
 
 % "ein anderer" (with agreement constraints)
-head('PIS','ART',l,part,'PIS',[_,_,'ander',_,_,_,_,_],F-G,MF,MG,MNew) :- 2 >= F-G, check_agreement(MF,'PIS',MG,'ART',MNew).
+head('PIS','ART',l,part,'PIS',[_,_,HeadWord,_,_,_,_,_],F-G,MF,MG,MNew) :- 2 >= F-G, member(HeadWord,['ander','andere','anderen','anderem']), check_agreement(MF,'PIS',MG,'ART',MNew).
 
 %======================================================================================
 %comparatives
@@ -1501,18 +1496,18 @@ head('VVIZU','KOMPX',l,kom,'VVIZU',[FC,_,_,_,_,UG,_,_],_,MH,_,MH) :- verbchunkle
 
 
 %(peter) 'und' ->cj-> 'mark'. special: new morphological information is that of dependent, not that of head
-head('KON',Tag,r,cj,Transtag,[_,_,HeadWord,_,HeadRels,_,_,_],_,_,MD,MD) :- kon_mapping(Tag,Transtag), Transtag \= 'KON_FINVERB', Transtag \= 'KON_ADV', \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder']), restrict_comma_for_kon(Transtag, HeadWord, HeadRels).
+head('KON',Tag,r,cj,Transtag,[_,_,HeadWord,_,HeadRels,_,_,_],_,_,MD,MD) :- kon_mapping(Tag,Transtag), Transtag \= 'KON_FINVERB', Transtag \= 'KON_ADV', \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder',als]), restrict_comma_for_kon(Transtag, HeadWord, HeadRels).
 
 %seltsam, aber nie albern. "albern" should be coordinated adverb, not "nie".
-head('KON',Tag,r,cj,'KON_ADV',[_,_,HeadWord,_,_,_,_,_],_-D,_,MD,MD) :- kon_mapping(Tag,'KON_ADV'), RightPos is D+1, checkPos(RightPos,_,Tag2,_,_), \+ kon_mapping(Tag2,'KON_ADV'), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder']).
+head('KON',Tag,r,cj,'KON_ADV',[_,_,HeadWord,_,_,_,_,_],_-D,_,MD,MD) :- kon_mapping(Tag,'KON_ADV'), RightPos is D+1, checkPos(RightPos,_,Tag2,_,_), \+ kon_mapping(Tag2,'KON_ADV'), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder',als]).
 
 % in "Er kommt und sieht Laura", disallow Laura as subject, but not in "Er kommt und dann sieht Laura ihn"
-head('KON',Tag,r,cj,'KON_FINVERB',[_,_,HeadWord,_,_,DepRels,_,_],H-D,_,MD,MD) :- 1 is D-H, kon_mapping(Tag,'KON_FINVERB'), \+ member('->subj->', DepRels), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder']).
+head('KON',Tag,r,cj,'KON_FINVERB',[_,_,HeadWord,_,_,DepRels,_,_],H-D,_,MD,MD) :- 1 is D-H, kon_mapping(Tag,'KON_FINVERB'), \+ member('->subj->', DepRels), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder',als]).
 
-head('KON',Tag,r,cj,'KON_FINVERB',[_,_,HeadWord,_,_,_,_,_],H-D,_,MD,MD) :- D-H > 1, kon_mapping(Tag,'KON_FINVERB'), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder']).
+head('KON',Tag,r,cj,'KON_FINVERB',[_,_,HeadWord,_,_,_,_,_],H-D,_,MD,MD) :- D-H > 1, kon_mapping(Tag,'KON_FINVERB'), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder',als]).
 
 %als Babysitter oder als Anwalt arbeiten
-head('KON','KOMPX',r,cj,'KON_KOMPX',[_,_,HeadWord,_,_,_,_,_],_,_,MD,MD) :- \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder']).
+head('KON','KOMPX',r,cj,'KON_KOMPX',[_,_,HeadWord,_,_,_,_,_],_,_,MD,MD) :- \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder',als]).
 
 
 %allows comma before conjunction.
@@ -1538,6 +1533,10 @@ head(Tag, 'KON',l, kon, Tag,[_,_,_,entweder,OF,_,_,_],_,MH,_,MH) :- member('->ko
 head(Tag, 'KON',l, kon, Tag,[_,_,_,'Entweder',OF,_,_,_],_,MH,_,MH) :- member('->kon->', OF).
 head(Tag, 'KON',l, kon, Tag,[_,_,_,weder,OF,_,_,_],_,MH,_,MH) :- member('->kon->', OF).
 head(Tag, 'KON',l, kon, Tag,[_,_,_,'Weder',OF,_,_,_],_,MH,_,MH) :- member('->kon->', OF).
+
+head('KON',Tag,r,cj,Tag,[_,_,als,auch,_,DepRels,_,_],G-F,MH,_,MH) :- 1 is F-G, member('->kon->', DepRels).
+head('ADV',Tag,r,kon,Transtag,[_,_,auch,_,_,_,_,_],H-_,_,MD,MD) :- LeftPos is H-1, checkPos(LeftPos,als,_,_,_), kon_mapping(Tag,Transtag).
+
 
 
 %comma can join two elements if there is a conjunction after them: "ich kam, sah und siegte"
@@ -1842,6 +1841,9 @@ head('V*FIN','$,',r,comma,'QUOTE',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ memb
 head('VVIMP','$,',r,comma,'QUOTE',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ member('->comma->', HeadRels).
 
 
+%normally, verbs depend on coordination; to properly analyse a verb in a main clause as speech, invert relationship.
+% und das ist wahr, sagte er.
+head('QUOTE','KON',l,koord,'QUOTE',[_,_,_,_,_,_,_,DepID],_,HM,_,HM) :- stopToLeft(DepID).
 
 %v*fin + v*fin: head word needs to be word of speech (sagen, meinen, bekräftigen...) --> statisics module
 
@@ -2600,9 +2602,8 @@ subjcandidate('PIAT',Pos) :- endOfNP(Pos).
 validgmod('NN').
 validgmod('NE').
 validgmod('FM').
-%too rare: commented out for now
-%validgmod('PDS').
-%validgmod('PIS').
+validgmod('PDS').
+validgmod('PIS').
 
 %valid preposition complements
 prepcompl('NN',_).
