@@ -310,10 +310,10 @@ def backTrack(C, X, Y, i, j):
     elif X[i-1] == Y[j-1]:
         return backTrack(C, X, Y, i-1, j-1) + (i-1,)
     else:
-        if C[i][j-1] > C[i-1][j]:
-            return backTrack(C, X, Y, i, j-1)
-        else:
+        if C[i][j-1] < C[i-1][j]:
             return backTrack(C, X, Y, i-1, j)
+        else:
+            return backTrack(C, X, Y, i, j-1)
 
 
 
