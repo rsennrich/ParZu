@@ -159,11 +159,12 @@ stats2(app_loose,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,D,_HC-_OG) :-
     P is DISTMOD.
 
 %close appositions: encourage short distances.
-stats2(app_close,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,_HC-OG) :-
+stats2(app_close,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,MORPHD,P,D,_HC-OG) :-
     posModifier(Htag,Dtag,app_close,POSMOD),
     distModifier(D,app_close,DISTMOD),
     depModifier(OG,app_close,DEPMOD),
-    P is DISTMOD*POSMOD*DEPMOD.
+    ((case_gen(MORPHD,Dtag), \+ case_nom(MORPHD,Dtag))->MORPHMOD is 0.5; MORPHMOD is 1), %make sure that gmod beats app if possible
+    P is DISTMOD*POSMOD*DEPMOD*MORPHMOD.
 
 
 %special case: adverbial pronoun as dependent
