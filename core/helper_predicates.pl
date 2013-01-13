@@ -1,5 +1,7 @@
 % simple predicates that define groups of tags/words and are shared by several programs
 
+:- dynamic measure/1.
+
 %full verbs that sometimes act like modal verbs
 %some may govern infinitive, some past participle, some both
 %"er sieht ihn kommen"; "er will ihn bestraft sehen"
@@ -245,3 +247,103 @@ zeitcand('Saison').
 zeitcand('Zeit').
 
 zeitcand('Mal').
+
+
+%override morphological analysis for some units of measurement: they may remain uninflected ("10 Grad" instead of "10 Grade").
+
+%SI-Units (except units of time, which are inflected):
+measure_stem('Meter').
+measure_stem('Gramm').
+measure_stem('Ampere').
+measure_stem('Kelvin').
+measure_stem('Mol').
+measure_stem('Candela').
+
+measure_stem('Radiant').
+measure_stem('Steradiant').
+measure_stem('Hertz').
+measure_stem('Newton').
+measure_stem('Pascal').
+measure_stem('Joule').
+measure_stem('Watt').
+measure_stem('Coulomb').
+measure_stem('Volt').
+measure_stem('Farad').
+measure_stem('Weber').
+measure_stem('Tesla').
+measure_stem('Henry').
+measure_stem('Ohm').
+measure_stem('Siemens').
+measure_stem('Grad').
+measure_stem('Lumen').
+measure_stem('Lux').
+measure_stem('Becquerel').
+measure_stem('Gray').
+
+measure_stem('Liter').
+
+measure_stem('Byte').
+measure_stem('Hertz').
+
+%with Meter/Byte/Hertz/Pascal/Liter
+measure_prefix('').
+measure_prefix('Deka').
+measure_prefix('Hekto').
+measure_prefix('Kilo').
+measure_prefix('Mega').
+measure_prefix('Giga').
+measure_prefix('Tera').
+measure_prefix('Peta').
+measure_prefix('Exa').
+measure_prefix('Zetta').
+measure_prefix('Yotta').
+
+measure_prefix('Dezi').
+measure_prefix('Zenti').
+measure_prefix('Milli').
+measure_prefix('Mikro').
+measure_prefix('Nano').
+measure_prefix('Piko').
+measure_prefix('Femto').
+measure_prefix('Atto').
+measure_prefix('Zepto').
+measure_prefix('Yokto').
+
+:- measure_prefix(Prefix), measure_stem(Stem), (Prefix \= ''->downcase_atom(Stem,LowerStem);LowerStem=Stem), atom_concat(Prefix,LowerStem,Measure), assert(measure(Measure)),fail;true.
+:- measure_prefix(Prefix), downcase_atom(Prefix,LowerPrefix), atom_concat('Quadrat',LowerPrefix,FullPrefix), atom_concat(FullPrefix,'meter',Measure), assert(measure(Measure)),fail;true.
+:- measure_prefix(Prefix), downcase_atom(Prefix,LowerPrefix), atom_concat('Kubik',LowerPrefix,FullPrefix), atom_concat(FullPrefix,'meter',Measure), assert(measure(Measure)),fail;true.
+
+measure('Fuss').
+measure('Fuß').
+measure('Zoll').
+
+measure('Prozent').
+
+
+%currencies (only uninflected ones: Franken, Rupien etc. do not need exception)
+measure('Baht').
+measure('Cent').
+measure('Dollar').
+measure('Ecu').
+measure('Euro').
+measure('Eurocent').
+measure('Florin').
+measure('Franc').
+measure('Kip').
+measure('Kwanza').
+measure('Lek').
+measure('Lira').
+measure('Pfund').
+measure('Mark').
+measure('Peso').
+measure('Rand').
+measure('Real').
+measure('Reichsmark').
+measure('Rial').
+measure('Riyal').
+measure('Rubel').
+measure('Schekel').
+measure('Schilling').
+measure('Won').
+measure('Yen').
+measure('Zloty').

@@ -116,11 +116,12 @@ pidat_anymorph('bisschen').
 pidat_anymorph('bißchen').
 pidat_anymorph('wenig').
 
-head('NN','CARD',l,attr,'NN',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- \+ member('<-det<-',OF).
 
-head('NE','CARD',l,attr,'NE',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- \+ member('<-det<-',OF).
+head('NN','CARD',l,attr,'NN',[_,_,HeadWord,DepWord,OF,_,_,_],_,MH,_,MNew) :- \+ member('<-det<-',OF), unify_card(HeadWord,DepWord,MH,MNew).
 
-head('FM','CARD',l,attr,'FM',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- \+ member('<-det<-',OF).
+head('NE','CARD',l,attr,'NE',[_,_,HeadWord,DepWord,OF,_,_,_],_,MH,_,MNew) :- \+ member('<-det<-',OF), unify_card(HeadWord,DepWord,MH,MNew).
+
+head('FM','CARD',l,attr,'FM',[_,_,HeadWord,DepWord,OF,_,_,_],_,MH,_,MNew) :- \+ member('<-det<-',OF), unify_card(HeadWord,DepWord,MH,MNew).
 
 
 %Der Ex- Aussenminister. Might be treated as two words (for instance on line breaks)
@@ -2361,6 +2362,40 @@ case_tueba('Dat',d) :- !.
 case_tueba('Gen',g) :- !.
 case_tueba(X,X) :- !.
 
+
+:- morphology(gertwol)->assert(singular('Sg'));true.
+:- morphology(gertwol)->assert(plural('Pl'));true.
+
+:- morphology(tueba)->assert(singular('s'));true.
+:- morphology(tueba)->assert(plural('p'));true.
+
+:- morphology(gertwol)->assert(nominative('Nom'));true.
+:- morphology(gertwol)->assert(accusative('Akk'));true.
+:- morphology(gertwol)->assert(dative('Dat'));true.
+:- morphology(gertwol)->assert(genitive('Gen'));true.
+
+:- morphology(tueba)->assert(nominative('n'));true.
+:- morphology(tueba)->assert(accusative('a'));true.
+:- morphology(tueba)->assert(dative('d'));true.
+:- morphology(tueba)->assert(genitive('g'));true.
+
+
+% cardinals require a plural head (with a few exceptions)
+% Uhr stays singular
+% units of measurement may be uninflected ("20 Grad")
+unify_card(_,_,_,_) :- morphology(off), !.
+unify_card(HeadWord,DepWord,HeadMorph,MorphOut) :- ((DepWord = '1';HeadWord='Uhr')->singular(Number);plural(Number)),
+    (measure(HeadWord)->createMeasureMorph(HeadMorph,Number,MorphOut);
+                    check_agreement(HeadMorph,'NN',[[_,_,Number]],'NN',MorphOut)), !.
+
+%unit of measure; use gender from morphological analysis, but allow all cases, and correct number
+createMeasureMorph(MorphIn,Number,MorphOut) :- morphology(MorphType),
+            findall(Gender, (member(Morph,MorphIn),get_gender(Morph,'NN',Gender,MorphType)),GenderList),
+            nominative(Nom),
+            accusative(Acc),
+            dative(Dat),
+            genitive(Gen),
+            findall([Gender,Case,Number],(member(Gender,GenderList), member(Case,[Nom,Acc,Dat,Gen])),MorphOut), !.
 
 createMorphOutput(Head,Dep,MyRel) :- (getChartInfo(Head,HPos,HWord,HLemma,_,HMorph);true),
       getChartInfo(Dep,DPos,DWord,DLemma,_,DMorph),
