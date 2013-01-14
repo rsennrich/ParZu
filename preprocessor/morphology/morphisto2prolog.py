@@ -254,13 +254,6 @@ def getlemma(line,word,pos):
         except IndexError:
             lemma = re_any.sub('',line)
             return lemma[0] + lemma[1:].lower()
-        #deal with umlaut-plural in German nouns (Männer, Länder etc.)
-        try:
-            word_lc_2 = word_lc.replace(u"ä","a").replace(u"ü","u").replace(u"ö","o")
-            joinpoint2 = backTrack(LCS(word_lc_2,last_morpheme_lc),word_lc_2,last_morpheme_lc,len(word_lc_2),len(last_morpheme_lc))[0]
-            joinpoint = min(joinpoint, joinpoint2)
-        except IndexError:
-            pass
         if joinpoint > 1:
             if word[joinpoint-1] == '-':
                 return re_any.sub('',word[:joinpoint])+last_morpheme
