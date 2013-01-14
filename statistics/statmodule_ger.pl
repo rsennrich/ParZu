@@ -103,11 +103,13 @@ getadvprob(_,'PIS',DWord,RealDist,P) :- member(DWord,['bißchen',bisschen,wenig]
 getadvprob(_,'PIS',_,_,0) :- !.
 
 %lexical disambiguation based on number of times the adverb occurs with different POS.
-getadvprob(Htag,_Dtag,DWord,RealDist,POSMod) :- (Htag = 'KOMPX' -> HTL = 'kokom' ; Htag = 'PP' -> HTL = 'appr' ; downcase_atom(Htag,HTL)), 
-		    downcase_atom(DWord,DWordL), 
-		    (RealDist > 0->advbigramleft(DWordL,HTL,Total,ADV); advbigramright(HTL,DWordL,Total,ADV)),
+getadvprob(Htag,_Dtag,DWord,RealDist,POSMod2) :- (Htag = 'KOMPX' -> Htag2 = 'kokom' ; Htag = 'PP' -> Htag2 = 'appr' ; downcase_atom(Htag,Htag2)),
+		    (verbtag(Htag2)->Htag3='v';Htag3=Htag2),
+		    downcase_atom(DWord,DWordL),
+		    (RealDist > 0->advbigramleft(DWordL,Htag3,Total,ADV); advbigramright(Htag3,DWordL,Total,ADV)),
 		      (Total > 10; ADV > 0),
-		      POSMod is ADV / Total, !.
+		      POSMod is ADV / Total,
+             (verbtag(Htag2)->POSMod2 is max(0.5+POSMod/100,POSMod);POSMod2 = POSMod), !.
 
 %backoff probability for verbs
 getadvprob(Htag,_,_,_,0.55) :- (nonfinite(Htag);Htag = 'VVFIN';Htag = 'VAFIN';Htag = 'VMFIN';Htag = 'VVIZU'), !.
