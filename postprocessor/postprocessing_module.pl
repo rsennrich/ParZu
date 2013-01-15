@@ -58,11 +58,14 @@ printresult(oldconll,Pos,DepWord,DepLemma,DepTag,Class,HeadPos,Morph) :-
 %print results in actual conll format.
 printresult(conll,Pos,DepWord,DepLemma,DepTag,Class,HeadPos,Morph) :- 
     transformMorph(conll,Morph,MorphOut),
-    (nbestmode(NBEST),NBEST > 0->NewHeadPos is max(0,HeadPos-1);NewHeadPos is HeadPos),
     coarsetag(DepTag,CoarseTag),
     (extrainfo(secedges)->(secedge(Pos,ExtraHead,ExtraRel));
     (extrainfo(projective)->(projectivehead(Pos,ExtraHead),ExtraRel=Class);
     extrainfo(no)->(ExtraHead='_',ExtraRel='_'))),
+    (nbestmode(NBEST),NBEST > 0->
+        (NewHeadPos is max(0,HeadPos-1), 
+        (ExtraHead='_'->NewExtraHead=ExtraHead;NewExtraHead is max(0,ExtraHead-1))
+    );(NewHeadPos is HeadPos, NewExtraHead = ExtraHead)),
     write(Pos),
     write('\t'),
     write(DepWord),
@@ -79,7 +82,7 @@ printresult(conll,Pos,DepWord,DepLemma,DepTag,Class,HeadPos,Morph) :-
     write('\t'),
     write(Class),
     write('\t'),
-    write(ExtraHead),
+    write(NewExtraHead),
     write('\t'),
     write(ExtraRel),
     nl.
@@ -88,16 +91,19 @@ printresult(conll,Pos,DepWord,DepLemma,DepTag,Class,HeadPos,Morph) :-
 %print results in prolog format.
 printresult(prolog,Pos,Word,Lemma,Tag,Rel,HeadPos,Morph) :- 
     transformMorph(prolog,Morph,MorphOut),
-    (nbestmode(NBEST),NBEST > 0->NewHeadPos is max(0,HeadPos-1);NewHeadPos is HeadPos),
     (extrainfo(secedges)->(secedge(Pos,ExtraHead,ExtraRel));
     (extrainfo(projective)->(projectivehead(Pos,ExtraHead),ExtraRel=Rel);
     extrainfo(no)->(ExtraHead='_',ExtraRel='_'))),
     (extrainfo(no)->writeq(word(Pos,Word,Lemma,Tag,Rel,NewHeadPos,MorphOut));
     ((ExtraHead='_'->ExtraHeadOut='-';ExtraHeadOut=ExtraHead),
     (ExtraRel='_'->ExtraRelOut='-';ExtraRelOut=ExtraRel),
-    writeq(word(Pos,Word,Lemma,Tag,Rel,NewHeadPos,MorphOut,ExtraRelOut,ExtraHeadOut)))), write('.'),nl.
+    (nbestmode(NBEST),NBEST > 0->
+        (NewHeadPos is max(0,HeadPos-1), 
+        (ExtraHeadOut='-'->NewExtraHead=ExtraHeadOut;NewExtraHead is max(0,ExtraHeadOut-1))
+    );(NewHeadPos is HeadPos, NewExtraHead = ExtraHeadOut)),
+    writeq(word(Pos,Word,Lemma,Tag,Rel,NewHeadPos,MorphOut,ExtraRelOut,NewExtraHead)))), write('.'),nl.
 
-%print results in moses format. default.
+%print results as Moses factors.
 printresult(moses,_,Word,_,Tag,Rel,HeadPos,_) :- 
     (HeadPos=0->HeadWord=root;chart(HeadPos,HeadPos,HeadPos,_,_,_,_,_,_,[HeadWord|_])),
     write(Word),
