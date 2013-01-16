@@ -253,7 +253,10 @@ def getlemma(line,word,pos):
             joinpoint = backTrack(LCS(word_lc,last_morpheme_lc),word_lc,last_morpheme_lc,len(word_lc),len(last_morpheme_lc))[0]
         except IndexError:
             lemma = re_any.sub('',line)
-            return lemma[0] + lemma[1:].lower()
+            try:
+                return lemma[0] + lemma[1:].lower()
+            except IndexError:
+                return lemma
         if joinpoint > 1:
             if word[joinpoint-1] == '-':
                 return re_any.sub('',word[:joinpoint])+last_morpheme
@@ -272,7 +275,10 @@ def getlemma(line,word,pos):
     elif lemma == 'sie' and '<Masc>' in line:
         lemma = 'er'
 
-    return lemma[0] + lemma[1:].lower()
+    try:
+        return lemma[0] + lemma[1:].lower()
+    except IndexError:
+        return lemma
 
 
 # print analyses with fewest morphemes first
