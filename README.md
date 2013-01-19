@@ -24,10 +24,10 @@ REQUIREMENTS
 
 This software was developed and tested using
 
-Linux (32 and 64 bit)
-SWI-Prolog 5.6 (or YAP 6.2 - check the top of the script `parzu` to switch between the two)
-Python 2.6 (also tested on Python 3.1)
-Perl 5.10
+    Linux (32 and 64 bit)
+    SWI-Prolog 5.6 (or YAP 6.2 - check the top of the script `parzu` to switch between the two)
+    Python 2.6 (also tested on Python 3.1)
+    Perl 5.10
 
 It may work in different environments, but there is no guarantee. Any contributions to improve cross-plattform compatibility are welcome.
 
