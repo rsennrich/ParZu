@@ -94,7 +94,7 @@ printresult(prolog,Pos,Word,Lemma,Tag,Rel,HeadPos,Morph) :-
     (extrainfo(secedges)->(secedge(Pos,ExtraHead,ExtraRel));
     (extrainfo(projective)->(projectivehead(Pos,ExtraHead),ExtraRel=Rel);
     extrainfo(no)->(ExtraHead='_',ExtraRel='_'))),
-    (extrainfo(no)->writeq(word(Pos,Word,Lemma,Tag,Rel,NewHeadPos,MorphOut));
+    (extrainfo(no)->writeq(word(Pos,Word,Lemma,Tag,Rel,HeadPos,MorphOut));
     ((ExtraHead='_'->ExtraHeadOut='-';ExtraHeadOut=ExtraHead),
     (ExtraRel='_'->ExtraRelOut='-';ExtraRelOut=ExtraRel),
     (nbestmode(NBEST),NBEST > 0->
