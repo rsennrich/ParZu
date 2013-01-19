@@ -1,6 +1,15 @@
 ParZu changelog
 
-0.18
+0.19 2013/01/19
+  - new output options
+    - graphical output
+    - output of projective structures
+  - support for secondary edges (for control verbs)
+  - various improvements to parsing quality (+ 1-2% absoute compared to 0.18)
+  - speed optimization (twice as fast as 0.18)
+  - no longer depends on NLTK (sentence splitter from NLTK is now included)
+
+0.18 2011/09/09
   - first GPL release
     - support for Morphisto (free software morphology analyzer)
     - no longer includes TüBa-D/Z statistics by default
