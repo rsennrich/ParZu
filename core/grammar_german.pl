@@ -104,11 +104,11 @@ head('FM','ADJA',l,attr,'FM',[_,_,_,_,OF,_,_,_],_,MF,MG,MNew) :- \+ member('<-de
 
 
 %this rule only applies if there is another article left of the pronoun. "Ein paar Leute". Special transtag if article morphology is to be ignored in 'det' rules.
-head('NN','PIDAT',l,attr,TransTag,[_,_,_,GWord,OF,_,_,_],_-G,MF,MG,MNew) :- \+ member('<-det<-',OF), LPos is G - 1, checkPos(LPos,LWord,'ART',_,_), check_agreement(MF,'NN',MG,'PIDAT',MNew), ((pidat_anymorph(GWord),LWord=ein)->TransTag='NIDEF';TransTag='NN').
+head('NN','PIDAT',l,attr,TransTag,[_,_,_,GWord,OF,_,_,_],_-G,MF,MG,MNew) :- \+ member('<-det<-',OF), LPos is G - 1, checkPos(LPos,LWord,'ART',_,_), check_agreement(MF,'NN',MG,'PIDAT',MNew), ((pidat_anymorph(GWord),(LWord=ein;LWord=eine))->TransTag='NIDEF';TransTag='NN').
 
-head('NE','PIDAT',l,attr,TransTag,[_,_,_,GWord,OF,_,_,_],_-G,MF,MG,MNew) :- \+ member('<-det<-',OF), LPos is G - 1, checkPos(LPos,LWord,'ART',_,_), check_agreement(MF,'NE',MG,'PIDAT',MNew), ((pidat_anymorph(GWord),LWord=ein)->TransTag='NIDEF';TransTag='NE').
+head('NE','PIDAT',l,attr,TransTag,[_,_,_,GWord,OF,_,_,_],_-G,MF,MG,MNew) :- \+ member('<-det<-',OF), LPos is G - 1, checkPos(LPos,LWord,'ART',_,_), check_agreement(MF,'NE',MG,'PIDAT',MNew), ((pidat_anymorph(GWord),(LWord=ein;LWord=eine))->TransTag='NIDEF';TransTag='NE').
 
-head('FM','PIDAT',l,attr,TransTag,[_,_,_,GWord,OF,_,_,_],_-G,MF,MG,MNew) :- \+ member('<-det<-',OF), LPos is G - 1, checkPos(LPos,LWord,'ART',_,_), check_agreement(MF,'FM',MG,'PIDAT',MNew), ((pidat_anymorph(GWord),LWord=ein)-TransTag='NIDEF';TransTag='FM').
+head('FM','PIDAT',l,attr,TransTag,[_,_,_,GWord,OF,_,_,_],_-G,MF,MG,MNew) :- \+ member('<-det<-',OF), LPos is G - 1, checkPos(LPos,LWord,'ART',_,_), check_agreement(MF,'FM',MG,'PIDAT',MNew), ((pidat_anymorph(GWord),(LWord=ein;LWord=eine))-TransTag='NIDEF';TransTag='FM').
 
 %ein paar Leute - no morphology check
 pidat_anymorph('paar').
