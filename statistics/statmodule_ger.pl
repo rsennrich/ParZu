@@ -124,7 +124,7 @@ stats2(zeit,_Htag,_FH,_SH,_MORPHH,'NN',_FD,_SD,_MORPHD,0.2,_D,_HC).
 
 
 %sentence coordinations: should be lower than 's' relation (if the latter occurs in training corpus)
-stats2(kon,_Htag,_FH,_SH,_MORPHH,'KONC',_FD,_SD,_MORPHD,P,_D,_HC) :- P is  0.65.
+stats2(kon,_Htag,_FH,_SH,_MORPHH,'KONC',_FD,_SD,_MORPHD,P,D,_HC) :- P is  0.65 - D*0.001.
 
 %coordinations: encourage short distances. Should have precedence over APP
 stats2(kon,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,_HC) :-
