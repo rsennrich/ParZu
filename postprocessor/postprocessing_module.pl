@@ -326,7 +326,7 @@ leavealone(adv).
 leavealone(konjneb).
 leavealone(konjobjc).
 leavealone(koord).
-
+leavealone(par).
 
 
 

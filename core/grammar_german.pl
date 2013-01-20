@@ -1504,7 +1504,7 @@ head('KON',Tag,r,cj,'KON_ADV',[_,_,HeadWord,_,_,_,_,_],_-D,_,MD,MD) :- kon_mappi
 % in "Er kommt und sieht Laura", disallow Laura as subject, but not in "Er kommt und dann sieht Laura ihn"
 head('KON',Tag,r,cj,'KON_FINVERB',[_,_,HeadWord,_,_,DepRels,_,_],H-D,_,MD,MD) :- 1 is D-H, kon_mapping(Tag,'KON_FINVERB'), \+ member('->subj->', DepRels), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder',als]).
 
-head('KON',Tag,r,cj,'KON_FINVERB',[_,_,HeadWord,_,_,_,_,_],H-D,_,MD,MD) :- D-H > 1, kon_mapping(Tag,'KON_FINVERB'), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder',als]).
+head('KON',Tag,r,cj,'KON_FINVERB',[_,_,HeadWord,_,_,DepRels,_,_],H-D,_,MD,MD) :- D-H > 1, kon_mapping(Tag,'KON_FINVERB'), \+ member('<-kon<-', DepRels), \+ member('<-s<-', DepRels), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder',als]).
 
 %als Babysitter oder als Anwalt arbeiten
 head('KON','KOMPX',r,cj,'KON_KOMPX',[_,_,HeadWord,_,_,_,_,_],_,_,MD,MD) :- \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder',als]).
@@ -1562,7 +1562,7 @@ head(Tag,'$,',l,comma,'KON_PRONOUN_REL',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- kon_map
 
 head(Tag,'$,',l,comma,'KON_PPER',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- kon_mapping(Tag,'KON_PPER'), nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
 
-head('V*FIN','$,',l,comma,'KON_FINVERB',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF), \+ member('->subj->', OF).
+head('V*FIN','$,',l,comma,'KON_FINVERB',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- member('->kon->', OF), \+ member('<-comma<-', OF), \+ member('->subj->', OF).
 
 head('VVIZU','$,',l,comma,'KON_VVIZU',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF), \+ member('->subj->', OF).
 
@@ -1872,7 +1872,7 @@ head(Tag,'PAR',r,par,Tag,[_,FD,_,_,_,DepRels,_,DID],F-_,HM,_,HM) :- getRange(DID
 head(Tag,'QUOTE',r,par,Tag,[_,FD,_,_,_,DepRels,_,DID],F-_,HM,_,HM) :- getRange(DID,From-To), lastlexical(From,F), RightPos is To + 1, checkPos(RightPos,_,'$,',_,_), member('mainclause',FD), restrict_coord(DepRels), \+ member('->s->',DepRels), \+ member('<-s<-',DepRels), \+ member('<-objc<-',DepRels), \+ member('->objc->',DepRels), \+ member('<-obja<-',DepRels), \+ member('->obja->',DepRels).
 
 %"Verantwortlich, so Peter, ist Hans"
-head(Tag,'APP',r,par,Tag,[_,_,_,_,_,DepRels,_,DID],F-_,HM,_,HM) :- getRange(DID,From-_), lastlexical(From,F), member('<-comma<-', DepRels), member('->comma->', DepRels), member('<-adv<-', DepRels).
+head(Tag,'APP',r,par,Tag,[_,_,_,_,_,DepRels,_,DID],F-_,HM,_,HM) :- getRange(DID,From-_), lastlexical(From,F), member('<-comma<-', DepRels), member('->comma->', DepRels), nth1(RelPos, DepRels, '<-adv<-'), AdvPos is RelPos-1, nth1(AdvPos, DepRels, AdvStruct), AdvStruct =.. [Adv,_], atom_concat(so,_,Adv).
 
 %"Ich bin - wie versprochen - gekommen."
 head(Tag,'PPNEB',r,par,Tag,[_,_,_,_,_,_,_,DID],F-_,HM,_,HM) :- getRange(DID,From-_), lastlexical(From,F).
