@@ -990,28 +990,31 @@ head('NEB','OBJC/SUBJC',r,subjc,'NEB',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_
 %infinitive object
 
 %infinitive objects are bound by comma and need the infinitive particle 'zu'.
-head('VVIZU','$,',l,comma,'VVIZU',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ member('<-comma<-', HeadRels), \+ member('->comma->', HeadRels).
+head('VVIZU','$,',l,comma,'VVIZU_WITH_COMMA',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ member('<-comma<-', HeadRels), \+ member('->comma->', HeadRels).
 
-%allow comma to right, but only if there's one to the left
-head('VVIZU','$,',r,comma,'VVIZU',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- member('<-comma<-', HeadRels).
+%allow (single) comma to right, but only if there's one to the left
+head('VVIZU_WITH_COMMA','$,',r,comma,'VVIZU_WITH_COMMA',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ member('->comma->', HeadRels).
 
 
 %infinitive objects depend on finite verb on their left.
-head('V*FIN','VVIZU',r,obji,'V*FIN',[GC,FC,_,_,OG,OF,_,_],_,MH,_,MH) :- (\+ FC = GC; member('<-comma<-',OF)), restrict_coord(OG).
+head('V*FIN','VVIZU',r,obji,'V*FIN',[GC,FC,_,_,HeadRels,_,_,_],_,MH,_,MH) :- FC \= GC, restrict_coord(HeadRels).
+head('VVIMP','VVIZU',r,obji,'VVIMP',[GC,FC,_,_,HeadRels,_,_,_],_,MH,_,MH) :- FC \= GC, restrict_coord(HeadRels).
 
-head('VVIMP','VVIZU',r,obji,'VVIMP',[GC,FC,_,_,OG,OF,_,_],_,MH,_,MH) :- (\+ FC = GC; member('<-comma<-',OF)), restrict_coord(OG).
-
+head('V*FIN','VVIZU_WITH_COMMA',r,obji,'V*FIN',[_,_,_,_,HeadRels,_,_,_],_,MH,_,MH) :- restrict_coord(HeadRels).
+head('VVIMP','VVIZU_WITH_COMMA',r,obji,'VVIMP',[_,_,_,_,HeadRels,_,_,_],_,MH,_,MH) :- restrict_coord(HeadRels).
 
 %VVIZU to the left of finite verb (topicalized or in subordinated clause)
 head('V*FIN','VVIZU',l,obji,'V*FIN',[FC,GC,_,_,OF,_,_,_],H-D,MH,_,MH) :- FC \= GC, 1 is H-D, restrict_vorfeld(FC,OF).
+head('V*FIN','VVIZU_WITH_COMMA',l,obji,'V*FIN',[FC,GC,_,_,OF,_,_,_],H-D,MH,_,MH) :- FC \= GC, 1 is H-D, restrict_vorfeld(FC,OF).
+
 
 
 %Noun can have infinitive object, but should be separated by comma -> competition with other functions of NNs
-head('NN','VVIZU',r,obji,'NN',[_,_,_,_,_,OF,_,_],_,MH,_,MH) :- member('<-comma<-',OF).
+head('NN','VVIZU_WITH_COMMA',r,obji,'NN',_,_,MH,_,MH).
 
 %froh, etwas tun zu können
-head('ADV','VVIZU',r,obji,'ADV',[_,_,_,_,_,OF,_,_],_,MH,_,MH) :- member('<-comma<-',OF).
-head('ADJD','VVIZU',r,obji,'ADJD',[_,_,_,_,_,OF,_,_],_,MH,_,MH) :- member('<-comma<-',OF).
+head('ADV','VVIZU_WITH_COMMA',r,obji,'ADV',_,_,MH,_,MH).
+head('ADJD','VVIZU_WITH_COMMA',r,obji,'ADJD',_,_,MH,_,MH).
 
 %ein nicht enden wollender Krieg
 head('ADJA', 'VVINF',l,obji,'ADJA',[_,_,'wollend',_,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
@@ -1025,10 +1028,8 @@ head('VVFIN','V*INF/PP',l,obji,'VVFIN',[_,DC,HW,_,_,_,_,_],_,MH,_,MH) :- modalli
 head('VVINF','V*INF/PP',l,obji,'VVINF',[_,DC,HW,_,_,_,_,_],_,MH,_,MH) :- modallike(HW), verbchunklength(DC,1).
 head('VVPP','V*INF/PP',l,obji,'VVPP',[_,DC,HW,_,_,_,_,_],_,MH,_,MH) :- modallike(HW), verbchunklength(DC,1).
 head('VVIZU','V*INF/PP',l,obji,'VVIZU',[_,DC,HW,_,_,_,_,_],_,MH,_,MH) :- modallike(HW), verbchunklength(DC,1).
-head('VVFIN','VVIZU',l,obji,'VVFIN',[_,DC,HW,_,_,OG,_,_],_,MH,_,MH) :- modallike(HW), \+ member('->comma->', OG), verbchunklength(DC,1).
 
 head('VVFIN','V*INF/PP',r,obji,'VVFIN',[_,DC,HW,_,_,_,_,_],_,MH,_,MH) :- modallike(HW), verbchunklength(DC,1).
-head('VVFIN','VVIZU',r,obji,'VVFIN',[_,DC,HW,_,_,OF,_,_],_,MH,_,MH) :- modallike(HW), \+ member('<-comma<-', OF), verbchunklength(DC,1).
 
 
 %======================================================================================
@@ -1082,19 +1083,15 @@ head('V*FIN','PRELS',l,adv,'QC',[_,_,_,wo,_,_,_,_],_,MH,_,MH) :- correct_mistagg
 %example/motivation: das kind, 1999 geboren, konnte schon klavier spielen.
 head('V*INF','ADV',l,adv,'V*INF',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1).
 head('V*PP','ADV',l,adv,'V*PP',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1).
-head('VVIZU','ADV',l,adv,'VVIZU',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1).
 
 head('V*INF','ADJD',l,adv,'V*INF',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1).
 head('V*PP','ADJD',l,adv,'V*PP',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1).
-head('VVIZU','ADJD',l,adv,'VVIZU',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1).
 
 head('V*INF','PTKNEG',l,adv,'V*INF',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1).
 head('V*PP','PTKNEG',l,adv,'V*PP',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1).
-head('VVIZU','PTKNEG',l,adv,'VVIZU',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1).
 
-head('V*INF','PTKANT',l,adv,'V*INF',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1).
-head('V*PP','PTKANT',l,adv,'V*PP',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1).
-head('VVIZU','PTKANT',l,adv,'VVIZU',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1).
+head('V*INF','PTKANT',l,adv,'V*INF',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), verbchunklength(FC,1).
+head('V*PP','PTKANT',l,adv,'V*PP',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), verbchunklength(FC,1).
 
 
 %adverb after finite verb
