@@ -280,9 +280,10 @@ head('V*FIN',OBJ,l,obja,'V*FIN',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidat
 %object before infinitive verb with 'zu' (there is no finite verb in infinitive clauses)
 head('VVIZU',OBJ,l,obja,'VVIZU',[FC,_,_,_,UG,_,_,_],__-G,MF,MG,MF) :- objcandidate(OBJ,G), case_acc(MG,OBJ), \+ member('passive',FC), \+ member('<-obja<-',UG), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
 
-%allow OBJAs before nonfinite verb if no matching finite verb is found in preprocessing (-> chunk has only one element).
-head('V*INF', OBJ,l,obja,'V*INF',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidate(OBJ,G), verbchunklength(FC,1), case_acc(MG,OBJ), \+ member('passive',FC), \+ member('<-obja<-',UG), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
-head('V*PP', OBJ,l,obja,'V*PP',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidate(OBJ,G), verbchunklength(FC,1), case_acc(MG,OBJ), \+ member('passive',FC), \+ member('<-obja<-',UG), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
+%allow OBJAs before nonfinite verb in coordination chain
+head('V*INF', OBJ,l,obja,'V*INF',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidate(OBJ,G), in_coordination(FC,UG), case_acc(MG,OBJ), \+ member('passive',FC), \+ member('<-obja<-',UG), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
+head('V*PP', OBJ,l,obja,'V*PP',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidate(OBJ,G), in_coordination(FC,UG), case_acc(MG,OBJ), \+ member('passive',FC), \+ member('<-obja<-',UG), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
+
 
 
 %relative pronoun (new transtag 'RC')
@@ -327,9 +328,9 @@ head('V*FIN',OBJ,l,obja2,'V*FIN',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandida
 %object before infinitive verb with 'zu' (there is no finite verb in infinitive clauses)
 head('VVIZU',OBJ,l,obja2,'VVIZU',[FC,_,_,_,UG,_,_,_],__-G,MF,MG,MF) :- objcandidate(OBJ,G), case_acc(MG,OBJ), \+ member('passive',FC), \+ member('<-obja2<-',UG), \+ member('->obja2->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
 
-%allow OBJAs before nonfinite verb if no matching finite verb is found in preprocessing (-> chunk has only one element).
-head('V*INF', OBJ,l,obja2,'V*INF',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidate(OBJ,G), verbchunklength(FC,1), case_acc(MG,OBJ), \+ member('passive',FC), \+ member('<-obja2<-',UG), \+ member('->obja2->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
-head('V*PP', OBJ,l,obja2,'V*PP',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidate(OBJ,G), verbchunklength(FC,1), case_acc(MG,OBJ), \+ member('passive',FC), \+ member('<-obja2<-',UG), \+ member('->obja2->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
+%allow OBJAs before nonfinite verb in coordination chain
+head('V*INF', OBJ,l,obja2,'V*INF',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidate(OBJ,G), in_coordination(FC,UG), case_acc(MG,OBJ), \+ member('passive',FC), \+ member('<-obja2<-',UG), \+ member('->obja2->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
+head('V*PP', OBJ,l,obja2,'V*PP',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidate(OBJ,G), in_coordination(FC,UG), case_acc(MG,OBJ), \+ member('passive',FC), \+ member('<-obja2<-',UG), \+ member('->obja2->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
 
 %relative pronoun (new transtag 'RC')
 head('V*FIN','PRELS',l,obja2,'RC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_acc(MG,'PRELS'), restrict_vorfeld(FC,UG), \+ member('passive',FC), \+ member('<-obja2<-',UG), \+ member('->obja2->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
@@ -364,9 +365,9 @@ head('V*FIN',OBJ,l,objd,'V*FIN',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidat
 head('VVIZU',OBJ,l,objd,'VVIZU',[_,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidate(OBJ,G), case_dat(MG,OBJ), \+ member('<-objd<-',UG), \+ member('->objd->',UG).
 
 
-%allow OBJDs before nonfinite verb if no matching finite verb is found in preprocessing (-> chunk has only one element).
-head('V*INF', OBJ,l,objd,'V*INF',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidate(OBJ,G), verbchunklength(FC,1), case_dat(MG,OBJ), \+ member('<-objd<-',UG), \+ member('->objd->',UG).
-head('V*PP', OBJ,l,objd,'V*PP',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidate(OBJ,G), verbchunklength(FC,1), case_dat(MG,OBJ), \+ member('<-objd<-',UG), \+ member('->objd->',UG).
+%allow OBJDs before nonfinite verb in coordination chain
+head('V*INF', OBJ,l,objd,'V*INF',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidate(OBJ,G), in_coordination(FC,UG), case_dat(MG,OBJ), \+ member('<-objd<-',UG), \+ member('->objd->',UG).
+head('V*PP', OBJ,l,objd,'V*PP',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidate(OBJ,G), in_coordination(FC,UG), case_dat(MG,OBJ), \+ member('<-objd<-',UG), \+ member('->objd->',UG).
 
 %relative pronoun (new transtag 'RC')
 head('V*FIN','PRELS',l,objd,'RC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_dat(MG,'PRELS'), restrict_vorfeld(FC,UG), \+ member('<-objd<-',UG), \+ member('->objd->',UG).
@@ -448,10 +449,10 @@ head('V*FIN',OBJ,l,objg,'V*FIN',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidat
 head('VVIZU',OBJ,l,objg,'VVIZU',[_,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidate(OBJ,G), case_gen(MG,OBJ), \+ member('<-objg<-',UG), \+ member('->objg->',UG).
 
 
-%allow OBJDs before nonfinite verb if no matching finite verb is found in preprocessing (-> chunk has only one element).
-head('V*INF', OBJ,l,objg,'V*INF',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidate(OBJ,G), verbchunklength(FC,1), case_gen(MG,OBJ), \+ member('<-objg<-',UG), \+ member('->objg->',UG).
-head('V*PP', OBJ,l,objg,'V*PP',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidate(OBJ,G), verbchunklength(FC,1), case_gen(MG,OBJ), \+ member('<-objg<-',UG), \+ member('->objg->',UG).
-head('VVIZU', OBJ,l,objg,'VVIZU',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidate(OBJ,G), verbchunklength(FC,1), case_gen(MG,OBJ), \+ member('<-objg<-',UG), \+ member('->objg->',UG).
+%allow OBJDs before nonfinite verb in coordination chain
+head('V*INF', OBJ,l,objg,'V*INF',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidate(OBJ,G), in_coordination(FC,UG), case_gen(MG,OBJ), \+ member('<-objg<-',UG), \+ member('->objg->',UG).
+head('V*PP', OBJ,l,objg,'V*PP',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidate(OBJ,G), in_coordination(FC,UG), case_gen(MG,OBJ), \+ member('<-objg<-',UG), \+ member('->objg->',UG).
+head('VVIZU', OBJ,l,objg,'VVIZU',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- objcandidate(OBJ,G), in_coordination(FC,UG), case_gen(MG,OBJ), \+ member('<-objg<-',UG), \+ member('->objg->',UG).
 
 
 %relative pronoun (new transtag 'RC')
@@ -620,15 +621,15 @@ head('V*FIN', 'PPQ',l,pp,'QC',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld
 head('V*FIN', 'PAV',l,pp,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF).
 
 
-%allow PPs before nonfinite verb if no matching finite verb is found in preprocessing (-> chunk has only one element).
+%allow PPs before nonfinite verb in coordination chain
 %example/motivation: das kind, 1999 in cottbus geboren, konnte schon klavier spielen.
-head(NONFIN, 'PP',l,pp,NONFIN,[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- nonfinite(NONFIN), verbchunklength(FC,1).
-head(NONFIN, 'PAV',l,pp,NONFIN,[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- nonfinite(NONFIN), verbchunklength(FC,1).
+head(NONFIN, 'PP',l,pp,NONFIN,[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- nonfinite(NONFIN), in_coordination(FC,UG).
+head(NONFIN, 'PAV',l,pp,NONFIN,[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- nonfinite(NONFIN), in_coordination(FC,UG).
 
-%allow PPs after nonfinite verb if no matching finite verb is found in preprocessing (-> chunk has only one element).
+%allow PPs after nonfinite verb in coordination chain
 %example/motivation: das kind, geboren in cottbus, konnte schon klavier spielen
-head(NONFIN, 'PP',r,pp,NONFIN,[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- nonfinite(NONFIN), verbchunklength(FC,1).
-head(NONFIN, 'PAV',r,pp,NONFIN,[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- nonfinite(NONFIN), verbchunklength(FC,1).
+head(NONFIN, 'PP',r,pp,NONFIN,[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- nonfinite(NONFIN), in_coordination(FC,UG).
+head(NONFIN, 'PAV',r,pp,NONFIN,[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- nonfinite(NONFIN), in_coordination(FC,UG).
 
 
 %PP premodifying participial adjective (der auf dem boden liegende mann)
@@ -697,15 +698,15 @@ head('ADJD', 'PP',l,objp,'ADJD',[_,_,_,_,OF,_,_,_],F-_,MH,_,MH) :- \+ member('<-
 head('V*FIN', 'PAV',l,objp,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
 
 
-%allow PPs before nonfinite verb if no matching finite verb is found in preprocessing (-> chunk has only one element).
+%allow PPs before nonfinite verb in coordination chain
 %example/motivation: das kind, 1999 in cottbus geboren, konnte schon klavier spielen.
-head('V*INF', 'PP',l,objp,'V*INF',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
-head('V*PP', 'PP',l,objp,'V*PP',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
-head('VVIZU', 'PP',l,objp,'VVIZU',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
+head('V*INF', 'PP',l,objp,'V*INF',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- in_coordination(FC,OF), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
+head('V*PP', 'PP',l,objp,'V*PP',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- in_coordination(FC,OF), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
+head('VVIZU', 'PP',l,objp,'VVIZU',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- in_coordination(FC,OF), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
 
-head('V*INF', 'PAV',l,objp,'V*INF',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
-head('V*PP', 'PAV',l,objp,'V*PP',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
-head('VVIZU', 'PAV',l,objp,'VVIZU',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
+head('V*INF', 'PAV',l,objp,'V*INF',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- in_coordination(FC,OF), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
+head('V*PP', 'PAV',l,objp,'V*PP',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- in_coordination(FC,OF), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
+head('VVIZU', 'PAV',l,objp,'VVIZU',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- in_coordination(FC,OF), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
 
 
 %======================================================================================
@@ -1079,19 +1080,19 @@ head('V*FIN','PWAV',l,adv,'RC',[_,_,_,wo,_,_,_,_],_,MH,_,MH) :- correct_mistaggi
 head('V*FIN','PRELS',l,adv,'QC',[_,_,_,wo,_,_,_,_],_,MH,_,MH) :- correct_mistagging(yes).
 
 
-%allow adverbs before nonfinite verb if no matching finite verb is found in preprocessing (-> chunk has only one element).
+%allow adverbs before nonfinite verb in coordination chain
 %example/motivation: das kind, 1999 geboren, konnte schon klavier spielen.
-head('V*INF','ADV',l,adv,'V*INF',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1).
-head('V*PP','ADV',l,adv,'V*PP',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1).
+head('V*INF','ADV',l,adv,'V*INF',[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- in_coordination(FC,UG).
+head('V*PP','ADV',l,adv,'V*PP',[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- in_coordination(FC,UG).
 
-head('V*INF','ADJD',l,adv,'V*INF',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1).
-head('V*PP','ADJD',l,adv,'V*PP',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1).
+head('V*INF','ADJD',l,adv,'V*INF',[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- in_coordination(FC,UG).
+head('V*PP','ADJD',l,adv,'V*PP',[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- in_coordination(FC,UG).
 
-head('V*INF','PTKNEG',l,adv,'V*INF',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1).
-head('V*PP','PTKNEG',l,adv,'V*PP',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1).
+head('V*INF','PTKNEG',l,adv,'V*INF',[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- in_coordination(FC,UG).
+head('V*PP','PTKNEG',l,adv,'V*PP',[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- in_coordination(FC,UG).
 
-head('V*INF','PTKANT',l,adv,'V*INF',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), verbchunklength(FC,1).
-head('V*PP','PTKANT',l,adv,'V*PP',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), verbchunklength(FC,1).
+head('V*INF','PTKANT',l,adv,'V*INF',[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), in_coordination(FC,UG).
+head('V*PP','PTKANT',l,adv,'V*PP',[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), in_coordination(FC,UG).
 
 
 %adverb after finite verb
@@ -1484,9 +1485,9 @@ head('FM','KOMPX',l,kom,'FM',_,_,MH,_,MH).
 
 head('V*FIN','KOMPX',l,kom,'V*FIN',[FC,_,_,_,_,UG,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,UG).
 
-head('V*INF','KOMPX',l,kom,'V*INF',[FC,_,_,_,_,UG,_,_],_,MH,_,MH) :- verbchunklength(FC,1), restrict_vorfeld(FC,UG).
-head('V*PP','KOMPX',l,kom,'V*PP',[FC,_,_,_,_,UG,_,_],_,MH,_,MH) :- verbchunklength(FC,1), restrict_vorfeld(FC,UG).
-head('VVIZU','KOMPX',l,kom,'VVIZU',[FC,_,_,_,_,UG,_,_],_,MH,_,MH) :- verbchunklength(FC,1), restrict_vorfeld(FC,UG).
+head('V*INF','KOMPX',l,kom,'V*INF',[FC,_,_,_,_,UG,_,_],_,MH,_,MH) :- in_coordination(FC,UG), restrict_vorfeld(FC,UG).
+head('V*PP','KOMPX',l,kom,'V*PP',[FC,_,_,_,_,UG,_,_],_,MH,_,MH) :- in_coordination(FC,UG), restrict_vorfeld(FC,UG).
+head('VVIZU','KOMPX',l,kom,'VVIZU',[FC,_,_,_,_,UG,_,_],_,MH,_,MH) :- in_coordination(FC,UG), restrict_vorfeld(FC,UG).
 
 %======================================================================================
 %conjunction
@@ -1889,32 +1890,32 @@ lastlexical(From,Last) :- LeftPos is From - 1,
 %'zeit' before verb
 head('V*FIN','CARD',l,zeit,'V*FIN',[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 
-head('V*INF', 'CARD',l,zeit,'V*INF',[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
-head('V*PP', 'CARD',l,zeit,'V*PP',[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
-head('VVIZU', 'CARD',l,zeit,'VVIZU',[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('V*INF', 'CARD',l,zeit,'V*INF',[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- in_coordination(FC,UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('V*PP', 'CARD',l,zeit,'V*PP',[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- in_coordination(FC,UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('VVIZU', 'CARD',l,zeit,'VVIZU',[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- in_coordination(FC,UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 
 %Letztes Jahr regnete es.
 head('V*FIN','NN',l,zeit,'V*FIN',[FC,_,_,Lemma,UG,_,_,_],_,MF,MG,MF) :- zeitcand(Lemma), restrict_vorfeld(FC,UG), case_acc(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 
-head('V*INF', 'NN',l,zeit,'V*INF',[FC,_,_,Lemma,UG,_,_,_],_,MF,MG,MF) :- zeitcand(Lemma), case_acc(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
-head('V*PP', 'NN',l,zeit,'V*PP',[FC,_,_,Lemma,UG,_,_,_],_,MF,MG,MF) :- zeitcand(Lemma), case_acc(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
-head('VVIZU', 'NN',l,zeit,'VVIZU',[FC,_,_,Lemma,UG,_,_,_],_,MF,MG,MF) :- zeitcand(Lemma), case_acc(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('V*INF', 'NN',l,zeit,'V*INF',[FC,_,_,Lemma,UG,_,_,_],_,MF,MG,MF) :- zeitcand(Lemma), case_acc(MG,'NN'), in_coordination(FC,UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('V*PP', 'NN',l,zeit,'V*PP',[FC,_,_,Lemma,UG,_,_,_],_,MF,MG,MF) :- zeitcand(Lemma), case_acc(MG,'NN'), in_coordination(FC,UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('VVIZU', 'NN',l,zeit,'VVIZU',[FC,_,_,Lemma,UG,_,_,_],_,MF,MG,MF) :- zeitcand(Lemma), case_acc(MG,'NN'), in_coordination(FC,UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 
 
 %Eines Tages regnete es.
 head('V*FIN','NN',l,zeit,'V*FIN',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), restrict_vorfeld(FC,UG), case_gen(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 
-head('V*INF', 'NN',l,zeit,'V*INF',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
-head('V*PP', 'NN',l,zeit,'V*PP',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
-head('VVIZU', 'NN',l,zeit,'VVIZU',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('V*INF', 'NN',l,zeit,'V*INF',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), in_coordination(FC,UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('V*PP', 'NN',l,zeit,'V*PP',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), in_coordination(FC,UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('VVIZU', 'NN',l,zeit,'VVIZU',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), in_coordination(FC,UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 
 
 %Anfang Oktober regnete es.
 head('V*FIN','NZEIT',l,zeit,'V*FIN',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- restrict_vorfeld(FC,UG), case_acc(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 
-head('V*INF', 'NZEIT',l,zeit,'V*INF',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- verbchunklength(FC,1), case_acc(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
-head('V*PP', 'NZEIT',l,zeit,'V*PP',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- verbchunklength(FC,1), case_acc(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
-head('VVIZU', 'NZEIT',l,zeit,'VVIZU',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- verbchunklength(FC,1), case_acc(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('V*INF', 'NZEIT',l,zeit,'V*INF',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- in_coordination(FC,UG), case_acc(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('V*PP', 'NZEIT',l,zeit,'V*PP',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- in_coordination(FC,UG), case_acc(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('VVIZU', 'NZEIT',l,zeit,'VVIZU',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- in_coordination(FC,UG), case_acc(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 
 %der 1995 verstorbene Künstler
 head('ADJA', 'CARD',l,zeit,'ADJA',[_,_,_,_,UG,_,_,_],_,MH,_,MH) :-  (derived_from_ppres(MH,'ADJA');derived_from_ppast(MH,'ADJA')), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
@@ -2528,6 +2529,11 @@ restrict_vorfeld(_,_) :- !. %catchall
 %example: susi denkt und peter sieht laura. -> 'laura' can't be object of 'denkt'.
 restrict_coord(RelList) :- intersection(RelList,['->kon->','->s->','->objc->','->subjc->','->neb->'],[]). %only succeed if intersection is empty
 
+
+% we relax our rule "attach everything to the finite verb" (which has the purpose of making most structure parsable with a context-free grammar) for coordinations of multiple non-finite verbs:
+% Er darf weder einen Beruf ausüben noch Dritte vor Gericht vertreten
+in_coordination(Chunk,_Relations) :- verbchunklength(Chunk, 1), !.
+in_coordination(_Chunk,Relations) :- member('->kon->', Relations), !.
 
 %======================================================================================
 %checks on positions outside of normal scope.
