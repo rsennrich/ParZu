@@ -592,15 +592,15 @@ head('ADJD', 'PAV',r,pp,'ADJD',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('->pp-
 
 
 %prepositional phrase after verb
-head('V*FIN', 'PP',r,pp,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ (nth1(Pos,OG,'->pred->'), PosPred is Pos + 1, nth1(PosPred,OG,Pred), Pred =.. [Head|_], lexic(Head,_,HeadPos), checkPos(HeadPos,_,Tag,_,_), member(Tag,['NN','NE','ADV'])).
+head('V*FIN', 'PP',r,pp,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('->objp->',OG), \+ (nth1(Pos,OG,'->pred->'), PosPred is Pos + 1, nth1(PosPred,OG,Pred), Pred =.. [Head|_], lexic(Head,_,HeadPos), checkPos(HeadPos,_,Tag,_,_), member(Tag,['NN','NE','ADV'])).
 
-head('VVIMP', 'PP',r,pp,'VVIMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ (nth1(Pos,OG,'->pred->'), PosPred is Pos + 1, nth1(PosPred,OG,Pred), Pred =.. [Head|_], lexic(Head,_,HeadPos), checkPos(HeadPos,_,Tag,_,_), member(Tag,['NN','NE','ADV'])).
+head('VVIMP', 'PP',r,pp,'VVIMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('->objp->',OG), \+ (nth1(Pos,OG,'->pred->'), PosPred is Pos + 1, nth1(PosPred,OG,Pred), Pred =.. [Head|_], lexic(Head,_,HeadPos), checkPos(HeadPos,_,Tag,_,_), member(Tag,['NN','NE','ADV'])).
 
 
 
-head('V*FIN', 'PAV',r,pp,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG).
+head('V*FIN', 'PAV',r,pp,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('->objp->',OG).
 
-head('VVIMP', 'PAV',r,pp,'VVIMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG).
+head('VVIMP', 'PAV',r,pp,'VVIMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('->objp->',OG).
 
 
 
@@ -628,8 +628,8 @@ head(NONFIN, 'PAV',l,pp,NONFIN,[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- nonfinite(NONFI
 
 %allow PPs after nonfinite verb in coordination chain
 %example/motivation: das kind, geboren in cottbus, konnte schon klavier spielen
-head(NONFIN, 'PP',r,pp,NONFIN,[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- nonfinite(NONFIN), in_coordination(FC,UG).
-head(NONFIN, 'PAV',r,pp,NONFIN,[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- nonfinite(NONFIN), in_coordination(FC,UG).
+head(NONFIN, 'PP',r,pp,NONFIN,[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- nonfinite(NONFIN), in_coordination(FC,UG), \+ member('->objp->',UG).
+head(NONFIN, 'PAV',r,pp,NONFIN,[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- nonfinite(NONFIN), in_coordination(FC,UG), \+ member('->objp->',UG).
 
 
 %PP premodifying participial adjective (der auf dem boden liegende mann)
