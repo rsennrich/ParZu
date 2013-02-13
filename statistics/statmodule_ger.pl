@@ -125,7 +125,7 @@ stats2(zeit,_Htag,_FH,_SH,_MORPHH,'NN',_FD,_SD,_MORPHD,0.2,_D,_HC).
 
 
 %sentence coordinations: should be lower than 's' relation (if the latter occurs in training corpus)
-stats2(kon,_Htag,_FH,_SH,_MORPHH,'KONC',_FD,_SD,_MORPHD,P,_D,_HC) :- P is  0.65.
+stats2(kon,_Htag,_FH,_SH,_MORPHH,'KONC',_FD,_SD,_MORPHD,P,D,_HC) :- P is  0.65 - D*0.001.
 
 %coordinations: encourage short distances. Should have precedence over APP
 stats2(kon,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,_HC) :-
@@ -449,7 +449,7 @@ stats2(par,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,_MORPHD,P,_D,_HC-_OG) :-
 		Occurs > 3,
 		Ratio is Quote / Occurs,
 		(   (Ratio > 0.05,
-		    P is 0.6)
+		    P is 0.7)
 		    ;
 		    P is 0.01
 		)
@@ -460,7 +460,10 @@ stats2(par,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,_MORPHD,P,_D,_HC-_OG) :-
 	)).
 
 
-stats2(par,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.3,_D,_HC-_OG).
+%should have precedence over app
+stats2(par,_Htag,_FH,_SH,_MORPHH,'APP',_FD,_SD,_MORPHD,0.9,_D,_HC-_OG).
+
+stats2(par,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC-_OG).
 
 %comparatives
 %prefer attachment to verb, unless NN/ADJ is very close. *tiny* improvement over baseline...

@@ -39,7 +39,7 @@ postprocess(_,_) :- nl,retractall(output(_,_,_,_,_,_,_)), retractall(projectiveh
 %print results in pseudo-conll format.
 printresult(oldconll,Pos,DepWord,DepLemma,DepTag,Class,HeadPos,Morph) :- 
     transformMorph(conll,Morph,MorphOut),
-    (nbestmode(NBEST),NBEST > 0->NewHeadPos is max(0,HeadPos-1);NewHeadPos is HeadPos),
+    nbest_fixhead(HeadPos,HeadPosOut),
     write(Pos),
     tab(3),
     write(DepWord),
@@ -50,7 +50,7 @@ printresult(oldconll,Pos,DepWord,DepLemma,DepTag,Class,HeadPos,Morph) :-
     tab(3),
     write(MorphOut),
     tab(3),
-    write(NewHeadPos),
+    write(HeadPosOut),
     tab(3),
     write(Class),
     nl.
@@ -58,11 +58,10 @@ printresult(oldconll,Pos,DepWord,DepLemma,DepTag,Class,HeadPos,Morph) :-
 %print results in actual conll format.
 printresult(conll,Pos,DepWord,DepLemma,DepTag,Class,HeadPos,Morph) :- 
     transformMorph(conll,Morph,MorphOut),
-    (nbestmode(NBEST),NBEST > 0->NewHeadPos is max(0,HeadPos-1);NewHeadPos is HeadPos),
     coarsetag(DepTag,CoarseTag),
-    (extrainfo(secedges)->(secedge(Pos,ExtraHead,ExtraRel));
-    (extrainfo(projective)->(projectivehead(Pos,ExtraHead),ExtraRel=Class);
-    extrainfo(no)->(ExtraHead='_',ExtraRel='_'))),
+    getExtraHead(Pos,Class,ExtraHead,ExtraRel,conll),
+    nbest_fixHead(HeadPos,HeadPosOut),
+    nbest_fixHead(ExtraHead,ExtraHeadOut),
     write(Pos),
     write('\t'),
     write(DepWord),
@@ -75,29 +74,25 @@ printresult(conll,Pos,DepWord,DepLemma,DepTag,Class,HeadPos,Morph) :-
     write('\t'),
     write(MorphOut),
     write('\t'),
-    write(NewHeadPos),
+    write(HeadPosOut),
     write('\t'),
     write(Class),
     write('\t'),
-    write(ExtraHead),
+    write(ExtraHeadOut),
     write('\t'),
     write(ExtraRel),
     nl.
 
-
 %print results in prolog format.
 printresult(prolog,Pos,Word,Lemma,Tag,Rel,HeadPos,Morph) :- 
     transformMorph(prolog,Morph,MorphOut),
-    (nbestmode(NBEST),NBEST > 0->NewHeadPos is max(0,HeadPos-1);NewHeadPos is HeadPos),
-    (extrainfo(secedges)->(secedge(Pos,ExtraHead,ExtraRel));
-    (extrainfo(projective)->(projectivehead(Pos,ExtraHead),ExtraRel=Rel);
-    extrainfo(no)->(ExtraHead='_',ExtraRel='_'))),
-    (extrainfo(no)->writeq(word(Pos,Word,Lemma,Tag,Rel,NewHeadPos,MorphOut));
-    ((ExtraHead='_'->ExtraHeadOut='-';ExtraHeadOut=ExtraHead),
-    (ExtraRel='_'->ExtraRelOut='-';ExtraRelOut=ExtraRel),
-    writeq(word(Pos,Word,Lemma,Tag,Rel,NewHeadPos,MorphOut,ExtraRelOut,ExtraHeadOut)))), write('.'),nl.
+    getExtraHead(Pos,Rel,ExtraHead,ExtraRel,prolog),
+    nbest_fixHead(HeadPos,HeadPosOut),
+    nbest_fixHead(ExtraHead,ExtraHeadOut),
+    (extrainfo(no)->writeq(word(Pos,Word,Lemma,Tag,Rel,HeadPosOut,MorphOut));
+    writeq(word(Pos,Word,Lemma,Tag,Rel,HeadPosOut,MorphOut,ExtraRel,ExtraHeadOut))), write('.'),nl.
 
-%print results in moses format. default.
+%print results as Moses factors.
 printresult(moses,_,Word,_,Tag,Rel,HeadPos,_) :- 
     (HeadPos=0->HeadWord=root;chart(HeadPos,HeadPos,HeadPos,_,_,_,_,_,_,[HeadWord|_])),
     write(Word),
@@ -108,6 +103,22 @@ printresult(moses,_,Word,_,Tag,Rel,HeadPos,_) :-
     write('|'),
     write(HeadWord),
     write(' ').
+
+
+% if either the option --secedges (for secondary edges) or --projective (for projective edges) is active, get correct edge/label information
+getExtraHead(_Pos, _Rel, '_', '_', conll) :- extrainfo(no), !.
+getExtraHead(_Pos, _Rel, -, -, prolog) :- extrainfo(no), !.
+
+getExtraHead(Pos, _Rel, ExtraHead, ExtraRel, Format) :- extrainfo(secedges), secedge(Pos,ExtraHead,ExtraRel,Format), !.
+getExtraHead(Pos, Rel, ExtraHead, Rel, _Format) :- extrainfo(projective), projectivehead(Pos,ExtraHead), !.
+
+%n-best tagging uses an extra token at the start of the sentence to pass through tagging probability.
+%shift all positions one to the left.
+nbest_fixHead(0, 0) :- !.
+nbest_fixHead(-, -) :- !.
+nbest_fixHead('_', '_') :- !.
+nbest_fixHead(PosIn, PosOut) :- nbestmode(NBEST), NBEST > 0, PosOut is PosIn-1, !.
+nbest_fixHead(Pos, Pos) :- !.
 
 
 transformMorph(prolog,[Var],_) :- var(Var),!.
@@ -228,7 +239,7 @@ fixAttachment(_,_,Pos,Pos) :- !.
 %control verbs (subject/object of matrix clause is subject of infinitive clause)
 
 %subject may have auxiliary verb as head; use corresponding full verb to check for control
-secedge(Pos,SecHeadPos,subj) :- output(Pos,_,_,_,subj,HeadPos,_),
+secedge(Pos,SecHeadPos,subj,_Format) :- output(Pos,_,_,_,subj,HeadPos,_),
             output(HeadPos,_,_,_,_,_,_),
             chart(HeadPos,HeadPos,HeadPos,[_,_,HC,_],_,_,_,_,_,_),
             (member(passive,HC)->ControlType=obja;ControlType=subj), % treat passive subject as accusative object for purpose of control (sie zwingt ihn -> er wurde gezwungen)
@@ -241,15 +252,15 @@ secedge(Pos,SecHeadPos,subj) :- output(Pos,_,_,_,subj,HeadPos,_),
 
 
 %general case (subj/obja/objd depending directly on full verb)
-secedge(Pos,SecHeadPos,subj) :- output(Pos,_,_,_,Rel,HeadPos,_),
+secedge(Pos,SecHeadPos,subj,_Format) :- output(Pos,_,_,_,Rel,HeadPos,_),
              output(HeadPos,_,HeadLemma,_,_,_,_),
              (output(_PTKVZPos,_,PTKVZWord,_,avz,_,_)->atom_concat(PTKVZWord,HeadLemma,TrueHeadLemma);TrueHeadLemma=HeadLemma),
              control(Rel,TrueHeadLemma),
              output(SecHeadPos,_,_,_,obji,HeadPos,_), !.
 
 %catchall: no secondary edge found
-secedge(_,'_','_') :- !.
-
+secedge(_, '_', '_', conll) :- !.
+secedge(_, -, -, _Format) :- !.
 
 relative_morphology(HeadPos,RelPos,Tag,Morph) :- output(RelPos,_,_,Tag,_,_,Morph), 
               member(Tag,['PRELS','PRELAT']),
@@ -315,7 +326,7 @@ leavealone(adv).
 leavealone(konjneb).
 leavealone(konjobjc).
 leavealone(koord).
-
+leavealone(par).
 
 
 

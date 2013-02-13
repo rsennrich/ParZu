@@ -253,14 +253,10 @@ def getlemma(line,word,pos):
             joinpoint = backTrack(LCS(word_lc,last_morpheme_lc),word_lc,last_morpheme_lc,len(word_lc),len(last_morpheme_lc))[0]
         except IndexError:
             lemma = re_any.sub('',line)
-            return lemma[0] + lemma[1:].lower()
-        #deal with umlaut-plural in German nouns (Männer, Länder etc.)
-        try:
-            word_lc_2 = word_lc.replace(u"ä","a").replace(u"ü","u").replace(u"ö","o")
-            joinpoint2 = backTrack(LCS(word_lc_2,last_morpheme_lc),word_lc_2,last_morpheme_lc,len(word_lc_2),len(last_morpheme_lc))[0]
-            joinpoint = min(joinpoint, joinpoint2)
-        except IndexError:
-            pass
+            try:
+                return lemma[0] + lemma[1:].lower()
+            except IndexError:
+                return lemma
         if joinpoint > 1:
             if word[joinpoint-1] == '-':
                 return re_any.sub('',word[:joinpoint])+last_morpheme
@@ -279,7 +275,10 @@ def getlemma(line,word,pos):
     elif lemma == 'sie' and '<Masc>' in line:
         lemma = 'er'
 
-    return lemma[0] + lemma[1:].lower()
+    try:
+        return lemma[0] + lemma[1:].lower()
+    except IndexError:
+        return lemma
 
 
 # print analyses with fewest morphemes first
@@ -298,7 +297,7 @@ def LCS(X, Y):
     C = [[0] * (n+1) for i in range(m+1)]
     for i in range(1, m+1):
         for j in range(1, n+1):
-            if X[i-1] == Y[j-1] and X[i-2] == Y[j-2]: 
+            if X[i-1] == Y[j-1]:
                 C[i][j] = C[i-1][j-1] + 1
             else:
                 C[i][j] = max(C[i][j-1], C[i-1][j])
