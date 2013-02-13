@@ -75,8 +75,6 @@ sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[WFormF|MORPHF],
        GID,GPos,Gfrom,_Gto,FGh,GChunk,GScore,Gtag,FuncG,[WFormG|MORPHG], Level) :-
   constant(commit,COMMIT),
   constant(discard,DISCARD),
-  constant(aggressive_start,MAXCHART),
-  constant(aggressive_thresh,THRESH),
   FuncF=..[SF|OF],           % get F pred (FF)
   FuncG=..[SG|OG],           % get G pred (FG)
   !,
@@ -103,7 +101,6 @@ sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[WFormF|MORPHF],
   (chart(_,Gfrom,Fto,_,_,Transtag,_,FuncTRes,_,_) -> (fail);true), % alternative path joins in again
   OPScore is FScore * GScore * Prob, Len is Fto - Gfrom,
   inc(ID),
-  (ID>MAXCHART -> (((OPScore / ((Len+(Len**sqrt(2)))+(ID/2))) < THRESH) -> (write(' TOO LOW!'),nl,!,fail);true); true),
   %do not assert if alternative is not among ALTER best.
   constant(alter,ALTER),
   findall(AltScore, (scores(Gfrom,Fto,_,_,AltScore),\+var(OPScore),AltScore>OPScore),AltList),
