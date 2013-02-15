@@ -2076,6 +2076,9 @@ head(Tag, 'VMPP' ,Dir,Rel,Transtag,L,D,MA,MB,MC) :- head(Tag, 'V*INF/PP',Dir,Rel
 head(Tag, 'PROP' ,Dir,Rel,Transtag,L,D,MA,MB,MC) :- head(Tag, 'PAV',Dir,Rel,Transtag,L,D,MA,MB,MC).
 head(Tag, 'PROAV',Dir,Rel,Transtag,L,D,MA,MB,MC) :- head(Tag, 'PAV',Dir,Rel,Transtag,L,D,MA,MB,MC).
 
+head('PROP', Tag ,Dir,Rel,'PAV',L,D,MA,MB,MC) :- head('PAV',Tag,Dir,Rel,'PAV',L,D,MA,MB,MC).
+head('PROAV', Tag,Dir,Rel,'PAV',L,D,MA,MB,MC) :- head('PAV',Tag,Dir,Rel,'PAV',L,D,MA,MB,MC).
+
 %tags that can be clausal subject/object
 head(Tag, 'OBJC' ,Dir,Rel,Transtag,L,D,MA,MB,MC) :- head(Tag, 'OBJC/SUBJC',Dir,Rel,Transtag,L,D,MA,MB,MC).
 head(Tag, 'QC' ,Dir,Rel,Transtag,L,D,MA,MB,MC) :- head(Tag, 'OBJC/SUBJC',Dir,Rel,Transtag,L,D,MA,MB,MC).
