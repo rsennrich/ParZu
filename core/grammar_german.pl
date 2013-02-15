@@ -634,11 +634,11 @@ head(NONFIN, 'PAV',r,pp,NONFIN,[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- nonfinite(NONFI
 
 %PP premodifying participial adjective (der auf dem boden liegende mann)
 head('ADJA', 'PP',l,pp,'ADJA',_,F-_,MH,_,MH) :- \+ endOfNP(F).
-head('ADJD', 'PP',l,pp,'ADJD',_,F-_,MH,_,MH) :- \+ endOfNP(F).
+head('ADJD', 'PP',l,pp,'ADJD',_,_,MH,_,MH).
 
 %daran angedockt
 head('ADJA', 'PAV',l,pp,'ADJA',_,F-G,MH,_,MH) :- 1 is F-G.
-
+head('ADJD', 'PAV',l,pp,'ADJD',_,F-G,MH,_,MH) :- 1 is F-G.
 
 %darunter viele Kinder
 head('NN', 'PAV',l,pp,'NN',_,_,MH,_,MH).
