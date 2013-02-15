@@ -13,6 +13,8 @@ ambi(2).	                % number of readings returned minus 1. minimally 2.
 
 constant(levels,20).             % CYK levels. default is 30, use vals between 10 and 30.
 constant(alter,3).               % number of alternatives for same stretch at normal pruning. default is 3, use vals between 2 and 6.
+constant(aggressive_start, 50000). % number of chart entries from where aggressive pruning starts. default is 50000
+constant(aggressive_thresh,0.03).% treshold below which to cut at aggressive pruning. default is 0.01
 constant(commit,1.05).           % early commitment locally if above this probability: do not search for alternatives (=deterministic)
 constant(discard,0.05).          % discard locally if below this probability. default is 0.05
 
