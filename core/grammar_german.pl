@@ -780,17 +780,17 @@ head('NN','CARD',r,app_close,'NZEIT',[_,_,HeadWord,_,HeadRels,DepRels,_,_],HeadP
 %name as apposition of noun: morphological mismatch is ok in some, but not all cases
 %Der Ministerpräsident Italiens -> no app (must be gmod)
 %Des Ministerpräsidenten Berlusconi -> (app is ok)
-head(HTag,'NE',r,app_close,HTag,[_,_,_,_,_,OF,_,_],_,MG,_,MG) :- HTag \= 'NE', apphead(HTag), \+ member('<-det<-', OF), \+ member('<-attr<-', OF).
+head(HTag,'NE',r,app_close,HTag,[_,_,_,_,_,OF,_,_],_,MG,_,MG) :- HTag \= 'NE', apphead(HTag), \+ member('<-det<-', OF).
 
 %John Lennons -> take genitive information from last element
 %if first element is genitive, don't allow relation (except if morphology is ambiguous)
 %Der Ministerpräsident Italiens Silvio Berlusconi -> "Silvio" is not apposition of "Italiens", but of "Ministerpräsident"
-head('NE','NE',r,app_close,'NE',[_,_,_,_,_,OF,_,_],_,MG,MF,MF) :- \+ member('<-det<-', OF), \+ member('<-attr<-', OF), (case_gen(MG,'NE')->case_nom(MG,'NE');true).
+head('NE','NE',r,app_close,'NE',[_,_,_,_,_,OF,_,_],_,MG,MF,MF) :- \+ member('<-det<-', OF), (case_gen(MG,'NE')->case_nom(MG,'NE');true).
 
 %der bürgermeister meier vs. der internet browser: if last element is nn (but not if ne), use it for np agreement.
-head(HTag,'NN',r,app_close,HTag,[_,_,_,_,_,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), \+ member('<-det<-', OF), \+ member('<-attr<-', OF), unify_case(MF,'NN',MG,HTag,MNew).
+head(HTag,'NN',r,app_close,HTag,[_,_,_,_,_,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), \+ member('<-det<-', OF), unify_case(MF,'NN',MG,HTag,MNew).
 
-head(HTag,'FM',r,app_close,HTag,[_,_,_,_,_,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), \+ member('<-det<-', OF), \+ member('<-attr<-', OF), unify_case(MF,'FM',MG,HTag,MNew).
+head(HTag,'FM',r,app_close,HTag,[_,_,_,_,_,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), \+ member('<-det<-', OF), unify_case(MF,'FM',MG,HTag,MNew).
 
 head(HTag,'CARD',r,app_close,HTag,_,_,MH,_,MH) :- apphead(HTag).
 
