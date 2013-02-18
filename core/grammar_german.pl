@@ -499,6 +499,9 @@ head('PWS', GEN,r, gmod, 'PWS',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- F-G > 1, val
 %head('PRELS', GEN, r, gmod, 'PRELS',[_,_,_,_,OG,_,_,_],_,MG,MF,MG) :- validgmod(GEN), case_gen(MF), \+ member('->gmod->',OG).
 
 
+%Anfang des Jahres etc.: can be adverbial expression -> special metatag
+head('NN','NN',r,gmod,'NZEIT',[_,_,HeadWord,DepWord,HeadRels,DepRels,_,_],_,HeadMorph,DepMorph,HeadMorph) :- zeit_like_anfang(HeadWord), zeitcand(DepWord), case_gen(DepMorph,'NN'), \+ member('->gmod->',HeadRels), \+ member('<-gmod<-',DepRels), \+ member('->pp->',HeadRels), \+ member('->kon->',HeadRels), \+ member('->app_loose->',HeadRels), \+ member('->app_close->',HeadRels).
+
 
 %Genitive modfier before head noun. Pronoun heads seem to be ungrammatical: "Einer der Fischer" vs. *"Bremens einer".
 
@@ -770,9 +773,9 @@ head(HTag,'FM',r,app_close,HTag,[_,_,_,_,_,OF,_,_],_,MG,MF,MNew) :- apphead(HTag
 
 
 %Anfang Oktober etc.: can be adverbial expression -> special metatag
-head('NN','NN',r,app_close,'NZEIT',[_,_,HeadWord,DepWord,HeadRels,DepRels,_,_],HeadPos-DepPos,HeadMorph,DepMorph,TransMorph) :- member(HeadWord,['Anfang','Mitte','Ende']), zeitcand(DepWord), -1 is HeadPos-DepPos, \+ member('<-det<-', DepRels), \+ member('<-attr<-', DepRels), \+ member('<-det<-', HeadRels), \+ member('<-attr<-', HeadRels), unify_case(HeadMorph,'NN',DepMorph,'NN',TransMorph).
+head('NN','NN',r,app_close,'NZEIT',[_,_,HeadWord,DepWord,HeadRels,DepRels,_,_],_,HeadMorph,DepMorph,TransMorph) :- zeit_like_anfang(HeadWord), zeitcand(DepWord), \+ member('<-det<-', DepRels), \+ member('<-det<-', HeadRels), \+ member('<-attr<-', HeadRels), unify_case(HeadMorph,'NN',DepMorph,'NN',TransMorph).
 
-head('NN','CARD',r,app_close,'NZEIT',[_,_,HeadWord,_,HeadRels,DepRels,_,_],HeadPos-DepPos,HeadMorph,DepMorph,TransMorph) :- member(HeadWord,['Anfang','Mitte','Ende']), -1 is HeadPos-DepPos, \+ member('<-det<-', DepRels), \+ member('<-attr<-', DepRels), \+ member('<-det<-', HeadRels), \+ member('<-attr<-', HeadRels), unify_case(HeadMorph,'NN',DepMorph,'NN',TransMorph).
+head('NN','CARD',r,app_close,'NZEIT',[_,_,HeadWord,_,HeadRels,_,_,_],_,HeadMorph,DepMorph,TransMorph) :- zeit_like_anfang(HeadWord), \+ member('<-det<-', HeadRels), \+ member('<-attr<-', HeadRels), unify_case(HeadMorph,'NN',DepMorph,'NN',TransMorph).
 
 
 %close apposition.

@@ -249,6 +249,14 @@ zeitcand('Zeit').
 zeitcand('Mal').
 
 
+%nouns that can have adverbial (temporal) meaning if they are the head of another noun phrase with temporal meaning:
+%Anfang 1995
+%Ende des Jahres
+zeit_like_anfang('Anfang').
+zeit_like_anfang('Mitte').
+zeit_like_anfang('Ende').
+
+
 %override morphological analysis for some units of measurement: they may remain uninflected ("10 Grad" instead of "10 Grade").
 
 %SI-Units (except units of time, which are inflected):
