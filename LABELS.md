@@ -1,6 +1,6 @@
 The dependency labels implemented in ParZu are described in:
 
-Killian A. Foth. 2005. Eine umfassende Contraint-Dependenz-Grammatik des Deutschen. University of Hamburg.
+Killian A. Foth. 2005. Eine umfassende Constraint-Dependenz-Grammatik des Deutschen. University of Hamburg.
 
 Here is a short summary
 

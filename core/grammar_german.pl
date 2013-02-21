@@ -846,6 +846,9 @@ head('RC','RC',r,rel,'RC',[_,_,_,_,OG,DepRels,_,_],_,MH,_,MH) :- restrict_coord(
 
 head('NEB','RC',r,rel,'NEB',[_,_,_,_,OG,DepRels,_,_],_,MH,_,MH) :- restrict_coord(OG), member('<-comma<-', DepRels).
 
+head('ADV','RC',r,rel,'ADV',[_,_,_,_,OG,DepRels,_,_],_,MH,_,MH) :- restrict_coord(OG), member('<-comma<-', DepRels), among_dependents(DepRels,'PWAV',1).
+
+head('PAV','RC',r,rel,'PAV',[_,_,_,_,OG,DepRels,_,_],_,MH,_,MH) :- restrict_coord(OG), member('<-comma<-', DepRels), among_dependents(DepRels,'PWAV',1).
 
 %======================================================================================
 %subordinating conjunctions
@@ -955,6 +958,12 @@ head('VVIMP','OBJC/SUBJC',r,objc,'VVIMP',[GC,_,_,_,OG,_,_,_],_,MH,_,MH) :-  \+ m
 head('RC','OBJC/SUBJC',r,objc,'RC',[GC,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('passive',GC), restrict_coord(OG), (\+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG);conjoined_vp(OG)).
 
 head('NEB','OBJC/SUBJC',r,objc,'NEB',[GC,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('passive',GC), restrict_coord(OG), (\+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG);conjoined_vp(OG)).
+
+
+%er hat nichts dazu gesagt, was passiert ist" ('dazu' or other prepositional adverbs allow obja/objc to co-exist; subclause may alternatively be analysed as depending on adverb, or being adverbial)
+head('V*FIN','OBJC/SUBJC',r,objc,'V*FIN',[GC,_,_,_,OG,_,_,_],_,MH,_,MH) :-  \+ member('passive',GC), restrict_coord(OG),\+ member('<-objc<-',OG), \+ member('->objc->',OG), adverbial_pronoun(Tag), among_dependents(OG, Tag, 1).
+
+head('VVIMP','OBJC/SUBJC',r,objc,'VVIMP',[GC,_,_,_,OG,_,_,_],_,MH,_,MH) :-  \+ member('passive',GC), restrict_coord(OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG), adverbial_pronoun(Tag), among_dependents(OG, Tag, 1).
 
 
 %die Möglichkeit, dass...
