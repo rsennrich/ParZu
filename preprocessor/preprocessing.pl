@@ -18,6 +18,8 @@
 :- assert(lemmatisation(gertwol)).
 :- assert(sentdelim('$.')).
 
+correct_mistagging(yes).
+
 %reads from stdin, writes to stdout
 start(GERTWOL) :- retractall(w(_,_,_,_,_,_)), retractall(w(_,_,_,_)), retractall(sentno(_)), retractall(posno(_)), retractall(completed(_,_)), retractall(lvl(_,_,_,_)),
 		   consult(GERTWOL),
@@ -50,7 +52,6 @@ addnumber(X) :- sentdelim(SentDelim),
 			NewPos is 1,
 			assert(posno(NewPos)),
 		    dochunking(Sentence),
-		    tagcorrection(Sentence),
 		    printwords(Sentence),
 		    retractall(w(Sentence,_,_,_,_,_)),
 			!.
@@ -121,35 +122,6 @@ dochunking.
 dochunking(Sentence) :- 		retractall(completed(_,_)),
 		retractall(lvl(_,_,_,_)),
 		idstart(Sentence, 1,1).
-
-
-tagcorrection(Sentence) :- tagstart(Sentence, 1).
-
-
-%Der Hamburgische Ministerpräsident; die Vereinten Nationen: treat first noun as adjective.
-tagstart(Sentence,Pos) :- w(Sentence,Pos,Word,Tag,_,_), 
-			  (Tag='NN';Tag='NE';Tag='FM'),
-		          PosRight is Pos + 1,
-			  w(Sentence,PosRight,_,'NN',_,_),
-			  forcetag(Word,Tag,Lemma,'ADJA'), !,
-			  jointag(Lemma,'ADJA',NewString),
-			  retract(w(Sentence,Pos,Word,Tag,_,Morph)),
-			  assert(w(Sentence,Pos,Word,'ADJA',[NewString],Morph)),
-			  NewPos is Pos + 1,
-			  tagstart(Sentence,NewPos).
-
-%sentence finished
-tagstart(Sentence,Pos) :- sentdelim(SentDelim),
-                        w(Sentence,Pos,_,SentDelim,_,_), !.
-
-%nothing found - repeat search with next position.
-tagstart(Sentence,Pos) :- sentdelim(SentDelim),
-              w(Sentence,_,_,SentDelim,_,_),
-			  NewPos is Pos + 1,
-			  tagstart(Sentence,NewPos).
-
-%catchall - just in case.
-tagstart(_,_) :- !.
 
 %==============================================================================
 %morphology and lemmatising
@@ -238,26 +210,21 @@ morphmapping(*,_).
 morphmapping(X,X). %catchall
 
 
-%override some TreeTagger analyses.
-% getlemma(was,_Tag,was,'PWS') :- !.
+%override some tagger analyses.
 
 %noch (in 'weder x noch y') is often mistagged as adverb
-getlemma(noch,_,noch,'KON') :- w(_,_,Word,_,_,_),member(Word,[weder,'Weder']), !.
+getlemma(noch,_,noch,'KON') :- correct_mistagging(yes), w(_,_,Word,_,_,_),member(Word,[weder,'Weder']), !.
 
 % Sometimes, TreeTagger has problems with Ein.
-getlemma('Ein',_,ein,'ART') :- !.
-getlemma('Einen',_,ein,'ART') :- !.
-getlemma('Einem',_,ein,'ART') :- !.
+getlemma('Ein',_,ein,'ART') :- correct_mistagging(yes), !.
+getlemma('Einen',_,ein,'ART') :- correct_mistagging(yes), !.
+getlemma('Einem',_,ein,'ART') :- correct_mistagging(yes), !.
 
-%normal case: treetagger and gertwol agree
+%normal case: tagger and morphology system agree
 getlemma(Word,Tag,Lemma,Tag) :- gertwol(Word,Lemma,Tag,_Analysis, _), \+ Lemma = '<unknown>', !.
 
-%exception: if TreeTagger says 'NN', and Gertwol only knows word as 'NE', use 'NE'
-getlemma(Word,'NN',Lemma,'NE') :- gertwol(Word,Lemma,'NE',_Analysis, _), \+ Lemma = '<unknown>', !.
-
-%exception: Sometimes, sentence-initial adjectives are mistagged as nouns. (but dual-names like Kühlmann-Stumm may be mistagged as adjectives by Gertwol, so make sure it isn't one)
-getlemma(Word,'NN',Lemma,'ADJD') :- gertwol(Word,Lemma,'ADJD',_Analysis, _), \+ Lemma = '<unknown>', \+ (name(Word,WordChars), member(45,WordChars)), !.
-getlemma(Word,'NE',Lemma,'ADJD') :- gertwol(Word,Lemma,'ADJD',_Analysis, _), \+ Lemma = '<unknown>', \+ (name(Word,WordChars), member(45,WordChars)), !.
+%exception: if tagger says 'NN', and morphology system only knows word as 'NE', use 'NE'
+getlemma(Word,'NN',Lemma,'NE') :- correct_mistagging(yes), gertwol(Word,Lemma,'NE',_Analysis, _), \+ Lemma = '<unknown>', !.
 
 
 % Gertwol doesn't distinguish between modal/auxiliary/full verbs
@@ -267,13 +234,6 @@ getlemma(Word,'VAPP',Lemma,'VAPP') :- morphology(gertwol), gertwol(Word,Lemma,'V
 getlemma(Word,'VMFIN',Lemma,'VMFIN') :- morphology(gertwol), gertwol(Word,Lemma,'VVFIN',_Analysis,_), \+ Lemma = '<unknown>', !.
 getlemma(Word,'VMINF',Lemma,'VMINF') :- morphology(gertwol), gertwol(Word,Lemma,'VVINF',_Analysis,_), \+ Lemma = '<unknown>', !.
 getlemma(Word,'VMPP',Lemma,'VMPP') :- morphology(gertwol), gertwol(Word,Lemma,'VVPP',_Analysis,_), \+ Lemma = '<unknown>', !.
-
-
-%next case: POS tag from Gertwol overrides TreeTagger. Free choice
-% getlemma(Word,Tag,Lemma,NewTag) :- gertwol(Word,Lemma,NewTag,_Analysis, _), \+ Lemma = '<unknown>',
-% 				      \+ member(Tag,['FM','PTKNEG','PWAV','ITJ']), %in case of conflict, we sometimes want to prefer TreeTagger tags.
-% 				      write('%word/tag combination not found in gertwol:'), write(Word), write(' '),write(Tag),write(' - using '), write(NewTag), write(' instead.\n'),
-% 				      !.
 
 %try spelling variations
 getlemma(Word,InTag,Lemma,OutTag) :- spellingvariation(Word,NewWord), \+ NewWord = Word, !,
