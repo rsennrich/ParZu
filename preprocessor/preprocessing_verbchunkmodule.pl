@@ -751,4 +751,4 @@ functtag2('KOKOM').
 
 
 %word form is ambiguous (same word form/same lemma), but because of syntactic context, we decide to overrule tagger.
-forcetag(Word,Tag,Lemma,NewTag) :- gertwol(Word,Lemma,NewTag,_, _), gertwol(Word,_,Tag,_, _), \+ Lemma = '<unknown>'.
+forcetag(Word,Tag,Lemma,NewTag) :- correct_mistagging(yes), gertwol(Word,Lemma,NewTag,_, _), gertwol(Word,_,Tag,_, _), \+ Lemma = '<unknown>'.
