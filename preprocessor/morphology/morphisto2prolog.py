@@ -268,12 +268,21 @@ def getlemma(line,word,pos):
     lemma = re_any.sub('',line) #delete all markup, leaving what we'll use as lemma
 
 
-    #SMOR started giving the same lemma to er/sie/es; keep the distinction for now
-    #(this is slightly redundant, since we can get the same info from the gender, but the grammar looks at the lemma at the moment to find cases of expletive 'es')
-    if lemma == 'sie' and '<Neut>' in line:
-        lemma = 'es'
-    elif lemma == 'sie' and '<Masc>' in line:
-        lemma = 'er'
+    #SMOR gives the same lemma to er/sie/es; keep the distinction in ParZu
+    #(this is slightly redundant, since we can get the same info from the gender, but the grammar looks at the lemma to find cases of expletive 'es')
+    if lemma == 'sie':
+        if '<3><Sg><Neut>' in line:
+            lemma = 'es'
+        elif '<3><Sg><Masc>' in line:
+            lemma = 'er'
+        elif '<1><Sg>' in line:
+            lemma = 'ich'
+        elif '<2><Sg>' in line:
+            lemma = 'du'
+        elif '<1><Pl>' in line:
+            lemma = 'wir'
+        elif '<2><Pl>' in line:
+            lemma = 'ihr'
 
     try:
         return lemma[0] + lemma[1:].lower()
