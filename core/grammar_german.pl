@@ -898,7 +898,7 @@ head('NEB','$,',r,comma,'NEB',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ member('
 
 
 %subordinated clause before main clause
-head('V*FIN','NEB',l,neb,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF).
+head('V*FIN','NEB',l,neb,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- (restrict_vorfeld(FC,OF); member('<-adv<-',OF)).
 
 
 %subordinated clause after main clause
@@ -1055,7 +1055,7 @@ head('VVFIN','V*INF/PP',r,obji,'VVFIN',[_,DC,HW,_,_,_,_,_],_,MH,_,MH) :- modalli
 
 
 %adverb before finite verb
-head('V*FIN','ADV',l,adv,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF).
+head('V*FIN','ADV',l,adv,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- (restrict_vorfeld(FC,OF); member('<-neb<-',OF)).
 
 head('VVIZU','ADV',l,adv,'VVIZU',_,_,MH,_,MH).
 
