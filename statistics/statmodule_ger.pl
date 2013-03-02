@@ -357,22 +357,23 @@ npidsamb(_,_,_,objg,0.01) :- !.
 npidsamb(_,_,_,pred,0.01) :- !.
 
 
-%predicate nouns (ADJD) - not competing with subj/obj, but with ADV, which has default probability of 1.
-stats2(pred,_Htag,_FH,_SH,_MORPHH,'ADJD',_FD,_SD,_MORPHD,P,_D,HC-_OG) :-
-% 	((downcase_atom(FD,FLower),npstats(FLower,'adjd',_,AsPred,AsAdv), %lexical stats
-% 	AsPred+AsAdv > 5,
-% 	LexProb = (AsPred+1)/(AsPred+AsAdv+1));LexProb is 0.5),
-	getheadandnormalise(HC,Head,_),
-	((		verb(Head,Occurs,_,_,_,_,_,_,_,_,Pred,_,_,_,_,_),
-		Occurs > 1,
-		Freq is Pred / Occurs,
-		(Freq >= 0.3 -> P is 1.06;
-		(Freq < 0.3 -> P is 0.01))
-	)
-	; %backoff: if there is no lexical information, use a fixed probability.
-	(	((\+ verb(Head,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_)); (verb(Head,Occurs,_,_,_,_,_,_,_,_,_,_,_,_,_,_), Occurs < 2)),
-		P is 0.01
-	)).
+%predicate nouns (ADJD) - not competing with subj/obj, but with ADV, which has its own disambiguation method (because they often have multiple potential heads).
+stats2(pred,_Htag,_FH,_SH,_MORPHH,'ADJD',FD,_SD,_MORPHD,P,_D,HC-_OG) :-
+        getheadandnormalise(HC,Head,_),
+        downcase_atom(FD,Dep),
+        pred_disambiguate(Head,Dep,Score),
+        (Score > 0.5->P is 1;P is 0).
+
+pred_disambiguate(Head, Dep, Score) :- (adjd_adverbial(Head, Dep, BilexAdv)->true;BilexAdv=0),
+        (adjd_predicative(Head, Dep, BilexPred)->true;BilexPred=0),
+        (adjd_adverbial('*any*', Dep, VAdv)->true;VAdv=0),
+        (adjd_predicative('*any*', Dep, VPred)->true;VPred=0),
+        (adjd_adverbial(Head, '*any*', ADJDAdv)->true;ADJDAdv=0),
+        (adjd_predicative(Head, '*any*', ADJDPred)->true;ADJDPred=0),
+        BilexStats is (BilexPred+1)/(BilexPred+BilexAdv+2),
+        VStats is (VPred+1)/(VPred+VAdv+2),
+        ADJDStats is (ADJDPred+1)/(ADJDPred+ADJDAdv+2),
+        Score is 0.7*BilexStats+0.15*VStats+0.15*ADJDStats.
 
 %genitive modifiers
 stats2(gmod,_Htag,_FH,SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,_D,_HC-_OG) :-
