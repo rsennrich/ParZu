@@ -969,6 +969,8 @@ head('RC','OBJC/SUBJC',r,objc,'RC',[GC,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('
 
 head('NEB','OBJC/SUBJC',r,objc,'NEB',[GC,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('passive',GC), restrict_coord(OG), (\+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG);conjoined_vp(OG)).
 
+head('VVIZU','OBJC/SUBJC',r,objc,'VVIZU',[GC,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('passive',GC), restrict_coord(OG), (\+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG);conjoined_vp(OG)).
+
 
 %er hat nichts dazu gesagt, was passiert ist" ('dazu' or other prepositional adverbs allow obja/objc to co-exist; subclause may alternatively be analysed as depending on adverb, or being adverbial)
 head('V*FIN','OBJC/SUBJC',r,objc,'V*FIN',[GC,_,_,_,OG,_,_,_],_,MH,_,MH) :-  \+ member('passive',GC), restrict_coord(OG),\+ member('<-objc<-',OG), \+ member('->objc->',OG), adverbial_pronoun(Tag), among_dependents(OG, Tag, 1).
@@ -1515,7 +1517,7 @@ head('KON',Tag,r,cj,Transtag,[_,_,HeadWord,_,HeadRels,_,_,_],_,_,MD,MD) :- kon_m
 head('KON',Tag,r,cj,'KON_ADV',[_,_,HeadWord,_,_,_,_,_],_-D,_,MD,MD) :- kon_mapping(Tag,'KON_ADV'), RightPos is D+1, checkPos(RightPos,_,Tag2,_,_), \+ kon_mapping(Tag2,'KON_ADV'), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder',als]).
 
 % in "Er kommt und sieht Laura", disallow Laura as subject, but not in "Er kommt und dann sieht Laura ihn"
-head('KON',Tag,r,cj,'KON_FINVERB',[_,_,HeadWord,_,_,DepRels,_,_],H-D,_,MD,MD) :- 1 is D-H, kon_mapping(Tag,'KON_FINVERB'), \+ member('->subj->', DepRels), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder',als]).
+head('KON',Tag,r,cj,'KON_FINVERB',[_,_,HeadWord,_,_,DepRels,_,_],H-D,_,MD,MD) :- 1 is D-H, kon_mapping(Tag,'KON_FINVERB'), \+ member('->subj->', DepRels), \+ member('->subjc->', DepRels), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder',als]).
 
 head('KON',Tag,r,cj,'KON_FINVERB',[_,_,HeadWord,_,_,DepRels,_,_],H-D,_,MD,MD) :- D-H > 1, kon_mapping(Tag,'KON_FINVERB'), \+ member('<-kon<-', DepRels), \+ member('<-s<-', DepRels), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder',als]).
 
@@ -1861,9 +1863,9 @@ head('QUOTE','KON',l,koord,'QUOTE',[_,_,_,_,_,_,_,DepID],_,HM,_,HM) :- stopToLef
 %v*fin + v*fin: head word needs to be word of speech (sagen, meinen, bekräftigen...) --> statisics module
 
 %quote after head clause
-head('V*FIN','QUOTE',r,s,'V*FIN',[GC,FC,_,_,OG,_,_,_],_,MH,_,MH) :- member('mainclause',FC),member('mainclause',GC), restrict_coord(OG),\+ member('->s->',OG), \+ member('<-s<-',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG), \+ member('<-obja<-',OG), \+ member('->obja->',OG).
+head('V*FIN','QUOTE',r,s,'V*FIN',[GC,FC,_,_,OG,DepRels,_,_],_,MH,_,MH) :- member('mainclause',FC),member('mainclause',GC), restrict_coord(OG),\+ member('->s->',OG), \+ member('<-s<-',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG), \+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',DepRels), \+ member('<-subjc<-',DepRels), \+ member('<-s<-',DepRels).
 
-head('VVIMP','QUOTE',r,s,'VVIMP',[GC,FC,_,_,OG,_,_,_],_,MH,_,MH) :- member('mainclause',FC),member('mainclause',GC), restrict_coord(OG),\+ member('->s->',OG), \+ member('<-s<-',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG), \+ member('<-obja<-',OG), \+ member('->obja->',OG).
+head('VVIMP','QUOTE',r,s,'VVIMP',[GC,FC,_,_,OG,DepRels,_,_],_,MH,_,MH) :- member('mainclause',FC),member('mainclause',GC), restrict_coord(OG),\+ member('->s->',OG), \+ member('<-s<-',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG), \+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',DepRels), \+ member('<-subjc<-',DepRels), \+ member('<-s<-',DepRels).
 
 
 %quote before head clause -> we want a subject to make sure it isn't something like "A tat B, sagte aber C"
@@ -2537,6 +2539,9 @@ restrict_vorfeld(Chunk,Dependents) :- member('mainclause',Chunk),
                                          '<-kom<-',
                                          '<-explsubj<-',
                                          '<-adv<-',
+                                         '<-objc<-',
+                                         '<-neb<-',
+                                         '<-s<-',
                                          '<-explobja<-'],[]). %only succeed if intersection is empty
 
 
@@ -2545,7 +2550,7 @@ restrict_vorfeld(_,_) :- !. %catchall
 
 %restrict_coord/1: makes sure that subjects, objects etc. are not attached to a finite verb if there is a verb coordination in between:
 %example: susi denkt und peter sieht laura. -> 'laura' can't be object of 'denkt'.
-restrict_coord(RelList) :- intersection(RelList,['->kon->','->s->','->objc->','->subjc->','->neb->'],[]). %only succeed if intersection is empty
+restrict_coord(RelList) :- intersection(RelList,['->kon->','->s->','->objc->','->subjc->','->neb->','->obji->'],[]). %only succeed if intersection is empty
 
 
 % we relax our rule "attach everything to the finite verb" (which has the purpose of making most structure parsable with a context-free grammar) for coordinations of multiple non-finite verbs:

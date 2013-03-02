@@ -486,19 +486,21 @@ stats2(subjc,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.2,_D,_HC).
 
 %ObjC: probability higher than other subordinated structures unless valency information shows that verb doesn't have clausal object.
 stats2(objc,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,HC-_OG) :-
-	getheadandnormalise(HC,Head,_),
+	getheadandnormalise(HC,Head,HTagLC),
 	posModifier(Htag,Dtag,objc,POSMOD),
 	distModifier(D,objc,DISTMOD),
-	((	verb(Head,Occurs,_,_,_,_,_,_,ObjC,_,_,_,_,_,_,_),
-		Occurs > 3,
-			(Threshold is (ObjC / Occurs),
-			Threshold > 0.05,
-			P is POSMOD*DISTMOD*0.55)
-			;
-			P is POSMOD*DISTMOD*0.2)
-	;
-	(	((\+ verb(Head,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_)); (verb(Head,Occurs,_,_,_,_,_,_,_,_,_,_,_,_,_,_), Occurs < 4)),
-		P is POSMOD*DISTMOD*0.2)).
+	(verbtag(HTagLC)->
+		((	verb(Head,Occurs,_,_,_,_,_,_,ObjC,_,_,_,_,_,_,_),
+			Occurs > 3,
+				(Threshold is (ObjC / Occurs),
+				Threshold > 0.05,
+				P is POSMOD*DISTMOD*0.55)
+				;
+				P is POSMOD*DISTMOD*0.2)
+		;
+		(	((\+ verb(Head,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_)); (verb(Head,Occurs,_,_,_,_,_,_,_,_,_,_,_,_,_,_), Occurs < 4)),
+			P is POSMOD*DISTMOD*0.2))
+	;P is POSMOD*DISTMOD*0.1).
 
 
 
@@ -528,7 +530,8 @@ stats2(par,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,_MORPHD,P,_D,_HC-_OG) :-
 	(Dtag='PAR';Dtag='QUOTE'),
 	lexic(SD,_,DPos),
 	chart(DPos,DPos,DPos,[_,_,HC,_],_,_,_,_,_,_),
-	getheadandnormalise(HC,Head,_),
+	getheadandnormalise(HC,Head,HTagLC),
+	verbtag(HTagLC),
 	((	verb(Head,Occurs,_,_,_,_,_,_,_,_,_,_,_,_,Quote,_),
 		Occurs > 3,
 		Ratio is Quote / Occurs,
