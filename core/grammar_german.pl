@@ -402,28 +402,28 @@ head('VVIMP',OBJ,r,objd,'VVIMP',[_,_,_,_,OG,_,_,_],_-F,MG,MF,MG)  :- objcandidat
 
 
 %predicate noun before finite verb.
-head('V*FIN',Dtag,l,pred,'V*FIN',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF)  :- predcand(Dtag,G), case_nom(MG,Dtag), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('<-adv<-',UG), \+ member('<-pred<-',UG), \+ member('->pred->',UG).
+head('V*FIN',Dtag,l,pred,'V*FIN',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF)  :- predcand(Dtag), case_nom(MG,Dtag), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('<-adv<-',UG), \+ member('<-pred<-',UG), \+ member('->pred->',UG), \+ member('->objp->', UG), \+ member('<-objp<-', UG).
 
 head('V*FIN','ADJD',l,pred,'V*FIN',[FC,_,_,_,UG,_,_,_],_,MH,_,MH)  :- \+ member('<-pred<-',UG), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('<-adv<-',UG), \+ member('->pred->',UG), \+ member('<-objd<-',UG).
 
 
 %predicate noun before infinitive verb with 'zu' (there is no finite verb in infinitive clauses)
-head('VVIZU',Dtag,l,pred,'VVIZU',[_,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- predcand(Dtag,G), case_nom(MG,Dtag), \+ member('<-pred<-',UG), \+ member('->pred->',UG), \+ member('<-adv<-',UG), \+ member('<-subj<-',UG), \+ member('<-objd<-',UG).
+head('VVIZU',Dtag,l,pred,'VVIZU',[_,_,_,_,UG,_,_,_],_,MF,MG,MF) :- predcand(Dtag), case_nom(MG,Dtag), \+ member('<-pred<-',UG), \+ member('->pred->',UG), \+ member('<-adv<-',UG), \+ member('<-subj<-',UG), \+ member('<-objd<-',UG), \+ member('->objp->', UG), \+ member('<-objp<-', UG).
 
 head('VVIZU','ADJD',l,pred,'VVIZU',[_,_,_,_,UG,_,_,_],_,MH,_,MH) :- \+ member('<-pred<-',UG), \+ member('->pred->',UG), \+ member('<-adv<-',UG), \+ member('<-subj<-',UG), \+ member('<-objd<-',UG).
 
 
 %das Columbia genannte Raumschiff
-head('ADJA', OBJ,l,pred,'ADJA',[_,_,_,_,OF,_,_,_],F-G,MF,MG,MF) :-  1 is F-G, derived_from_ppast(MF,'ADJA'), predcand(OBJ,G), case_nom(MG,OBJ), \+ member('<-pred<-',OF).
+head('ADJA', OBJ,l,pred,'ADJA',[_,_,_,_,OF,_,_,_],F-G,MF,MG,MF) :-  1 is F-G, derived_from_ppast(MF,'ADJA'), predcand(OBJ), case_nom(MG,OBJ), \+ member('<-pred<-',OF).
 
-head('ADJD', OBJ,l,pred,'ADJD',[_,_,_,_,OF,_,_,_],F-G,MF,MG,MF) :-  1 is F-G, derived_from_ppast(MF,'ADJD'), predcand(OBJ,G), case_nom(MG,OBJ), \+ member('<-pred<-',OF).
+head('ADJD', OBJ,l,pred,'ADJD',[_,_,_,_,OF,_,_,_],F-G,MF,MG,MF) :-  1 is F-G, derived_from_ppast(MF,'ADJD'), predcand(OBJ), case_nom(MG,OBJ), \+ member('<-pred<-',OF).
 
 
 
 %predicate noun after finite verb.
-head('V*FIN',Dtag,r,pred,'V*FIN',[_,_,_,_,OG,_,_,_],_-G,MG,MF,MG)  :- predcand(Dtag,G), case_nom(MF,Dtag), restrict_coord(OG), \+ member('<-pred<-',OG), \+ member('->pred->',OG), \+ member('->objp->',OG).
+head('V*FIN',Dtag,r,pred,'V*FIN',[_,_,_,_,OG,_,_,_],_,MG,MF,MG)  :- predcand(Dtag), case_nom(MF,Dtag), restrict_coord(OG), \+ member('<-pred<-',OG), \+ member('->pred->',OG), \+ member('->objp->',OG), \+ member('<-objp<-', OG).
 
-head('VVIMP',Dtag,r,pred,'VVIMP',[_,_,_,_,OG,_,_,_],_-G,MG,MF,MG)  :- predcand(Dtag,G), case_nom(MF,Dtag), restrict_coord(OG), \+ member('<-pred<-',OG), \+ member('->pred->',OG), \+ member('->objp->',OG).
+head('VVIMP',Dtag,r,pred,'VVIMP',[_,_,_,_,OG,_,_,_],_,MG,MF,MG)  :- predcand(Dtag), case_nom(MF,Dtag), restrict_coord(OG), \+ member('<-pred<-',OG), \+ member('->pred->',OG), \+ member('->objp->',OG), \+ member('<-objp<-', OG).
 
 
 
@@ -432,11 +432,9 @@ head('V*FIN','ADJD',r,pred,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH)  :- restrict_co
 head('VVIMP','ADJD',r,pred,'VVIMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH)  :- restrict_coord(OG), \+ member('<-pred<-',OG), \+ member('->pred->',OG).
 
 
-predcand('NN',_).
-predcand('NE',_).
-predcand('PIS',_).
-objcandidate('CARD',Pos) :- endOfNP(Pos).
-objcandidate('PIAT',Pos) :- endOfNP(Pos).
+predcand('NN').
+predcand('NE').
+predcand('PIS').
 
 %======================================================================================
 %Genitive object, only one allowed    
@@ -667,29 +665,29 @@ head('APPR', 'PAV',r,pp,'PP',_,G-F,MH,_,MH) :- 1 is F-G.
 
 
 %prepositional object after verb
-head('V*FIN', 'PP',r,objp,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('<-objp<-',OG), \+ member('->objp->',OG).
+head('V*FIN', 'PP',r,objp,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('<-objp<-',OG), \+ member('->objp->',OG), \+ noun_pred(OG).
 
-head('VVIMP', 'PP',r,objp,'VVIMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('<-objp<-',OG), \+ member('->objp->',OG).
+head('VVIMP', 'PP',r,objp,'VVIMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('<-objp<-',OG), \+ member('->objp->',OG), \+ noun_pred(OG).
 
 
-head('V*FIN', 'PAV',r,objp,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('<-objp<-',OG), \+ member('->objp->',OG).
+head('V*FIN', 'PAV',r,objp,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('<-objp<-',OG), \+ member('->objp->',OG), \+ noun_pred(OG).
 
-head('VVIMP', 'PAV',r,objp,'VVIMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('<-objp<-',OG), \+ member('->objp->',OG).
+head('VVIMP', 'PAV',r,objp,'VVIMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('<-objp<-',OG), \+ member('->objp->',OG), \+ noun_pred(OG).
 
 
 
 %other direction, prepositional object before verb
-head('V*FIN', 'PP',l,objp,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
+head('V*FIN', 'PP',l,objp,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF), \+ noun_pred(OF).
 
-head('VVIZU', 'PP',l,objp,'VVIZU',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
+head('VVIZU', 'PP',l,objp,'VVIZU',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF), \+ noun_pred(OF).
 
 
 %relative pronoun (new transtag 'RC')
-head('V*FIN', 'PPREL',l,objp,'RC',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
+head('V*FIN', 'PPREL',l,objp,'RC',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF), \+ noun_pred(OF).
 
 
 %interrogative pronoun (new transtag 'QC')
-head('V*FIN', 'PPQ',l,objp,'QC',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
+head('V*FIN', 'PPQ',l,objp,'QC',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF), \+ noun_pred(OF).
 
 
 %OBJP modifying participial adjective (der auf dem boden liegende mann)
@@ -698,7 +696,7 @@ head('ADJA', 'PP',l,objp,'ADJA',[_,_,_,_,OF,_,_,_],F-_,MH,_,MH) :- \+ member('<-
 head('ADJD', 'PP',l,objp,'ADJD',[_,_,_,_,OF,_,_,_],F-_,MH,_,MH) :- \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF),\+ endOfNP(F).
 
 
-head('V*FIN', 'PAV',l,objp,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
+head('V*FIN', 'PAV',l,objp,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF), \+ noun_pred(OF).
 
 
 %allow PPs before nonfinite verb in coordination chain
@@ -711,6 +709,18 @@ head('V*INF', 'PAV',l,objp,'V*INF',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- in_coordina
 head('V*PP', 'PAV',l,objp,'V*PP',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- in_coordination(FC,OF), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
 head('VVIZU', 'PAV',l,objp,'VVIZU',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- in_coordination(FC,OF), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF).
 
+
+noun_pred(Rels) :- nth1(Pos, Rels, '->pred->'),
+    RightPos is Pos + 1,
+    nth1(RightPos,Rels,Pred),
+    predcand(Tag),
+    among_dependents(Pred, Tag, 1), !.
+
+noun_pred(Rels) :- nth1(Pos, Rels, '<-pred<-'),
+    LeftPos is Pos - 1,
+    nth1(LeftPos,Rels,Pred),
+    predcand(Tag),
+    among_dependents(Pred, Tag, 1), !.
 
 %======================================================================================
 %appositions
@@ -959,6 +969,8 @@ head('RC','OBJC/SUBJC',r,objc,'RC',[GC,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('
 
 head('NEB','OBJC/SUBJC',r,objc,'NEB',[GC,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('passive',GC), restrict_coord(OG), (\+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG);conjoined_vp(OG)).
 
+head('VVIZU','OBJC/SUBJC',r,objc,'VVIZU',[GC,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('passive',GC), restrict_coord(OG), (\+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG);conjoined_vp(OG)).
+
 
 %er hat nichts dazu gesagt, was passiert ist" ('dazu' or other prepositional adverbs allow obja/objc to co-exist; subclause may alternatively be analysed as depending on adverb, or being adverbial)
 head('V*FIN','OBJC/SUBJC',r,objc,'V*FIN',[GC,_,_,_,OG,_,_,_],_,MH,_,MH) :-  \+ member('passive',GC), restrict_coord(OG),\+ member('<-objc<-',OG), \+ member('->objc->',OG), adverbial_pronoun(Tag), among_dependents(OG, Tag, 1).
@@ -989,13 +1001,6 @@ head('V*FIN','OBJC/SUBJC',l,subjc,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- rest
 
 %clausal subject after main clause
 head('V*FIN','OBJC/SUBJC',r,subjc,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG).
-
-
-%clausal subject doesn't have to depend on main clause:
-head('RC','OBJC/SUBJC',r,subjc,'RC',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG).
-
-head('NEB','OBJC/SUBJC',r,subjc,'NEB',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG).
-
 
 
 
@@ -1512,7 +1517,7 @@ head('KON',Tag,r,cj,Transtag,[_,_,HeadWord,_,HeadRels,_,_,_],_,_,MD,MD) :- kon_m
 head('KON',Tag,r,cj,'KON_ADV',[_,_,HeadWord,_,_,_,_,_],_-D,_,MD,MD) :- kon_mapping(Tag,'KON_ADV'), RightPos is D+1, checkPos(RightPos,_,Tag2,_,_), \+ kon_mapping(Tag2,'KON_ADV'), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder',als]).
 
 % in "Er kommt und sieht Laura", disallow Laura as subject, but not in "Er kommt und dann sieht Laura ihn"
-head('KON',Tag,r,cj,'KON_FINVERB',[_,_,HeadWord,_,_,DepRels,_,_],H-D,_,MD,MD) :- 1 is D-H, kon_mapping(Tag,'KON_FINVERB'), \+ member('->subj->', DepRels), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder',als]).
+head('KON',Tag,r,cj,'KON_FINVERB',[_,_,HeadWord,_,_,DepRels,_,_],H-D,_,MD,MD) :- 1 is D-H, kon_mapping(Tag,'KON_FINVERB'), \+ member('->subj->', DepRels), \+ member('->subjc->', DepRels), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder',als]).
 
 head('KON',Tag,r,cj,'KON_FINVERB',[_,_,HeadWord,_,_,DepRels,_,_],H-D,_,MD,MD) :- D-H > 1, kon_mapping(Tag,'KON_FINVERB'), \+ member('<-kon<-', DepRels), \+ member('<-s<-', DepRels), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder',als]).
 
@@ -1858,9 +1863,9 @@ head('QUOTE','KON',l,koord,'QUOTE',[_,_,_,_,_,_,_,DepID],_,HM,_,HM) :- stopToLef
 %v*fin + v*fin: head word needs to be word of speech (sagen, meinen, bekräftigen...) --> statisics module
 
 %quote after head clause
-head('V*FIN','QUOTE',r,s,'V*FIN',[GC,FC,_,_,OG,_,_,_],_,MH,_,MH) :- member('mainclause',FC),member('mainclause',GC), restrict_coord(OG),\+ member('->s->',OG), \+ member('<-s<-',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG), \+ member('<-obja<-',OG), \+ member('->obja->',OG).
+head('V*FIN','QUOTE',r,s,'V*FIN',[GC,FC,_,_,OG,DepRels,_,_],_,MH,_,MH) :- member('mainclause',FC),member('mainclause',GC), restrict_coord(OG),\+ member('->s->',OG), \+ member('<-s<-',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG), \+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',DepRels), \+ member('<-subjc<-',DepRels), \+ member('<-s<-',DepRels).
 
-head('VVIMP','QUOTE',r,s,'VVIMP',[GC,FC,_,_,OG,_,_,_],_,MH,_,MH) :- member('mainclause',FC),member('mainclause',GC), restrict_coord(OG),\+ member('->s->',OG), \+ member('<-s<-',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG), \+ member('<-obja<-',OG), \+ member('->obja->',OG).
+head('VVIMP','QUOTE',r,s,'VVIMP',[GC,FC,_,_,OG,DepRels,_,_],_,MH,_,MH) :- member('mainclause',FC),member('mainclause',GC), restrict_coord(OG),\+ member('->s->',OG), \+ member('<-s<-',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG), \+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',DepRels), \+ member('<-subjc<-',DepRels), \+ member('<-s<-',DepRels).
 
 
 %quote before head clause -> we want a subject to make sure it isn't something like "A tat B, sagte aber C"
@@ -2534,6 +2539,9 @@ restrict_vorfeld(Chunk,Dependents) :- member('mainclause',Chunk),
                                          '<-kom<-',
                                          '<-explsubj<-',
                                          '<-adv<-',
+                                         '<-objc<-',
+                                         '<-neb<-',
+                                         '<-s<-',
                                          '<-explobja<-'],[]). %only succeed if intersection is empty
 
 
@@ -2542,7 +2550,7 @@ restrict_vorfeld(_,_) :- !. %catchall
 
 %restrict_coord/1: makes sure that subjects, objects etc. are not attached to a finite verb if there is a verb coordination in between:
 %example: susi denkt und peter sieht laura. -> 'laura' can't be object of 'denkt'.
-restrict_coord(RelList) :- intersection(RelList,['->kon->','->s->','->objc->','->subjc->','->neb->'],[]). %only succeed if intersection is empty
+restrict_coord(RelList) :- intersection(RelList,['->kon->','->s->','->objc->','->subjc->','->neb->','->obji->'],[]). %only succeed if intersection is empty
 
 
 % we relax our rule "attach everything to the finite verb" (which has the purpose of making most structure parsable with a context-free grammar) for coordinations of multiple non-finite verbs:
