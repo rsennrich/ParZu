@@ -162,10 +162,11 @@ idmain(Sentence, Pos, LVL, EndPos, _) :- w(Sentence,Pos,_,'PTKZU',_,_),
 			  idmainzu(Sentence,EndSub, LVL,NewLVL,EndPos).
 
 
-%infinitive verbs. only accept if head lemma is "sein"
+%infinitive verbs. only accept if head lemma is "sein", and no comma is in between.
 idmain(Sentence, Pos, LVL, EndPos, _) :- w(Sentence,Pos,_,'VVIZU',[String],_),
-			      lvl(LVL,_,String2,head),
+			      lvl(LVL,HeadPos,String2,head),
 			      jointag(sein,'VAFIN',String2),
+			  \+ (w(Sentence,XPos,_,'$,',_,_), HeadPos < XPos, XPos < Pos),
 			  headAuxiliar(Sentence,LVL),
 			  assert(lvl(LVL,Pos,String,full)), !,
 			  getverbgroupmain(Sentence,LVL,Pos, EndPos).
@@ -209,7 +210,6 @@ idmainzu(Sentence,Pos,LVL,LVL2,EndPos) :- w(Sentence,Pos,_,Tag,_,_),
 
 shift_lvl(LVLIn,LVLOut) :- headAuxiliar(_Sentence, LVLOut),
 			retract(lvl(LVLIn,Pos,Tag2,Type)),
-			\+ Type = ptkzu,
 			assert(lvl(LVLOut,Pos,Tag2,Type)),
 			fail.
 
@@ -617,6 +617,10 @@ complete2(Sentence, LVL, Rest) :- \+lvl(LVL,_,_,x),
 
 %passive recognition
 complete2(Sentence,LVL,Rest) :-  chunkPair(Rest,'werden',_,_Word2,'VVPP'),
+				fillallcompleted(Sentence,LVL,['passive'|Rest]).
+
+complete2(Sentence,LVL,Rest) :-  chunkPair(Rest,'sein',_,_Word2,Tag),
+				(Tag = 'VVIZU'; (Tag = 'VVINF', lvl(LVL,_,_,ptkzu))),
 				fillallcompleted(Sentence,LVL,['passive'|Rest]).
 
 %catchall
