@@ -1001,13 +1001,6 @@ head('V*FIN','OBJC/SUBJC',l,subjc,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- rest
 head('V*FIN','OBJC/SUBJC',r,subjc,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG).
 
 
-%clausal subject doesn't have to depend on main clause:
-head('RC','OBJC/SUBJC',r,subjc,'RC',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG).
-
-head('NEB','OBJC/SUBJC',r,subjc,'NEB',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG).
-
-
-
 
 %======================================================================================
 %infinitive object
