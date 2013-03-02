@@ -148,8 +148,8 @@ getPosition(Lemma_Tag,OldPos,Pos) :-
 	append(LemmaChars, [95|TagChars], Lemma_TagChars),
 	name(Tag, TagChars),
 	name(Lemma, LemmaChars),
-        chart(Pos,Pos,Pos,_,Lemma,Tag,_,_,_,_),
-	output(Pos,_,_,_,aux,OldPos,_), !.
+	chart(Pos,Pos,Pos,_,Lemma,Tag,_,_,_,_),
+	is_dependent(Pos,OldPos,aux), !.
 
 
 %fix expletives. 
@@ -267,11 +267,17 @@ relative_morphology(HeadPos,RelPos,Tag,Morph) :- output(RelPos,_,_,Tag,_,_,Morph
               is_dependent(RelPos,HeadPos),
               RelPos < HeadPos.
 
+%is direct or indirect dependent
 is_dependent(Pos,Pos) :- !.
 
 is_dependent(Pos,HeadPos) :- output(Pos,_,_,_,_,BetweenPos,_),
         is_dependent(BetweenPos,HeadPos).
 
+%is direct or indirect dependent, allowing only specific class label
+is_dependent(Pos,Pos,_) :- !.
+
+is_dependent(Pos,HeadPos,Class) :- output(Pos,_,_,_,Class,BetweenPos,_),
+        is_dependent(BetweenPos,HeadPos,Class).
 
 %ignore all relations not listed here (commas, brackets)
 relclass(subj).
