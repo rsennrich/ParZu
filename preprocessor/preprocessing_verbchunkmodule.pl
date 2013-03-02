@@ -69,8 +69,10 @@ idstart(Sentence,Pos,LVL) :- w(Sentence,Pos,_Word,Tag,[String],_),
 
 %fourth clause: fixes some problems introduced in third clause. Namely, a sentence-initial infinitive object ("ihn zu kennen war eine Ehre") will be treated like a subordinated clause (finishing the search after encountering an infinitive).
 idstart(Sentence,Pos,LVL) :- w(Sentence,Pos,_Word,'PTKZU',_,_),
-			  	assert(lvl(LVL,Pos,y,ptkzu)),
-				getverbgroupsub(Sentence, LVL,Pos,EndPos),
+				assert(lvl(LVL,Pos,y,ptkzu)),
+				assert(lvl(LVL,Pos,'KOUS',x)),
+				idsub(Sentence,Pos,LVL,EndPos),
+				retract(lvl(LVL,Pos,'KOUS',x)),
 				findfreelvl(LVL, NewLVL), !,
 				idstart(Sentence,EndPos,NewLVL).
 
@@ -203,13 +205,11 @@ idmain(_,Pos,_,Pos, _) :- !.
 %idmainzu(+Sentence,+Pos,+LVL,+LVL2,-EndPos): if a finite verb is found in Verbzweitstellung, and there is an embedded infinitive clause, check if it belongs to the main clause.
 idmainzu(Sentence,Pos,LVL,LVL2,EndPos) :- w(Sentence,Pos,_,Tag,_,_),
 					  (verbtag(Tag)->idmain(Sentence,Pos,LVL,EndPos, yes);
-					  (((lvl(LVL,HeadPos,_,head),\+ (w(Sentence,XPos,_,'$,',_,_), HeadPos < XPos, XPos < Pos)) % no comma allowed between head and infinitive verb (otherwise it probably is infinitive object)
+					  (((lvl(LVL,HeadPos,_,head),\+ (w(Sentence,XPos,_,'$,',_,_), HeadPos < XPos, XPos < Pos), headAuxiliar(Sentence, LVL)) % no comma allowed between head and infinitive verb (otherwise it probably is infinitive object)
 					   ->shift_lvl(LVL2,LVL);true)
 					  ,EndPos=Pos)).
 
-
-shift_lvl(LVLIn,LVLOut) :- headAuxiliar(_Sentence, LVLOut),
-			retract(lvl(LVLIn,Pos,Tag2,Type)),
+shift_lvl(LVLIn,LVLOut) :- retract(lvl(LVLIn,Pos,Tag2,Type)),
 			assert(lvl(LVLOut,Pos,Tag2,Type)),
 			fail.
 
@@ -302,7 +302,7 @@ idsub(Sentence, Pos, LVL, EndPos) :- w(Sentence,Pos,_Word,Tag,_,_),
 			  assert(lvl(NewLVL,Pos,y,ptkzu)),
 			  NewPos is Pos + 1, !,
 			  idsub(Sentence,NewPos, NewLVL,SubEnd),
-			  idsub(Sentence,SubEnd,LVL,EndPos), !.
+			  (idsubzu(Sentence,SubEnd,LVL, NewLVL, EndPos)->true;idsub(Sentence,SubEnd,LVL,EndPos)), !.
 
 
 %finite verb found. This rule deals with an exception: sometimes the finite verb does not come in last place as expected, but just before other non-finite verbs "weil er es nicht hätte tun sollen". 
@@ -357,6 +357,12 @@ idsub(Sentence,Pos,LVL, EndPos) :- sentdelim(SentDelim),
 %catchall. should not be needed, since recursive clause should always succeed.
 idsub(_,Pos,_,Pos) :- !.
 
+
+%idsubzu(+Sentence,+Pos,+LVL,+LVL2,-EndPos): distinguish between embedded infinitive clause ("weil nach Hause zu gehen mühsam ist"), and infinitive constructions that are part of verb matrix (weil er nach Hause zu gehen hat")
+idsubzu(_Sentence,Pos,LVL,LVL2,EndPos) :- lvl(LVL2,_,_,head),
+					!,
+					shift_lvl(LVL2,LVL),
+					EndPos=Pos.
 
 
 %getverbgroupmain(+Sentence,+LVL,+Pos,-EndPos): most restrictive searching strategy. Search is stopped as soon as there is a gap (i.e. a word that doesn't belong to the verb chunk).
@@ -610,7 +616,9 @@ complete(Sentence,LVL,List) :- 	complete2(Sentence,LVL,List).
 
 %if we know that we're not in a subclause structure (no function words and no verbal particle 'zu'), mark the clause as a main clause
 complete2(Sentence, LVL, Rest) :- \+lvl(LVL,_,_,x),
-				 \+lvl(LVL,_,_,ptkzu),
+				nth1(1,Rest,Head),
+				splittag(Head,_,Tag),
+				member(Tag,['VVFIN','VAFIN','VMFIN']),
 				\+ member('mainclause',Rest),
 				!,
 				complete2(Sentence,LVL,['mainclause'|Rest]).

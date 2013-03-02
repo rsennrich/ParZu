@@ -20,21 +20,24 @@
 
 correct_mistagging(yes).
 
-%reads from stdin, writes to stdout
-start(GERTWOL) :- retractall(w(_,_,_,_,_,_)), retractall(w(_,_,_,_)), retractall(sentno(_)), retractall(posno(_)), retractall(completed(_,_)), retractall(lvl(_,_,_,_)),
+%reads from stdin
+start(GERTWOL) :- start2(GERTWOL, user_input).
+%reads from file
+start(GERTWOL, F) :- open(F, read, Stream, [encoding(utf8)]), start2(GERTWOL, Stream).
+
+start2(GERTWOL, Stream) :- retractall(w(_,_,_,_,_,_)), retractall(w(_,_,_,_)), retractall(sentno(_)), retractall(posno(_)), retractall(completed(_,_)), retractall(lvl(_,_,_,_)),
 		   consult(GERTWOL),
 		   assert(sentno(1)),
 		   assert(posno(1)),
-		   readsentences.
+		   readsentences(Stream).
 
 
 %reads a line and calls addnumber/1 to identify the sentence and position number.
-readsentences :- repeat,
-				read(X),
+readsentences(Stream) :- repeat,
+				read(Stream,X),
 				addnumber(X),
 				X == end_of_file,
 			    !.
-
 
 %addnumber/1: at the end of a sentence, posno is reset to 1 and sentno incremented by one. otherwise, posno is incremented by one.
 
