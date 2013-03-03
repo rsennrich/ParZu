@@ -362,7 +362,7 @@ stats2(pred,_Htag,_FH,_SH,_MORPHH,'ADJD',FD,_SD,_MORPHD,P,_D,HC-_OG) :-
         getheadandnormalise(HC,Head,_),
         downcase_atom(FD,Dep),
         pred_disambiguate(Head,Dep,Score),
-        (Score > 0.5->P is 1;P is 0).
+        (Score > 0.3->P is 1;P is 0).
 
 pred_disambiguate(Head, Dep, Score) :- (adjd_adverbial(Head, Dep, BilexAdv)->true;BilexAdv=0),
         (adjd_predicative(Head, Dep, BilexPred)->true;BilexPred=0),
@@ -370,10 +370,11 @@ pred_disambiguate(Head, Dep, Score) :- (adjd_adverbial(Head, Dep, BilexAdv)->tru
         (adjd_predicative('*any*', Dep, VPred)->true;VPred=0),
         (adjd_adverbial(Head, '*any*', ADJDAdv)->true;ADJDAdv=0),
         (adjd_predicative(Head, '*any*', ADJDPred)->true;ADJDPred=0),
-        BilexStats is (BilexPred+1)/(BilexPred+BilexAdv+2),
-        VStats is (VPred+1)/(VPred+VAdv+2),
-        ADJDStats is (ADJDPred+1)/(ADJDPred+ADJDAdv+2),
-        Score is 0.7*BilexStats+0.15*VStats+0.15*ADJDStats.
+        BilexStats is BilexPred/(BilexPred+BilexAdv+2),
+        VStats is VPred/(VPred+VAdv+2),
+        ADJDStats is ADJDPred/(ADJDPred+ADJDAdv+2),
+        Score is 0.35*BilexStats+0.25*VStats+0.4*ADJDStats.
+
 
 %genitive modifiers
 stats2(gmod,_Htag,_FH,SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,_D,_HC-_OG) :-
