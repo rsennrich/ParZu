@@ -329,7 +329,7 @@ stats2(objg,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,MORPHD,P,_D,HC-_OG) :-
 
 %predicate nouns
 stats2(pred,Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,_D,HC-_OG) :-
-	(morph_noun(Dtag);morph_pronoun(Dtag)),
+	Dtag \= 'ADJD',
 	getheadandnormalise(HC,Head,_),
 	lexic(SD,_,DPos),
 	DistMod is 1+((50-DPos)*0.00005),
