@@ -404,13 +404,14 @@ head('VVIMP',OBJ,r,objd,'VVIMP',[_,_,_,_,OG,_,_,_],_-F,MG,MF,MG)  :- objcandidat
 %predicate noun before finite verb.
 head('V*FIN',Dtag,l,pred,'V*FIN',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF)  :- predcand(Dtag,G), case_nom(MG,Dtag), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('<-adv<-',UG), \+ member('<-pred<-',UG), \+ member('->pred->',UG), \+ member('->objp->', UG), \+ member('<-objp<-', UG).
 
-head('V*FIN','ADJD',l,pred,'V*FIN',[FC,_,_,_,UG,_,_,_],_,MH,_,MH)  :- \+ member('<-pred<-',UG), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('<-adv<-',UG), \+ member('->pred->',UG), \+ member('<-objd<-',UG).
+head('V*FIN',Dtag,l,pred,'V*FIN',[FC,_,_,_,UG,_,_,_],_,MH,_,MH)  :- predcand_adverb(Dtag), Dtag \= 'PWAV', \+ member('<-pred<-',UG), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('<-adv<-',UG), \+ member('->pred->',UG), \+ member('<-objd<-',UG).
+
 
 
 %predicate noun before infinitive verb with 'zu' (there is no finite verb in infinitive clauses)
 head('VVIZU',Dtag,l,pred,'VVIZU',[_,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- predcand(Dtag,G), case_nom(MG,Dtag), \+ member('<-pred<-',UG), \+ member('->pred->',UG), \+ member('<-adv<-',UG), \+ member('<-subj<-',UG), \+ member('<-objd<-',UG), \+ member('->objp->', UG), \+ member('<-objp<-', UG).
 
-head('VVIZU','ADJD',l,pred,'VVIZU',[_,_,_,_,UG,_,_,_],_,MH,_,MH) :- \+ member('<-pred<-',UG), \+ member('->pred->',UG), \+ member('<-adv<-',UG), \+ member('<-subj<-',UG), \+ member('<-objd<-',UG).
+head('VVIZU',Dtag,l,pred,'VVIZU',[_,_,_,_,UG,_,_,_],_,MH,_,MH) :- predcand_adverb(Dtag), Dtag \= 'PWAV', \+ member('<-pred<-',UG), \+ member('->pred->',UG), \+ member('<-adv<-',UG), \+ member('<-subj<-',UG), \+ member('<-objd<-',UG).
 
 
 %das Columbia genannte Raumschiff
@@ -418,6 +419,10 @@ head('ADJA', OBJ,l,pred,'ADJA',[_,_,_,_,OF,_,_,_],F-G,MF,MG,MF) :-  1 is F-G, de
 
 head('ADJD', OBJ,l,pred,'ADJD',[_,_,_,_,OF,_,_,_],F-G,MF,MG,MF) :-  1 is F-G, derived_from_ppast(MF,'ADJD'), predcand(OBJ,G), case_nom(MG,OBJ), \+ member('<-pred<-',OF).
 
+
+%interrogative clause
+head('V*FIN','PWAV',l,pred,'QC',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF), \+ member('<-pred<-',OF), \+ member('->pred->',OF).
+head('VVPP','PWAV',l,pred,'QC',[FC,_,_,_,HeadRels,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), verbchunklength(FC,1), \+ member('<-pred<-',HeadRels), \+ member('->pred->',HeadRels).
 
 
 %predicate noun after finite verb.
@@ -427,9 +432,9 @@ head('VVIMP',Dtag,r,pred,'VVIMP',[_,_,_,_,OG,_,_,_],_-G,MG,MF,MG)  :- predcand(D
 
 
 
-head('V*FIN','ADJD',r,pred,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH)  :- restrict_coord(OG), \+ member('<-pred<-',OG), \+ member('->pred->',OG).
+head('V*FIN',Dtag,r,pred,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH)  :- predcand_adverb(Dtag), restrict_coord(OG), \+ member('<-pred<-',OG), \+ member('->pred->',OG).
 
-head('VVIMP','ADJD',r,pred,'VVIMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH)  :- restrict_coord(OG), \+ member('<-pred<-',OG), \+ member('->pred->',OG).
+head('VVIMP',Dtag,r,pred,'VVIMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH)  :- predcand_adverb(Dtag), restrict_coord(OG), \+ member('<-pred<-',OG), \+ member('->pred->',OG).
 
 
 predcand('NN', _).
@@ -438,6 +443,11 @@ predcand('PIS', _).
 predcand('PPER', _).
 predcand('PWS', _).
 predcand('ADJA',Pos) :- \+ var(Pos), endOfNP(Pos).
+
+predcand_adverb('ADJD').
+predcand_adverb('ADV').
+predcand_adverb('PWAV').
+
 
 %======================================================================================
 %Genitive object, only one allowed    
@@ -1090,6 +1100,7 @@ head('VVIZU','PIS',l,adv,'VVIZU',_,_,MH,_,MH).
 
 %interrogative adverb (new transtag 'QC')
 head('V*FIN','PWAV',l,adv,'QC',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF).
+
 
 %only necessary in case of tagging errors
 head('VVPP','PWAV',l,adv,'QC',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), verbchunklength(FC,1).

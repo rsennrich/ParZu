@@ -92,7 +92,7 @@ stats2(adv,Htag,_FH,SH,_MORPHH,Dtag,FD,SD,_MORPHD,P,D,_HC) :-
 getadvprob(_,'PIS',all,RealDist,P) :- P is 0.2-RealDist*0.003, !.
 getadvprob(_,'PIS',alle,RealDist,P) :- P is 0.2-RealDist*0.003, !.
 getadvprob(_,'PIS',alles,RealDist,P) :- P is 0.2-RealDist*0.003, !.
-getadvprob(_,'PWAV',_,_,1) :- !.
+getadvprob(_,'PWAV',_,_,0.8) :- !.
 
 %ein bisschen traurig
 getadvprob(_,'PIS',DWord,RealDist,P) :- member(DWord,['bißchen',bisschen,wenig]), P is 0.2+RealDist*0.003, !.
@@ -329,7 +329,7 @@ stats2(objg,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,MORPHD,P,_D,HC-_OG) :-
 
 %predicate nouns
 stats2(pred,Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,_D,HC-_OG) :-
-	Dtag \= 'ADJD',
+	\+ predcand_adverb(Dtag),
 	getheadandnormalise(HC,Head,_),
 	lexic(SD,_,DPos),
 	DistMod is 1+((50-DPos)*0.00005),
@@ -358,18 +358,19 @@ npidsamb(_,_,_,pred,0.01) :- !.
 
 
 %predicate nouns (ADJD) - not competing with subj/obj, but with ADV, which has its own disambiguation method (because they often have multiple potential heads).
-stats2(pred,_Htag,_FH,_SH,_MORPHH,'ADJD',FD,_SD,_MORPHD,P,_D,HC-_OG) :-
+stats2(pred,_Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,_MORPHD,P,_D,HC-_OG) :-
         getheadandnormalise(HC,Head,_),
         downcase_atom(FD,Dep),
-        pred_disambiguate(Head,Dep,Score),
+        downcase_atom(Dtag,DtagLower),
+        pred_disambiguate(Head,Dep,DtagLower,Score),
         (Score > 0.3->P is 1;P is 0).
 
-pred_disambiguate(Head, Dep, Score) :- (adjd_adverbial(Head, Dep, BilexAdv)->true;BilexAdv=0),
-        (adjd_predicative(Head, Dep, BilexPred)->true;BilexPred=0),
-        (adjd_adverbial('*any*', Dep, VAdv)->true;VAdv=0),
-        (adjd_predicative('*any*', Dep, VPred)->true;VPred=0),
-        (adjd_adverbial(Head, '*any*', ADJDAdv)->true;ADJDAdv=0),
-        (adjd_predicative(Head, '*any*', ADJDPred)->true;ADJDPred=0),
+pred_disambiguate(Head, Dep, Dtag, Score) :- (adverbial(Head, Dep, Dtag, BilexAdv)->true;BilexAdv=0),
+        (predicative(Head, Dep, Dtag, BilexPred)->true;BilexPred=0),
+        (adverbial('*any*', Dep, Dtag, VAdv)->true;VAdv=0),
+        (predicative('*any*', Dep, Dtag, VPred)->true;VPred=0),
+        (adverbial(Head, '*any*', Dtag, ADJDAdv)->true;ADJDAdv=0),
+        (predicative(Head, '*any*', Dtag, ADJDPred)->true;ADJDPred=0),
         BilexStats is BilexPred/(BilexPred+BilexAdv+2),
         VStats is VPred/(VPred+VAdv+2),
         ADJDStats is ADJDPred/(ADJDPred+ADJDAdv+2),
