@@ -5,51 +5,78 @@
 
 from __future__ import division
 import sys
-from math import log
+from math import log, exp
 
 # identify the start of a new "real" sentence (i.e. a new block of n alternatives)
 def identify_newsent(line,outputformat):
-    
+
     if outputformat == 'prolog' and "'#0'" in line and line.split(',',2)[1].strip()=='1':
         return True
-        
+
     elif outputformat == 'conll' and line.startswith("1\t#0\t#0"):
         return True
-        
-    elif outputformat == 'moses' and line.startswith('#0|'):
-        return True
-    
+
     return False
 
 
-# extract the features that we later use for the selection
-def feature_extract(sentbuf,outputformat):
-    
-    featurelist = []
-    
+def get_rank(sentence, outputformat):
     if outputformat == 'prolog':
-        prob = float(sentbuf[0].split(',')[4].strip('\' '))
-        featurelist.append(prob)
-        root_count = sum((item.count('root') for item in sentbuf))-sum((item.count('$.') for item in sentbuf))-sum((item.count('$,') for item in sentbuf))-sum((item.count('$(') for item in sentbuf))
-        featurelist.append(max(1,root_count))
-        return featurelist
-
+        return int(sentence[0].split(',')[3].strip('\' #'))
     elif outputformat == 'conll':
-        prob = float(sentbuf[0].split()[3].rstrip())
-        featurelist.append(prob)
-        root_count = sum((item.count('\troot\t') for item in sentbuf))-sum((item.count('\t$.\t') for item in sentbuf))-sum((item.count('\t$,\t') for item in sentbuf))-sum((item.count('\t$(\t') for item in sentbuf))
-        featurelist.append(max(1,root_count))
-        return featurelist
-        
-        
+        return int(sentence[0].split()[2].strip('\t  #'))
     elif outputformat == 'moses':
-        prob = float(sentbuf[0].split('|',2)[1])
-        featurelist.append(prob)
-        root_count = sum((item.count('root|root') for item in sentbuf))-sum((item.count('|$.|') for item in sentbuf))-sum((item.count('|$,|') for item in sentbuf))-sum((item.count('|$(|') for item in sentbuf))
-        featurelist.append(max(1,root_count))
-        return featurelist
-        
-        
+        return int(sentence[0].split('|',2)[0].strip('#'))
+
+
+def get_tagging_probability(sentence, outputformat):
+    if outputformat == 'prolog':
+        return float(sentence[0].split(',')[4].strip('\' '))
+    elif outputformat == 'conll':
+        return float(sentence[0].split()[3].rstrip())
+    elif outputformat == 'moses':
+        return float(sentence[0].split('|',2)[1])
+
+
+def get_number_of_unattached_nodes(sentence, outputformat):
+    root = 'root'
+    ignore_tags = ['$.', '$,', '$(']
+
+    if outputformat == 'conll':
+        root = '\t' + root + '\t'
+        ignore_tags = ['\t' + tag + '\t' for tag in ignore_tags]
+    elif outputformat == 'moses':
+        root = '|' + root + '|'
+        ignore_tags = ['|' + tag + '|' for tag in ignore_tags]
+
+    return sum((item.count(root) for item in sentence)) - sum((item.count(tag) for item in sentence for tag in ignore_tags))
+
+
+def get_number_of_bad_labels(sentence, outputformat):
+    bad_labels = ['app', 'cj', 'kon']
+
+    if outputformat == 'prolog':
+        bad_labels = [' ' + tag + ',' for tag in bad_labels]
+    elif outputformat == 'conll':
+        bad_labels = ['\t' + tag + '\t' for tag in bad_labels]
+    elif outputformat == 'moses':
+        bad_labels = ['|' + tag + '|' for tag in bad_labels]
+
+    return sum((item.count(label) for item in sentence for label in bad_labels))
+
+
+def feature_extract(sentbuf,outputformat):
+    """for each sentence, extract a number of features which are used for the selection.
+    """
+    featurelist = []
+
+    featurelist.append(get_tagging_probability(sentbuf, outputformat))
+    featurelist.append(exp(get_number_of_unattached_nodes(sentbuf, outputformat)))
+    featurelist.append(exp(get_rank(sentbuf, outputformat)))
+    featurelist.append(exp(get_number_of_bad_labels(sentbuf, outputformat)))
+
+    return featurelist
+
+
 def process_input(outputformat):
     
     features = {}
@@ -89,22 +116,33 @@ def process_input(outputformat):
         produce_output(i,sentence,outputformat)
 
 
-def fitness(feature):
-    
-    if feature[0] == 0:
-        return float('inf')
-        
-    p = 1*log(feature[0])
-    p += -5*log(feature[1])
-    
-    return -p
-    
+def dot_product(a,b):
+    """calculate dot product from two lists"""
+
+    s = 0
+    i = 0
+    for x in a:
+        s += x * b[i]
+        i += 1
+
+    return s
+
+
+def fitness(features):
+    """log-linear model that computes a score for each hypothesis, based on a weighted features.
+    Weights have been optimized on development set"""
+
+    weights = [1, -5, -0.5, -1.5]
+    features = [log(f) for f in features]
+
+    return -dot_product(weights, features)
+
+
 
 def select_output(features,sentlist):
     
     best = sorted(features, key=lambda i: fitness(features[i]))[0]
     return sentlist[best]
-    
 
 def produce_output(i,sentence,outputformat):
     
@@ -112,7 +150,7 @@ def produce_output(i,sentence,outputformat):
         for j,line in enumerate(sentence):
             if j == 0:
                 continue
-            print("word({0}, {1}, {2}".format(i,j,line.split(',',2)[-1])),
+            print("word({0}, {1}, {2}".format(i,j,line.split(',',2)[-1].lstrip())),
         print('')
 
     elif outputformat == 'conll':
