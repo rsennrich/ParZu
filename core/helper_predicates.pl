@@ -17,6 +17,7 @@ modallike('lassen') :- !.
 modallike('lehren') :- !.
 modallike('lernen') :- !.
 modallike('machen') :- !.
+modallike('scheinen') :- !.
 modallike('sehen') :- !.
 modallike('spüren') :- !.
 modallike('tun') :- !.
