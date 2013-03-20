@@ -4,10 +4,12 @@
 # Author: Rico Sennrich <sennrich@cl.uzh.ch>
 # Implements multiprocessed parsing
 
+from __future__ import unicode_literals
 import sys
 import os
 import time
 import multiprocessing
+import codecs
 from subprocess import Popen, PIPE
 
 
@@ -30,11 +32,11 @@ class Parser(multiprocessing.Process):
                 break
                 
             self.parsing.stdin.write(next_task)
-                
+            self.parsing.stdin.flush()
             answer = ''
+
             while True:
-                outline = self.parsing.stdout.readline()
-                
+                outline = self.parsing.stdout.readline().decode("UTF-8")
                 #if we ever reach the end of parsing.stdout, this indicates that the parser process has crashed
                 if not outline:
                     sys.stderr.write("Parser process {0} has crashed on sentence {1}. If you don't see swipl error message, try parsing sentence in single-processed mode (option -p 1).\n".format(self.parsing.pid,index+1))
@@ -56,19 +58,19 @@ class Parser(multiprocessing.Process):
 def segment_sent(inpipe,tasks,num_parsers,sentdelim,todo):
     
       i = 0
-      msg = ''
+      msg = b''
       
       for line in inpipe:
           msg += line
           #sentdelim signals end of sentence; sentence is sent to queue as single job
-          if '_' + sentdelim + "']," in line:
+          if b'_' + sentdelim + b"']," in line:
               todo.value = i+2 # this ensures that number of finished task never equals todo
-              tasks.put((i,msg + '\n'))
+              tasks.put((i,msg + b'\n'))
               i += 1
-              msg = ''
+              msg = b''
               
       # Add a poison pill for each parser
-      for i in xrange(num_parsers):
+      for i in range(num_parsers):
           tasks.put((None,None))
           
       # After this point, allow process to finish if all tasks are done
@@ -107,7 +109,7 @@ def main(inpipe,outpipe,num_parsers,sentdelim,commandlist,commandpath):
 
       # Start parsers
       parsers = [ Parser(tasks, results,commandlist,commandpath,error_signal)
-                    for i in xrange(num_parsers) ]
+                    for i in range(num_parsers) ]
       for w in parsers:
           w.start()
 
@@ -125,7 +127,11 @@ def main(inpipe,outpipe,num_parsers,sentdelim,commandlist,commandpath):
 
 
 if __name__ == "__main__":
-    import sys
+
+    if sys.version_info < (3, 0):
+        sys.stdout = codecs.getwriter('UTF-8')(sys.stdout)
+        sys.stderr = codecs.getwriter('UTF-8')(sys.stderr)
+        sys.stdin = codecs.getreader('UTF-8')(sys.stdin)
 
     #hack to relay stdin to new multiprocessing.Process
     init_pipe = Popen(["cat"], stdin=sys.stdin,stdout=PIPE)
@@ -136,7 +142,10 @@ if __name__ == "__main__":
         num_parsers = 2
         
     args = sys.argv[2]
-    sentdelim = sys.argv[3]
+    if sys.version_info < (3, 0):
+        sentdelim = bytes(sys.argv[3])
+    else:
+        sentdelim = bytes(sys.argv[3], encoding="UTF-8")
     path = sys.argv[4]
     prolog = sys.argv[5]
     prolog_load = sys.argv[6]
