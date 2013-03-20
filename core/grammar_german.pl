@@ -113,6 +113,11 @@ head('NE','ADJA',l,attr,'NE',[_,_,_,_,OF,_,_,_],_,MF,MG,MNew) :- \+ member('<-de
 
 head('FM','ADJA',l,attr,'FM',[_,_,_,_,OF,_,_,_],_,MF,MG,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), check_agreement(MF,'FM',MG,'ADJA',MNew).
 
+%allow (with low probability) non-congruent noun phrases
+head('NN','ADJA',l,bad_attr,'NN',[_,_,_,_,OF,_,_,_],_,MF,_,MF) :- relax_agreement(yes), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF).
+head('NE','ADJA',l,bad_attr,'NE',[_,_,_,_,OF,_,_,_],_,MF,_,MF) :- relax_agreement(yes), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF).
+head('FM','ADJA',l,bad_attr,'FM',[_,_,_,_,OF,_,_,_],_,MF,_,MF) :- relax_agreement(yes), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF).
+
 
 %this rule only applies if there is another article left of the pronoun. "Ein paar Leute". Special transtag if article morphology is to be ignored in 'det' rules.
 head('NN','PIDAT',l,attr,TransTag,[_,_,_,GWord,OF,_,_,_],_-G,MF,MG,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), LPos is G - 1, checkPos(LPos,LWord,'ART',_,_), check_agreement(MF,'NN',MG,'PIDAT',MNew), ((pidat_anymorph(GWord),(LWord=ein;LWord=eine))->TransTag='NIDEF';TransTag='NN').
