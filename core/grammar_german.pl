@@ -33,9 +33,9 @@ head('NIDEF',DET,l,det,'NN',[_,_,_,_,OF,_,_,_],_-G,MH,_,MH) :- detcan(DET,G), \+
 
 
 %allow (with low probability) non-congruent noun phrases
-head('NN',DET,l,bad_det,'NN',[_,_,_,_,OF,_,_,_],_-G,MF,_,MF) :- detcan(DET,G), relax_agreement(yes), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF).
-head('NE',DET,l,bad_det,'NN',[_,_,_,_,OF,_,_,_],_-G,MF,_,MF) :- detcan(DET,G), relax_agreement(yes), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF).
-head('FM',DET,l,bad_det,'NN',[_,_,_,_,OF,_,_,_],_-G,MF,_,MF) :- detcan(DET,G), relax_agreement(yes), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF).
+head('NN',DET,l,bad_det,'NN',[_,_,_,_,OF,_,_,_],_-G,_,MTemp,MNew) :- detcan(DET,G), relax_agreement(yes), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF), convertMorphList(DET,MTemp,'NN',MNew).
+head('NE',DET,l,bad_det,'NE',[_,_,_,_,OF,_,_,_],_-G,_,MTemp,MNew) :- detcan(DET,G), relax_agreement(yes), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF), convertMorphList(DET,MTemp,'NE',MNew).
+head('FM',DET,l,bad_det,'FM',[_,_,_,_,OF,_,_,_],_-G,_,MTemp,MNew) :- detcan(DET,G), relax_agreement(yes), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF), convertMorphList(DET,MTemp,'FM',MNew).
 
 %solch eine Friedenstruppe: double determiner possible with PIDAT.
 head('NN','PIDAT',l,det,'NN',[_,_,_,_,OF,_,_,_],_-G,MH,_,MH) :- \+ member('<-gmod<-',OF), OldPos is G - 1, \+ checkPos(OldPos,_,'ART',_,_).
@@ -174,7 +174,10 @@ head('PIS','ADJA',l,attr,'PIS', _,F-G,MH,_,MH) :- 1 is F-G.
 %prep(osition)
 
 %use prepcompl/1 to list all valid dependents of prepositions.
-head('APPR',PN,r,pn,'PP',[_,_,_,_,OG,_,_,_],_-F,MG,MF,MNew) :- prepcompl(PN,F), unify_case(MG,'APPR',MF,PN,MNew), \+ member('->pn->',OG).
+head('APPR',PN,r,pn,'PP',[_,_,_,_,OG,_,_,_],_-F,MG,MF,MNew) :- prepcompl(PN,F), unify_case(MG,'APPR',MF,PN,MNew), \+ member('->pn->',OG), \+ member('->bad_pn->',OG).
+
+%allow (with low probability) non-congruent prepositional phrases
+head('APPR',PN,r,bad_pn,'PP',[_,_,_,_,OG,_,_,_],_-F,MG,_,MG) :- prepcompl(PN,F), relax_agreement(yes), \+ member('->pn->',OG), \+ member('->bad_pn->',OG).
 
 %bis auf weiteres - may be mistagged.
 head(_,'PP',r,pn,'PP',[_,_,bis,_,_,_,_,_],G-F,MH,_,MH) :- correct_mistagging(yes), 1 is F-G.
@@ -182,8 +185,8 @@ head(_,'PP',r,pn,'PP',[_,_,'Bis',_,_,_,_,_],G-F,MH,_,MH) :- correct_mistagging(y
 
 
 %zu might be mistagged as PTKA/PTKZU/PTKVZ
-head(_,PN,r,pn,'PP',[_,_,zu,_,OG,_,_,_],_-F,MG,MF,MNew) :- correct_mistagging(yes), prepcompl(PN,F), unify_case(MG,'APPR',MF,PN,MNew), \+ member('->pn->',OG).
-head(_,PN,r,pn,'PP',[_,_,'Zu',_,OG,_,_,_],_-F,MG,MF,MNew) :- correct_mistagging(yes), prepcompl(PN,F), unify_case(MG,'APPR',MF,PN,MNew), \+ member('->pn->',OG).
+head(_,PN,r,pn,'PP',[_,_,zu,_,OG,_,_,_],_-F,MG,MF,MNew) :- correct_mistagging(yes), prepcompl(PN,F), unify_case(MG,'APPR',MF,PN,MNew), \+ member('->pn->',OG), \+ member('->bad_pn->',OG).
+head(_,PN,r,pn,'PP',[_,_,'Zu',_,OG,_,_,_],_-F,MG,MF,MNew) :- correct_mistagging(yes), prepcompl(PN,F), unify_case(MG,'APPR',MF,PN,MNew), \+ member('->pn->',OG), \+ member('->bad_pn->',OG).
 
 
 %"mit mehr als x" - no distance restriction. (inconsistency in gold standard: pn or kom?)
@@ -192,25 +195,25 @@ head('APPR','KOMPX',r,kom,'PP',_,_,MH,_,MH).
 
 
 %relative clause
-head('APPR','PRELAT',r,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MG,MF,MNew) :- correct_mistagging(yes), unify_case(MG,'APPR',MF,'PRELS',MNew), \+ member('->pn->',OG).
+head('APPR','PRELAT',r,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MG,MF,MNew) :- correct_mistagging(yes), unify_case(MG,'APPR',MF,'PRELS',MNew), \+ member('->pn->',OG), \+ member('->bad_pn->',OG).
 
-head('APPR','PRELS',r,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MG,MF,MNew) :- unify_case(MG,'APPR',MF,'PRELS',MNew), \+ member('->pn->',OG).
+head('APPR','PRELS',r,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MG,MF,MNew) :- unify_case(MG,'APPR',MF,'PRELS',MNew), \+ member('->pn->',OG), \+ member('->bad_pn->',OG).
 
-head('APPR','PWS',r,pn,'PPQ',[_,_,_,_,OG,_,_,_],_,MG,MF,MNew) :- unify_case(MG,'APPR',MF,'PRELS',MNew), \+ member('->pn->',OG).
+head('APPR','PWS',r,pn,'PPQ',[_,_,_,_,OG,_,_,_],_,MG,MF,MNew) :- unify_case(MG,'APPR',MF,'PRELS',MNew), \+ member('->pn->',OG), \+ member('->bad_pn->',OG).
 
 
 
 
 %use prepcompl/1 to list all valid dependents of prepositions.
-head('APPRART',PN,r,pn,'PP',[_,_,_,_,OG,_,_,_],_-F,MG,_,MNew) :- prepcompl(PN,F), convertMorphList('APPRART',MG,'APPR',MNew), \+ member('->pn->',OG).
+head('APPRART',PN,r,pn,'PP',[_,_,_,_,OG,_,_,_],_-F,MG,_,MNew) :- prepcompl(PN,F), convertMorphList('APPRART',MG,'APPR',MNew), \+ member('->pn->',OG), \+ member('->bad_pn->',OG).
 
 
 %relative clause
-head('APPRART','PRELAT',r,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MG,_,MNew) :- correct_mistagging(yes), convertMorphList('APPRART',MG,'APPR',MNew), \+ member('->pn->',OG).
+head('APPRART','PRELAT',r,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MG,_,MNew) :- correct_mistagging(yes), convertMorphList('APPRART',MG,'APPR',MNew), \+ member('->pn->',OG), \+ member('->bad_pn->',OG).
 
-head('APPRART','PRELS',r,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MG,_,MNew) :- convertMorphList('APPRART',MG,'APPR',MNew), \+ member('->pn->',OG).
+head('APPRART','PRELS',r,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MG,_,MNew) :- convertMorphList('APPRART',MG,'APPR',MNew), \+ member('->pn->',OG), \+ member('->bad_pn->',OG).
 
-head('APPRART','PWS',r,pn,'PPQ',[_,_,_,_,OG,_,_,_],_,MG,_,MNew) :- convertMorphList('APPRART',MG,'APPR',MNew), \+ member('->pn->',OG).
+head('APPRART','PWS',r,pn,'PPQ',[_,_,_,_,OG,_,_,_],_,MG,_,MNew) :- convertMorphList('APPRART',MG,'APPR',MNew), \+ member('->pn->',OG), \+ member('->bad_pn->',OG).
 
 
 
@@ -219,14 +222,14 @@ head('APPRART','PWS',r,pn,'PPQ',[_,_,_,_,OG,_,_,_],_,MG,_,MNew) :- convertMorphL
 
 
 %use prepcompl/1 to list all valid dependents of prepositions.
-head('APPO',PN,l,pn,'PP',[_,_,_,_,OG,_,_,_],_-G,MH,_,MH) :- prepcompl(PN,G), \+ member('<-pn<-',OG).
+head('APPO',PN,l,pn,'PP',[_,_,_,_,OG,_,_,_],_-G,MH,_,MH) :- prepcompl(PN,G), \+ member('<-pn<-',OG), \+ member('->bad_pn->',OG).
 
 %relative clause
-head('APPO','PRELS',l,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('<-pn<-',OG).
+head('APPO','PRELS',l,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('<-pn<-',OG), \+ member('->bad_pn->',OG).
 
-head('APPO','PRELAT',l,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), \+ member('<-pn<-',OG).
+head('APPO','PRELAT',l,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), \+ member('<-pn<-',OG), \+ member('->bad_pn->',OG).
 
-head('APPO','PWS',l,pn,'PPQ',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('<-pn<-',OG).
+head('APPO','PWS',l,pn,'PPQ',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('<-pn<-',OG), \+ member('->bad_pn->',OG).
 
 %======================================================================================
 %Subject, only one is allowed    

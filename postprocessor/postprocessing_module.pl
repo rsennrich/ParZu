@@ -167,6 +167,7 @@ transcodeRel(app_close,app) :- !.
 
 transcodeRel(bad_det,det) :- !.
 transcodeRel(bad_attr,attr) :- !.
+transcodeRel(bad_pn,pn) :- !.
 
 transcodeRel(Class,root) :- \+ relclass(Class), !.
 
