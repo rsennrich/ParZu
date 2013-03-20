@@ -36,40 +36,40 @@ prolog_load = {'yap':'-l',
 def usage():
     bold = "\033[1m"
     reset = "\033[0;0m"
-    print(bold + '\nParZu options\n' + reset)
-    print('\t' + bold + '-h' + reset + ', ' + bold + '--help' + reset)
-    print('\t\tprint usage information\n')
-    print('\t' + bold + '-i' + reset + ', ' + bold + '--input' + reset + ' type')
-    print('\t\tdefine input type. Supported so far:')
-    print('\t\t' + bold +'plain' + reset + ': plain text')
-    print('\t\t' + bold +'preprocessed' + reset + ': parser-ready input (generated with output option "preprocessed")')
-    print('\t\t' + bold +'tokenized' + reset + ': tokenized text. one token per line, empty line for sentence boundary')
-    print('\t\t' + bold +'tagged' + reset + ': POS-tagged text. token [tab] tag [newline]\n')
-    print('\t' + bold + '-l' + reset + ', ' + bold + '--linewise' + reset)
-    print('\t\tparse text line by line (suppress automatic sentence splitting).\n')
-    print('\t' + bold + '-o' + reset + ', ' + bold + '--output' + reset + ' type')
-    print('\t\tdefine output type. Supported so far:')
-    print('\t\t' + bold +'conll' + reset + ': CoNLL 2007 data format')
-    print('\t\t' + bold + 'graphical' + reset + ': generate one SVG image per sentence in your current directory, using DepSVG.')
-    print('\t\t' + bold +'moses' + reset + ': factored format used by Moses SMT system')
-    print('\t\t' + bold +'preprocessed' + reset + ': return preprocessed input (unparsed, but parser-ready)\n')
-    print('\t\t' + bold +'prolog' + reset + ': prolog-readable format')
-    print('\t\t' + bold +'raw' + reset + ': parser output without postprocessing (mostly for debugging)\n')
-    print('\t' + bold + '-p'  + reset + ', ' + bold + '--processes' + reset + ' int')
-    print('\t\tnumber of parallel parser processes\n')
-    print('\t' + bold + '-q'  + reset + ', ' + bold + '--quiet' + reset)
-    print('\t\tsend warnings and errors to temporary log file instead of stderr')
-    print('\t' + bold + '--projective' + reset)
-    print('\t\talso print projective output. Uses the last two columns of the CoNLL dependency format (or two extra arguments in the Prolog format).')
-    print('\t' + bold + '--secedges' + reset)
-    print('\t\talso print secondary edges. Uses the last two columns of the CoNLL dependency format (or two extra arguments in the Prolog format).\n')
+    sys.stderr.write(bold + '\nParZu options\n' + reset + '\n')
+    sys.stderr.write('\t' + bold + '-h' + reset + ', ' + bold + '--help' + reset + '\n')
+    sys.stderr.write('\t\tprint usage information\n\n')
+    sys.stderr.write('\t' + bold + '-i' + reset + ', ' + bold + '--input' + reset + ' type\n')
+    sys.stderr.write('\t\tdefine input type. Supported so far:\n')
+    sys.stderr.write('\t\t' + bold +'plain' + reset + ': plain text\n')
+    sys.stderr.write('\t\t' + bold +'preprocessed' + reset + ': parser-ready input (generated with output option "preprocessed")\n')
+    sys.stderr.write('\t\t' + bold +'tokenized' + reset + ': tokenized text. one token per line, empty line for sentence boundary\n')
+    sys.stderr.write('\t\t' + bold +'tagged' + reset + ': POS-tagged text. token [tab] tag [newline]\n\n')
+    sys.stderr.write('\t' + bold + '-l' + reset + ', ' + bold + '--linewise' + reset + '\n')
+    sys.stderr.write('\t\tparse text line by line (suppress automatic sentence splitting).\n\n')
+    sys.stderr.write('\t' + bold + '-o' + reset + ', ' + bold + '--output' + reset + ' type\n')
+    sys.stderr.write('\t\tdefine output type. Supported so far:\n')
+    sys.stderr.write('\t\t' + bold +'conll' + reset + ': CoNLL 2007 data format\n')
+    sys.stderr.write('\t\t' + bold + 'graphical' + reset + ': generate one SVG image per sentence in your current directory, using DepSVG.\n')
+    sys.stderr.write('\t\t' + bold +'moses' + reset + ': factored format used by Moses SMT system\n')
+    sys.stderr.write('\t\t' + bold +'preprocessed' + reset + ': return preprocessed input (unparsed, but parser-ready)\n')
+    sys.stderr.write('\t\t' + bold +'prolog' + reset + ': prolog-readable format\n')
+    sys.stderr.write('\t\t' + bold +'raw' + reset + ': parser output without postprocessing (mostly for debugging)\n\n')
+    sys.stderr.write('\t' + bold + '-p'  + reset + ', ' + bold + '--processes' + reset + ' int\n')
+    sys.stderr.write('\t\tnumber of parallel parser processes\n\n')
+    sys.stderr.write('\t' + bold + '-q'  + reset + ', ' + bold + '--quiet' + reset + '\n')
+    sys.stderr.write('\t\tsend warnings and errors to temporary log file instead of stderr\n')
+    sys.stderr.write('\t' + bold + '--projective' + reset + '\n')
+    sys.stderr.write('\t\talso print projective output. Uses the last two columns of the CoNLL dependency format (or two extra arguments in the Prolog format).\n')
+    sys.stderr.write('\t' + bold + '--secedges' + reset + '\n')
+    sys.stderr.write('\t\talso print secondary edges. Uses the last two columns of the CoNLL dependency format (or two extra arguments in the Prolog format).\n\n')
 
 def load_arguments():
     try:
         opts, args = getopt.getopt(sys.argv[1:], "hi:lo:p:q", ["help", "input=", "linewise", "output=", "processes=", "quiet", "secedges", "projective"])
     except getopt.GetoptError as err:
         # print help information and exit:
-        print(err) # will print something like "option -a not recognized"
+        sys.stderr.write(err) # will print something like "option -a not recognized"
         usage()
         sys.exit(2)
     output = None
@@ -92,12 +92,12 @@ def load_arguments():
             linewise = True
         elif o in ("--secedges",):
             if extrainfo == 'projective':
-                sys.stderr.write('Error: Cannot display secondary edges and projective tree at same time. Aborting.')
+                sys.stderr.write('Error: Cannot display secondary edges and projective tree at same time. Aborting.\n')
                 sys.exit()
             extrainfo = 'secedges'
         elif o in ("--projective",):
             if extrainfo == 'secedges':
-                sys.stderr.write('Error: Cannot display secondary edges and projective tree at same time. Aborting.')
+                sys.stderr.write('Error: Cannot display secondary edges and projective tree at same time. Aborting.\n')
                 sys.exit()
             extrainfo = 'projective'
         elif o in ("-q", "--quiet"):
@@ -147,7 +147,7 @@ def process_arguments():
         options['outputformat'] = arg_output
 
     if not options['outputformat'] in ["raw","preprocessed","graphical"] + outputformats:
-        print("Error: Output option not recognized: " + options['outputformat'] + "\n")
+        sys.stderr.write("Error: Output option not recognized: " + options['outputformat'] + "\n")
         usage()
         sys.exit(2)
 
@@ -155,7 +155,7 @@ def process_arguments():
         options['inputformat'] = arg_input
 
     if not options['inputformat'] in ["plain","tokenized","tagged","preprocessed"]:
-        print("Error: Input option not recognized: " + options['inputformat'] + "\n")
+        sys.stderr.write("Error: Input option not recognized: " + options['inputformat'] + "\n")
         usage()
         sys.exit(2)
 
@@ -166,7 +166,7 @@ def process_arguments():
         int(options['processes'])
     except ValueError:
         # print help information and exit:
-        print("Error: Number of processes must be int\n")
+        sys.stderr.write("Error: Number of processes must be int\n")
         usage()
         sys.exit(2)
 
@@ -314,8 +314,10 @@ def preprocess(instream,outstream,options):
             gertwol.wait()
         
         elif options['morphology'] == 'morphisto':
-            morphisto = Popen(["fst-infl", options['morphisto_model']],stdin=morphin,stdout=PIPE,stderr=options['senderror'])
-            morphisto2prolog = Popen(["python", "morphisto2prolog.py"], cwd=os.path.join(sys.path[0],'preprocessor','morphology'),stdin=morphisto.stdout,stdout=morphfile,stderr=options['senderror'])
+            input_latin1 = Popen(["iconv", "-c", "-f", "utf-8", "-t", "latin1"], stdin=morphin, stdout=PIPE, stderr=options['senderror'])
+            morphisto = Popen(['smor'],stdin=input_latin1.stdout,stdout=PIPE,stderr=options['senderror'])
+            morphisto_utf8 = Popen(["iconv", "-c", "-f", "latin1", "-t", "utf-8"], stdin=morphisto.stdout, stdout= PIPE, stderr=options['senderror'])
+            morphisto2prolog = Popen(["python", "morphisto2prolog.py"], cwd=os.path.join(sys.path[0],'preprocessor','morphology'),stdin=morphisto_utf8.stdout,stdout=morphfile,stderr=options['senderror'])
             morphisto2prolog.wait()
 
     #having at least one entry makes sure that the preprocessing script doesn't crash
