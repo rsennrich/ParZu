@@ -314,10 +314,8 @@ def preprocess(instream,outstream,options):
             gertwol.wait()
         
         elif options['morphology'] == 'morphisto':
-            input_latin1 = Popen(["iconv", "-c", "-f", "utf-8", "-t", "latin1"], stdin=morphin, stdout=PIPE, stderr=options['senderror'])
-            morphisto = Popen(['smor'],stdin=input_latin1.stdout,stdout=PIPE,stderr=options['senderror'])
-            morphisto_utf8 = Popen(["iconv", "-c", "-f", "latin1", "-t", "utf-8"], stdin=morphisto.stdout, stdout= PIPE, stderr=options['senderror'])
-            morphisto2prolog = Popen(["python", "morphisto2prolog.py"], cwd=os.path.join(sys.path[0],'preprocessor','morphology'),stdin=morphisto_utf8.stdout,stdout=morphfile,stderr=options['senderror'])
+            morphisto = Popen(["fst-infl", options['morphisto_model']],stdin=morphin,stdout=PIPE,stderr=options['senderror'])
+            morphisto2prolog = Popen(["python", "morphisto2prolog.py"], cwd=os.path.join(sys.path[0],'preprocessor','morphology'),stdin=morphisto.stdout,stdout=morphfile,stderr=options['senderror'])
             morphisto2prolog.wait()
 
     #having at least one entry makes sure that the preprocessing script doesn't crash
