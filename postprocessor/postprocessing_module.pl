@@ -333,6 +333,7 @@ leavealone(konjneb).
 leavealone(konjobjc).
 leavealone(koord).
 leavealone(par).
+leavealone(part).
 
 
 
