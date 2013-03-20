@@ -132,10 +132,12 @@ def fitness(features):
     """log-linear model that computes a score for each hypothesis, based on a weighted features.
     Weights have been optimized on development set"""
 
-    weights = [1, -5, -0.5, -1.5]
-    features = [log(f) for f in features]
-
-    return -dot_product(weights, features)
+    try:
+        weights = [1, -5, -0.5, -1.5]
+        features = [log(f) for f in features]
+        return -dot_product(weights, features)
+    except ValueError:
+        return float('inf')
 
 
 
