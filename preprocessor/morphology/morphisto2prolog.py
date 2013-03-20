@@ -246,7 +246,12 @@ def getlemma(line,word,pos):
     if pos == 'NN':
     #sadly complicated hack to get desired lemmata for nouns. Morphisto normalizes all morphemes in the stem, which we don't want.
     #using longest common subsequence matching to find boundary, taking normalized last_morpheme, unnormalized stem.
-        last_morpheme = re_last.search(line).group(1)
+        last_morpheme = re_last.search(line)
+
+        if not last_morpheme:
+            return re_any.sub('',line)
+
+        last_morpheme = last_morpheme.group(1)
         word_lc = word.lower()
         last_morpheme_lc = last_morpheme.lower()
         try:
@@ -336,17 +341,25 @@ for line in sys.stdin:
     
     line = line.rstrip().decode('UTF-8')
 
-    if line.startswith('>'):
+    if line.startswith('> ') or line == '>':
         word = line[2:]
         print_cache(cache)
         cache = defaultdict(list)
         continue
 
-    if line.startswith('no result'):
+    elif line.startswith('no result'):
         print(u"gertwol({0},'<unknown>',_,_,_).".format(get_repr2(word)).encode('UTF-8'))
         continue
-    
-    raw_pos = re_mainclass.search(line).group(1)
+
+    elif line.startswith('><+') or line.startswith('<<+'):
+        print "gertwol({0},{0},'$(',_,'').".format(get_repr2(line[0]))
+        continue
+
+    try:
+        raw_pos = re_mainclass.search(line).group(1)
+    except:
+        sys.stderr.write(line)
+        raise
 
     pos,pos2 = get_true_pos(raw_pos,line)
            
