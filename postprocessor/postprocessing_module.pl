@@ -165,6 +165,8 @@ transcodeRel(objc2,objc) :- !.
 transcodeRel(app_loose,app) :- !.
 transcodeRel(app_close,app) :- !.
 
+transcodeRel(bad_det,det) :- !.
+
 transcodeRel(Class,root) :- \+ relclass(Class), !.
 
 transcodeRel(Class,Class) :- !.
