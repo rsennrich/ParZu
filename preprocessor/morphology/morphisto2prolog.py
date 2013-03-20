@@ -3,8 +3,10 @@
 # Copyright ©2011 University of Zürich
 # Author: Rico Sennrich <sennrich@cl.uzh.ch>
 
+from __future__ import unicode_literals, print_function
 import sys
 import re
+import codecs
 from collections import defaultdict
 
 
@@ -31,10 +33,10 @@ map_stts['CHAR'] = 'XY'
 map_stts['NPROP'] = 'NE'
 
 word = ''
-re_mainclass = re.compile(u'<\+(.*?)>')
-re_any = re.compile(u'<(.*?)>')
-re_segment = re.compile(u'<([A-Z]*?)>')
-re_last = re.compile(u'(?:^|\W)([\w\.]+?)(?:<[\w\-\^]*>)*?<\+',re.UNICODE)
+re_mainclass = re.compile('<\+(.*?)>')
+re_any = re.compile('<(.*?)>')
+re_segment = re.compile('<([A-Z]*?)>')
+re_last = re.compile('(?:^|\W)([\w\.]+?)(?:<[\w\-\^]*>)*?<\+',re.UNICODE)
 
 def get_repr(key,d):
     if key in d:
@@ -152,7 +154,7 @@ def get_true_pos(raw_pos,line):
             line = line[5:]
         if line.startswith('haben') or line.startswith('werden') or line.startswith('sein'):
             pos += 'A'
-        elif line.startswith(u'dürfen') or line.startswith(u'können') or line.startswith('sollen') or line.startswith(u'müssen') or line.startswith(u'mögen') or line.startswith(u'wollen'):
+        elif line.startswith('dürfen') or line.startswith('können') or line.startswith('sollen') or line.startswith('müssen') or line.startswith('mögen') or line.startswith('wollen'):
             pos += 'M'     
         else:
             pos += 'V'
@@ -175,7 +177,7 @@ def get_true_pos(raw_pos,line):
             pos = 'ADJD'
             
         else:
-            sys.stderr.write('FIN or INF or PP?: '+line.encode("UTF-8")+'\n')
+            sys.stderr.write('FIN or INF or PP?: '+line+'\n')
     
     #distinction between ADJA and ADJD
     elif raw_pos == 'ADJ':
@@ -246,7 +248,12 @@ def getlemma(line,word,pos):
     if pos == 'NN':
     #sadly complicated hack to get desired lemmata for nouns. Morphisto normalizes all morphemes in the stem, which we don't want.
     #using longest common subsequence matching to find boundary, taking normalized last_morpheme, unnormalized stem.
-        last_morpheme = re_last.search(line).group(1)
+        last_morpheme = re_last.search(line)
+
+        if not last_morpheme:
+            return re_any.sub('',line)
+
+        last_morpheme = last_morpheme.group(1)
         word_lc = word.lower()
         last_morpheme_lc = last_morpheme.lower()
         try:
@@ -295,7 +302,7 @@ def getlemma(line,word,pos):
 def print_cache(cache):
     for pos in cache:
         for item in sorted(cache[pos]):
-            print item[1].encode('UTF-8')
+            print(item[1])
 
 
 #longest common subsequence code from http://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Longest_common_subsequence
@@ -325,6 +332,11 @@ def backTrack(C, X, Y, i, j):
 
 
 
+if sys.version_info < (3, 0):
+    sys.stdout = codecs.getwriter('UTF-8')(sys.stdout)
+    sys.stderr = codecs.getwriter('UTF-8')(sys.stderr)
+    sys.stdin = codecs.getreader('UTF-8')(sys.stdin)
+
 cache = defaultdict(list)
 
 for line in sys.stdin:
@@ -334,19 +346,27 @@ for line in sys.stdin:
     morph = []
     other = "''"
     
-    line = line.rstrip().decode('UTF-8')
+    line = line.rstrip()
 
-    if line.startswith('>'):
+    if line.startswith('> ') or line == '>':
         word = line[2:]
         print_cache(cache)
         cache = defaultdict(list)
         continue
 
-    if line.startswith('no result'):
-        print(u"gertwol({0},'<unknown>',_,_,_).".format(get_repr2(word)).encode('UTF-8'))
+    elif line.startswith('no result'):
+        print("gertwol({0},'<unknown>',_,_,_).".format(get_repr2(word)))
         continue
-    
-    raw_pos = re_mainclass.search(line).group(1)
+
+    elif line.startswith('><+') or line.startswith('<<+'):
+        print("gertwol({0},{0},'$(',_,'').".format(get_repr2(line[0])))
+        continue
+
+    try:
+        raw_pos = re_mainclass.search(line).group(1)
+    except:
+        sys.stderr.write(line)
+        raise
 
     pos,pos2 = get_true_pos(raw_pos,line)
            
@@ -370,8 +390,8 @@ for line in sys.stdin:
     if line.startswith('<CAP>'):
         segments -= 1
 
-    cache[pos].append((segments,u"gertwol({0},{1},{2},{3},{4}).".format(get_repr2(word),get_repr2(lemma),get_repr2(pos),morph,other)))
+    cache[pos].append((segments,"gertwol({0},{1},{2},{3},{4}).".format(get_repr2(word),get_repr2(lemma),get_repr2(pos),morph,other)))
     if pos2:
-        cache[pos2].append((segments,u"gertwol({0},{1},{2},{3},{4}).".format(get_repr2(word),get_repr2(lemma),get_repr2(pos2),morph2,other)))
+        cache[pos2].append((segments,"gertwol({0},{1},{2},{3},{4}).".format(get_repr2(word),get_repr2(lemma),get_repr2(pos2),morph2,other)))
 
 print_cache(cache)
