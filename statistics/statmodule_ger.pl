@@ -648,7 +648,8 @@ posModifier(_Htag,'OBJC',objc,1) :- !.
 posModifier(_Htag,'QC',objc,1) :- !.
 
 posModifier('ADJA','KON_ADV',kon,0.2) :- !.
-
+posModifier(_Htag,'APP',kon,0.5) :- !.
+posModifier(_Htag,'APPX',kon,0.5) :- !.
 
 posModifier(_Htag,_Dtag,_Class,1) :- !. %catchall
 

@@ -773,27 +773,27 @@ head('APPX','$,',r,comma,'APP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- member('<-comma<
 
 
 %appositions that are enclosed by comma are bound to noun on their left.
-head('NN','APP',r,app_loose,'NN',_,_,MG,MF,MNew) :- unify_case(MG,'NN',MF,'NN',MNew).
+head('NN','APP',r,app_loose,'NN',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'NN',MF,'NN',MNew), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
 
-head('NE','APP',r,app_loose,'NE',_,_,MG,MF,MNew) :- unify_case(MG,'NE',MF,'NN',MNew).
+head('NE','APP',r,app_loose,'NE',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'NE',MF,'NN',MNew), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
 
-head('FM','APP',r,app_loose,'FM',_,_,MG,MF,MNew) :- unify_case(MG,'FM',MF,'NN',MNew).
+head('FM','APP',r,app_loose,'FM',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'FM',MF,'NN',MNew), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
 
-head('PIS','APP',r,app_loose,'PIS',_,_,MG,MF,MNew) :- unify_case(MG,'PIS',MF,'NN',MNew).
+head('PIS','APP',r,app_loose,'PIS',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PIS',MF,'NN',MNew), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
 
-head('PPER','APP',r,app_loose,'PPER',_,_,MG,MF,MNew) :- unify_case(MG,'PPER',MF,'NN',MNew).
+head('PPER','APP',r,app_loose,'PPER',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PPER',MF,'NN',MNew), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
 
 
 %sentence-final appositions.
-head('NN','APPX',r,app_loose,'NN',[_,_,_,_,_,_,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'NN',DepMorph,'NN',TransMorph).
+head('NN','APPX',r,app_loose,'NN',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'NN',DepMorph,'NN',TransMorph), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
 
-head('NE','APPX',r,app_loose,'NE',[_,_,_,_,_,_,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'NE',DepMorph,'NN',TransMorph).
+head('NE','APPX',r,app_loose,'NE',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'NE',DepMorph,'NN',TransMorph), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
 
-head('FM','APPX',r,app_loose,'FM',[_,_,_,_,_,_,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'FM',DepMorph,'NN',TransMorph).
+head('FM','APPX',r,app_loose,'FM',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'FM',DepMorph,'NN',TransMorph), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
 
-head('PIS','APPX',r,app_loose,'PIS',[_,_,_,_,_,_,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'PIS',DepMorph,'NN',TransMorph).
+head('PIS','APPX',r,app_loose,'PIS',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'PIS',DepMorph,'NN',TransMorph), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
 
-head('PPER','APPX',r,app_loose,'PPER',[_,_,_,_,_,_,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'PPER',DepMorph,'NN',TransMorph).
+head('PPER','APPX',r,app_loose,'PPER',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'PPER',DepMorph,'NN',TransMorph), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
 
 
 %apposition enclosed in bracket
@@ -1807,6 +1807,36 @@ head('VVIMP','$,',l,comma,'KONC',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ membe
 head('V*FIN','KONC',r,kon,'V*FIN',[GC,FC,_,_,_,_,_,_],_,MH,_,MH) :- member('mainclause',FC),member('mainclause',GC).
 
 head('VVIMP','KONC',r,kon,'VVIMP',[GC,FC,_,_,_,_,_,_],_,MH,_,MH) :- member('mainclause',FC),member('mainclause',GC).
+
+
+
+
+%what looks like loose apposition could also be part of coordination chain (without conjunction). (Peter, Susi, Mark)
+%strategy: label two elements as apposition, three or more as coordination
+head('NN','APP',r,kon,'NN',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'NN',MF,'NN',MNew), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+
+head('NE','APP',r,kon,'NE',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'NE',MF,'NN',MNew), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+
+head('FM','APP',r,kon,'FM',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'FM',MF,'NN',MNew), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+
+head('PIS','APP',r,kon,'PIS',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PIS',MF,'NN',MNew), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+
+head('PPER','APP',r,kon,'PPER',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PPER',MF,'NN',MNew), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+
+
+%sentence-final coordinated element (without conjunction). (Peter, Susi, Mark)
+%strategy: label two elements as apposition, three or more as coordination
+head('NN','APPX',r,kon,'NN',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'NN',DepMorph,'NN',TransMorph), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+
+head('NE','APPX',r,kon,'NE',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'NE',DepMorph,'NN',TransMorph), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+
+head('FM','APPX',r,kon,'FM',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'FM',DepMorph,'NN',TransMorph), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+
+head('PIS','APPX',r,kon,'PIS',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'PIS',DepMorph,'NN',TransMorph), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+
+head('PPER','APPX',r,kon,'PPER',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'PPER',DepMorph,'NN',TransMorph), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+
+
 
 
 kon_mapping('NN','KON_NOUN') :- !.
