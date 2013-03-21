@@ -102,6 +102,7 @@ sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[WFormF|MORPHF],
      appl_chunk_r(FuncG,FuncF,DType,FuncTRes)
     )
   ),
+  ((Prob > COMMIT) -> !; true), %% early commitment
   (chart(_,Gfrom,Fto,_,_,Transtag,_,FuncTRes,_,_) -> (fail);true), % alternative path joins in again
   OPScore is FScore * GScore * Prob, Len is Fto - Gfrom,
   inc(ID),
@@ -118,7 +119,6 @@ sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[WFormF|MORPHF],
   ),
   retract(perlevel(X)),
   X1 is X+1, assert(perlevel(X1)),
-  ((Prob > COMMIT) -> !; true), %% early commitment
   fail.
 
 

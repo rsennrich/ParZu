@@ -1626,20 +1626,19 @@ head(Tag,'$,',l,comma,'KON_PPER',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- kon_mapping(Ta
 
 head('V*FIN','$,',l,comma,'KON_FINVERB',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- member('->kon->', OF), \+ member('<-comma<-', OF), \+ member('->subj->', OF).
 
-head('VVIZU','$,',l,comma,'KON_VVIZU',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- member('->kon->',OF), \+ member('<-comma<-', OF), \+ member('->subj->', OF).
-
 head('VVIMP','$,',l,comma,'KON_IMPVERB',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- member('->kon->',OF), \+ member('<-comma<-', OF).
-
-head('V*PP','$,',l,comma,'KON_PPVERB',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- member('->kon->',OF), \+ member('<-comma<-', OF).
-
-head('V*INF','$,',l,comma,'KON_INFVERB',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- member('->kon->',OF), \+ member('<-comma<-', OF).
 
 head('KOMPX','$,',l,comma,'KON_KOMPX',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- member('->kon->',OF), \+ member('<-comma<-', OF).
 
+head('V*PP','$,',l,comma,'KON_PPVERB',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- in_coordination(FC,OF), \+ member('<-comma<-', OF).
 
-%with adjectives, the same is possible even if there is no conjunction at the end "der hochgefährliche, giftige baustoff".
+head('V*INF','$,',l,comma,'KON_INFVERB',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- in_coordination(FC,OF), \+ member('<-comma<-', OF).
+
+head('VVIZU','$,',l,comma,'KON_VVIZU',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- in_coordination(FC,OF), \+ member('<-comma<-', OF), \+ member('->subj->', OF).
+
+
+%for some word classes, the same is allowed even if there is no conjunction at the end "der hochgefährliche, giftige baustoff".
 head('ADJA','$,',l,comma,'KON_ADJA',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- \+ member('<-comma<-', OF).
-
 
 
 %noun + noun/pronoun
@@ -2335,6 +2334,9 @@ createMorph(Tag,Gen,Case,Number,[Gen,Case,Number]) :- morphology(gertwol),
 
 unify_morph(_,_,_,_) :- morphology(off), !.
 
+unify_morph(List1,_Tag1,List2,_Tag2) :- var(List1), var(List2), !.
+
+unify_morph(List1,_Tag1,[A,B,C,D,E,_F],'ADJA') :- var(List1), var(A), var(B), var(C), var(D), var(E), !.
 
 %unify_morphs(?List1,+Tag1,?List2,+Tag2).
 %tests for number-person agreement
