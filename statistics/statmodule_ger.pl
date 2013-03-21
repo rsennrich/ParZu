@@ -23,6 +23,10 @@ stats2(det,'CARD',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.3,_D,_HC).
 stats2(attr,'ADJA',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.3,_D,_HC).
 stats2(attr,'CARD',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC).
 
+%noun phrases that do not meet congruency constraints may still be allowed by parser
+stats2(bad_det,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC).
+stats2(bad_attr,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC).
+stats2(bad_pn,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC).
 
 %word classes other than articles or attributive pronouns should only be analysed as determiners if there is no other option.
 stats2(det,_Htag,_FH,_SH,_MORPHH,'PRELS',_FD,_SD,_MORPHD,0.45,_D,_HC).
@@ -556,7 +560,8 @@ posModifier(_Htag,'OBJC',objc,1) :- !.
 posModifier(_Htag,'QC',objc,1) :- !.
 
 posModifier('ADJA','KON_ADV',kon,0.2) :- !.
-
+posModifier(_Htag,'APP',kon,0.5) :- !.
+posModifier(_Htag,'APPX',kon,0.5) :- !.
 
 posModifier(_Htag,_Dtag,_Class,1) :- !. %catchall
 

@@ -165,6 +165,10 @@ transcodeRel(objc2,objc) :- !.
 transcodeRel(app_loose,app) :- !.
 transcodeRel(app_close,app) :- !.
 
+transcodeRel(bad_det,det) :- !.
+transcodeRel(bad_attr,attr) :- !.
+transcodeRel(bad_pn,pn) :- !.
+
 transcodeRel(Class,root) :- \+ relclass(Class), !.
 
 transcodeRel(Class,Class) :- !.
@@ -333,6 +337,7 @@ leavealone(konjneb).
 leavealone(konjobjc).
 leavealone(koord).
 leavealone(par).
+leavealone(part).
 
 
 
