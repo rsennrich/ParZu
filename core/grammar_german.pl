@@ -205,8 +205,8 @@ head('APPR','PWS',r,pn,'PPQ',[_,_,_,_,OG,_,_,_],_,MG,MF,MNew) :- unify_case(MG,'
 
 
 %use prepcompl/1 to list all valid dependents of prepositions.
-head('APPRART',PN,r,pn,'PP',[_,_,_,_,OG,_,_,_],_-F,MG,_,MNew) :- prepcompl(PN,F), convertMorphList('APPRART',MG,'APPR',MNew), \+ member('->pn->',OG), \+ member('->bad_pn->',OG).
-
+head('APPRART',PN,r,pn,'PP',[_,_,_,_,OG,_,_,_],_-F,MG,MF,MNew) :- prepcompl(PN,F), check_agreement(MG,'APPRART',MF,PN,MTemp), convertMorphList('APPRART',MTemp,'APPR',MNew), \+ member('->pn->',OG), \+ member('->bad_pn->',OG).
+head('APPRART',PN,r,bad_pn,'PP',[_,_,_,_,OG,_,_,_],_-F,MG,_,MNew) :- prepcompl(PN,F), relax_agreement(yes), convertMorphList('APPRART',MG,'APPR',MNew), \+ member('->pn->',OG), \+ member('->bad_pn->',OG).
 
 %relative clause
 head('APPRART','PRELAT',r,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MG,_,MNew) :- correct_mistagging(yes), convertMorphList('APPRART',MG,'APPR',MNew), \+ member('->pn->',OG), \+ member('->bad_pn->',OG).
@@ -2294,24 +2294,26 @@ convertMorphList(_,_,_,_) :- morphology(off), !.
 
 convertMorphList(_,List,_,List) :- morphology(tueba), !.
 
-convertMorphList(_,[],_,[]) :- morphology(gertwol), !.
+convertMorphList(Tag,In,Tag2,OutUniq) :- convertMorphList2(Tag,In,Tag2,Out), !, my_remove_duplicates(Out,OutUniq).
 
 
-convertMorphList('APPRART',[List|RestIn],'APPR',[[Case]|RestOut]) :-	
+convertMorphList2(_,[],_,[]) :- morphology(gertwol), !.
+
+convertMorphList2('APPRART',[List|RestIn],'APPR',[[Case]|RestOut]) :-
 	morphology(gertwol), 
 	get_case(List,'APPRART',Case,gertwol),
 	!,
-	convertMorphList('APPRART', RestIn, 'APPR',RestOut).
+	convertMorphList2('APPRART', RestIn, 'APPR',RestOut).
 
 
-convertMorphList(Tag,[List|RestIn],Tag2,[ListOut|RestOut]) :-	
+convertMorphList2(Tag,[List|RestIn],Tag2,[ListOut|RestOut]) :-
 	morphology(gertwol), 
 	get_case(List,Tag,Case,gertwol),
 	get_number(List,Tag,Number,gertwol),
 	get_gender(List,Tag,Gen,gertwol),
 	createMorph(Tag2,Gen,Case,Number,ListOut),
 	!,
-	convertMorphList(Tag, RestIn, Tag2,RestOut).
+	convertMorphList2(Tag, RestIn, Tag2,RestOut).
 
 
 %not complete, just those word classes that are needed. Takes information and creates a list in the desired format.
@@ -2400,12 +2402,14 @@ get_case(_,_,_,off) :- !.
 
 
 get_number([_,Number|_],_,Number,tueba) :- !.
+get_number(_,'APPRART',s,tueba) :- !.
 
 get_number([_,_,_,Number,_],'ADJA',Number,gertwol) :- !.
 get_number([_,_,_,Number,_,_],'ADJA',Number,gertwol) :- !.
 get_number([_,Number,_,_],'PPER',Number,gertwol) :- !.
 get_number([_,_,_,Number],'ART',Number,gertwol) :- !.
 get_number([_,Number,_],'PRF',Number,gertwol) :- !.
+get_number(_List,'APPRART','Sg',gertwol) :- !.
 get_number([_,Number,_,_],Tag,Number,gertwol) :- morph_finverb(Tag), !.
 get_number([_,_,Number],Tag,Number,gertwol) :- (morph_noun(Tag);morph_pronoun(Tag);Tag = 'PRF'), !.
 
@@ -2816,8 +2820,12 @@ splittag(WordI,WordI,_) :- !.
 
 %standard sort only removes duplicates if no variables are involved.
 %we want [[_,'Akk'],[_,'Akk']] to be reduced to [[_,'Akk']]
-my_remove_duplicates(L,Unique) :- duplicate_check(L,[],Unique).
+my_remove_duplicates(L,Unique) :- duplicate_check(L,[],UniqueTmp), (is_all_var(UniqueTmp)->Unique=_;Unique=UniqueTmp).
 
 duplicate_check([],Acc,Acc) :- !.
 duplicate_check([H|T],Acc,Unique) :- \+ member(H,Acc), !, duplicate_check(T,[H|Acc],Unique).
 duplicate_check([_|T],Acc,Unique) :- duplicate_check(T,Acc,Unique).
+
+is_all_var([]).
+is_all_var([[Element|Rest]]) :- var(Element), is_all_var(Rest).
+is_all_var([Element|Rest]) :- var(Element), is_all_var(Rest).
