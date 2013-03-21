@@ -43,10 +43,12 @@ load_grammar_german :-
     (lemmatisation(gertwol) -> (ensure_loaded('../statistics/ppstat_data'),
     ensure_loaded('../statistics/advstat_data'),
     ensure_loaded('../statistics/vstat_data'),
+    ensure_loaded('../statistics/adv_pred_data'),
     ensure_loaded('../statistics/freq_data')); true),
     (lemmatisation(off) -> (ensure_loaded('../statistics/ppstat_data_nolemma'),
     ensure_loaded('../statistics/advstat_data_nolemma'),
     ensure_loaded('../statistics/vstat_data_nolemma'),
+    ensure_loaded('../statistics/adv_pred_data_nolemma'),
     ensure_loaded('../statistics/freq_data_nolemma')) ; true).
 
 %% END of PARAMETERS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
