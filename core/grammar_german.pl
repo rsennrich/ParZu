@@ -216,6 +216,8 @@ head('APPRART','PRELS',r,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MG,_,MNew) :- convertMo
 head('APPRART','PWS',r,pn,'PPQ',[_,_,_,_,OG,_,_,_],_,MG,_,MNew) :- convertMorphList('APPRART',MG,'APPR',MNew), \+ member('->pn->',OG), \+ member('->bad_pn->',OG).
 
 
+%10 - 12 Uhr ('-' stands for 'bis', and is preposition)
+head(_Tag,'CARD',r,pn,'PP',[_,_,'-',_,_,_,_,_],HPos-_,MH,_,MH) :- LeftPos is HPos-1, checkPos(LeftPos,_,'CARD',_,_).
 
 %======================================================================================
 %postposition
@@ -1837,6 +1839,11 @@ head('PIS','APPX',r,kon,'PIS',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph
 head('PPER','APPX',r,kon,'PPER',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'PPER',DepMorph,'NN',TransMorph), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
 
 
+% Er ist gegen Gewalt, gegen Krieg (repetition of preposition indicates that they are coordinated)
+head('PP','PP',r,kon,'PP',[_,_,HWord,DWord,_,DRels,_,_],_,HeadMorph,_,HeadMorph) :- member('<-comma<-', DRels), splitappr(HWord,Word,_), splitappr(DWord,Word,_).
+
+% Von A nach B.
+head('PP','PP',r,kon,'PP',[_,_,HWord,DWord,HRels,_,_,_],_,HeadMorph,_,HeadMorph) :- splitappr(HWord,HWordBare,_), splitappr(DWord,DWordBare,_), valid_pp_coord_start(HWordBare), valid_pp_coord_end(DWordBare), \+ member('->kon->', HRels).
 
 
 kon_mapping('NN','KON_NOUN') :- !.
