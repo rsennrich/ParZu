@@ -431,6 +431,15 @@ head('VVIZU',Dtag,l,pred,'VVIZU',[_,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- predcand(Dt
 head('VVIZU','ADJD',l,pred,'VVIZU',[_,_,_,_,UG,_,_,_],_,MH,_,MH) :- \+ member('<-pred<-',UG), \+ member('->pred->',UG), \+ member('<-adv<-',UG), \+ member('<-subj<-',UG), \+ member('<-objd<-',UG).
 
 
+%allow PRED before nonfinite verb if it is coordinated
+head('V*INF', OBJ,l,pred,'V*INF',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- predcand(OBJ,G), in_coordination(FC,UG), case_nom(MG,OBJ), \+ member('<-pred<-',UG), \+ member('->pred->',UG), \+ member('<-adv<-',UG), \+ member('<-subj<-',UG), \+ member('<-objd<-',UG), \+ member('->objp->', UG), \+ member('<-objp<-', UG).
+head('V*PP', OBJ,l,pred,'V*PP',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF) :- predcand(OBJ,G), in_coordination(FC,UG), case_nom(MG,OBJ), \+ member('<-pred<-',UG), \+ member('->pred->',UG), \+ member('<-adv<-',UG), \+ member('<-subj<-',UG), \+ member('<-objd<-',UG), \+ member('->objp->', UG), \+ member('<-objp<-', UG).
+
+head('V*INF', OBJ,l,pred,'V*INF',[FC,_,_,_,UG,_,_,_],_,MF,_,MF) :- predcand_adverb(OBJ), OBJ \= 'PWAV', in_coordination(FC,UG), \+ member('<-pred<-',UG), \+ member('->pred->',UG), \+ member('<-adv<-',UG), \+ member('<-subj<-',UG), \+ member('<-objd<-',UG).
+head('V*PP', OBJ,l,pred,'V*PP',[FC,_,_,_,UG,_,_,_],_,MF,_,MF) :- predcand_adverb(OBJ), OBJ \= 'PWAV', in_coordination(FC,UG), \+ member('<-pred<-',UG), \+ member('->pred->',UG), \+ member('<-adv<-',UG), \+ member('<-subj<-',UG), \+ member('<-objd<-',UG).
+
+
+
 %das Columbia genannte Raumschiff
 head('ADJA', OBJ,l,pred,'ADJA',[_,_,_,_,OF,_,_,_],F-G,MF,MG,MF) :-  1 is F-G, derived_from_ppast(MF,'ADJA'), predcand(OBJ,G), case_nom(MG,OBJ), \+ member('<-pred<-',OF).
 
