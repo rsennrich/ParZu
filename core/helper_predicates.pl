@@ -356,3 +356,15 @@ measure('Schilling').
 measure('Won').
 measure('Yen').
 measure('Zloty').
+
+
+% "von A nach B": treat this as a coordinated pp construction.
+valid_pp_coord_start(von).
+valid_pp_coord_start(aus).
+valid_pp_coord_start('über').
+
+valid_pp_coord_end(auf).
+valid_pp_coord_end(bis).
+valid_pp_coord_end(nach).
+valid_pp_coord_end(zu).
+valid_pp_coord_end('über').
