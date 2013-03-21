@@ -245,8 +245,8 @@ splitappr(zur,zu,_) :- !.
 %gertwol-style APPRART
 %'in-das' -> 'in' + 'das'
 splitappr(WordI,Word,I) :-
-	atomic(WordI), !,
-	sub_atom(WordI,Before,1,After,'-'),
+	atomic(WordI),
+	sub_atom(WordI,Before,1,After,'-'), !,
 	sub_atom(WordI,0,Before,_,Word), 
 	Before1 is Before+1,
 	sub_atom(WordI,Before1,After,_,Iaaa),
