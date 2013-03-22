@@ -23,7 +23,8 @@ cat tmp/train_raised2.pl | awk '{print tolower($0)}' > tmp/train_stats.pl
 
 swipl -G1024M -L1024M -s stats_creator/verbstatsextracter.pl -t "start('tmp/train_stats.pl', 'tmp/vstat_data_nolemma.pl')."
 swipl -G1024M -L1024M -s stats_creator/ppstatsextracter.pl -t "start('tmp/train_stats.pl', 'tmp/ppstat_data_nolemma.pl', 'tmp/freq_data_nolemma.pl')."
-swipl -G1024M -L1024M -s stats_creator/konjstatsextracter.pl -t "start('tmp/train_stats.pl', 'tmp/konjstat_data.pl')."
+#disabled for now: TüBa 7 data introduces an undesirable bias
+#swipl -G1024M -L1024M -s stats_creator/konjstatsextracter.pl -t "start('tmp/train_stats.pl', 'tmp/konjstat_data.pl')."
 swipl -G1024M -L1024M -s stats_creator/advstatsextracter.pl -t "start('tmp/train_stats.pl', 'tmp/advstat_data_nolemma.pl')."
 swipl -G1024M -L1024M -s stats_creator/adv_predstatsextracter.pl -t "start('tmp/train_stats.pl', 'tmp/adv_pred_data_nolemma.pl')."
 
