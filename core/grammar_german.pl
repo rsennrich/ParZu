@@ -1315,6 +1315,8 @@ head('APPR', 'PTKNEG',l, adv, 'APPR',_,_,MH,_,MH).
 
 head('APPRART', 'PTKNEG',l, adv, 'APPRART',_,_,MH,_,MH).
 
+head('KOMPX','PTKNEG',l,adv,'KOMPX', _,_,MH,_,MH).
+
 
 %little hack: use PWAV as transtag to make sure whole thing gets recognised as question
 head('ADJD', 'PWAV',l, adv, 'PWAV',_,F-G,MH,_,MH) :- 1 is F-G.
