@@ -71,7 +71,8 @@ idstart(Sentence,Pos,LVL) :- w(Sentence,Pos,_Word,Tag,[String],_),
 idstart(Sentence,Pos,LVL) :- w(Sentence,Pos,_Word,'PTKZU',_,_),
 				assert(lvl(LVL,Pos,y,ptkzu)),
 				assert(lvl(LVL,Pos,'KOUS',x)),
-				idsub(Sentence,Pos,LVL,EndPos),
+				NewPos is Pos + 1,
+				idsub(Sentence,NewPos,LVL,EndPos),
 				retract(lvl(LVL,Pos,'KOUS',x)),
 				findfreelvl(LVL, NewLVL), !,
 				idstart(Sentence,EndPos,NewLVL).
@@ -335,8 +336,7 @@ idsub(Sentence, Pos, LVL, EndPos) :- w(Sentence,Pos,_,Tag,[String],_),
 %2nd exception: there might be two verb complexes in a subclause (e.g. "weil er gekränkt ist und sich austoben muss").
 idsub(Sentence, Pos, LVL, EndPos) :- w(Sentence,Pos,_Word,Tag,[String],_),
 			  	finverb(Tag), 
-				RightPos is Pos + 1,
-				w(Sentence,RightPos,_,'KON',_,_),
+				possible_subordinated_coordination(Sentence, Pos, RightPos),
 				assert(lvl(LVL,Pos,String,head)),
 				findfreelvl(LVL, NewLVL),
 				lvl(LVL,_,Type,x),
@@ -380,6 +380,21 @@ idsubzu(_Sentence,Pos,LVL,LVL2,EndPos) :- lvl(LVL2,_,_,head),
 					shift_lvl(LVL2,LVL),
 					EndPos=Pos.
 
+
+% check possibility that finite verb does not finish subordinated clause, but that there comes a coordinated verb after it:
+% possible_subordinated_coordination(+Sentence, +Pos, -RightPos)
+
+% "weil er gekränkt ist und sich austoben muss"
+possible_subordinated_coordination(Sentence, Pos, RightPos) :- RightPos is Pos + 1,
+            w(Sentence,RightPos,_,'KON',_,_).
+
+% "Frauen, die attraktiv aussehen, aber mit ihrem Aussehen nicht klarkommen"
+% inactive because of potential false positives:
+% "er findet, dass die Frau attraktiv aussieht, aber andere Leute finden das nicht.
+% possible_subordinated_coordination(Sentence, Pos, Right2Pos) :- RightPos is Pos + 1,
+%                 (w(Sentence,RightPos,_,'$,',_,_),
+%                 Right2Pos is Pos + 2,
+%                 w(Sentence,Right2Pos,_,'KON',_,_))),
 
 %getverbgroupmain(+Sentence,+LVL,+Pos,-EndPos): most restrictive searching strategy. Search is stopped as soon as there is a gap (i.e. a word that doesn't belong to the verb chunk).
 
@@ -495,8 +510,7 @@ getverbgroupsub(Sentence, LVL, Pos,EndPos) :- NewPos is Pos + 1,
 getverbgroupsub(Sentence,LVL,Pos, EndPos) :- NewPos is Pos + 1,
 				  w(Sentence,NewPos,_Word,Tag,[String],_),
 				  (Tag = 'VAFIN'; Tag ='VMFIN'),
-				  RightPos is NewPos + 1,
-				  w(Sentence,RightPos,_,'KON',_,_),
+				  possible_subordinated_coordination(Sentence, NewPos, RightPos),
 				  assert(lvl(LVL,NewPos, String,head)),
 				  findfreelvl(LVL, NewLVL),
 				  lvl(LVL,_,Type,x),
