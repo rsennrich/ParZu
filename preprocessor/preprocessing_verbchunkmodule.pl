@@ -107,15 +107,15 @@ idstart(_,_,_) :- !.
 %idmain(+Sentence,+Pos,+LVL,-EndPos, +ExpectFullVerb): if a finite verb is found in Verbzweitstellung, this clauses searches for non-finite verbs or verbal particles dependent from it. 
 
 %non-finite full verb found. make sure that the finite verb is not a full verb itself and enter the third search strategy (getverbgroupmain).
-idmain(Sentence, Pos, LVL, EndPos, ExpectFullVerb) :- w(Sentence,Pos,_Word,Tag,[String],_),
+idmain(Sentence, Pos, LVL, EndPos, _ExpectFullVerb) :- w(Sentence,Pos,_Word,Tag,[String],_),
 			  fullverbcand(Tag),
 			  headAuxiliar(Sentence,LVL),
-			  (ExpectFullVerb=no-> (\+ finverb_follows(Sentence,Pos));true),
+			  \+ finverb_follows(Sentence,Pos),
 			  assert(lvl(LVL,Pos,String,full)), !,
 			  getverbgroupmain(Sentence,LVL,Pos, EndPos).
 
 %non-finite full verb found. exploring possibility that it is topicalised full verb. (Das ist zwar super, doch sehen will das niemand)
-idmain(Sentence, Pos, LVL, EndPos, no) :- w(Sentence,Pos,_Word,Tag,[String],_),
+idmain(Sentence, Pos, LVL, EndPos, _ExpectFullVerb) :- w(Sentence,Pos,_Word,Tag,[String],_),
                           fullverbcand(Tag),
                           headAuxiliar(Sentence,LVL),
                           finverb_follows(Sentence,Pos),
@@ -245,9 +245,10 @@ nofinkon(_,_) :- !.
 
 %if we see a non-finite verb immediately followed by a finite verb, this is an indication that they belong together, and that the non-finite verb is not completing an earlier verb matrix.
 %"Sein Zustand ist miserabel, doch gesichert scheint"
+%same for PTKZU: "Er war sich sicher, ihn schon früher gesehen zu haben"
 finverb_follows(Sentence,Pos) :- NewPos is Pos+1,
                            w(Sentence,NewPos,_Word,Tag,_,_),
-                           finverb(Tag).
+                           (finverb(Tag); Tag='PTKZU').
 
 %idsub(+Sentence,+Pos,+LVL,-EndPos): Similar to idmain, but not initialised by finite verb, but by a word class that triggers a subordinated sentence.
 
