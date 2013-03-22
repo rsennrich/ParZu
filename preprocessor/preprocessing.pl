@@ -141,6 +141,10 @@ buildmorphology(deren,'PDAT',[deren,_]) :- !.
 %try spelling variations if word doesn't exist in Gertwol.
 buildmorphology(Word,Tag,[Word|ListOut]) :- (\+ (gertwol(Word,Lemma,_,_, _), \+ Lemma = '<unknown>')->(spellingvariation(Word,NewWord), \+ NewWord = Word,buildmorphology(NewWord,Tag,[_|ListOut]));fail).
 
+% Gertwol doesn't distinguish between modal/auxiliary/full verbs
+buildmorphology(Word,'VAFIN',MorphOut) :- (\+ gertwol(Word,_,'VAFIN',_, _))-> buildmorphology(Word,'VVFIN',MorphOut).
+buildmorphology(Word,'VMFIN',MorphOut) :- (\+ gertwol(Word,_,'VMFIN',_, _))-> buildmorphology(Word,'VVFIN',MorphOut).
+
 %exception: nouns may be substantivized adjectives.
 buildmorphology(Word,'NN',[Word|ListOut]) :- findall(Morph,gertwol(Word,_,'NN',Morph,_),ListTemp),
 				      findall([Gender,Case,Number,_],gertwol(Word,_,'ADJA',[_,Gender,Case,Number,'Sw'],_),ListTemp2),
