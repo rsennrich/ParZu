@@ -517,7 +517,7 @@ head('VVIMP',OBJ,r,objg,'VVIMP',[_,_,_,_,OG,_,_,_],_-F,MG,MF,MG)  :- objcandidat
 
 %Genitive modifier after head noun.
 
-head('NN', GEN,r, gmod, 'NN',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; (GEN = 'NE', \+ case_gen(MG,'NN'))), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
+head('NN', GEN,r, gmod, 'NN',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; GEN = 'NE'), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
 
 head('NE', GEN,r, gmod, 'NE',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; (GEN = 'NE', \+ case_gen(MG,'NE'))), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
 
@@ -791,35 +791,35 @@ head('APPX','$,',r,comma,'APP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- member('<-comma<
 
 
 %appositions that are enclosed by comma are bound to noun on their left.
-head('NN','APP',r,app_loose,'NN',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'NN',MF,'NN',MNew), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+head('NN','APP',r,app_loose,'NN',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'NN',MF,'NN',MNew), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
 
-head('NE','APP',r,app_loose,'NE',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'NE',MF,'NN',MNew), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+head('NE','APP',r,app_loose,'NE',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'NE',MF,'NN',MNew), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
 
-head('FM','APP',r,app_loose,'FM',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'FM',MF,'NN',MNew), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+head('FM','APP',r,app_loose,'FM',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'FM',MF,'NN',MNew),  \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
 
-head('PIS','APP',r,app_loose,'PIS',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PIS',MF,'NN',MNew), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+head('PIS','APP',r,app_loose,'PIS',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PIS',MF,'NN',MNew), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
 
-head('PPER','APP',r,app_loose,'PPER',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PPER',MF,'NN',MNew), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+head('PPER','APP',r,app_loose,'PPER',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PPER',MF,'NN',MNew), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
 
 
 %sentence-final appositions.
-head('NN','APPX',r,app_loose,'NN',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'NN',DepMorph,'NN',TransMorph), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+head('NN','APPX',r,app_loose,'NN',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'NN',DepMorph,'NN',TransMorph), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
 
-head('NE','APPX',r,app_loose,'NE',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'NE',DepMorph,'NN',TransMorph), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+head('NE','APPX',r,app_loose,'NE',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'NE',DepMorph,'NN',TransMorph), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
 
-head('FM','APPX',r,app_loose,'FM',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'FM',DepMorph,'NN',TransMorph), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+head('FM','APPX',r,app_loose,'FM',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'FM',DepMorph,'NN',TransMorph), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
 
-head('PIS','APPX',r,app_loose,'PIS',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'PIS',DepMorph,'NN',TransMorph), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+head('PIS','APPX',r,app_loose,'PIS',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'PIS',DepMorph,'NN',TransMorph), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
 
-head('PPER','APPX',r,app_loose,'PPER',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'PPER',DepMorph,'NN',TransMorph), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+head('PPER','APPX',r,app_loose,'PPER',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'PPER',DepMorph,'NN',TransMorph), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
 
 
 %apposition enclosed in bracket
-head(HTag,'NE',r,app_loose,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), member('<-bracket<-', OF), \+ member('->kon->', HeadRels), member('->bracket->', OF), \+ member('->app_loose->', HeadRels), \+ member('->app_loose->', OF), unify_case(MF,'NE',MG,HTag,MNew).
+head(HTag,'NE',r,app_loose,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), member('<-bracket<-', OF), \+ member('->kon->', HeadRels), member('->bracket->', OF), \+ among_dependents(HeadRels, '->app_loose->', 3), \+ member('->app_loose->', OF), unify_case(MF,'NE',MG,HTag,MNew).
 
-head(HTag,'NN',r,app_loose,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), member('<-bracket<-', OF), \+ member('->kon->', HeadRels), member('->bracket->', OF), \+ member('->app_loose->', HeadRels), \+ member('->app_loose->', OF), unify_case(MF,'NN',MG,HTag,MNew).
+head(HTag,'NN',r,app_loose,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), member('<-bracket<-', OF), \+ member('->kon->', HeadRels), member('->bracket->', OF), \+ among_dependents(HeadRels, '->app_loose->', 3), \+ member('->app_loose->', OF), unify_case(MF,'NN',MG,HTag,MNew).
 
-head(HTag,'FM',r,app_loose,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), member('<-bracket<-', OF), \+ member('->kon->', HeadRels), member('->bracket->', OF), \+ member('->app_loose->', HeadRels), \+ member('->app_loose->', OF), unify_case(MF,'FM',MG,HTag,MNew).
+head(HTag,'FM',r,app_loose,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), member('<-bracket<-', OF), \+ member('->kon->', HeadRels), member('->bracket->', OF), \+ among_dependents(HeadRels, '->app_loose->', 3), \+ member('->app_loose->', OF), unify_case(MF,'FM',MG,HTag,MNew).
 
 
 %Anfang Oktober etc.: can be adverbial expression -> special metatag
