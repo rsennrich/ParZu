@@ -38,22 +38,22 @@ head('NE',DET,l,bad_det,'NE',[_,_,_,_,OF,_,_,_],_-G,_,MTemp,MNew) :- detcan(DET,
 head('FM',DET,l,bad_det,'FM',[_,_,_,_,OF,_,_,_],_-G,_,MTemp,MNew) :- detcan(DET,G), relax_agreement(yes), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF), convertMorphList(DET,MTemp,'FM',MNew).
 
 %solch eine Friedenstruppe: double determiner possible with PIDAT.
-head('NN','PIDAT',l,det,'NN',[_,_,_,_,OF,_,_,_],_-G,MH,_,MH) :- \+ member('<-gmod<-',OF), OldPos is G - 1, \+ checkPos(OldPos,_,'ART',_,_).
+head('NN','PIDAT',l,det,'NN',[_,_,_,_,OF,_,_,_],_-G,MH,_,MH) :- \+ member('<-gmod<-',OF), OldPos is G - 1, checkPos(OldPos,_,LTag,_,_), \+ attributive_pronoun(LTag), \+ member(LTag,['ART','ADJA']).
 
-head('NE','PIDAT',l,det,'NE',[_,_,_,_,OF,_,_,_],_-G,MH,_,MH) :- \+ member('<-gmod<-',OF), OldPos is G - 1, \+ checkPos(OldPos,_,'ART',_,_).
+head('NE','PIDAT',l,det,'NE',[_,_,_,_,OF,_,_,_],_-G,MH,_,MH) :- \+ member('<-gmod<-',OF), OldPos is G - 1, checkPos(OldPos,_,LTag,_,_), \+ attributive_pronoun(LTag), \+ member(LTag,['ART','ADJA']).
 
-head('FM','PIDAT',l,det,'FM',[_,_,_,_,OF,_,_,_],_-G,MH,_,MH) :- \+ member('<-gmod<-',OF), OldPos is G - 1, \+ checkPos(OldPos,_,'ART',_,_).
+head('FM','PIDAT',l,det,'FM',[_,_,_,_,OF,_,_,_],_-G,MH,_,MH) :- \+ member('<-gmod<-',OF), OldPos is G - 1, checkPos(OldPos,_,LTag,_,_), \+ attributive_pronoun(LTag), \+ member(LTag,['ART','ADJA']).
 
 
 %all das; von all denjenigen usw.
 head('PDS','PIDAT',l,det,'PDS', [_,_,_,all,_,_,_,_],H-D,MH,_,MH) :- 1 is H-D.
 
 
-head('NN','PIAT',l,det,'NN',[_,_,_,_,OF,_,_,_],_-G,MH,_,MH) :- \+ member('<-gmod<-',OF), OldPos is G - 1, \+ checkPos(OldPos,_,'ART',_,_).
+head('NN','PIAT',l,det,'NN',[_,_,_,_,OF,_,_,_],_-G,MH,_,MH) :- \+ member('<-gmod<-',OF), OldPos is G - 1, checkPos(OldPos,_,LTag,_,_), \+ attributive_pronoun(LTag), \+ member(LTag,['ART','ADJA']).
 
-head('NE','PIAT',l,det,'NE',[_,_,_,_,OF,_,_,_],_-G,MH,_,MH) :- \+ member('<-gmod<-',OF), OldPos is G - 1, \+ checkPos(OldPos,_,'ART',_,_).
+head('NE','PIAT',l,det,'NE',[_,_,_,_,OF,_,_,_],_-G,MH,_,MH) :- \+ member('<-gmod<-',OF), OldPos is G - 1, checkPos(OldPos,_,LTag,_,_), \+ attributive_pronoun(LTag), \+ member(LTag,['ART','ADJA']).
 
-head('FM','PIAT',l,det,'FM',[_,_,_,_,OF,_,_,_],_-G,MH,_,MH) :- \+ member('<-gmod<-',OF), OldPos is G - 1, \+ checkPos(OldPos,_,'ART',_,_).
+head('FM','PIAT',l,det,'FM',[_,_,_,_,OF,_,_,_],_-G,MH,_,MH) :- \+ member('<-gmod<-',OF), OldPos is G - 1, checkPos(OldPos,_,LTag,_,_), \+ attributive_pronoun(LTag), \+ member(LTag,['ART','ADJA']).
 
 
 %some word classes can be head of noun phrase if noun is missing. 
@@ -119,12 +119,12 @@ head('NE','ADJA',l,bad_attr,'NE',[_,_,_,_,OF,_,_,_],_,MF,_,MF) :- relax_agreemen
 head('FM','ADJA',l,bad_attr,'FM',[_,_,_,_,OF,_,_,_],_,MF,_,MF) :- relax_agreement(yes), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF).
 
 
-%this rule only applies if there is another article left of the pronoun. "Ein paar Leute". Special transtag if article morphology is to be ignored in 'det' rules.
-head('NN','PIDAT',l,attr,TransTag,[_,_,_,GWord,OF,_,_,_],_-G,MF,MG,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), LPos is G - 1, checkPos(LPos,LWord,'ART',_,_), check_agreement(MF,'NN',MG,'PIDAT',MNew), ((pidat_anymorph(GWord),(LWord=ein;LWord=eine))->TransTag='NIDEF';TransTag='NN').
+%this rule only applies if there is another article/attribute/pronoun left of the pronoun. "Ein paar Leute". Special transtag if article morphology is to be ignored in 'det' rules.
+head('NN','PIDAT',l,attr,TransTag,[_,_,_,GWord,OF,_,_,_],_-G,MF,MG,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), LPos is G - 1, checkPos(LPos,LWord,LTag,_,_), (attributive_pronoun(LTag); member(LTag,['ART','ADJA'])), check_agreement(MF,'NN',MG,'PIDAT',MNew), ((pidat_anymorph(GWord),(LWord=ein;LWord=eine))->TransTag='NIDEF';TransTag='NN').
 
-head('NE','PIDAT',l,attr,TransTag,[_,_,_,GWord,OF,_,_,_],_-G,MF,MG,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), LPos is G - 1, checkPos(LPos,LWord,'ART',_,_), check_agreement(MF,'NE',MG,'PIDAT',MNew), ((pidat_anymorph(GWord),(LWord=ein;LWord=eine))->TransTag='NIDEF';TransTag='NE').
+head('NE','PIDAT',l,attr,TransTag,[_,_,_,GWord,OF,_,_,_],_-G,MF,MG,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), LPos is G - 1, checkPos(LPos,LWord,LTag,_,_), (attributive_pronoun(LTag); member(LTag,['ART','ADJA'])), check_agreement(MF,'NE',MG,'PIDAT',MNew), ((pidat_anymorph(GWord),(LWord=ein;LWord=eine))->TransTag='NIDEF';TransTag='NE').
 
-head('FM','PIDAT',l,attr,TransTag,[_,_,_,GWord,OF,_,_,_],_-G,MF,MG,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), LPos is G - 1, checkPos(LPos,LWord,'ART',_,_), check_agreement(MF,'FM',MG,'PIDAT',MNew), ((pidat_anymorph(GWord),(LWord=ein;LWord=eine))-TransTag='NIDEF';TransTag='FM').
+head('FM','PIDAT',l,attr,TransTag,[_,_,_,GWord,OF,_,_,_],_-G,MF,MG,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), LPos is G - 1, checkPos(LPos,LWord,LTag,_,_), (attributive_pronoun(LTag); member(LTag,['ART','ADJA'])), check_agreement(MF,'FM',MG,'PIDAT',MNew), ((pidat_anymorph(GWord),(LWord=ein;LWord=eine))-TransTag='NIDEF';TransTag='FM').
 
 %ein paar Leute - no morphology check
 pidat_anymorph('paar').
@@ -782,7 +782,7 @@ head('NE','$,',l,comma,'APPX',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- \+ member('<-comm
 
 head('FM','$,',l,comma,'APPX',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- \+ member('<-comma<-', OF).
 
-head('PIS','$,',l,comma,'APPX',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- \+ member('<-comma<-', OF), member('->gmod->', OF).
+head('PIS','$,',l,comma,'APPX',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- \+ member('<-comma<-', OF), (member('->gmod->', OF); member('->pp->', OF)).
 
 
 head('NN','$,',l,comma,'APP',[_,_,_,_,HRels,_,HID,_],_,HM,_,HM) :- (commaToRight(HID);stopToRight(HID)), \+ member('<-comma<-', HRels).
@@ -791,6 +791,7 @@ head('NE','$,',l,comma,'APP',[_,_,_,_,HRels,_,HID,_],_,HM,_,HM) :- (commaToRight
 
 head('FM','$,',l,comma,'APP',[_,_,_,_,HRels,_,HID,_],_,HM,_,HM) :- (commaToRight(HID);stopToRight(HID)), \+ member('<-comma<-', HRels).
 
+head('PIS','$,',l,comma,'APPX',[_,_,_,_,HRels,_,HID,_],_,MH,_,MH) :- (commaToRight(HID);stopToRight(HID)), \+ member('<-comma<-', HRels), (member('->gmod->', HRels); member('->pp->', HRels)).
 
 %comma at end of apposition allowed/included (but only if there is one on its left).
 
@@ -2765,6 +2766,13 @@ prepcompl('PPOSAT',Pos) :- endOfNP(Pos).
 % prepcompl('PP',Pos) :- endOfNP(Pos).
 
 
+attributive_pronoun('PIDAT').
+attributive_pronoun('PDAT').
+attributive_pronoun('PIAT').
+attributive_pronoun('PPOSAT').
+attributive_pronoun('PWAT').
+attributive_pronoun('PRELAT').
+
 
 nonfinite('VAINF').
 nonfinite('VAPP').
@@ -2777,7 +2785,7 @@ nonfinite('VVIZU').
 
 %determiner candidates.
 detcan('ART',_).
-detcan('PIDAT',Pos) :- LeftPos is Pos - 1, \+ checkPos(LeftPos,_,'ART',_,_).
+detcan('PIDAT',Pos) :- LeftPos is Pos - 1, \+ checkPos(LeftPos,_,'ART',_,_), \+ checkPos(LeftPos,_,'ADJA',_,_).
 detcan('PIAT',_).
 detcan('PPOSAT',_).
 detcan('PDAT',_).
