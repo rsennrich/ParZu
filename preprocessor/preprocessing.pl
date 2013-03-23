@@ -151,12 +151,15 @@ buildmorphology(Word,'NN',[Word|ListOut]) :- findall(Morph,gertwol(Word,_,'NN',M
 				      append(ListTemp,ListTemp2,ListTemp3),
 				      (is_uninstantiated(ListTemp3) -> ListOut = [_] ; translatemorphs(ListTemp3,'NN', ListTemp4), sort(ListTemp4,ListTemp5), my_remove_duplicates(ListTemp5,ListOut)), !.
 
+%exception: PIDAT/PIAT is inconsistent between tagger / morphology systems. Don't distinguish between them.
+buildmorphology(Word,'PIDAT',MorphOut) :- \+ gertwol(Word,_,'PIDAT',_,_) -> buildmorphology(Word,'PIAT',MorphOut).
+buildmorphology(Word,'PIAT',MorphOut) :- \+ gertwol(Word,_,'PIAT',_,_) -> buildmorphology(Word,'PIDAT',MorphOut).
+
 %exception: viele/wenige are PIS/PIDAT in TreeTagger, but ADJA in Gertwol
 buildmorphology(Word,Tag,[Word|ListOut]) :- (Tag = 'PIS';Tag='PIDAT'),
 				      \+ gertwol(Word,_,Tag,_,_),
 				      findall([Gender,Case,Number],gertwol(Word,_,'ADJA',[_,Gender,Case,Number,_],_),ListTemp),
 				      (is_uninstantiated(ListTemp) -> ListOut = [_] ; sort(ListTemp,ListOut)), !.
-
 
 %exception: Wegen dem Dativ gibt es immer weniger Präpositionen, die nur mit Genitiv benutzt werden
 buildmorphology(Word,'APPR',[Word|ListOut2]) :- findall(Morph,gertwol(Word,_,'APPR',Morph,_),ListTemp),
@@ -177,9 +180,6 @@ buildmorphology(Word,Tag,[Word|ListOut]) :- findall(Morph,gertwol(Word,_,Tag,Mor
 translatemorphs([],_,[]) :- !. %break condition.
 
 
-% translatemorphs([In|Ins],'ADJAtoNN',[Out|Outs]) :- translatelist('ADJAtoNN',In,Out), !,
-% 					    translatemorphs(Ins,'ADJAtoNN',Outs). %catchall.
-
 translatemorphs([In|Ins],'NN',[Out|Outs]) :- translatelist('NN',In,Out), !,
                                            translatemorphs(Ins,'NN',Outs). %catchall.
 
@@ -189,9 +189,6 @@ translatemorphs([In|Ins],Tag,[Out|Outs]) :- translatelist(general,In,Out), !,
 
 translatelist(general,[],[]) :- !. %break condition
 
-%when converting from adjective morphology to noun morphology, throw first item away.
-% translatelist('ADJAtoNN',[_|Ins],[Outs]) :-  !,
-% 						translatelist(general,Ins,Outs).
 
 %throw last member of noun morphology away.
 translatelist('NN',[_],[]) :- !.
@@ -233,6 +230,9 @@ getlemma(Word,Tag,Lemma,Tag) :- gertwol(Word,Lemma,Tag,_Analysis, _), \+ Lemma =
 %exception: if tagger says 'NN', and morphology system only knows word as 'NE', use 'NE'
 getlemma(Word,'NN',Lemma,'NE') :- correct_mistagging(yes), gertwol(Word,Lemma,'NE',_Analysis, _), \+ Lemma = '<unknown>', !.
 
+%exception: PIDAT/PIAT is inconsistent between tagger / morphology systems. Allow look-up of lemma from other class.
+getlemma(Word,'PIDAT',Lemma, 'PIDAT') :- \+ gertwol(Word,_,'PIDAT',_,_), gertwol(Word,Lemma,'PIAT',_Analysis, _), \+ Lemma = '<unknown>', !.
+getlemma(Word,'PIAT',Lemma, 'PIAT') :- \+ gertwol(Word,_,'PIAT',_,_), gertwol(Word,Lemma,'PIDAT',_Analysis, _), \+ Lemma = '<unknown>', !.
 
 % Gertwol doesn't distinguish between modal/auxiliary/full verbs
 getlemma(Word,'VAFIN',Lemma,'VAFIN') :- morphology(gertwol), gertwol(Word,Lemma,'VVFIN',_Analysis,_), \+ Lemma = '<unknown>', !.

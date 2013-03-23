@@ -174,10 +174,10 @@ head('PIS','ADJA',l,attr,'PIS', _,F-G,MH,_,MH) :- 1 is F-G.
 %prep(osition)
 
 %use prepcompl/1 to list all valid dependents of prepositions.
-head('APPR',PN,r,pn,'PP',[_,_,_,_,OG,_,_,_],_-F,MG,MF,MNew) :- prepcompl(PN,F), unify_case(MG,'APPR',MF,PN,MNew), \+ member('->pn->',OG), \+ member('->bad_pn->',OG).
+head('APPR',PN,r,pn,'PP',[_,_,HWord,DWord,HRels,DRels,_,_],_-F,MG,MF,MNew) :- prepcompl(PN,F), unify_case(MG,'APPR',MF,PN,MNew), \+ member('->pn->',HRels), \+ member('->bad_pn->',HRels), enforce_vor_allem_segmentation(HWord,DWord,DRels).
 
 %allow (with low probability) non-congruent prepositional phrases
-head('APPR',PN,r,bad_pn,'PP',[_,_,_,_,OG,_,_,_],_-F,MG,_,MG) :- prepcompl(PN,F), relax_agreement(yes), \+ member('->pn->',OG), \+ member('->bad_pn->',OG).
+head('APPR',PN,r,bad_pn,'PP',[_,_,HWord,DWord,HRels,DRels,_,_],_-F,MG,_,MG) :- prepcompl(PN,F), relax_agreement(yes), \+ member('->pn->',HRels), \+ member('->bad_pn->',HRels), enforce_vor_allem_segmentation(HWord,DWord,DRels).
 
 %bis auf weiteres - may be mistagged.
 head(_,'PP',r,pn,'PP',[_,_,bis,_,_,_,_,_],G-F,MH,_,MH) :- correct_mistagging(yes), 1 is F-G.
@@ -215,6 +215,15 @@ head('APPRART','PRELS',r,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MG,_,MNew) :- convertMo
 
 head('APPRART','PWS',r,pn,'PPQ',[_,_,_,_,OG,_,_,_],_,MG,_,MNew) :- convertMorphList('APPRART',MG,'APPR',MNew), \+ member('->pn->',OG), \+ member('->bad_pn->',OG).
 
+
+% lexical exception: "vor allem" is so fixed that in "Er sieht vor allem Peter", Peter can never be part of PP.
+% other words seem to be fine: "Eine Situation, die für beide, Peter und Mark, blöd ist."
+enforce_vor_allem_segmentation(vor, DepWord, DepRels) :- member(DepWord, ['all','alle','allem']), !,
+            \+ member('->app_close->',DepRels),
+            \+ member('->app_loose->',DepRels),
+            \+ member('->gmod->',DepRels).
+
+enforce_vor_allem_segmentation(_,_,_).
 
 %======================================================================================
 %postposition
