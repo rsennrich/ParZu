@@ -901,6 +901,8 @@ head('V*FIN','RC',r,rel,'VVFIN',[_,_,_,_,OG,DepRels,_,_],_,MH,_,MH) :- restrict_
 
 head('VVIMP','RC',r,rel,'VVIMP',[_,_,_,_,OG,DepRels,_,_],_,MH,_,MH) :- restrict_coord(OG), member('<-comma<-', DepRels).
 
+head('VVIZU','RC',r,rel,'VVIZU',[_,_,_,_,OG,DepRels,_,_],_,MH,_,MH) :- restrict_coord(OG), member('<-comma<-', DepRels).
+
 head('RC','RC',r,rel,'RC',[_,_,_,_,OG,DepRels,_,_],_,MH,_,MH) :- restrict_coord(OG), member('<-comma<-', DepRels).
 
 head('NEB','RC',r,rel,'NEB',[_,_,_,_,OG,DepRels,_,_],_,MH,_,MH) :- restrict_coord(OG), member('<-comma<-', DepRels).
@@ -955,6 +957,7 @@ head('V*FIN','NEB',r,neb,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord
 
 head('VVIMP','NEB',r,neb,'VVIMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG).
 
+head('VVIZU','NEB',r,neb,'VVIZU',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG).
 
 
 %participle construction
@@ -972,6 +975,7 @@ head('V*FIN','VVPP',r,neb,'V*FIN',[_,DC,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coo
 
 head('VVIMP','VVPP',r,neb,'VVIMP',[_,DC,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), verbchunklength(DC,1), \+ member('->aux->', OG).
 
+head('VVIZU','VVPP',r,neb,'VVIZU',[_,DC,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), verbchunklength(DC,1), \+ member('->aux->', OG).
 
 
 %conjunction-less subordinated clause (marked by verb-first word order)
@@ -1025,6 +1029,12 @@ head('VVIZU','OBJC/SUBJC',r,objc,'VVIZU',[GC,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ me
 head('V*FIN','OBJC/SUBJC',r,objc,'V*FIN',[GC,_,_,_,OG,_,_,_],_,MH,_,MH) :-  \+ member('passive',GC), restrict_coord(OG),\+ member('<-objc<-',OG), \+ member('->objc->',OG), adverbial_pronoun(Tag), among_dependents(OG, Tag, 1).
 
 head('VVIMP','OBJC/SUBJC',r,objc,'VVIMP',[GC,_,_,_,OG,_,_,_],_,MH,_,MH) :-  \+ member('passive',GC), restrict_coord(OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG), adverbial_pronoun(Tag), among_dependents(OG, Tag, 1).
+
+head('RC','OBJC/SUBJC',r,objc,'RC',[GC,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('passive',GC), restrict_coord(OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG), adverbial_pronoun(Tag), among_dependents(OG, Tag, 1).
+
+head('NEB','OBJC/SUBJC',r,objc,'NEB',[GC,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('passive',GC), restrict_coord(OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG), adverbial_pronoun(Tag), among_dependents(OG, Tag, 1).
+
+head('VVIZU','OBJC/SUBJC',r,objc,'VVIZU',[GC,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('passive',GC), restrict_coord(OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG), adverbial_pronoun(Tag), among_dependents(OG, Tag, 1).
 
 
 %die Möglichkeit, dass...
