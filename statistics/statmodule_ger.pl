@@ -405,7 +405,31 @@ stats2(neb,_Htag,_FH,_SH,_MORPHH,'NEBCONJLESS',_FD,_SD,_MORPHD,P,_D,_HC) :- P is
 
 stats2(neb,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,D,_HC) :- P is 0.3 - D*0.01.
 stats2(rel,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,D,_HC) :- P is 0.4 - D*0.01.
-stats2(subjc,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.2,_D,_HC).
+stats2(subjc,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,_D,HC-_OG) :-
+        getheadandnormalise(HC,Head,_),
+        ((      verb(Head,Occurs,_,_,_,_,_,_,_,SubjC,_,_,_,_,_,_),
+                Occurs > 3,
+                (   Threshold is (SubjC / Occurs),
+                    Threshold > 0.05,
+                    P is 0.4)
+                    ;
+                    P is 0.2)
+        ;
+        (       ((\+ verb(Head,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_)); (verb(Head,Occurs,_,_,_,_,_,_,_,_,_,_,_,_,_,_), Occurs < 4)),
+                P is 0.2)).
+
+stats2(obji,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,_D,HC-_OG) :-
+        getheadandnormalise(HC,Head,_),
+        ((      verb(Head,Occurs,_,_,_,_,_,_,ObjC,_,_,ObjI,_,_,_,_),
+                Occurs > 3,
+                (   Threshold is ((ObjI+ObjC) / Occurs),
+                    Threshold > 0.05,
+                    P is 0.3)
+                    ;
+                    P is 0.2)
+        ;
+        (       ((\+ verb(Head,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_)); (verb(Head,Occurs,_,_,_,_,_,_,_,_,_,_,_,_,_,_), Occurs < 4)),
+                P is 0.3)).
 
 %ObjC: probability higher than other subordinated structures unless valency information shows that verb doesn't have clausal object.
 stats2(objc,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,HC-_OG) :-
