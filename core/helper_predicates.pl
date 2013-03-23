@@ -222,6 +222,7 @@ zeitcand('Sekunde').
 zeitcand('Minute').
 zeitcand('Stunde').
 zeitcand('Tag').
+zeitcand('Nacht').
 zeitcand('Woche').
 zeitcand('Monat').
 zeitcand('Jahr').
@@ -248,6 +249,9 @@ zeitcand('Saison').
 zeitcand('Zeit').
 
 zeitcand('Mal').
+zeitcand('Weile').
+zeitcand('Augenblick').
+zeitcand('Moment').
 
 
 %nouns that can have adverbial (temporal) meaning if they are the head of another noun phrase with temporal meaning:

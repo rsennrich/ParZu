@@ -536,6 +536,8 @@ head('PDS', GEN,r, gmod, 'PDS',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; (G
 
 head('PIS', GEN,r, gmod, 'PIS',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; (GEN = 'NE', \+ case_gen(MG,'PIS'))), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
 
+head('CARD', GEN,r, gmod, 'CARD',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; GEN = 'NE'), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
+
 
 %no occurrences of these in exploration corpus. still leave in? 
 %Yes for 'PWS': "Welcher der beiden ist der Mörder?" No for the others.
@@ -2008,11 +2010,11 @@ lastlexical(From,Last) :- LeftPos is From - 1,
 %'zeit' - temporal modifiers - only allow cardinal numbers for now (90% of all cases), noun phrases are theoretically possible (letzten dienstag ging er nach hause) - lexical disambiguation?
 
 %'zeit' before verb
-head('V*FIN','CARD',l,zeit,'V*FIN',[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('V*FIN','CARD',l,zeit,'V*FIN',[FC,_,_,DWord,UG,_,_,_],_,MH,_,MH) :- card_is_zeit_cand(DWord), restrict_vorfeld(FC,UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 
-head('V*INF', 'CARD',l,zeit,'V*INF',[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- in_coordination(FC,UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
-head('V*PP', 'CARD',l,zeit,'V*PP',[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- in_coordination(FC,UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
-head('VVIZU', 'CARD',l,zeit,'VVIZU',[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- in_coordination(FC,UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('V*INF', 'CARD',l,zeit,'V*INF',[FC,_,_,DWord,UG,_,_,_],_,MH,_,MH) :- card_is_zeit_cand(DWord), in_coordination(FC,UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('V*PP', 'CARD',l,zeit,'V*PP',[FC,_,_,DWord,UG,_,_,_],_,MH,_,MH) :- card_is_zeit_cand(DWord), in_coordination(FC,UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('VVIZU', 'CARD',l,zeit,'VVIZU',[FC,_,_,DWord,UG,_,_,_],_,MH,_,MH) :- card_is_zeit_cand(DWord), in_coordination(FC,UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 
 %Letztes Jahr regnete es.
 head('V*FIN','NN',l,zeit,'V*FIN',[FC,_,_,Lemma,UG,_,_,_],_,MF,MG,MF) :- zeitcand(Lemma), restrict_vorfeld(FC,UG), case_acc(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
@@ -2038,15 +2040,15 @@ head('V*PP', 'NZEIT',l,zeit,'V*PP',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- in_coordin
 head('VVIZU', 'NZEIT',l,zeit,'VVIZU',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- in_coordination(FC,UG), case_acc(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 
 %der 1995 verstorbene Künstler
-head('ADJA', 'CARD',l,zeit,'ADJA',[_,_,_,_,UG,_,_,_],_,MH,_,MH) :-  (derived_from_ppres(MH,'ADJA');derived_from_ppast(MH,'ADJA')), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
-head('ADJA', 'CARD',l,zeit,'ADJA',[_,_,_,Lemma,UG,_,_,_],_,MF,MG,MF) :- (derived_from_ppres(MF,'ADJA');derived_from_ppast(MF,'ADJA')), zeitcand(Lemma), case_acc(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('ADJA', 'CARD',l,zeit,'ADJA',[_,_,_,Lemma,UG,_,_,_],_,MH,_,MH) :-  (derived_from_ppres(MH,'ADJA');derived_from_ppast(MH,'ADJA')), card_is_zeit_cand(Lemma), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('ADJA', 'NN',l,zeit,'ADJA',[_,_,_,Lemma,UG,_,_,_],_,MF,MG,MF) :- (derived_from_ppres(MF,'ADJA');derived_from_ppast(MF,'ADJA')), zeitcand(Lemma), case_acc(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 head('ADJA', 'NZEIT',l,zeit,'ADJA',[_,_,_,_,UG,_,_,_],_,MF,MG,MF) :-  (derived_from_ppres(MF,'ADJA');derived_from_ppast(MF,'ADJA')), case_acc(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 
 
 %'zeit' after verb
-head('V*FIN','CARD',r,zeit,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('<-zeit<-',OG), \+ member('->zeit->',OG), restrict_coord(OG).
+head('V*FIN','CARD',r,zeit,'V*FIN',[_,_,_,DWord,OG,_,_,_],_,MH,_,MH) :- card_is_zeit_cand(DWord), \+ member('<-zeit<-',OG), \+ member('->zeit->',OG), restrict_coord(OG).
 
-head('VVIMP','CARD',r,zeit,'VVIMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('<-zeit<-',OG), \+ member('->zeit->',OG), restrict_coord(OG).
+head('VVIMP','CARD',r,zeit,'VVIMP',[_,_,_,DWord,OG,_,_,_],_,MH,_,MH) :- card_is_zeit_cand(DWord), \+ member('<-zeit<-',OG), \+ member('->zeit->',OG), restrict_coord(OG).
 
 
 head('V*FIN','NN',r,zeit,'V*FIN',[_,_,_,Lemma,OG,_,_,_],_,MG,MF,MG) :- zeitcand(Lemma), case_acc(MF,'NN'), \+ member('<-zeit<-',OG), \+ member('->zeit->',OG), restrict_coord(OG).
@@ -2063,7 +2065,8 @@ head('V*INF', 'NN',r,zeit,'V*INF',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,M
 head('V*PP', 'NN',r,zeit,'V*PP',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 head('VVIZU', 'NN',r,zeit,'VVIZU',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 
-
+%allow four-digit numbers ("1985"), but not other numbers ("13") to have temporal function.
+card_is_zeit_cand(Word) :- atom_length(Word,4).
 
 %======================================================================================
 %'grad'
@@ -2436,6 +2439,7 @@ get_case(_,_,_,off) :- !.
 
 get_number([_,Number|_],_,Number,tueba) :- !.
 get_number(_,'APPRART',s,tueba) :- !.
+get_number(_,'CARD',p,tueba) :- !.
 
 get_number([_,_,_,Number,_],'ADJA',Number,gertwol) :- !.
 get_number([_,_,_,Number,_,_],'ADJA',Number,gertwol) :- !.
@@ -2443,13 +2447,14 @@ get_number([_,Number,_,_],'PPER',Number,gertwol) :- !.
 get_number([_,_,_,Number],'ART',Number,gertwol) :- !.
 get_number([_,Number,_],'PRF',Number,gertwol) :- !.
 get_number(_List,'APPRART','Sg',gertwol) :- !.
+get_number(_,'CARD','Pl',gertwol) :- !.
 get_number([_,Number,_,_],Tag,Number,gertwol) :- morph_finverb(Tag), !.
 get_number([_,_,Number],Tag,Number,gertwol) :- (morph_noun(Tag);morph_pronoun(Tag);Tag = 'PRF'), !.
 
 get_number(_,_,_,off) :- !.
 
 
-
+get_gender(_,'CARD',_,_) :- !.
 get_gender([_,_,Gender],_,Gender,tueba) :- !.
 
 get_gender([_,Gender,_,_,_],'ADJA',Gender,gertwol) :- !.
