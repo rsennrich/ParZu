@@ -175,6 +175,13 @@ stats2(app_close,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,MORPHD,P,D,_HC-OG) :-
 stats2(objp,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,P,D,HC-OG) :-
         statsppobjp(objp,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,P,D,HC-OG).
 
+
+stats2(pp,Htag,_FH,SH,_MORPHH,_Dtag,_FD,SD,_MORPHD,0.05,_D,_) :-
+    (Htag = 'NN'; Htag = 'NE'; Htag = 'PDS'; Htag = 'PPER'; Htag = 'PIS'; Htag = 'FM'),
+    lexic(SH,_,HPos),
+    lexic(SD,_,DPos),
+    HPos > DPos.
+
 stats2(pp,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,P,D,HC-OG) :-
         statsppobjp(pp,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,P,D,HC-OG).
 

@@ -695,6 +695,18 @@ head('ADJD', 'PAV',l,pp,'ADJD',_,F-G,MH,_,MH) :- 1 is F-G.
 %darunter viele Kinder
 head('NN', 'PAV',l,pp,'NN',_,_,MH,_,MH).
 head('NE', 'PAV',l,pp,'NE',_,_,MH,_,MH).
+head('FM', 'PAV',l,pp,'FM',_,_,MH,_,MH).
+head('PIS', 'PAV',l,pp,'PIS',_,_,MH,_,MH).
+head('PDS', 'PAV',l,pp,'PDS',_,_,MH,_,MH).
+head('PPER', 'PAV',l,pp,'PPER',_,_,MH,_,MH).
+
+%pre-modifying PP
+head('NN', 'PP',l,pp,'NN',_,_,MH,_,MH).
+head('NE', 'PP',l,pp,'NE',_,_,MH,_,MH).
+head('FM', 'PP',l,pp,'FM',_,_,MH,_,MH).
+head('PIS', 'PP',l,pp,'PIS',_,_,MH,_,MH).
+head('PDS', 'PP',l,pp,'PDS',_,_,MH,_,MH).
+head('PPER', 'PP',l,pp,'PPER',_,_,MH,_,MH).
 
 
 %pp premodifying comparative clause:
