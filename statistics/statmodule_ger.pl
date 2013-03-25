@@ -60,7 +60,7 @@ stats2(konjneb,_Htag,_FH,_SH,_MORPHH,_Dtag,FD,_SD,_MORPHD,P,_D,_HC-OG) :-
 	(konjstats(FL,objc,OBJC);OBJC is 0),
 	(NEB + OBJC =:= 0-> Ratio is 1;Ratio is (NEB+1)/(NEB+OBJC+1)),
 	(Ratio > 0.7->(P is 1.06);(
-	Ratio< 0.3->P is 0;P is Ratio))).
+	Ratio< 0.3->P is 0.05;P is Ratio))).
 
 
 stats2(konjobjc,_Htag,_FH,_SH,_MORPHH,_Dtag,FD,_SD,_MORPHD,P,_D,_HC-OG) :-

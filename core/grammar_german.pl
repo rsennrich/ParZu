@@ -944,10 +944,10 @@ head('VVIZU','KOUI',l,konjneb,'NEB',_,_,MH,_,MH).
 
 
 %ohne daß: whole construction is finite.
-head('KOUS','KOUI',l,konjneb,'KOUS',[_,_,'daß','Ohne',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
-head('KOUS','KOUI',l,konjneb,'KOUS',[_,_,'daß',ohne,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
-head('KOUS','KOUI',l,konjneb,'KOUS',[_,_,dass,'Ohne',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
-head('KOUS','KOUI',l,konjneb,'KOUS',[_,_,dass,ohne,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('KOUS',_,l,konjneb,'KOUS',[_,_,'daß','Ohne',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('KOUS',_,l,konjneb,'KOUS',[_,_,'daß',ohne,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('KOUS',_,l,konjneb,'KOUS',[_,_,dass,'Ohne',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('KOUS',_,l,konjneb,'KOUS',[_,_,dass,ohne,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
 
 % als ob: same idea as "ohne dass"
 head('KOUS','KOUS',l,konjneb,'KOUS',[_,_,ob,als,_,_,_,_],H-D,MH,_,MH) :- 1 is H-D.
@@ -1007,18 +1007,13 @@ head('V*FIN','NEBCONJLESS',l,neb,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- (rest
 %TODO: quotes. subjc
 
 %clausal objects. mostly dass
-head('V*FIN','KOUS',l,konjobjc,'OBJC',_,_,MH,_,MH).
+head('V*FIN','KOUS',l,konjobjc,'OBJC',[_,_,_,_,_,DepRels,_,_],_,MH,_,MH) :- \+ member('<-konjneb<-',DepRels).
 
-head('ADJD','KOUS',l,konjobjc,'OBJC',_,_,MH,_,MH).
+head('ADJD','KOUS',l,konjobjc,'OBJC',[_,_,_,_,_,DepRels,_,_],_,MH,_,MH) :- \+ member('<-konjneb<-',DepRels).
 
 
 %consider possibility of tagging error
-head('VVPP','KOUS',l,konjobjc,'OBJC',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), verbchunklength(FC,1).
-
-
-% als ob: same idea as "ohne dass"
-head('KOUS','KOUS',l,konjobjc,'KOUS',[_,_,ob,als,_,_,_,_],H-D,MH,_,MH) :- 1 is H-D.
-head('KOUS','KOUS',l,konjobjc,'KOUS',[_,_,ob,'Als',_,_,_,_],H-D,MH,_,MH) :- 1 is H-D.
+head('VVPP','KOUS',l,konjobjc,'OBJC',[FC,_,_,_,_,DepRels,_,_],_,MH,_,MH) :- correct_mistagging(yes), verbchunklength(FC,1), \+ member('<-konjneb<-',DepRels).
 
 
 %clausal object before main clause. Takes the place of the accusative object (except for reflexive ones. Exception could be implemented, but causes new problems)
