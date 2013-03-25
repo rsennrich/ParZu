@@ -1688,47 +1688,47 @@ head('ADJA','$,',l,comma,'KON_ADJA',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- \+ member('
 
 
 %noun + noun/pronoun
-head('NN','KON_PRONOUN',r,kon,'NN',  _,_,MG,MF,MNew) :- unify_case(MG,'NN',MF,'PDS',MNew).
+head('NN','KON_PRONOUN',r,kon,'NN', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'NN',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('NE','KON_PRONOUN',r,kon,'NE',  _,_,MG,MF,MNew) :- unify_case(MG,'NE',MF,'PDS',MNew).
+head('NE','KON_PRONOUN',r,kon,'NE', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'NE',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('FM','KON_PRONOUN',r,kon,'FM',  _,_,MG,MF,MNew) :- unify_case(MG,'FM',MF,'PDS',MNew).
-
-
-head('NN','KON_PPER',r,kon,'NN',  _,_,MG,MF,MNew) :- unify_case(MG,'NN',MF,'PPER',MNew).
-
-head('NE','KON_PPER',r,kon,'NE',  _,_,MG,MF,MNew) :- unify_case(MG,'NE',MF,'PPER',MNew).
-
-head('FM','KON_PPER',r,kon,'FM',  _,_,MG,MF,MNew) :- unify_case(MG,'FM',MF,'PPER',MNew).
+head('FM','KON_PRONOUN',r,kon,'FM', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'FM',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
 
-head('NN','KON_NOUN',r,kon,'NN',  _,_,MG,MF,MNew) :- unify_case(MG,'NN',MF,'NN',MNew).
+head('NN','KON_PPER',r,kon,'NN', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'NN',MF,'PPER',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('NE','KON_NOUN',r,kon,'NE',  _,_,MG,MF,MNew) :- unify_case(MG,'NE',MF,'NN',MNew).
+head('NE','KON_PPER',r,kon,'NE', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'NE',MF,'PPER',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('FM','KON_NOUN',r,kon,'FM',  _,_,MG,MF,MNew) :- unify_case(MG,'FM',MF,'NN',MNew).
+head('FM','KON_PPER',r,kon,'FM', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'FM',MF,'PPER',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
+
+
+head('NN','KON_NOUN',r,kon,'NN', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'NN',MF,'NN',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
+
+head('NE','KON_NOUN',r,kon,'NE', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'NE',MF,'NN',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
+
+head('FM','KON_NOUN',r,kon,'FM', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'FM',MF,'NN',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
 
 %pronoun + noun/pronoun
-head('PDS','KON_PRONOUN',r,kon,'PDS',  _,_,MG,MF,MNew) :- unify_case(MG,'PDS',MF,'PDS',MNew).
+head('PDS','KON_PRONOUN',r,kon,'PDS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PDS',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PIS','KON_PRONOUN',r,kon,'PIS',  _,_,MG,MF,MNew) :- unify_case(MG,'PIS',MF,'PDS',MNew).
+head('PIS','KON_PRONOUN',r,kon,'PIS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PIS',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PPER','KON_PRONOUN',r,kon,'PPER',  _,_,MG,MF,MNew) :- unify_case(MG,'PPER',MF,'PDS',MNew).
+head('PPER','KON_PRONOUN',r,kon,'PPER', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PPER',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PWS','KON_PRONOUN',r,kon,'PWS',  _,_,MG,MF,MNew) :- unify_case(MG,'PWS',MF,'PDS',MNew).
+head('PWS','KON_PRONOUN',r,kon,'PWS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PWS',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PWAT','KON_PRONOUN',r,kon,'PWS',  _,_,MG,MF,MNew) :- unify_case(MG,'PWAT',MF,'PDS',MNew).
+head('PWAT','KON_PRONOUN',r,kon,'PWS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PWAT',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PIAT','KON_PRONOUN',r,kon,'PIS',  _,_,MG,MF,MNew) :- unify_case(MG,'PIAT',MF,'PDS',MNew).
+head('PIAT','KON_PRONOUN',r,kon,'PIS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PIAT',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PDAT','KON_PRONOUN',r,kon,'PDS',  _,_,MG,MF,MNew) :- unify_case(MG,'PDAT',MF,'PDS',MNew).
+head('PDAT','KON_PRONOUN',r,kon,'PDS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PDAT',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PIDAT','KON_PRONOUN',r,kon,'PDS',  _,_,MG,MF,MNew) :- unify_case(MG,'PIDAT',MF,'PDS',MNew).
+head('PIDAT','KON_PRONOUN',r,kon,'PDS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PIDAT',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PPOSS','KON_PRONOUN',r,kon,'PPOSS',  _,_,MG,MF,MNew) :- unify_case(MG,'PPOSS',MF,'PDS',MNew).
+head('PPOSS','KON_PRONOUN',r,kon,'PPOSS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PPOSS',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PPOSAT','KON_PRONOUN',r,kon,'PPOSS',  _,_,MG,MF,MNew) :- unify_case(MG,'PPOSAT',MF,'PDS',MNew).
+head('PPOSAT','KON_PRONOUN',r,kon,'PPOSS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PPOSAT',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
 
 head('PRELS','KON_PRONOUN_REL',r,kon,'PRELS',  _,_,MG,MF,MNew) :- unify_case(MG,'PRELS',MF,'PRELS',MNew).
@@ -1736,36 +1736,33 @@ head('PRELS','KON_PRONOUN_REL',r,kon,'PRELS',  _,_,MG,MF,MNew) :- unify_case(MG,
 head('PRELAT','KON_PRONOUN_REL',r,kon,'PRELS',  _,_,MG,MF,MNew) :- unify_case(MG,'PRELAT',MF,'PRELS',MNew).
 
 
-head('PDS','KON_PPER',r,kon,'PDS',  _,_,MG,MF,MNew) :- unify_case(MG,'PDS',MF,'PPER',MNew).
+head('PDS','KON_PPER',r,kon,'PDS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PDS',MF,'PPER',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PIS','KON_PPER',r,kon,'PIS',  _,_,MG,MF,MNew) :- unify_case(MG,'PIS',MF,'PPER',MNew).
+head('PIS','KON_PPER',r,kon,'PIS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PIS',MF,'PPER',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PPER','KON_PPER',r,kon,'PPER',  _,_,MG,MF,MNew) :- unify_case(MG,'PPER',MF,'PPER',MNew).
+head('PPER','KON_PPER',r,kon,'PPER', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PPER',MF,'PPER',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PWS','KON_PPER',r,kon,'PWS',  _,_,MG,MF,MNew) :- unify_case(MG,'PWS',MF,'PPER',MNew).
+head('PWS','KON_PPER',r,kon,'PWS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PWS',MF,'PPER',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PWAT','KON_PPER',r,kon,'PWS',  _,_,MG,MF,MNew) :- unify_case(MG,'PWAT',MF,'PPER',MNew).
+head('PWAT','KON_PPER',r,kon,'PWS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PWAT',MF,'PPER',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PIAT','KON_PPER',r,kon,'PIS',  _,_,MG,MF,MNew) :- unify_case(MG,'PIAT',MF,'PPER',MNew).
+head('PIAT','KON_PPER',r,kon,'PIS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PIAT',MF,'PPER',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PDAT','KON_PPER',r,kon,'PDS',  _,_,MG,MF,MNew) :- unify_case(MG,'PDAT',MF,'PPER',MNew).
+head('PDAT','KON_PPER',r,kon,'PDS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PDAT',MF,'PPER',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PIDAT','KON_PPER',r,kon,'PDS',  _,_,MG,MF,MNew) :- unify_case(MG,'PIDAT',MF,'PPER',MNew).
+head('PIDAT','KON_PPER',r,kon,'PDS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PIDAT',MF,'PPER',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PPOSS','KON_PPER',r,kon,'PPOSS',  _,_,MG,MF,MNew) :- unify_case(MG,'PPOSS',MF,'PPER',MNew).
+head('PPOSS','KON_PPER',r,kon,'PPOSS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PPOSS',MF,'PPER',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PPOSAT','KON_PPER',r,kon,'PPOSS',  _,_,MG,MF,MNew) :- unify_case(MG,'PPOSAT',MF,'PPER',MNew).
+head('PPOSAT','KON_PPER',r,kon,'PPOSS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PPOSAT',MF,'PPER',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
 
-head('PDS','KON_NOUN',r,kon,'PDS',  _,_,MG,MF,MNew) :- unify_case(MG,'PDS',MF,'NN',MNew).
+head('PDS','KON_NOUN',r,kon,'PDS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PDS',MF,'NN',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PIS','KON_NOUN',r,kon,'PIS',  _,_,MG,MF,MNew) :- unify_case(MG,'PIS',MF,'NN',MNew).
+head('PIS','KON_NOUN',r,kon,'PIS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PIS',MF,'NN',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PPER','KON_NOUN',r,kon,'PPER',  _,_,MG,MF,MNew) :- unify_case(MG,'PPER',MF,'NN',MNew).
+head('PPER','KON_NOUN',r,kon,'PPER', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PPER',MF,'NN',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-% head('PWS','KON_NOUN',r,kon,'PWS',  _,_,MG,MF,MNew) :- unify_case(MG,'PWS',MF,'NN',MNew).
-% 
-% head('PWAT','KON_NOUN',r,kon,'PWAT',  _,_,MG,MF,MNew) :- unify_case(MG,'PWAT',MF,'NN',MNew).
 
 %ein und derselbe Job
 head('ART','KON_PRONOUN',r,kon,'ART',  _,_,_,MF,MNew) :- convertMorphList('PIS',MF,'ART',MNew).
@@ -1794,23 +1791,23 @@ head('TRUNC','KON_VVIZU',r,kon,'VVIZU', [_,_,_,_,_,_,_,_],_,_,MD,MD).
 
 
 %card + card
-head('CARD','KON_CARD',r,kon,'CARD',  _,_,MH,_,MH).
+head('CARD','KON_CARD',r,kon,'CARD', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MH,_,MH) :- prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
 
 %adv/adjd/pp/adja + adv/adjd/pp
-head('ADV','KON_ADV',r,kon,'ADV',  _,_,MH,_,MH).
+head('ADV','KON_ADV',r,kon,'ADV', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MH,_,MH) :- prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PWAV','KON_ADV',r,kon,'PWAV',  _,_,MH,_,MH).
+head('PWAV','KON_ADV',r,kon,'PWAV', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MH,_,MH) :- prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('ADJD','KON_ADV',r,kon,'ADJD',  _,_,MH,_,MH).
+head('ADJD','KON_ADV',r,kon,'ADJD', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MH,_,MH) :- prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PP','KON_ADV',r,kon,'PP',  _,_,MH,_,MH).
+head('PP','KON_ADV',r,kon,'PP', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MH,_,MH) :- prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PPQ','KON_ADV',r,kon,'PPQ',  _,_,MH,_,MH).
+head('PPQ','KON_ADV',r,kon,'PPQ', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MH,_,MH) :- prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PPREL','KON_ADV',r,kon,'PPREL',  _,_,MH,_,MH).
+head('PPREL','KON_ADV',r,kon,'PPREL', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MH,_,MH) :- prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('ADJA','KON_ADV',r,kon,'ADJA',  _,_,MH,_,MH).
+head('ADJA','KON_ADV',r,kon,'ADJA', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MH,_,MH) :- prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
 %für und mit X
 head('APPR','KON_ADV',r,kon,'PP',  _,_,MH,_,MH).
@@ -1967,6 +1964,15 @@ kon_mapping('QC','KON_QC') :- !.
 kon_mapping('NEB','KON_NEB') :- !.
 kon_mapping('OBJC','KON_OBJC') :- !.
 
+
+%make sure NPs (or similar) are not coordinated with NP in a subclause (by requiring end of subclause to be marked with comma).
+prevent_clause_crossing_kon(HeadRels, DepRels, DepID) :- (subclauseToRight(HeadRels)->(commaToLeft(DepID); member('<-comma<-',DepRels));true).
+
+subclauseToRight(HeadRels) :- intersection(['->objc->',
+                                            '->obji->',
+                                            '->subjc->',
+                                            '->rel->',
+                                            '->neb->'],HeadRels, Intersection), Intersection \= [].
 
 %======================================================================================
 %quotes/(in)direct speech: tag 's'

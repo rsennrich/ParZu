@@ -176,6 +176,7 @@ stats2(objp,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,P,D,HC-OG) :-
         statsppobjp(objp,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,P,D,HC-OG).
 
 
+% PPs pre-modifying NPs are pretty rare, so these rules should only be used if there's no other choice. Still produces some false positives...
 stats2(pp,Htag,_FH,SH,_MORPHH,_Dtag,_FD,SD,_MORPHD,0.05,_D,_) :-
     (Htag = 'NN'; Htag = 'NE'; Htag = 'PDS'; Htag = 'PPER'; Htag = 'PIS'; Htag = 'FM'),
     lexic(SH,_,HPos),
