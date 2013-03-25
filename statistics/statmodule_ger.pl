@@ -138,8 +138,8 @@ stats2(kon,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,_HC) :-
 
 
 
-%gradation: Should have precedence over long APP chains, but not over subj
-stats2(grad,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.5,_D,_HC).
+%gradation
+stats2(grad,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.2,_D,_HC).
 
 
 %closing bracket - better than having two opening ones / prefer short distances

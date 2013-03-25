@@ -2100,15 +2100,15 @@ card_is_zeit_cand(Word) :- atom_length(Word,4).
 %'grad'
 
 %fünf jahre alt
-head('ADJA','NN',l,grad,'ADJA',[_,_,_,_,HRels,DRels,_,_],HPos-DPos,HMorph,DMorph,HMorph) :- case_acc(DMorph,'NN'), (1 is HPos-DPos;among_dependents(HRels, '_PTKA', 1)), among_dependents(DRels, '_CARD', 1).
+head('ADJA','NN',l,grad,'ADJA',[_,_,_,DWord,HRels,DRels,_,_],HPos-DPos,HMorph,DMorph,HMorph) :- case_acc(DMorph,'NN'), (1 is HPos-DPos;among_dependents(HRels, '_PTKA', 1)), (among_dependents(DRels, '_CARD', 1);measure(DWord);zeitcand(DWord)).
 
-head('ADJD','NN',l,grad,'ADJD',[_,_,_,_,HRels,DRels,_,_],HPos-DPos,HMorph,DMorph,HMorph) :- case_acc(DMorph,'NN'), (1 is HPos-DPos;among_dependents(HRels, '_PTKA', 1)), among_dependents(DRels, '_CARD', 1).
+head('ADJD','NN',l,grad,'ADJD',[_,_,_,DWord,HRels,DRels,_,_],HPos-DPos,HMorph,DMorph,HMorph) :- case_acc(DMorph,'NN'), (1 is HPos-DPos;among_dependents(HRels, '_PTKA', 1)), (among_dependents(DRels, '_CARD', 1);measure(DWord);zeitcand(DWord)).
 
-head('PIAT','NN',l,grad,'PIAT',[_,_,_,_,HRels,DRels,_,_],HPos-DPos,HMorph,DMorph,HMorph) :- case_acc(DMorph,'NN'), (1 is HPos-DPos;among_dependents(HRels, '_PTKA', 1)), among_dependents(DRels, '_CARD', 1).
+head('PIAT','NN',l,grad,'PIAT',[_,_,_,DWord,HRels,DRels,_,_],HPos-DPos,HMorph,DMorph,HMorph) :- case_acc(DMorph,'NN'), (1 is HPos-DPos;among_dependents(HRels, '_PTKA', 1)), (among_dependents(DRels, '_CARD', 1);measure(DWord);zeitcand(DWord)).
 
-head('PP','NN',l,grad,'PP',[_,_,_,_,HRels,DRels,_,_],HPos-DPos,HMorph,DMorph,HMorph) :- case_acc(DMorph,'NN'), (1 is HPos-DPos;among_dependents(HRels, '_PTKA', 1)), among_dependents(DRels, '_CARD', 1).
+head('PP','NN',l,grad,'PP',[_,_,_,DWord,HRels,DRels,_,_],HPos-DPos,HMorph,DMorph,HMorph) :- case_acc(DMorph,'NN'), (1 is HPos-DPos;among_dependents(HRels, '_PTKA', 1)), (among_dependents(DRels, '_CARD', 1);measure(DWord);zeitcand(DWord)).
 
-head('ADV','NN',l,grad,'ADV',[_,_,_,_,HRels,DRels,_,_],HPos-DPos,HMorph,DMorph,HMorph) :- case_acc(DMorph,'NN'), (1 is HPos-DPos;among_dependents(HRels, '_PTKA', 1)), among_dependents(DRels, '_CARD', 1).
+head('ADV','NN',l,grad,'ADV',[_,_,_,DWord,HRels,DRels,_,_],HPos-DPos,HMorph,DMorph,HMorph) :- case_acc(DMorph,'NN'), (1 is HPos-DPos;among_dependents(HRels, '_PTKA', 1)), (among_dependents(DRels, '_CARD', 1);measure(DWord);zeitcand(DWord)).
 
 
 %ein wenig zu alt
