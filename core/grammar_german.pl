@@ -2123,6 +2123,12 @@ head('PP','PIS',l,grad,'PP',[_,_,_,_,HRels,DRels,_,_],HPos-DPos,HMorph,_,HMorph)
 head('ADV','PIS',l,grad,'ADV',[_,_,_,_,HRels,DRels,_,_],HPos-DPos,HMorph,_,HMorph) :- member('<-part<-',DRels), (1 is HPos-DPos;among_dependents(HRels, '_PTKA', 1)).
 
 
+%voller Liebe
+head('ADJD','NN',r,grad,'ADJD',[_,_,voll,_,_,_,_,_],_,HMorph,_,HMorph).
+head('ADJD','NN',r,grad,'ADJD',[_,_,voller,_,_,_,_,_],_,HMorph,_,HMorph).
+
+
+
 %======================================================================================
 %brackets can enclose any structure
 
