@@ -2865,12 +2865,11 @@ splittag(WordI,WordI,_) :- !.
 
 %standard sort only removes duplicates if no variables are involved.
 %we want [[_,'Akk'],[_,'Akk']] to be reduced to [[_,'Akk']]
-my_remove_duplicates(L,Unique) :- duplicate_check(L,[],UniqueTmp), (is_all_var(UniqueTmp)->Unique=_;Unique=UniqueTmp).
+my_remove_duplicates(L,Unique) :- duplicate_check(L,[],UniqueTmp), (is_all_var(UniqueTmp)->Unique=_;(UniqueTmp=[UniqInner],is_all_var(UniqInner))->Unique=[_];Unique=UniqueTmp).
 
 duplicate_check([],Acc,Acc) :- !.
 duplicate_check([H|T],Acc,Unique) :- \+ member(H,Acc), !, duplicate_check(T,[H|Acc],Unique).
 duplicate_check([_|T],Acc,Unique) :- duplicate_check(T,Acc,Unique).
 
 is_all_var([]).
-is_all_var([[Element|Rest]]) :- var(Element), is_all_var(Rest).
 is_all_var([Element|Rest]) :- var(Element), is_all_var(Rest).
