@@ -598,7 +598,7 @@ head('V*FIN','PPER',l,explobja,'V*FIN',[FC,_,_,'es',UG,_,_,_],_,MH,_,MH) :- \+ m
 %pp
 
 %allows prepositional phrases to be enclosed by commas
-head('PP','$,',l,comma,'PP',[_,_,_,_,HRels,_,HID,_],_,HM,_,HM) :- commaToRight(HID), \+ member('<-comma<-', HRels).
+head('PP','$,',l,comma,'PP',[_,_,_,_,HRels,_,HID,_],_,HM,_,HM) :- (commaToRight(HID);stopToRight(HID)), \+ member('<-comma<-', HRels).
 
 head('PP','$,',r,comma,'PP',[_,_,_,_,HRels,_,_,_],_,HM,_,HM) :- (member('<-comma<-', HRels);member('->kon->', HRels)), \+ member('->comma->', HRels).
 
@@ -1121,6 +1121,16 @@ head('VVFIN','V*INF/PP',r,obji,'VVFIN',[_,DC,HW,_,_,_,_,_],_,MH,_,MH) :- modalli
 %======================================================================================
 %adverbs. needs to be more permissive later on.
 
+%allows adverbs to be enclosed by commas (if they are head of comparative: "er hat, früher als erwartet, den Vertrag unterzeichnet"
+head('ADV','$,',l,comma,'ADV',[_,_,_,_,HRels,_,HID,_],_,HM,_,HM) :- member('->kom->',HRels), (commaToRight(HID);stopToRight(HID)), \+ member('<-comma<-', HRels).
+head('ADV','$,',r,comma,'ADV',[_,_,_,_,HRels,_,_,_],_,HM,_,HM) :- member('->kom->',HRels), (member('<-comma<-', HRels);member('->kon->', HRels)), \+ member('->comma->', HRels).
+
+head('ADJD','$,',l,comma,'ADJD',[_,_,_,_,HRels,_,HID,_],_,HM,_,HM) :- member('->kom->',HRels), (commaToRight(HID);stopToRight(HID)), \+ member('<-comma<-', HRels).
+head('ADJD','$,',r,comma,'ADJD',[_,_,_,_,HRels,_,_,_],_,HM,_,HM) :- member('->kom->',HRels), (member('<-comma<-', HRels);member('->kon->', HRels)), \+ member('->comma->', HRels).
+
+head('PTKNEG','$,',l,comma,'PTKNEG',[_,_,_,_,HRels,_,HID,_],_,HM,_,HM) :- member('->kom->',HRels), (commaToRight(HID);stopToRight(HID)), \+ member('<-comma<-', HRels).
+head('PTKNEG','$,',r,comma,'PTKNEG',[_,_,_,_,HRels,_,_,_],_,HM,_,HM) :- member('->kom->',HRels), (member('<-comma<-', HRels);member('->kon->', HRels)), \+ member('->comma->', HRels).
+
 
 %adverb before finite verb
 head('V*FIN','ADV',l,adv,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- (restrict_vorfeld(FC,OF); member('<-neb<-',OF)).
@@ -1288,7 +1298,7 @@ head('ADJD', 'ADV',l, adv, 'ADJD',_,F-G,MH,_,MH) :- 1 is F-G.
 
 head('ADJA', 'ADV',l, adv, 'ADJA',_,_,MH,_,MH).
 
-head('KOUS', 'ADV',l, adv, 'KOUS',_,_,MH,_,MH).
+head('KOUS', 'ADV',l, adv, 'KOUS',[_,_,_,_,_,DepRels,_,_],_,MH,_,MH) :- \+ member('->comma->',DepRels).
 
 head('NN', 'ADV',l, adv, 'NN',_,_,MH,_,MH).
 
@@ -1325,7 +1335,7 @@ head('ADJD', 'PTKNEG',l, adv, 'ADJD',_,_,MH,_,MH).
 
 head('ADV', 'PTKNEG',l, adv, 'ADV',_,_,MH,_,MH).
 
-head('KOUS', 'PTKNEG',l, adv, 'KOUS',_,_,MH,_,MH).
+head('KOUS', 'PTKNEG',l, adv, 'KOUS',[_,_,_,_,_,DepRels,_,_],_,MH,_,MH) :- \+ member('->comma->',DepRels).
 
 head('CARD', 'PTKNEG',l, adv, 'CARD',_,_,MH,_,MH).
 
@@ -1352,7 +1362,7 @@ head('ADJA', 'ADJD',l, adv, 'ADJA',_,_,MH,_,MH).
 head('ADJD', 'ADJD',l, adv, 'ADJD',_,F-G,MH,_,MH) :- 1 is F-G.
 
 %most of these are very rare, but there are possibly tagging errors (and not allowing these blocks analysis of non-local dependencies)
-head('KOUS', 'ADJD',l, adv, 'KOUS',_,_,MH,_,MH).
+head('KOUS', 'ADJD',l, adv, 'KOUS',[_,_,_,_,_,DepRels,_,_],_,MH,_,MH) :- \+ member('->comma->',DepRels).
 
 head('NN', 'ADJD',l, adv, 'NN',_,_,MH,_,MH).
 
