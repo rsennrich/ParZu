@@ -1658,6 +1658,8 @@ head('ADV','$,',l,comma,'KON_ADV',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- nth1(2,OF,'->
 
 head('ADJD','$,',l,comma,'KON_ADV',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
 
+head('PTKNEG','$,',l,comma,'KON_ADV',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
+
 head('ADJA','$,',l,comma,'KON_ADJA',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
 
 head(Tag,'$,',l,comma,'KON_PRONOUN',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- kon_mapping(Tag,'KON_PRONOUN'), nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
@@ -1796,6 +1798,8 @@ head('ADV','KON_ADV',r,kon,'ADV', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MH,_,MH) 
 head('PWAV','KON_ADV',r,kon,'PWAV', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MH,_,MH) :- prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
 head('ADJD','KON_ADV',r,kon,'ADJD', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MH,_,MH) :- prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
+
+head('PTKNEG','KON_ADV',r,kon,'PTKNEG', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MH,_,MH) :- prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
 head('PP','KON_ADV',r,kon,'PP', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MH,_,MH) :- prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
