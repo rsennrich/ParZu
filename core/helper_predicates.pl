@@ -230,6 +230,14 @@ zeitcand('Jahrzehnt').
 zeitcand('Jahrhundert').
 zeitcand('Jahrtausend').
 
+zeitcand('Zwanziger').
+zeitcand('Dreissiger').
+zeitcand('Vierziger').
+zeitcand('Fünfziger').
+zeitcand('Siebziger').
+zeitcand('Achtziger').
+zeitcand('Neunziger').
+
 zeitcand('Morgen').
 zeitcand('Mittag').
 zeitcand('Nachmittag').
