@@ -1517,7 +1517,7 @@ head('KOKOM','NE',r,cj,'KOMPX',_,_,MH,_,MH).
 
 head('KOKOM','FM',r,cj,'KOMPX',_,_,MH,_,MH).
 
-head('KOKOM','ADJA',r,cj,'KOMPX',_,G-_,MH,_,MH) :- endOfNP(G).
+head('KOKOM','ADJA',r,cj,'KOMPX',_,_-D,MH,_,MH) :- endOfNP(D).
 
 head('KOKOM','ADJD',r,cj,'KOMPX',_,_,MH,_,MH).
 
