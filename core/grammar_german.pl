@@ -243,20 +243,20 @@ head('APPO','PWS',l,pn,'PPQ',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('<-pn<-'
 %Subject, only one is allowed    
 
 %subject before finite verb
-head('V*FIN',SUBJ,l,subj,'V*FIN',[FC,_,_,_,UG,OG,_,_],_-G,MF,MG,MNew) :- subjcandidate(SUBJ,G), (member('->kon->',OG)->(case_nom(MG,SUBJ),MNew=MF);check_agreement(MF,'VVFIN',MG,SUBJ,MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('V*FIN',SUBJ,l,subj,'V*FIN',[FC,_,_,_,UG,OG,_,_],_-G,MF,MG,MNew) :- subjcandidate(SUBJ,G), (among_dependents(OG,'->kon->',3)->(case_nom(MG,SUBJ),MNew=MF);check_agreement(MF,'VVFIN',MG,SUBJ,MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 %allow subject before nonfinite verb if no matching finite verb is found in preprocessing (-> chunk has only one element).
 head('VVPP', SUBJ,l,subj,'NEB',[FC,_,_,_,UG,_,_,_],F-G,MF,MG,MF) :- subjcandidate(SUBJ,G), \+ SUBJ = 'CARD', verbchunklength(FC,1), RightPos is F + 1, \+ checkPos(RightPos,_,'KON',_,_), case_nom(MG,SUBJ), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 %relative pronoun (new transtag 'RC')
-head('V*FIN','PRELS',l,subj,'RC',[FC,_,_,_,UG,OG,_,_],_,MF,MG,MNew) :- (member('->kon->',OG)->(case_nom(MG,'PRELS'),MNew=MF); check_agreement(MF,'VVFIN',MG,'PRELS',MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('V*FIN','PRELS',l,subj,'RC',[FC,_,_,_,UG,OG,_,_],_,MF,MG,MNew) :- (among_dependents(OG,'->kon->',3)->(case_nom(MG,'PRELS'),MNew=MF); check_agreement(MF,'VVFIN',MG,'PRELS',MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 %only necessary in case of tagging errors
 head('VVPP','PRELS',l,subj,'RC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- correct_mistagging(yes), case_nom(MG,'PRELS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 
 %interrogative pronoun (new transtag 'QC')
-head('V*FIN','PWS',l,subj,'QC',[FC,_,_,_,UG,OG,_,_],_,MF,MG,MNew) :- (member('->kon->',OG)->(case_nom(MG,'PWS'),MNew=MF); check_agreement(MF,'VVFIN',MG,'PWS',MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('V*FIN','PWS',l,subj,'QC',[FC,_,_,_,UG,OG,_,_],_,MF,MG,MNew) :- (among_dependents(OG,'->kon->',3)->(case_nom(MG,'PWS'),MNew=MF); check_agreement(MF,'VVFIN',MG,'PWS',MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 
 %"Was" can be (mis)tagged PWS or PRELS
@@ -294,7 +294,7 @@ head('VVPP','PWS',l,subj,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- correct_mistagg
 
 
 %subject after finite verb
-head('V*FIN',SUBJ,r,subj,'V*FIN',[_,_,_,_,OG,OF,_,_],_-F,MG,MF,MNew)  :- subjcandidate(SUBJ,F), (member('->kon->',OF)->(case_nom(MF,SUBJ),MNew=MF); check_agreement(MG,'VVFIN',MF,SUBJ,MNew)), restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG), \+ member('->obji->',OG), \+ member('<-explsubj<-',OG), \+ member('->explsubj->',OG), \+ member('->objp->',OG), \+ member('->pred->',OG).
+head('V*FIN',SUBJ,r,subj,'V*FIN',[_,_,_,_,OG,OF,_,_],_-F,MG,MF,MNew)  :- subjcandidate(SUBJ,F), (among_dependents(OF,'->kon->',3)->(case_nom(MF,SUBJ),MNew=MF); check_agreement(MG,'VVFIN',MF,SUBJ,MNew)), restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG), \+ member('->obji->',OG), \+ member('<-explsubj<-',OG), \+ member('->explsubj->',OG), \+ member('->objp->',OG), \+ member('->pred->',OG).
 
 
 %======================================================================================
@@ -1206,9 +1206,9 @@ head('VVIMP','ADV',r,adv,'VVIMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord
 
 
 
-head('V*FIN','ADJD',r,adv,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('->pred->', OG).
+head('V*FIN','ADJD',r,adv,'V*FIN',[_,_,HWord,_,OG,_,_,DepID],_,MH,_,MH) :- restrict_coord(OG), \+ member('->pred->', OG), (HWord=sein-> \+ (commaToRight(DepID);stopToRight(DepID));true).
 
-head('VVIMP','ADJD',r,adv,'VVIMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('->pred->', OG).
+head('VVIMP','ADJD',r,adv,'VVIMP',[_,_,HWord,_,OG,_,_,DepID],_,MH,_,MH) :- restrict_coord(OG), \+ member('->pred->', OG), (HWord=sein-> \+ (commaToRight(DepID);stopToRight(DepID));true).
 
 
 
@@ -2846,24 +2846,7 @@ among_dependents(Term, Tag, LVL) :- compound(Term),
 			       among_dependents(ChunkList,Tag, NewLVL).
 
 %check atom.
-among_dependents(Elem, Tag, _) :- atom(Elem), ending_member([Elem],Tag), !.
-
-
-ending_member(FC,Tag) :-
-    ((FC=_-_-RChunk) -> true; (RChunk = FC)),
-    ending_member2(RChunk,Tag).
-    
-ending_member2([F|_],X) :-
-    name(F,FList),
-    name(X,XList),
-    ttmember(FList,XList),
-    !.
-
-ending_member2([_F|R],X) :- 
-    ending_member2(R,X).
-
-ttmember(X,X).
-ttmember([_F|R],X) :- ttmember(R,X).
+among_dependents(Elem, Tag, _) :- atom(Elem), atom_concat(_,Tag,Elem), !.
 
 
 %if there are several conjoined auxiliary verbs, disregard the mutual exclusion of obja and objc:
