@@ -326,10 +326,10 @@ idsub(Sentence, Pos, LVL, EndPos) :- w(Sentence,Pos,_Word,Tag,_,_),
 %finite verb found. This rule deals with an exception: sometimes the finite verb does not come in last place as expected, but just before other non-finite verbs "weil er es nicht hätte tun sollen". 
 idsub(Sentence, Pos, LVL, EndPos) :- w(Sentence,Pos,_,Tag,[String],_),
 			  	finverb(Tag), 
-				assert(lvl(LVL,Pos,String,head)),
 				NewPos is Pos + 1,
 				w(Sentence,NewPos,_,NewTag,[NewString],_),
 				fullverbcand(NewTag),
+				assert(lvl(LVL,Pos,String,head)),
 				assert(lvl(LVL,NewPos,NewString,full)), !,
 				getverbgroupmain(Sentence,LVL,NewPos,EndPos).
 
@@ -387,15 +387,8 @@ idsubzu(_Sentence,Pos,LVL,LVL2,EndPos) :- lvl(LVL2,_,_,head),
 
 % "weil er gekränkt ist und sich austoben muss"
 possible_subordinated_coordination(Sentence, Pos, RightPos) :- RightPos is Pos + 1,
-            w(Sentence,RightPos,_,'KON',_,_).
+            w(Sentence,RightPos,_,'KON',_,_), !.
 
-% "Frauen, die attraktiv aussehen, aber mit ihrem Aussehen nicht klarkommen"
-% inactive because of potential false positives:
-% "er findet, dass die Frau attraktiv aussieht, aber andere Leute finden das nicht.
-% possible_subordinated_coordination(Sentence, Pos, Right2Pos) :- RightPos is Pos + 1,
-%                 (w(Sentence,RightPos,_,'$,',_,_),
-%                 Right2Pos is Pos + 2,
-%                 w(Sentence,Right2Pos,_,'KON',_,_))),
 
 %getverbgroupmain(+Sentence,+LVL,+Pos,-EndPos): most restrictive searching strategy. Search is stopped as soon as there is a gap (i.e. a word that doesn't belong to the verb chunk).
 
@@ -512,11 +505,11 @@ getverbgroupsub(Sentence,LVL,Pos, EndPos) :- NewPos is Pos + 1,
 				  w(Sentence,NewPos,_Word,Tag,[String],_),
 				  (Tag = 'VAFIN'; Tag ='VMFIN'),
 				  possible_subordinated_coordination(Sentence, NewPos, RightPos),
-				  assert(lvl(LVL,NewPos, String,head)),
 				  findfreelvl(LVL, NewLVL),
 				  lvl(LVL,_,Type,x),
 				  assert(lvl(NewLVL,_,Type,x)),
-				  idsub(Sentence, RightPos, NewLVL,EndPos), !.
+				  idsub(Sentence, RightPos, NewLVL,EndPos),
+				  assert(lvl(LVL,NewPos, String,head)), !.
 
 
 
@@ -617,27 +610,27 @@ findfreelvl(Try, Result) :- lvl(Try,_,_,_),
 
 %verbal particles are always last.
 complete(Sentence, LVL, Rest) :- lvl(LVL,Pos,String,ptkvz),
-				 retract(lvl(LVL,Pos,String,ptkvz)), 
+				\+ completed(LVL,Pos),
 				 assert(completed(LVL,Pos)),!,
 				     complete(Sentence,LVL,[String|Rest]).
 
 %last or second to last is the full verb
 complete(Sentence, LVL, Rest) :- lvl(LVL,Pos,String,full),
-				 retract(lvl(LVL,Pos,String,full)),
+				 \+ completed(LVL,Pos),
 				 assert(completed(LVL,Pos)), !,
 				     complete(Sentence,LVL,[String|Rest]).
 
 %this adds all auxiliary verb relationships to the chunk. 
 complete(Sentence, LVL, Rest) :- lvl(LVL,Pos,String,aux),
 				\+ (lvl(LVL,Pos2,String,aux), Pos2 < Pos),
-				 retract(lvl(LVL,Pos,String,aux)),
+					\+ completed(LVL,Pos),
 			         assert(completed(LVL,Pos)), !,
 				     complete(Sentence,LVL,[String|Rest]).
 
 
 %finite verb
 complete(Sentence, LVL, Rest) :- lvl(LVL,Pos,String,head),
-					retract(lvl(LVL,Pos,String,head)),
+					\+ completed(LVL,Pos),
 					 assert(completed(LVL,Pos)), !,
 				     complete2(Sentence,LVL,[String|Rest]).
 
@@ -649,6 +642,7 @@ complete(Sentence,LVL,List) :- 	complete2(Sentence,LVL,List).
 complete2(Sentence, LVL, Rest) :- \+lvl(LVL,_,_,x),
 				nth1(1,Rest,Head),
 				splittag(Head,_,Tag),
+				\+ complete_possible_subordinated_coordination(Sentence, LVL),
 				member(Tag,['VVFIN','VAFIN','VMFIN']),
 				\+ member('mainclause',Rest),
 				!,
@@ -667,16 +661,17 @@ complete2(Sentence,LVL,List) :- 	fillallcompleted(Sentence,LVL,List).
 
 
 %after new chunk has been built, all verbs are re-asserted recursively.
-fillallcompleted(Sentence, LVL, ChunkList) :- completed(LVL,Pos),
+fillallcompleted(Sentence, LVL, ChunkList) :- (member('mainclause',ChunkList)->assert(mainclause(LVL));true),
+				completed(LVL,Pos),
 				retract(completed(LVL,Pos)),
 				retract(w(Sentence,Pos,Word,Tag,_,C)),
 				assert(w(Sentence,Pos,Word,Tag,ChunkList,C)), !,
-			        fillallcompleted(Sentence, LVL, ChunkList).
+				fillallcompleted(Sentence, LVL, ChunkList).
 
-% catchall. cleans dynamic predicates.
-fillallcompleted(_,LVL,_) :- retractall(lvl(LVL,_,_,_)),
-				 retractall(completed(LVL,_)), !.
-			
+% clean dynamic predicates.
+cleanup_chunking :- retractall(lvl(_,_,_,_)),
+				 retractall(completed(_,_)),
+				 retractall(mainclause(_)), !.
 
 %checks if the head of a mutli-verb structure is valid (VVFIN isn't).
 headAuxiliar(Sentence, LVL) :- lvl(LVL,Pos,_,head),
@@ -703,6 +698,16 @@ chunkPair([Mb1,Mb2|_Rest], Word1,Tag1, Word2,Tag2) :- atomic(Mb1),
 
 %recursive clause.
 chunkPair([_Elem|Rest], Word1,Tag1, Word2,Tag2) :- chunkPair(Rest,Word1,Tag1,Word2,Tag2).
+
+
+%if main clause follows subordinated clause, and ends in a verb, it possibly is not really a main clause,
+%but a coordinated subordinated clause "Frauen, die attraktiv sind, aber mit ihrem Aussehen nicht zurechtkommen."
+complete_possible_subordinated_coordination(Sentence, LVL) :- lvl(LVL, Pos, _, head),
+	OldLVL is LVL -1,
+	lvl(OldLVL, _, _, head),
+	\+ mainclause(OldLVL),
+	NewPos is Pos + 1,
+	(w(Sentence,NewPos,_,Tag,_,_)->(sentdelim(Tag);member(Tag,['$,','$.','KON']));true), !.
 
 
 splittag(WordI,Word,I) :-

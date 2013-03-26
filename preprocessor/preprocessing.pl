@@ -10,7 +10,7 @@
 :- system:prompt(_, '').
 :- use_module(library(lists)).
 
-:- dynamic sentno/1, posno/1, w/6, w/4, lvl/4, completed/2, lemmatisation/1, morphology/1,sentdelim/1.
+:- dynamic sentno/1, posno/1, w/6, w/4, lvl/4, mainclause/1, completed/2, lemmatisation/1, morphology/1,sentdelim/1.
 
 :- ensure_loaded('preprocessing_verbchunkmodule.pl').
 
@@ -25,7 +25,7 @@ start(GERTWOL) :- start2(GERTWOL, user_input).
 %reads from file
 start(GERTWOL, F) :- open(F, read, Stream, [encoding(utf8)]), start2(GERTWOL, Stream).
 
-start2(GERTWOL, Stream) :- retractall(w(_,_,_,_,_,_)), retractall(w(_,_,_,_)), retractall(sentno(_)), retractall(posno(_)), retractall(completed(_,_)), retractall(lvl(_,_,_,_)),
+start2(GERTWOL, Stream) :- retractall(w(_,_,_,_,_,_)), retractall(w(_,_,_,_)), retractall(sentno(_)), retractall(posno(_)), retractall(completed(_,_)), retractall(mainclause(_)), retractall(lvl(_,_,_,_)),
 		   consult(GERTWOL),
 		   assert(sentno(1)),
 		   assert(posno(1)),
@@ -114,15 +114,18 @@ writedown(Sentence,Pos) :-
 %cycles through all sentences and calls idstart/3.
 dochunking  :- 	sentno(SenNum),
 		between(1,SenNum,Sentence),
+		retractall(mainclause(_)),
 		retractall(completed(_,_)),
 		retractall(lvl(_,_,_,_)),
 		idstart(Sentence, 1,1),
+		cleanup_chunking,
 		fail.
 
 dochunking.
 
 
-dochunking(Sentence) :- 		retractall(completed(_,_)),
+dochunking(Sentence) :- retractall(mainclause(_)),
+		retractall(completed(_,_)),
 		retractall(lvl(_,_,_,_)),
 		idstart(Sentence, 1,1).
 
