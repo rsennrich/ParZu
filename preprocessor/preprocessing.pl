@@ -155,8 +155,8 @@ buildmorphology(Word,'NN',[Word|ListOut]) :- findall(Morph,gertwol(Word,_,'NN',M
 				      (is_uninstantiated(ListTemp3) -> ListOut = [_] ; translatemorphs(ListTemp3,'NN', ListTemp4), sort(ListTemp4,ListTemp5), my_remove_duplicates(ListTemp5,ListOut)), !.
 
 %exception: PIDAT/PIAT is inconsistent between tagger / morphology systems. Don't distinguish between them.
-buildmorphology(Word,'PIDAT',MorphOut) :- \+ gertwol(Word,_,'PIDAT',_,_) -> buildmorphology(Word,'PIAT',MorphOut).
-buildmorphology(Word,'PIAT',MorphOut) :- \+ gertwol(Word,_,'PIAT',_,_) -> buildmorphology(Word,'PIDAT',MorphOut).
+buildmorphology(Word,'PIDAT',MorphOut) :- (\+ gertwol(Word,_,'PIDAT',_,_), gertwol(Word,_,'PIAT',_,_)) -> buildmorphology(Word,'PIAT',MorphOut).
+buildmorphology(Word,'PIAT',MorphOut) :- (\+ gertwol(Word,_,'PIAT',_,_), gertwol(Word,_,'PIDAT',_,_)) -> buildmorphology(Word,'PIDAT',MorphOut).
 
 %exception: viele/wenige are PIS/PIDAT in TreeTagger, but ADJA in Gertwol
 buildmorphology(Word,Tag,[Word|ListOut]) :- (Tag = 'PIS';Tag='PIDAT'),
