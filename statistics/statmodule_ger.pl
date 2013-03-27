@@ -390,10 +390,10 @@ pred_disambiguate(Head, Dep, Dtag, Score) :- (adverbial(Head, Dep, Dtag, BilexAd
 
 
 %genitive modifiers
-stats2(gmod,_Htag,_FH,SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,_D,_HC-_OG) :-
+stats2(gmod,_Htag,_FH,SH,_WFormH,_MORPHH,Dtag,_FD,SD,WFormD,MORPHD,P,_D,_HC-_OG) :-
 	\+ morphology(off), %if parsing with morphology turned off, this rule is counterproductive
 	lexic(SH,_,HPos),
-	lexic(SD,DWord,DPos),
+	lexic(SD,_,DPos),
 	RealDist is HPos-DPos,
 	distModifier(RealDist,gmod,DISTMOD), %prefer close attachment and modifier after head noun ("gestern hat der nachbar des mannes peter getroffen")
 	findall(_,case_acc(MORPHD,Dtag),LA),length(LA,LAL), %testing for accusative since there is no article that can be both accusative and genitive. dat/nom: 'eine mitarbeiterin der awo'
@@ -402,11 +402,17 @@ stats2(gmod,_Htag,_FH,SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,_D,_HC-_OG) :-
 	)
 	; %word case is fully ambiguous
 	(	LAL > 0,
-        ((Dtag = 'NE',atom_concat(_,s,DWord))->P is 0.3*DISTMOD; %ambiguous name ending with -s could be genitive
+        ((Dtag = 'NE',atom_concat(_,s,WFormD))->(gmod_disamb(WFormD,P_GMOD), P is P_GMOD*DISTMOD); %ambiguous name ending with -s could be genitive
         P is 0.01*DISTMOD) % else, assume that genitive is unlikely
 	)).
 
 stats2(gmod,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC-_OG) :- morphology(off).
+
+gmod_disamb(DWord, P) :- downcase_atom(DWord,DWordL),
+    gmod_ne(DWordL, GMOD, Total),
+    P is GMOD/Total.
+
+gmod_disamb(_DWord, 0.3).
 
 %subordinated clauses:
 stats2(neb,_Htag,_FH,_SH,_MORPHH,'NEBCONJLESS',_FD,_SD,_MORPHD,P,_D,_HC) :- P is 0.75. %should be higher than probability for 'kon'
@@ -549,6 +555,7 @@ stats2(Rel,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,D,_HC) :-
 	distModifier(D,Rel,DistMod),
 	P is DistMod.
 
+stats2(Rel,Htag,FH,SH,_WordFormH,MORPHH,Dtag,FD,SD,_WordFormD,MORPHD,P,D,HC) :- stats2(Rel,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,P,D,HC).
 
 
 % if HC is ['müssen_VMFIN', 'prüfen_VVINF'], Head should be 'prüfen', head tag should be 'vvinf' (statistic files are in lower case letters).

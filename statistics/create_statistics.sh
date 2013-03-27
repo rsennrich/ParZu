@@ -27,6 +27,7 @@ swipl -G1024M -L1024M -s stats_creator/ppstatsextracter.pl -t "start('tmp/train_
 #swipl -G1024M -L1024M -s stats_creator/konjstatsextracter.pl -t "start('tmp/train_stats.pl', 'tmp/konjstat_data.pl')."
 swipl -G1024M -L1024M -s stats_creator/advstatsextracter.pl -t "start('tmp/train_stats.pl', 'tmp/advstat_data_nolemma.pl')."
 swipl -G1024M -L1024M -s stats_creator/adv_predstatsextracter.pl -t "start('tmp/train_stats.pl', 'tmp/adv_pred_data_nolemma.pl')."
+swipl -G1024M -L1024M -s stats_creator/gmodstatsextractor.pl -t "start('tmp/train_stats.pl', 'tmp/gmod_ne_data.pl')."
 
 python stats_creator/conll2prolog.py lemma < $1 > tmp/train_lemma.pl
 

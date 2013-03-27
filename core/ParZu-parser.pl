@@ -44,6 +44,7 @@ load_grammar_german :-
     ensure_loaded('../statistics/advstat_data'),
     ensure_loaded('../statistics/vstat_data'),
     ensure_loaded('../statistics/adv_pred_data'),
+    ensure_loaded('../statistics/gmod_ne_data'),
     ensure_loaded('../statistics/freq_data')); true),
     (lemmatisation(off) -> (ensure_loaded('../statistics/ppstat_data_nolemma'),
     ensure_loaded('../statistics/advstat_data_nolemma'),
@@ -86,7 +87,7 @@ sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[WFormF|MORPHF],
   %right word is head
     (head(Ftag,Gtag,l,Type,Transtag,[FChunk,GChunk,FFh,FGh,OF,OG,FID,GID],FPos-GPos,MORPHF,MORPHG,MORPH),
      Dist is FPos - GPos,
-     (statschart(SF,SG,Type,Ftag,MORPHF,Gtag,MORPHG,Prob) -> true ; (once(stats2(Type,Ftag,FFh,SF,MORPHF,Gtag,FGh,SG,MORPHG,Prob,Dist,FChunk-OF)), asserta(statschart(SF,SG,Type,Ftag,MORPHF,Gtag,MORPHG,Prob)))),
+     (statschart(SF,SG,Type,Ftag,MORPHF,Gtag,MORPHG,Prob) -> true ; (once(stats2(Type,Ftag,FFh,SF,WFormF,MORPHF,Gtag,FGh,SG,WFormG,MORPHG,Prob,Dist,FChunk-OF)), asserta(statschart(SF,SG,Type,Ftag,MORPHF,Gtag,MORPHG,Prob)))),
      Prob >= DISCARD,
      Dir = l,
      atom_concat('<-',Type,ND1),atom_concat(ND1,'<-',DType),  % <-func<-
@@ -95,7 +96,7 @@ sparse(FID,FPos,_Ffrom,Fto,FFh,FChunk,FScore,Ftag,FuncF,[WFormF|MORPHF],
   %left word is head
     (head(Gtag,Ftag,r,Type,Transtag,[GChunk,FChunk,FGh,FFh,OG,OF,GID,FID],GPos-FPos, MORPHG,MORPHF,MORPH),
      Dist is FPos - GPos,
-     (statschart(SG,SF,Type,Gtag,MORPHG,Ftag,MORPHF,Prob) -> true; (once(stats2(Type,Gtag,FGh,SG,MORPHG,Ftag,FFh,SF,MORPHF,Prob,Dist,GChunk-OG)), asserta(statschart(SG,SF,Type,Gtag,MORPHG,Ftag,MORPHF,Prob)))),
+     (statschart(SG,SF,Type,Gtag,MORPHG,Ftag,MORPHF,Prob) -> true; (once(stats2(Type,Gtag,FGh,SG,WFormG,MORPHG,Ftag,FFh,SF,WFormF,MORPHF,Prob,Dist,GChunk-OG)), asserta(statschart(SG,SF,Type,Gtag,MORPHG,Ftag,MORPHF,Prob)))),
      Prob >= DISCARD,
      Dir = r,
      atom_concat('->',Type,ND1),atom_concat(ND1,'->',DType),  % ->func->
