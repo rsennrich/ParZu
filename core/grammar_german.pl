@@ -2575,7 +2575,7 @@ createMorphOutput(Head,Dep,MyRel) :- (getChartInfo(Head,HPos,HWord,HLemma,_,HMor
       getChartInfo(Dep,DPos,DWord,DLemma,_,DMorph),
       spyme(HPos,DPos,morph),
       (call(output(HPos,HWord,HLemma,HTag,_,_,HMorph2))->true;
-          (chart(HPos,HPos,HPos,_,Lemma,HTag,_,_,_,[Word|HMorph]),
+          (chart(HPos,HPos,HPos,_,Lemma,HTag,_,_,_,[Word|_]),
           assert(output(HPos,Word,Lemma,HTag,root,0,HMorph)), 
           HMorph2 = HMorph)),
       (call(output(DPos,DWord,DLemma,DTag,MyRel,_,DMorph2));
@@ -2636,7 +2636,7 @@ morph_cleanup(gmod,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_
 %Agreement is checked in grammar, but result is only stored for head. Produce output for dependent here.
 morph_cleanup(attr,HMorph,HTag,DMorph,DTag,_,_,DMorphOut) :- check_agreement(DMorph,DTag,HMorph,HTag,DMorphOut), !.
 morph_cleanup(det,HMorph,HTag,DMorph,DTag,_,_,DMorphOut) :- check_agreement(DMorph,DTag,HMorph,HTag,DMorphOut), !.
-morph_cleanup(pn,HMorph,HTag,DMorph,DTag,_,_,DMorphOut) :- unify_case(DMorph,DTag,HMorph,HTag,DMorphOut), !.
+morph_cleanup(pn,HMorph,_HTag,DMorph,DTag,_,_,DMorphOut) :- unify_case(DMorph,DTag,HMorph,'APPR',DMorphOut), !.
 morph_cleanup(app_loose,HMorph,HTag,DMorph,DTag,_,_,DMorphOut) :- unify_case(DMorph,DTag,HMorph,HTag,DMorphOut), !.
 morph_cleanup(app_close,HMorph,HTag,DMorph,DTag,_,_,DMorphOut) :- unify_case(DMorph,DTag,HMorph,HTag,DMorphOut), !.
 morph_cleanup(kon,HMorph,HTag,DMorph,DTag,_,_,DMorphOut) :- unify_case(DMorph,DTag,HMorph,HTag,DMorphOut), !.
