@@ -799,13 +799,13 @@ head('FM','$,',l,comma,'APPX',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- \+ member('<-comm
 head('PIS','$,',l,comma,'APPX',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- \+ member('<-comma<-', OF), (member('->gmod->', OF); member('->pp->', OF)).
 
 
-head('NN','$,',l,comma,'APP',[_,_,_,_,HRels,_,HID,_],_,HM,_,HM) :- (commaToRight(HID);stopToRight(HID)), \+ member('<-comma<-', HRels).
+head('NN','$,',l,comma,'APP',[_,_,_,_,HRels,_,HID,_],_,HM,_,HM) :- (commaToRight(HID);stopToRight(HID);(bracketToRight(HID,Bracket),rightbracket(Bracket,_))), \+ member('<-comma<-', HRels).
 
-head('NE','$,',l,comma,'APP',[_,_,_,_,HRels,_,HID,_],_,HM,_,HM) :- (commaToRight(HID);stopToRight(HID)), \+ member('<-comma<-', HRels).
+head('NE','$,',l,comma,'APP',[_,_,_,_,HRels,_,HID,_],_,HM,_,HM) :- (commaToRight(HID);stopToRight(HID);(bracketToRight(HID,Bracket),rightbracket(Bracket,_))), \+ member('<-comma<-', HRels).
 
-head('FM','$,',l,comma,'APP',[_,_,_,_,HRels,_,HID,_],_,HM,_,HM) :- (commaToRight(HID);stopToRight(HID)), \+ member('<-comma<-', HRels).
+head('FM','$,',l,comma,'APP',[_,_,_,_,HRels,_,HID,_],_,HM,_,HM) :- (commaToRight(HID);stopToRight(HID);(bracketToRight(HID,Bracket),rightbracket(Bracket,_))), \+ member('<-comma<-', HRels).
 
-head('PIS','$,',l,comma,'APPX',[_,_,_,_,HRels,_,HID,_],_,MH,_,MH) :- (commaToRight(HID);stopToRight(HID)), \+ member('<-comma<-', HRels), (member('->gmod->', HRels); member('->pp->', HRels)).
+head('PIS','$,',l,comma,'APPX',[_,_,_,_,HRels,_,HID,_],_,MH,_,MH) :- (commaToRight(HID);stopToRight(HID);(bracketToRight(HID,Bracket),rightbracket(Bracket,_))), \+ member('<-comma<-', HRels), (member('->gmod->', HRels); member('->pp->', HRels)).
 
 %comma at end of apposition allowed/included (but only if there is one on its left).
 
