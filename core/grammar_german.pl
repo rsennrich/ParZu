@@ -107,24 +107,24 @@ head('CARD','PWAT',l,det,'PWS',[_,_,_,_,OF,_,_,_],F-_,MF,MG,MNew) :- endOfNP(F),
 %======================================================================================
 %attributes
 
-head('NN','ADJA',l,attr,'NN',[_,_,_,_,OF,_,_,_],_,MF,MG,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), check_agreement(MF,'NN',MG,'ADJA',MNew).
+head('NN','ADJA',l,attr,'NN',[_,_,_,_,OF,_,_,_],_,MF,MG,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF), check_agreement(MF,'NN',MG,'ADJA',MNew).
 
-head('NE','ADJA',l,attr,'NE',[_,_,_,_,OF,_,_,_],_,MF,MG,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), check_agreement(MF,'NE',MG,'ADJA',MNew).
+head('NE','ADJA',l,attr,'NE',[_,_,_,_,OF,_,_,_],_,MF,MG,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF), check_agreement(MF,'NE',MG,'ADJA',MNew).
 
-head('FM','ADJA',l,attr,'FM',[_,_,_,_,OF,_,_,_],_,MF,MG,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), check_agreement(MF,'FM',MG,'ADJA',MNew).
+head('FM','ADJA',l,attr,'FM',[_,_,_,_,OF,_,_,_],_,MF,MG,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF), check_agreement(MF,'FM',MG,'ADJA',MNew).
 
 %allow (with low probability) non-congruent noun phrases
-head('NN','ADJA',l,bad_attr,'NN',[_,_,_,_,OF,_,_,_],_,MF,_,MF) :- relax_agreement(yes), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF).
-head('NE','ADJA',l,bad_attr,'NE',[_,_,_,_,OF,_,_,_],_,MF,_,MF) :- relax_agreement(yes), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF).
-head('FM','ADJA',l,bad_attr,'FM',[_,_,_,_,OF,_,_,_],_,MF,_,MF) :- relax_agreement(yes), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF).
+head('NN','ADJA',l,bad_attr,'NN',[_,_,_,_,OF,_,_,_],_,MF,_,MF) :- relax_agreement(yes), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF).
+head('NE','ADJA',l,bad_attr,'NE',[_,_,_,_,OF,_,_,_],_,MF,_,MF) :- relax_agreement(yes), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF).
+head('FM','ADJA',l,bad_attr,'FM',[_,_,_,_,OF,_,_,_],_,MF,_,MF) :- relax_agreement(yes), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF).
 
 
 %this rule only applies if there is another article/attribute/pronoun left of the pronoun. "Ein paar Leute". Special transtag if article morphology is to be ignored in 'det' rules.
-head('NN','PIDAT',l,attr,TransTag,[_,_,_,GWord,OF,_,_,_],_-G,MF,MG,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), LPos is G - 1, checkPos(LPos,LWord,LTag,_,_), (attributive_pronoun(LTag); member(LTag,['ART','ADJA'])), check_agreement(MF,'NN',MG,'PIDAT',MNew), ((pidat_anymorph(GWord),(LWord=ein;LWord=eine))->TransTag='NIDEF';TransTag='NN').
+head('NN','PIDAT',l,attr,TransTag,[_,_,_,GWord,OF,_,_,_],_-G,MF,MG,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF), LPos is G - 1, checkPos(LPos,LWord,LTag,_,_), (attributive_pronoun(LTag); member(LTag,['ART','ADJA'])), check_agreement(MF,'NN',MG,'PIDAT',MNew), ((pidat_anymorph(GWord),(LWord=ein;LWord=eine))->TransTag='NIDEF';TransTag='NN').
 
-head('NE','PIDAT',l,attr,TransTag,[_,_,_,GWord,OF,_,_,_],_-G,MF,MG,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), LPos is G - 1, checkPos(LPos,LWord,LTag,_,_), (attributive_pronoun(LTag); member(LTag,['ART','ADJA'])), check_agreement(MF,'NE',MG,'PIDAT',MNew), ((pidat_anymorph(GWord),(LWord=ein;LWord=eine))->TransTag='NIDEF';TransTag='NE').
+head('NE','PIDAT',l,attr,TransTag,[_,_,_,GWord,OF,_,_,_],_-G,MF,MG,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF), LPos is G - 1, checkPos(LPos,LWord,LTag,_,_), (attributive_pronoun(LTag); member(LTag,['ART','ADJA'])), check_agreement(MF,'NE',MG,'PIDAT',MNew), ((pidat_anymorph(GWord),(LWord=ein;LWord=eine))->TransTag='NIDEF';TransTag='NE').
 
-head('FM','PIDAT',l,attr,TransTag,[_,_,_,GWord,OF,_,_,_],_-G,MF,MG,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), LPos is G - 1, checkPos(LPos,LWord,LTag,_,_), (attributive_pronoun(LTag); member(LTag,['ART','ADJA'])), check_agreement(MF,'FM',MG,'PIDAT',MNew), ((pidat_anymorph(GWord),(LWord=ein;LWord=eine))-TransTag='NIDEF';TransTag='FM').
+head('FM','PIDAT',l,attr,TransTag,[_,_,_,GWord,OF,_,_,_],_-G,MF,MG,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF), LPos is G - 1, checkPos(LPos,LWord,LTag,_,_), (attributive_pronoun(LTag); member(LTag,['ART','ADJA'])), check_agreement(MF,'FM',MG,'PIDAT',MNew), ((pidat_anymorph(GWord),(LWord=ein;LWord=eine))-TransTag='NIDEF';TransTag='FM').
 
 %ein paar Leute - no morphology check
 pidat_anymorph('paar').
@@ -133,29 +133,29 @@ pidat_anymorph('bißchen').
 pidat_anymorph('wenig').
 
 
-head('NN','CARD',l,attr,'NN',[_,_,HeadWord,DepWord,OF,_,_,_],_,MH,_,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), unify_card(HeadWord,DepWord,MH,MNew).
+head('NN','CARD',l,attr,'NN',[_,_,HeadWord,DepWord,OF,_,_,_],_,MH,_,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF), unify_card(HeadWord,DepWord,MH,MNew).
 
-head('NE','CARD',l,attr,'NE',[_,_,HeadWord,DepWord,OF,_,_,_],_,MH,_,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), unify_card(HeadWord,DepWord,MH,MNew).
+head('NE','CARD',l,attr,'NE',[_,_,HeadWord,DepWord,OF,_,_,_],_,MH,_,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF), unify_card(HeadWord,DepWord,MH,MNew).
 
-head('FM','CARD',l,attr,'FM',[_,_,HeadWord,DepWord,OF,_,_,_],_,MH,_,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), unify_card(HeadWord,DepWord,MH,MNew).
+head('FM','CARD',l,attr,'FM',[_,_,HeadWord,DepWord,OF,_,_,_],_,MH,_,MNew) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF), unify_card(HeadWord,DepWord,MH,MNew).
 
 
 %Der Ex- Aussenminister. Might be treated as two words (for instance on line breaks)
-head('NN','TRUNC',l,attr,'NN',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF).
+head('NN','TRUNC',l,attr,'NN',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF).
 
-head('NE','TRUNC',l,attr,'NE',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF).
+head('NE','TRUNC',l,attr,'NE',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF).
 
-head('FM','TRUNC',l,attr,'FM',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF).
+head('FM','TRUNC',l,attr,'FM',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF).
 
 
 %CARD or ADJA as head of NP if noun is missing.
-head('ADJA','CARD',l,attr,'NN',[_,_,_,_,OF,_,_,_],F-_,MH,_,MH) :- endOfNP(F), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF).
+head('ADJA','CARD',l,attr,'NN',[_,_,_,_,OF,_,_,_],F-_,MH,_,MH) :- endOfNP(F), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF).
 
-head('CARD','CARD',l,attr,'NN',[_,_,_,_,OF,_,_,_],F-_,MH,_,MH) :- endOfNP(F), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF).
+head('CARD','CARD',l,attr,'NN',[_,_,_,_,OF,_,_,_],F-_,MH,_,MH) :- endOfNP(F), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF).
 
-head('ADJA','ADJA',l,attr,'NN',[_,_,_,_,OF,_,_,_],F-_,MH,_,MH) :- endOfNP(F), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF).
+head('ADJA','ADJA',l,attr,'NN',[_,_,_,_,OF,_,_,_],F-_,MH,_,MH) :- endOfNP(F), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF).
 
-head('CARD','ADJA',l,attr,'NN',[_,_,_,_,OF,_,_,_],F-_,MH,_,MH) :- endOfNP(F), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF).
+head('CARD','ADJA',l,attr,'NN',[_,_,_,_,OF,_,_,_],F-_,MH,_,MH) :- endOfNP(F), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF).
 
 
 %exception: '2 mal', '5 mal' etc.
@@ -805,7 +805,7 @@ head('NE','$,',l,comma,'APP',[_,_,_,_,HRels,_,HID,_],_,HM,_,HM) :- (commaToRight
 
 head('FM','$,',l,comma,'APP',[_,_,_,_,HRels,_,HID,_],_,HM,_,HM) :- (commaToRight(HID);stopToRight(HID);(bracketToRight(HID,Bracket),rightbracket(Bracket,_))), \+ member('<-comma<-', HRels).
 
-head('PIS','$,',l,comma,'APPX',[_,_,_,_,HRels,_,HID,_],_,MH,_,MH) :- (commaToRight(HID);stopToRight(HID);(bracketToRight(HID,Bracket),rightbracket(Bracket,_))), \+ member('<-comma<-', HRels), (member('->gmod->', HRels); member('->pp->', HRels)).
+head('PIS','$,',l,comma,'APP',[_,_,_,_,HRels,_,HID,_],_,MH,_,MH) :- (commaToRight(HID);stopToRight(HID);(bracketToRight(HID,Bracket),rightbracket(Bracket,_))), \+ member('<-comma<-', HRels), (member('->gmod->', HRels); member('->pp->', HRels)).
 
 %comma at end of apposition allowed/included (but only if there is one on its left).
 
@@ -824,18 +824,6 @@ head('FM','APP',r,app_loose,'FM',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unif
 head('PIS','APP',r,app_loose,'PIS',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PIS',MF,'NN',MNew), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
 
 head('PPER','APP',r,app_loose,'PPER',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PPER',MF,'NN',MNew), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
-
-
-%sentence-final appositions.
-head('NN','APPX',r,app_loose,'NN',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'NN',DepMorph,'NN',TransMorph), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
-
-head('NE','APPX',r,app_loose,'NE',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'NE',DepMorph,'NN',TransMorph), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
-
-head('FM','APPX',r,app_loose,'FM',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'FM',DepMorph,'NN',TransMorph), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
-
-head('PIS','APPX',r,app_loose,'PIS',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'PIS',DepMorph,'NN',TransMorph), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
-
-head('PPER','APPX',r,app_loose,'PPER',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'PPER',DepMorph,'NN',TransMorph), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
 
 
 %apposition enclosed in bracket
@@ -1891,19 +1879,6 @@ head('PIS','APP',r,kon,'PIS',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_ca
 head('PPER','APP',r,kon,'PPER',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PPER',MF,'NN',MNew), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
 
 
-%sentence-final coordinated element (without conjunction). (Peter, Susi, Mark)
-%strategy: label two elements as apposition, three or more as coordination
-head('NN','APPX',r,kon,'NN',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'NN',DepMorph,'NN',TransMorph), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
-
-head('NE','APPX',r,kon,'NE',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'NE',DepMorph,'NN',TransMorph), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
-
-head('FM','APPX',r,kon,'FM',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'FM',DepMorph,'NN',TransMorph), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
-
-head('PIS','APPX',r,kon,'PIS',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'PIS',DepMorph,'NN',TransMorph), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
-
-head('PPER','APPX',r,kon,'PPER',[_,_,_,_,HRels,DRels,_,DepID],_,HeadMorph,DepMorph,TransMorph) :- stopToRight(DepID), unify_case(HeadMorph,'PPER',DepMorph,'NN',TransMorph), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
-
-
 % Er ist gegen Gewalt, gegen Krieg (repetition of preposition indicates that they are coordinated)
 head('PP','PP',r,kon,'PP',[_,_,HWord,DWord,_,DRels,_,_],_,HeadMorph,_,HeadMorph) :- member('<-comma<-', DRels), splitappr(HWord,Word,_), splitappr(DWord,Word,_).
 
@@ -2026,7 +2001,7 @@ head(Tag,'APP',r,par,Tag,[_,_,_,_,_,DepRels,_,DID],F-_,HM,_,HM) :- getRange(DID,
 head(Tag,'PPNEB',r,par,Tag,[_,_,_,_,_,_,_,DID],F-_,HM,_,HM) :- getRange(DID,From-_), lastlexical(From,F).
 
 %expressions in parentheses (like this one). pretty complicated rule, since we do not want all brackets (we exclude quotation marks, for instance)
-head(Tag,Tag2,r,par,Tag,[_,_,_,_,_,[StartBracket,'<-bracket<-'|DepRels],_,DID],F-_,HM,_,HM) :- \+ member(Tag2,['NN','NE','FM']), getRange(DID,From-_), lastlexical(From,F), append(_,['->bracket->',EndBracket],DepRels), StartBracket =.. [_,[X]], EndBracket =.. [_,[Y]], splittag(X,Word,'$('), splittag(Y,Word2,'$('), leftbracket(Word,Class),rightbracket(Word2,Class), name(Class,Chars),name(Int,Chars), Int > 10.
+head(Tag,_Tag2,r,par,Tag,[_,_,_,_,_,[StartBracket,'<-bracket<-'|DepRels],_,DID],F-_,HM,_,HM) :- getRange(DID,From-_), lastlexical(From,F), append(_,['->bracket->',EndBracket],DepRels), StartBracket =.. [_,[X]], EndBracket =.. [_,[Y]], splittag(X,Word,'$('), splittag(Y,Word2,'$('), leftbracket(Word,Class),rightbracket(Word2,Class), atom_number(Class, Int), Int > 10.
 
 %don't attach parenthetical expressions to commas or parentheses, but to the last word before that.
 lastlexical(From,Last) :- LeftPos is From - 1,
