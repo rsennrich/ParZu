@@ -815,15 +815,15 @@ head('APPX','$,',r,comma,'APP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- member('<-comma<
 
 
 %appositions that are enclosed by comma are bound to noun on their left.
-head('NN','APP',r,app_loose,'NN',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'NN',MF,'NN',MNew), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
+head('NN','APP',r,app_loose,'NN',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'NN',MF,'NN',MNew), \+ member('->bracket->', HRels), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
 
-head('NE','APP',r,app_loose,'NE',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'NE',MF,'NN',MNew), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
+head('NE','APP',r,app_loose,'NE',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'NE',MF,'NN',MNew), \+ member('->bracket->', HRels), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
 
-head('FM','APP',r,app_loose,'FM',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'FM',MF,'NN',MNew),  \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
+head('FM','APP',r,app_loose,'FM',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'FM',MF,'NN',MNew), \+ member('->bracket->', HRels),  \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
 
-head('PIS','APP',r,app_loose,'PIS',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PIS',MF,'NN',MNew), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
+head('PIS','APP',r,app_loose,'PIS',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PIS',MF,'NN',MNew), \+ member('->bracket->', HRels), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
 
-head('PPER','APP',r,app_loose,'PPER',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PPER',MF,'NN',MNew), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
+head('PPER','APP',r,app_loose,'PPER',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PPER',MF,'NN',MNew), \+ member('->bracket->', HRels), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
 
 
 %apposition enclosed in bracket
@@ -845,19 +845,19 @@ head('NN','CARD',r,app_close,'NZEIT',[_,_,HeadWord,_,HeadRels,_,_,_],_,HeadMorph
 %name as apposition of noun: morphological mismatch is ok in some, but not all cases
 %Der Ministerpräsident Italiens -> no app (must be gmod)
 %Des Ministerpräsidenten Berlusconi -> (app is ok)
-head(HTag,'NE',r,app_close,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,_,MG) :- HTag \= 'NE', apphead(HTag), \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels).
+head(HTag,'NE',r,app_close,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,_,MG) :- HTag \= 'NE', apphead(HTag), \+ member('->bracket->', HeadRels), \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels).
 
 %John Lennons -> take genitive information from last element
 %if first element is genitive, don't allow relation (except if morphology is ambiguous)
 %Der Ministerpräsident Italiens Silvio Berlusconi -> "Silvio" is not apposition of "Italiens", but of "Ministerpräsident"
-head('NE','NE',r,app_close,'NE',[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MF) :- \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), (case_gen(MG,'NE')->case_nom(MG,'NE');true), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels).
+head('NE','NE',r,app_close,'NE',[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MF) :- \+ member('<-det<-', OF), \+ member('->bracket->', HeadRels), \+ member('<-bad_det<-', OF), (case_gen(MG,'NE')->case_nom(MG,'NE');true), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels).
 
 %der bürgermeister meier vs. der internet browser: if last element is nn (but not if ne), use it for np agreement.
-head(HTag,'NN',r,app_close,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), unify_case(MF,'NN',MG,HTag,MNew).
+head(HTag,'NN',r,app_close,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), \+ member('->bracket->', HeadRels), \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), unify_case(MF,'NN',MG,HTag,MNew).
 
-head(HTag,'FM',r,app_close,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), unify_case(MF,'FM',MG,HTag,MNew).
+head(HTag,'FM',r,app_close,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), \+ member('->bracket->', HeadRels), \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), unify_case(MF,'FM',MG,HTag,MNew).
 
-head(HTag,'CARD',r,app_close,HTag,[_,_,_,_,HeadRels,_,_,_],_,MH,_,MH) :- apphead(HTag), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels).
+head(HTag,'CARD',r,app_close,HTag,[_,_,_,_,HeadRels,_,_,_],_,MH,_,MH) :- apphead(HTag), \+ member('->bracket->', HeadRels), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels).
 
 
 
@@ -1868,15 +1868,15 @@ head('VVIMP','KONC',r,kon,'VVIMP',[GC,FC,_,_,_,_,_,_],_,MH,_,MH) :- member('main
 
 %what looks like loose apposition could also be part of coordination chain (without conjunction). (Peter, Susi, Mark)
 %strategy: label two elements as apposition, three or more as coordination
-head('NN','APP',r,kon,'NN',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'NN',MF,'NN',MNew), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+head('NN','APP',r,kon,'NN',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'NN',MF,'NN',MNew), \+ member('->bracket->', HRels), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
 
-head('NE','APP',r,kon,'NE',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'NE',MF,'NN',MNew), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+head('NE','APP',r,kon,'NE',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'NE',MF,'NN',MNew), \+ member('->bracket->', HRels), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
 
-head('FM','APP',r,kon,'FM',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'FM',MF,'NN',MNew), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+head('FM','APP',r,kon,'FM',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'FM',MF,'NN',MNew), \+ member('->bracket->', HRels), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
 
-head('PIS','APP',r,kon,'PIS',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PIS',MF,'NN',MNew), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+head('PIS','APP',r,kon,'PIS',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PIS',MF,'NN',MNew), \+ member('->bracket->', HRels), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
 
-head('PPER','APP',r,kon,'PPER',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PPER',MF,'NN',MNew), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
+head('PPER','APP',r,kon,'PPER',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PPER',MF,'NN',MNew), \+ member('->bracket->', HRels), \+ member('->kon->', HRels), \+ member('->app_loose->', HRels), \+ member('->app_loose->', DRels).
 
 
 % Er ist gegen Gewalt, gegen Krieg (repetition of preposition indicates that they are coordinated)
