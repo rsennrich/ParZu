@@ -243,6 +243,15 @@ printresult(total) :- result(total,TP,FP,FN,WA,NA),
 			;
                         write('division by 0 error')
 		),
+		nl,
+		write('f1: '),
+		(	(	TP > 0,
+				F1 is Precision*Recall*2 / (Precision + Recall),
+                                format('~4f', F1)
+			)
+			;
+                        write('division by 0 error')
+		),
 		nl, !.
 
 printresult(Class) :- result(Class,TP,FP,FN,WA),
@@ -274,6 +283,15 @@ printresult(Class) :- result(Class,TP,FP,FN,WA),
 			;
                         write('division by 0 error')
 		),
+% 		nl,
+% 		write('f1: '),
+% 		(	(	TP > 0,
+% 				F1 is Precision*Recall*2 / (Precision + Recall),
+%                                 format('~4f', F1)
+% 			)
+% 			;
+%                         write('division by 0 error')
+% 		),
 		nl, !.
 
 

@@ -1,5 +1,15 @@
 ParZu changelog
 
+0.20 2013/04/02
+  - retrained statistics for disambiguation module (on Europarl)
+    - new extraction process
+    - new statistics for some ambiguities (adv vs. pred)
+  - improved parse selection for n-best tagging
+  - some morphological agreement constraints are now soft constraints
+    (configurable through option `relax_agreement` in ParZu_parameters.pl)
+  - various grammar improvements
+  - remove deprecated index declarations (now slower on SWI-Prolog versions before 5.11.29)
+
 0.19 2013/01/19
   - new output options
     - graphical output
