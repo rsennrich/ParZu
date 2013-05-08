@@ -246,8 +246,8 @@ head('V*FIN','PWS',l,subj,'QC',[FC,_,_,_,UG,OG,_,_],_,MF,MG,MNew) :- (among_depe
 
 
 %"Was" can be (mis)tagged PWS or PRELS
-head('V*FIN','PWS',l,subj,'RC',[FC,_,_,was,UG,_,_,_],_,MF,MG,MNew) :- correct_mistagging(yes), check_agreement(MF,'VVFIN',MG,'PWS',MNew), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
-head('V*FIN','PRELS',l,subj,'QC',[FC,_,_,was,UG,_,_,_],_,MF,MG,MNew) :- correct_mistagging(yes), check_agreement(MF,'VVFIN',MG,'PRELS',MNew), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('V*FIN','PWS',l,subj,'RC',[FC,_,_,was,UG,_,_,_],_,MF,MG,MNew) :- check_agreement(MF,'VVFIN',MG,'PWS',MNew), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('V*FIN','PRELS',l,subj,'QC',[FC,_,_,was,UG,_,_,_],_,MF,MG,MNew) :- check_agreement(MF,'VVFIN',MG,'PRELS',MNew), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 
 %interrogative pronoun (new transtag 'QC'); special case with "sein": don't require number agreement (Wer sind die Beatles?)
@@ -315,8 +315,8 @@ head('VVPP','PWS',l,obja,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- correct_mistagg
 
 
 %"Was" can be relative (Der Film hat ein Happy-End, was ich sehr schön finde) or interrogative (Ich frage mich, was er da tut)
-head('V*FIN','PWS',l,obja,'RC',[FC,_,_,was,UG,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), restrict_vorfeld(FC,UG), \+ member('passive',FC), \+ member('<-obja<-',UG), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
-head('V*FIN','PRELS',l,obja,'QC',[FC,_,_,was,UG,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), restrict_vorfeld(FC,UG), \+ member('passive',FC), \+ member('<-obja<-',UG), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
+head('V*FIN','PWS',l,obja,'RC',[FC,_,_,was,UG,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,UG), \+ member('passive',FC), \+ member('<-obja<-',UG), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
+head('V*FIN','PRELS',l,obja,'QC',[FC,_,_,was,UG,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,UG), \+ member('passive',FC), \+ member('<-obja<-',UG), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
 
 
 %object after finite verb.
@@ -612,7 +612,7 @@ head('PTKANT', 'PP',r,pp,'PTKANT',[_,_,_,_,OG,_,_,_],G-F,MH,_,MH) :- 1 is F-G, \
 head('PWS', 'PP',r,pp,'PWS',[_,_,_,_,OG,_,_,_],G-F,MH,_,MH) :- 1 is F-G, \+ member('->pp->',OG).
 
 %included in case of tagging errors
-head('ART', 'PP',r,pp,'PIS',[_,_,_,_,OG,_,_,_],G-F,MH,_,MH) :- 1 is F-G, \+ member('->pp->',OG).
+head('ART', 'PP',r,pp,'PIS',[_,_,_,_,OG,_,_,_],G-F,MH,_,MH) :- correct_mistagging(yes), 1 is F-G, \+ member('->pp->',OG).
 
 
 %needs disambiguation, otherwise too many FPs
@@ -908,9 +908,10 @@ head('V*FIN','KOUS',l,konjneb,'NEB',_,_,MH,_,MH).
 
 head('ADJD','KOUS',l,konjneb,'NEB',_,_,MH,_,MH).
 
+%wenn gewünscht; wie versprochen
+head('VVPP','KOUS',l,konjneb,'PPNEB',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- verbchunklength(FC,1).
 
 %consider possibility of tagging error
-head('VVPP','KOUS',l,konjneb,'PPNEB',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), verbchunklength(FC,1).
 head('VVPP','KOKOM',l,konjneb,'PPNEB',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), verbchunklength(FC,1).
 
 %um/statt/ohne + inf
@@ -1154,8 +1155,8 @@ head('VVPP','PWAV',l,adv,'QC',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- correct_mistaggin
 
 
 %"wo" can be relative (der Ort, wo es am schönsten ist), or interrogative (ich frage mich, wo du bist).
-head('V*FIN','PWAV',l,adv,'RC',[_,_,_,wo,_,_,_,_],_,MH,_,MH) :- correct_mistagging(yes).
-head('V*FIN','PRELS',l,adv,'QC',[_,_,_,wo,_,_,_,_],_,MH,_,MH) :- correct_mistagging(yes).
+head('V*FIN','PWAV',l,adv,'RC',[_,_,_,wo,_,_,_,_],_,MH,_,MH).
+head('V*FIN','PRELS',l,adv,'QC',[_,_,_,wo,_,_,_,_],_,MH,_,MH).
 
 
 %allow adverbs before nonfinite verb in coordination chain
