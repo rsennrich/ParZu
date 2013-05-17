@@ -1969,13 +1969,13 @@ head('QUOTE','KON',l,koord,'QUOTE',[_,_,_,_,_,_,_,DepID],_,HM,_,HM) :- stopToLef
 %v*fin + v*fin: head word needs to be word of speech (sagen, meinen, bekräftigen...) --> statisics module
 
 %quote after head clause
-head('V*FIN','QUOTE',r,s,'V*FIN',[GC,FC,_,_,OG,DepRels,_,_],_,MH,_,MH) :- member('mainclause',FC),member('mainclause',GC), restrict_coord(OG),\+ member('->s->',OG), \+ member('<-s<-',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG), \+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',DepRels), \+ member('<-subjc<-',DepRels), \+ member('<-s<-',DepRels).
+head('V*FIN','QUOTE',r,s,'V*FIN',[GC,FC,_,_,OG,DepRels,_,_],_,MH,_,MH) :- member('mainclause',FC),member('mainclause',GC), restrict_coord(OG),\+ member('->s->',OG), \+ member('<-s<-',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG), \+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',DepRels), \+ member('<-subjc<-',DepRels), \+ member('<-s<-',DepRels), (member('passive',GC)->(\+ member('<-subj<-',OG), \+ member('->subj->',OG));true).
 
-head('VVIMP','QUOTE',r,s,'VVIMP',[GC,FC,_,_,OG,DepRels,_,_],_,MH,_,MH) :- member('mainclause',FC),member('mainclause',GC), restrict_coord(OG),\+ member('->s->',OG), \+ member('<-s<-',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG), \+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',DepRels), \+ member('<-subjc<-',DepRels), \+ member('<-s<-',DepRels).
+head('VVIMP','QUOTE',r,s,'VVIMP',[GC,FC,_,_,OG,DepRels,_,_],_,MH,_,MH) :- member('mainclause',FC),member('mainclause',GC), restrict_coord(OG),\+ member('->s->',OG), \+ member('<-s<-',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG), \+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',DepRels), \+ member('<-subjc<-',DepRels), \+ member('<-s<-',DepRels), (member('passive',GC)->(\+ member('<-subj<-',OG), \+ member('->subj->',OG));true).
 
 
 %quote before head clause -> we want a subject to make sure it isn't something like "A tat B, sagte aber C"
-head('V*FIN','QUOTE',l,s,'V*FIN',[FC,GC,_,_,OF,_,_,_],_,MH,_,MH) :- member('mainclause',FC),member('mainclause',GC), restrict_vorfeld(FC,OF), member('->subj->',OF), \+ member('->s->',OF), \+ member('<-s<-',OF), \+ member('<-objc<-',OF), \+ member('->objc->',OF), \+ member('<-obja<-',OF), \+ member('->obja->',OF),\+ member('->kon->',OF).
+head('V*FIN','QUOTE',l,s,'V*FIN',[FC,GC,_,_,OF,_,_,_],_,MH,_,MH) :- member('mainclause',FC),member('mainclause',GC), restrict_vorfeld(FC,OF), member('->subj->',OF), \+ member('->s->',OF), \+ member('<-s<-',OF), \+ member('<-objc<-',OF), \+ member('->objc->',OF), \+ member('<-obja<-',OF), \+ member('->obja->',OF),\+ member('->kon->',OF), (member('passive',FC)->(\+ member('<-subj<-',OF), \+ member('->subj->',OF));true).
 
 
 %======================================================================================
