@@ -107,15 +107,15 @@ idstart(_,_,_) :- !.
 %idmain(+Sentence,+Pos,+LVL,-EndPos, +ExpectFullVerb): if a finite verb is found in Verbzweitstellung, this clauses searches for non-finite verbs or verbal particles dependent from it. 
 
 %non-finite full verb found. make sure that the finite verb is not a full verb itself and enter the third search strategy (getverbgroupmain).
-idmain(Sentence, Pos, LVL, EndPos, _ExpectFullVerb) :- w(Sentence,Pos,_Word,Tag,[String],_),
+idmain(Sentence, Pos, LVL, EndPos, ExpectFullVerb) :- w(Sentence,Pos,_Word,Tag,[String],_),
 			  fullverbcand(Tag),
 			  headAuxiliar(Sentence,LVL),
-			  \+ finverb_follows(Sentence,Pos),
+			  (finverb_follows(Sentence,Pos)->ExpectFullVerb=yes;true),
 			  assert(lvl(LVL,Pos,String,full)), !,
 			  getverbgroupmain(Sentence,LVL,Pos, EndPos).
 
 %non-finite full verb found. exploring possibility that it is topicalised full verb. (Das ist zwar super, doch sehen will das niemand)
-idmain(Sentence, Pos, LVL, EndPos, _ExpectFullVerb) :- w(Sentence,Pos,_Word,Tag,[String],_),
+idmain(Sentence, Pos, LVL, EndPos, no) :- w(Sentence,Pos,_Word,Tag,[String],_),
                           fullverbcand(Tag),
                           headAuxiliar(Sentence,LVL),
                           finverb_follows(Sentence,Pos),
