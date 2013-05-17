@@ -1892,6 +1892,7 @@ kon_mapping('CARD','KON_CARD') :- !.
 kon_mapping('PP','KON_ADV') :- !.
 kon_mapping('PPREL','KON_ADV') :- !.
 kon_mapping('PPQ','KON_ADV') :- !.
+kon_mapping('PAV','KON_ADV') :- !.
 kon_mapping('ADV','KON_ADV') :- !.
 kon_mapping('ADJD','KON_ADV') :- !.
 
