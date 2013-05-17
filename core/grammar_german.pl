@@ -1332,6 +1332,16 @@ head('APPRART', 'PTKNEG',l, adv, 'APPRART',_,_,MH,_,MH).
 
 head('KOMPX','PTKNEG',l,adv,'KOMPX', _,_,MH,_,MH).
 
+head('PDS', 'PTKNEG',l, adv, 'PDS',_,_,MH,_,MH).
+
+head('PIAT', 'PTKNEG',l, adv, 'PIAT',_,_,MH,_,MH).
+
+head('PIDAT', 'PTKNEG',l, adv, 'PIDAT',_,_,MH,_,MH).
+
+head('PIS','PTKNEG',l,adv,'PIS', _,_,MH,_,MH).
+
+head('PPER', 'PTKNEG',l, adv, 'PPER',_,_,MH,_,MH).
+
 
 %little hack: use PWAV as transtag to make sure whole thing gets recognised as question
 head('ADJD', 'PWAV',l, adv, 'PWAV',_,F-G,MH,_,MH) :- 1 is F-G.
