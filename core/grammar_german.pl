@@ -2648,6 +2648,7 @@ findkonchainhead(HPos,HMorph,HTag) :- output(HPos,_,_,HTag,_,_,HMorph), (var(Hta
 % good: nicht Peter , sondern Jan
 % bad: Peter , und Jan (this is more likely a coordination of verbs, as in "Zuerst kam Peter , und Jan folgte kurz darauf")
 restrict_comma_for_kon(_Transtag, sondern, _HeadRels).
+restrict_comma_for_kon(_Transtag, aber, _HeadRels).
 restrict_comma_for_kon('KON_FINVERB', _HeadWord, _HeadRels).
 restrict_comma_for_kon(_Transtag, _HeadWord, HeadRels) :- \+ member('<-comma<-',HeadRels).
 
