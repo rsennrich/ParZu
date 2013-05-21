@@ -1309,6 +1309,8 @@ head('PIS', 'ADV',l, adv, 'PIS',_,_,MH,_,MH).
 
 head('PPER', 'ADV',l, adv, 'PPER',_,_,MH,_,MH).
 
+head('PAV', 'ADV',l, adv, 'PAV',_,_,MH,_,MH).
+
 % head(Tag, 'ADV', l, adv, Tag,_,_,MH,_,MH).
 % head(Tag, 'ADV', r, adv, Tag,_,_,MH,_,MH).
 
@@ -1383,6 +1385,7 @@ head('PIS', 'ADJD',l, adv, 'PIS',_,_,MH,_,MH).
 
 head('PPER', 'ADJD',l, adv, 'PPER',_,_,MH,_,MH).
 
+head('PAV', 'ADJD',l, adv, 'PAV',_,_,MH,_,MH).
 
 %seit wann
 %little hack: use PWAV as transtag to make sure whole thing gets recognised as question
