@@ -1847,6 +1847,11 @@ head('OBJC','KON_OBJC',r,kon,'OBJC',  _,_,MH,_,MH).
 head('NEB','KON_NEB',r,kon,'NEB',  _,_,MH,_,MH).
 
 
+% mix of relative and interrogative pronouns indicates thate the whole thing is relative:
+% "ein Standard, der akzeptiert wird und womit man die Qualität überprüfen kann."
+head('RC','KON_QC',r,kon,'RC',  _,_,MH,_,MH).
+head('QC','KON_RC',r,kon,'RC',  _,_,MH,_,MH).
+
 %X, Y und so weiter
 head(Tag,'KON_ANY',r,kon,Tag,  _,_,MH,_,MH).
 
@@ -1902,6 +1907,7 @@ kon_mapping('PPQ','KON_ADV') :- !.
 kon_mapping('PAV','KON_ADV') :- !.
 kon_mapping('ADV','KON_ADV') :- !.
 kon_mapping('ADJD','KON_ADV') :- !.
+kon_mapping('PWAV','KON_ADV') :- !.
 
 kon_mapping('ADJA','KON_ADJA') :- !.
 
@@ -2684,7 +2690,7 @@ restrict_vorfeld(_,_) :- !. %catchall
 
 %restrict_coord/1: makes sure that subjects, objects etc. are not attached to a finite verb if there is a verb coordination in between:
 %example: susi denkt und peter sieht laura. -> 'laura' can't be object of 'denkt'.
-restrict_coord(RelList) :- intersection(RelList,['->kon->','->s->','->objc->','->subjc->','->neb->','->obji->'],[]). %only succeed if intersection is empty
+restrict_coord(RelList) :- intersection(RelList,['->kon->','->s->','->objc->','->subjc->','->neb->','->obji->','->rel->'],[]). %only succeed if intersection is empty
 
 
 % we relax our rule "attach everything to the finite verb" (which has the purpose of making most structure parsable with a context-free grammar) for coordinations of multiple non-finite verbs:
