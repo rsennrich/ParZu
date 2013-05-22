@@ -421,8 +421,8 @@ gmod_disamb(_DWord, 0.3).
 %subordinated clauses:
 stats2(neb,_Htag,_FH,_SH,_MORPHH,'NEBCONJLESS',_FD,_SD,_MORPHD,P,_D,_HC) :- P is 0.75. %should be higher than probability for 'kon'
 
-stats2(neb,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,D,_HC) :- P is 0.3 - D*0.01.
-stats2(rel,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,D,_HC) :- P is 0.4 - D*0.01.
+stats2(neb,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,D,_HC) :- P is 0.3 * (1-D*0.01).
+stats2(rel,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,D,_HC) :- P is 0.4 * (1-D*0.01).
 stats2(subjc,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,_D,HC-_OG) :-
         getheadandnormalise(HC,Head,_),
         ((      verb(Head,Occurs,_,_,_,_,_,_,_,SubjC,_,_,_,_,_,_),
