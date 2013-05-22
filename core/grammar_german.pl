@@ -315,6 +315,9 @@ head('V*FIN','PWS',l,obja,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- case_acc(MG,'P
 %only necessary in case of tagging errors
 head('VVPP','PWS',l,obja,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- correct_mistagging(yes), case_acc(MG,'PWS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('passive',FC), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
 
+%was tun?
+head('V*INF', 'PWS',l,obja,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- in_coordination(FC,UG), case_acc(MG,'PWS'), \+ member('passive',FC), \+ member('<-obja<-',UG), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
+
 
 %"Was" can be relative (Der Film hat ein Happy-End, was ich sehr schön finde) or interrogative (Ich frage mich, was er da tut)
 head('V*FIN','PWS',l,obja,'RC',[FC,_,_,was,UG,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,UG), \+ member('passive',FC), \+ member('<-obja<-',UG), \+ member('->obja->',UG), \+ member('<-objc<-',UG), \+ member('->objc->',UG), \+ member('<-s<-',UG), \+ member('->s->',UG), \+ member('<-explobja<-',UG), \+ member('->explobja->',UG).
