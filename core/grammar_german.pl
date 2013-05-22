@@ -187,7 +187,7 @@ head('APPR','PRELS',r,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MG,MF,MNew) :- unify_case(
 
 head('APPR','PWS',r,pn,'PPQ',[_,_,_,_,OG,_,_,_],_,MG,MF,MNew) :- unify_case(MG,'APPR',MF,'PRELS',MNew), \+ member('->pn->',OG), \+ member('->bad_pn->',OG).
 
-
+head('APPR','PWAV',r,pn,'PPQ',[_,_,_,_,OG,_,_,_],_,MG,MF,MNew) :- unify_case(MG,'APPR',MF,'PRELS',MNew), \+ member('->pn->',OG), \+ member('->bad_pn->',OG).
 
 
 %use prepcompl/1 to list all valid dependents of prepositions.
@@ -224,6 +224,8 @@ head('APPO','PRELS',l,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('<-p
 head('APPO','PRELAT',l,pn,'PPREL',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), \+ member('<-pn<-',OG), \+ member('->bad_pn->',OG).
 
 head('APPO','PWS',l,pn,'PPQ',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('<-pn<-',OG), \+ member('->bad_pn->',OG).
+
+head('APPO','PWAV',l,pn,'PPQ',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('<-pn<-',OG), \+ member('->bad_pn->',OG).
 
 %======================================================================================
 %Subject, only one is allowed    
@@ -1492,6 +1494,9 @@ head('ADJA','PTKZU',l,part,'ADJA',_,F-G,MH,_,MH) :- 1 is F-G.
 
 head('PP','APZR',r,part,'PP',_,_,MH,_,MH).
 
+head('PPQ','APZR',r,part,'PPQ',_,_,MH,_,MH).
+
+head('PPREL','APZR',r,part,'PPREL',_,_,MH,_,MH).
 
 %======================================================================================
 %ART + PIS ("ein wenig"; "ein anderer") marked as particle
