@@ -432,18 +432,19 @@ stats2(subjc,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,_D,HC-_OG) :-
         (       ((\+ verb(Head,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_)); (verb(Head,Occurs,_,_,_,_,_,_,_,_,_,_,_,_,_,_), Occurs < 4)),
                 P is 0.2)).
 
-stats2(obji,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,_D,HC-_OG) :-
+stats2(obji,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,HC-_OG) :-
         getheadandnormalise(HC,Head,_),
+        distModifier(D,Htag,Dtag,obji,DISTMOD),
         ((      verb(Head,Occurs,_,_,_,_,_,_,ObjC,_,_,ObjI,_,_,_,_),
                 Occurs > 3,
                 (   Threshold is ((ObjI+ObjC) / Occurs),
                     Threshold > 0.05,
-                    P is 0.3)
+                    P is 0.3*DISTMOD)
                     ;
-                    P is 0.2)
+                    P is 0.2*DISTMOD)
         ;
         (       ((\+ verb(Head,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_)); (verb(Head,Occurs,_,_,_,_,_,_,_,_,_,_,_,_,_,_), Occurs < 4)),
-                P is 0.3)).
+                P is 0.3*DISTMOD)).
 
 %ObjC: probability higher than other subordinated structures unless valency information shows that verb doesn't have clausal object.
 stats2(objc,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,HC-_OG) :-
@@ -468,43 +469,45 @@ stats2(objc,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,HC-_OG) :-
 
 
 %quotes - (in)direct speech
-stats2(s,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,_D,HC-_OG) :-
+stats2(s,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,HC-_OG) :-
 	getheadandnormalise(HC,Head,_),
+    distModifier(D,Htag,Dtag,s,DISTMOD),
 	((	verb(Head,Occurs,_,_,_,_,_,_,_,_,_,_,_,_,Quote,_),
 		Occurs > 3,
 		Ratio is Quote / Occurs,
 		(   (Ratio > 0.05,
-		    P is 1)
+		    P is 1*DISTMOD)
 		    ;
-		    P is 0.01
+		    P is 0.01*DISTMOD
 		)
 	)
 	; %backoff: if there is no lexical information, use a fixed probability.
 	(	((\+ verb(Head,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_)); (verb(Head,Occurs,_,_,_,_,_,_,_,_,_,_,_,_,_,_), Occurs < 4)),
-		P is 0.01
+		P is 0.01*DISTMOD
 	)).
 
 
 
 %parenthetical quotes - (in)direct speech
-stats2(par,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,_MORPHD,P,_D,_HC-_OG) :-
+stats2(par,Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,_MORPHD,P,D,_HC-_OG) :-
 	(Dtag='PAR';Dtag='QUOTE'),
 	lexic(SD,_,DPos),
 	chart(DPos,DPos,DPos,[_,_,HC,_],_,_,_,_,_,_),
 	getheadandnormalise(HC,Head,HTagLC),
+    distModifier(D,Htag,Dtag,par,DISTMOD),
 	verbtag(HTagLC),
 	((	verb(Head,Occurs,_,_,_,_,_,_,_,_,_,_,_,_,Quote,_),
 		Occurs > 3,
 		Ratio is Quote / Occurs,
 		(   (Ratio > 0.05,
-		    P is 0.7)
+		    P is 0.7*DISTMOD)
 		    ;
-		    P is 0.01
+		    P is 0.01*DISTMOD
 		)
 	)
 	; %backoff: if there is no lexical information, use a fixed probability.
 	(	((\+ verb(Head,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_)); (verb(Head,Occurs,_,_,_,_,_,_,_,_,_,_,_,_,_,_), Occurs < 4)),
-		P is 0.01
+		P is 0.01*DISTMOD
 	)).
 
 

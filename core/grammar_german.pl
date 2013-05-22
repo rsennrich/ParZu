@@ -1072,6 +1072,9 @@ head('V*FIN','VVIZU_WITH_COMMA',r,obji,'V*FIN',[_,_,_,_,HeadRels,_,_,_],_,MH,_,M
 head('V*IMP','VVIZU_WITH_COMMA',r,obji,'V*IMP',[_,_,_,_,HeadRels,_,_,_],_,MH,_,MH) :- restrict_coord(HeadRels).
 head('VVIZU','VVIZU_WITH_COMMA',r,obji,'VVIZU',[_,_,_,_,HeadRels,_,_,_],_,MH,_,MH) :- restrict_coord(HeadRels).
 
+head('V*INF','VVIZU_WITH_COMMA',r,obji,'V*INF',[HC,_,_,_,HeadRels,_,_,_],_,MH,_,MH) :- in_coordination(HC, HeadRels), restrict_coord(HeadRels).
+head('V*PP','VVIZU_WITH_COMMA',r,obji,'V*PP',[HC,_,_,_,HeadRels,_,_,_],_,MH,_,MH) :- in_coordination(HC, HeadRels), restrict_coord(HeadRels).
+
 %VVIZU to the left of finite verb (topicalized or in subordinated clause)
 head('V*FIN','VVIZU',l,obji,'V*FIN',[FC,GC,_,_,OF,_,_,_],H-D,MH,_,MH) :- FC \= GC, 1 is H-D, restrict_vorfeld(FC,OF).
 head('V*FIN','VVIZU_WITH_COMMA',l,obji,'V*FIN',[FC,GC,_,_,OF,_,_,_],_,MH,_,MH) :- FC \= GC, restrict_vorfeld(FC,OF).
@@ -1087,7 +1090,7 @@ head('ADJD','VVIZU_WITH_COMMA',r,obji,'ADJD',_,_,MH,_,MH).
 
 %ein nicht enden wollender Krieg
 head('ADJA', 'VVINF',l,obji,'ADJA',[_,_,'wollend',_,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
-
+head('ADJA', 'VVINF',l,obji,'ADJA',[_,_,'wollen',_,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
 
 %experimentieren lassen, kommen sehen usw.
 %TüBa sometimes gives the tag "aux". We follow Foth in using obji
