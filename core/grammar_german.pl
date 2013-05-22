@@ -1287,7 +1287,7 @@ head('KOMPX','ADV',l,adv,'KOMPX', _,F-G,MH,_,MH) :- 1 is F-G.
 
 
 %sehr gut
-head('ADJD', 'ADV',l, adv, 'ADJD',_,F-G,MH,_,MH) :- 1 is F-G.
+head('ADJD', 'ADV',l, adv, 'ADJD',_,_,MH,_,MH).
 
 head('ADJA', 'ADV',l, adv, 'ADJA',_,_,MH,_,MH).
 
