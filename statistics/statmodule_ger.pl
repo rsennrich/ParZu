@@ -319,6 +319,10 @@ stats2(obja2,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,MORPHD,P,_D,HC-_OG) :-
 	((Htag = 'ADJA';Htag='ADJD')->PosMod is 0.5;PosMod is 1),
 	P is PTemp*PosMod.
 
+
+%dative objects: exception: "Ihnen gemein"
+stats2(objd,_Htag,gemein,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.2,_D,_HC-_OG).
+
 %dative objects
 stats2(objd,Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,_D,HC-_OG) :-
 % 	lexic(SH,_,HPos),

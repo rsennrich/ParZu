@@ -403,9 +403,9 @@ head('VVPP','PWS',l,objd,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- correct_mistagg
 
 
 %die der partei nahestehenden wähler
-head('ADJA', OBJ,l,objd,'ADJA',[_,_,_,_,OF,_,_,_],F-G,MF,MG,MF) :-  1 is F-G, (derived_from_ppres(MF,'ADJA');derived_from_ppast(MF,'ADJA')), objcandidate(OBJ,F), case_dat(MG,OBJ), \+ member('<-objd<-',OF), \+ member('->objd->',OF).
+head('ADJA', OBJ,l,objd,'ADJA',[_,_,Lemma,_,OF,_,_,_],F-G,MF,MG,MF) :-  1 is F-G, (derived_from_ppres(MF,'ADJA');derived_from_ppast(MF,'ADJA');Lemma=gemein), objcandidate(OBJ,F), case_dat(MG,OBJ), \+ member('<-objd<-',OF), \+ member('->objd->',OF).
 
-head('ADJD', OBJ,l,objd,'ADJD',[_,_,_,_,OF,_,_,_],F-G,MF,MG,MF) :-  1 is F-G, (derived_from_ppres(MF,'ADJD');derived_from_ppast(MF,'ADJD')), objcandidate(OBJ,F), case_dat(MG,OBJ), \+ member('<-objd<-',OF), \+ member('->objd->',OF).
+head('ADJD', OBJ,l,objd,'ADJD',[_,_,Lemma,_,OF,_,_,_],F-G,MF,MG,MF) :-  1 is F-G, (derived_from_ppres(MF,'ADJD');derived_from_ppast(MF,'ADJD');Lemma=gemein), objcandidate(OBJ,F), case_dat(MG,OBJ), \+ member('<-objd<-',OF), \+ member('->objd->',OF).
 
 
 
