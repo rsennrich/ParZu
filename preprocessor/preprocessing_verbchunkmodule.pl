@@ -253,6 +253,12 @@ finverb_follows(Sentence,Pos) :- NewPos is Pos+1,
 %idsub(+Sentence,+Pos,+LVL,-EndPos): Similar to idmain, but not initialised by finite verb, but by a word class that triggers a subordinated sentence.
 
 
+%infinitive verb found (and expected because of conjuction). This stops the search for more dependents.
+idsub(Sentence, Pos, LVL, EndPos) :- w(Sentence,Pos,_Word,'VVIZU',[String],_),
+                lvl(LVL,_KonjPos,'KOUI',x),
+                assert(lvl(LVL,Pos,String,head)),
+                EndPos is Pos + 1, !.
+
 %non-finite verb found. Check for possibility of tagging error. (could be finite verb).
 idsub(Sentence, Pos, LVL, EndPos) :- w(Sentence,Pos,Word,Tag,_,_),
 			  fullverbcand(Tag),
