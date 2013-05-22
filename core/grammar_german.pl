@@ -933,6 +933,11 @@ head('KOUS',_,l,konjneb,'KOUS',[_,_,dass,ohne,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
 head('KOUS','KOUS',l,konjneb,'KOUS',[_,_,ob,als,_,_,_,_],H-D,MH,_,MH) :- 1 is H-D.
 head('KOUS','KOUS',l,konjneb,'KOUS',[_,_,ob,'Als',_,_,_,_],H-D,MH,_,MH) :- 1 is H-D.
 
+head('KOUS','KOUS',l,konjneb,'KOUS',[_,_,wenn,als,_,_,_,_],H-D,MH,_,MH) :- 1 is H-D.
+head('KOUS','KOUS',l,konjneb,'KOUS',[_,_,wenn,'Als',_,_,_,_],H-D,MH,_,MH) :- 1 is H-D.
+
+head('KOUS','KOUS',l,konjneb,'KOUS',[_,_,wenn,wie,_,_,_,_],H-D,MH,_,MH) :- 1 is H-D.
+head('KOUS','KOUS',l,konjneb,'KOUS',[_,_,wenn,'Wie',_,_,_,_],H-D,MH,_,MH) :- 1 is H-D.
 
 %======================================================================================
 %subordinated clauses
