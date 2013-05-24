@@ -164,12 +164,13 @@ stats2(app_loose,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,D,_HC-_OG) :-
     P is DISTMOD.
 
 %close appositions: encourage short distances.
-stats2(app_close,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,MORPHD,P,D,_HC-OG) :-
+stats2(app_close,Htag,FH,_SH,_MORPHH,Dtag,FD,_SD,MORPHD,P,D,_HC-OG) :-
+    lexModifier(Htag,Dtag,FH,FD,app_close,LEXMOD),
     posModifier(Htag,Dtag,app_close,POSMOD),
     distModifier(D,app_close,DISTMOD),
     depModifier(OG,app_close,DEPMOD),
     ((case_gen(MORPHD,Dtag), \+ case_nom(MORPHD,Dtag))->MORPHMOD is 0.5; MORPHMOD is 1), %make sure that gmod beats app if possible
-    P is DISTMOD*POSMOD*DEPMOD*MORPHMOD.
+    P is LEXMOD*DISTMOD*POSMOD*DEPMOD*MORPHMOD.
 
 
 stats2(objp,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,P,D,HC-OG) :-
@@ -589,7 +590,6 @@ depModifier(_,_,1) :- !.
 
 %allows to modify likelihood for certain head/dependent combinations.
 posModifier('PPER',_,app_close,0.05) :- !.
-posModifier('PIS',_,app_close,0.3) :- !.
 posModifier('NN','NN',app_close,0.4) :- !.
 posModifier('NE','NN',app_close,0.2) :- !.
 posModifier(_Htag,'NN',app_close,0.75) :- !.
@@ -644,6 +644,26 @@ distModifier(D,_Htag,_Dtag,kom,DISTMOD) :- DISTMOD is 1-D*0.04.
 
 %catchall
 distModifier(D,_Htag,_Dtag,Class,DISTMOD) :- distModifier(D,Class,DISTMOD).
+
+
+%allows for some lexical pseudo-probabilities (which aren't automatically extracted from treebank)
+
+%only small list of indefinite pronouns can have close apposition
+lexModifier('PIS',_Dtag,alle,_FD,app_close,1).
+lexModifier('PIS',_Dtag,beide,_FD,app_close,1).
+
+lexModifier('PIS','NN',etwas,_FD,app_close,0.3).
+lexModifier('PIS','PIS',etwas,_FD,app_close,1).
+lexModifier('PIS','NN',jemand,_FD,app_close,0.3).
+lexModifier('PIS','PIS',jemand,_FD,app_close,1).
+lexModifier('PIS','NN',nichts,_FD,app_close,0.3).
+lexModifier('PIS','PIS',nichts,_FD,app_close,1).
+lexModifier('PIS','NN',niemand,_FD,app_close,0.3).
+lexModifier('PIS','PIS',niemand,_FD,app_close,1).
+
+lexModifier('PIS',_Dtag,_FH,_FD,app_close,0).
+
+lexModifier(_Htag,_Dtag,_FH,_FD,_Rel,1).
 
 
 %make sure that probability mass is distributed among analyses that are morphologically possible.
