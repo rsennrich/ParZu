@@ -231,20 +231,20 @@ head('APPO','PWAV',l,pn,'PPQ',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('<-pn<-
 %Subject, only one is allowed    
 
 %subject before finite verb
-head('V*FIN',SUBJ,l,subj,'V*FIN',[FC,_,_,_,UG,OG,_,_],_-G,MF,MG,MNew) :- subjcandidate(SUBJ,G), (among_dependents(OG,'->kon->',3)->(case_nom(MG,SUBJ),MNew=MF);check_agreement(MF,'VVFIN',MG,SUBJ,MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('V*FIN',SUBJ,l,subj,'V*FIN',[FC,_,_,_,UG,OG,_,_],_-G,MF,MG,MNew) :- subjcandidate(SUBJ,G), (among_dependents(OG,'->kon->',-1)->(case_nom(MG,SUBJ),MNew=MF);check_agreement(MF,'VVFIN',MG,SUBJ,MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 %allow subject before nonfinite verb if no matching finite verb is found in preprocessing (-> chunk has only one element).
 head('VVPP', SUBJ,l,subj,'NEB',[FC,_,_,_,UG,_,_,_],F-G,MF,MG,MF) :- subjcandidate(SUBJ,G), \+ SUBJ = 'CARD', verbchunklength(FC,1), RightPos is F + 1, \+ checkPos(RightPos,_,'KON',_,_), case_nom(MG,SUBJ), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 %relative pronoun (new transtag 'RC')
-head('V*FIN','PRELS',l,subj,'RC',[FC,_,_,_,UG,OG,_,_],_,MF,MG,MNew) :- (among_dependents(OG,'->kon->',3)->(case_nom(MG,'PRELS'),MNew=MF); check_agreement(MF,'VVFIN',MG,'PRELS',MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('V*FIN','PRELS',l,subj,'RC',[FC,_,_,_,UG,OG,_,_],_,MF,MG,MNew) :- (among_dependents(OG,'->kon->',-1)->(case_nom(MG,'PRELS'),MNew=MF); check_agreement(MF,'VVFIN',MG,'PRELS',MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 %only necessary in case of tagging errors
 head('VVPP','PRELS',l,subj,'RC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- correct_mistagging(yes), case_nom(MG,'PRELS'), restrict_vorfeld(FC,UG), verbchunklength(FC,1), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 
 %interrogative pronoun (new transtag 'QC')
-head('V*FIN','PWS',l,subj,'QC',[FC,_,_,_,UG,OG,_,_],_,MF,MG,MNew) :- (among_dependents(OG,'->kon->',3)->(case_nom(MG,'PWS'),MNew=MF); check_agreement(MF,'VVFIN',MG,'PWS',MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('V*FIN','PWS',l,subj,'QC',[FC,_,_,_,UG,OG,_,_],_,MF,MG,MNew) :- (among_dependents(OG,'->kon->',-1)->(case_nom(MG,'PWS'),MNew=MF); check_agreement(MF,'VVFIN',MG,'PWS',MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 
 %"Was" can be (mis)tagged PWS or PRELS
@@ -282,7 +282,7 @@ head('VVPP','PWS',l,subj,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- correct_mistagg
 
 
 %subject after finite verb
-head('V*FIN',SUBJ,r,subj,'V*FIN',[_,_,_,_,OG,OF,_,_],_-F,MG,MF,MNew)  :- subjcandidate(SUBJ,F), (among_dependents(OF,'->kon->',3)->(case_nom(MF,SUBJ),MNew=MF); check_agreement(MG,'VVFIN',MF,SUBJ,MNew)), restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG), \+ member('->obji->',OG), \+ member('<-explsubj<-',OG), \+ member('->explsubj->',OG), \+ member('->objp->',OG), \+ member('->pred->',OG).
+head('V*FIN',SUBJ,r,subj,'V*FIN',[_,_,_,_,OG,OF,_,_],_-F,MG,MF,MNew)  :- subjcandidate(SUBJ,F), (among_dependents(OF,'->kon->',-1)->(case_nom(MF,SUBJ),MNew=MF); check_agreement(MG,'VVFIN',MF,SUBJ,MNew)), restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG), \+ member('->obji->',OG), \+ member('<-explsubj<-',OG), \+ member('->explsubj->',OG), \+ member('->objp->',OG), \+ member('->pred->',OG).
 
 
 %======================================================================================
@@ -806,23 +806,23 @@ head('APPX','$,',r,comma,'APP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- member('<-comma<
 
 
 %appositions that are enclosed by comma are bound to noun on their left.
-head('NN','APP',r,app_loose,'NN',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'NN',MF,'NN',MNew), \+ member('->bracket->', HRels), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
+head('NN','APP',r,app_loose,'NN',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'NN',MF,'NN',MNew), \+ member('->bracket->', HRels), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', -1).
 
-head('NE','APP',r,app_loose,'NE',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'NE',MF,'NN',MNew), \+ member('->bracket->', HRels), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
+head('NE','APP',r,app_loose,'NE',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'NE',MF,'NN',MNew), \+ member('->bracket->', HRels), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', -1).
 
-head('FM','APP',r,app_loose,'FM',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'FM',MF,'NN',MNew), \+ member('->bracket->', HRels),  \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
+head('FM','APP',r,app_loose,'FM',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'FM',MF,'NN',MNew), \+ member('->bracket->', HRels),  \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', -1).
 
-head('PIS','APP',r,app_loose,'PIS',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PIS',MF,'NN',MNew), \+ member('->bracket->', HRels), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
+head('PIS','APP',r,app_loose,'PIS',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PIS',MF,'NN',MNew), \+ member('->bracket->', HRels), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', -1).
 
-head('PPER','APP',r,app_loose,'PPER',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PPER',MF,'NN',MNew), \+ member('->bracket->', HRels), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', 3).
+head('PPER','APP',r,app_loose,'PPER',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PPER',MF,'NN',MNew), \+ member('->bracket->', HRels), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', -1).
 
 
 %apposition enclosed in bracket
-head(HTag,'NE',r,app_loose,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), member('<-bracket<-', OF), \+ member('->kon->', HeadRels), member('->bracket->', OF), \+ among_dependents(HeadRels, '->app_loose->', 3), \+ member('->app_loose->', OF), unify_case(MF,'NE',MG,HTag,MNew).
+head(HTag,'NE',r,app_loose,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), member('<-bracket<-', OF), \+ member('->kon->', HeadRels), member('->bracket->', OF), \+ among_dependents(HeadRels, '->app_loose->', -1), \+ member('->app_loose->', OF), unify_case(MF,'NE',MG,HTag,MNew).
 
-head(HTag,'NN',r,app_loose,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), member('<-bracket<-', OF), \+ member('->kon->', HeadRels), member('->bracket->', OF), \+ among_dependents(HeadRels, '->app_loose->', 3), \+ member('->app_loose->', OF), unify_case(MF,'NN',MG,HTag,MNew).
+head(HTag,'NN',r,app_loose,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), member('<-bracket<-', OF), \+ member('->kon->', HeadRels), member('->bracket->', OF), \+ among_dependents(HeadRels, '->app_loose->', -1), \+ member('->app_loose->', OF), unify_case(MF,'NN',MG,HTag,MNew).
 
-head(HTag,'FM',r,app_loose,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), member('<-bracket<-', OF), \+ member('->kon->', HeadRels), member('->bracket->', OF), \+ among_dependents(HeadRels, '->app_loose->', 3), \+ member('->app_loose->', OF), unify_case(MF,'FM',MG,HTag,MNew).
+head(HTag,'FM',r,app_loose,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), member('<-bracket<-', OF), \+ member('->kon->', HeadRels), member('->bracket->', OF), \+ among_dependents(HeadRels, '->app_loose->', -1), \+ member('->app_loose->', OF), unify_case(MF,'FM',MG,HTag,MNew).
 
 
 %Anfang Oktober etc.: can be adverbial expression -> special metatag
@@ -2891,8 +2891,9 @@ among_dependents([Item|Rest], Tag, LVL) :- !, (among_dependents(Item,Tag, LVL);
 					   among_dependents(Rest,Tag, LVL)), !.
 
 %searches the arguments of a complex term. Recursion is marked to go one level deeper.
+%use positive number to limit number of recursions, use -1 for no limit
 among_dependents(Term, Tag, LVL) :- compound(Term),
-				LVL > 0,
+				LVL \= 0,
 			        NewLVL is LVL - 1,
 			       Term =.. [_|ChunkList], !,
 			       among_dependents(ChunkList,Tag, NewLVL).
