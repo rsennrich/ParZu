@@ -1288,7 +1288,7 @@ head('ADJA','APPR',l, adv, 'ADJD',[_,_,_,'an-der',_,_,_,_],F-G,MH,_,MH) :- corre
 
 
 %"mehr als x"
-head('KOMPX','ADV',l,adv,'KOMPX', _,F-G,MH,_,MH) :- 1 is F-G.
+head('KOKOM','ADV',l,adv,'KOKOM', _,F-G,MH,_,MH) :- 1 is F-G.
 
 
 %sehr gut
@@ -1347,7 +1347,7 @@ head('APPR', 'PTKNEG',l, adv, 'APPR',_,_,MH,_,MH).
 
 head('APPRART', 'PTKNEG',l, adv, 'APPRART',_,_,MH,_,MH).
 
-head('KOMPX','PTKNEG',l,adv,'KOMPX', _,_,MH,_,MH).
+head('KOKOM','PTKNEG',l,adv,'KOKOM', _,_,MH,_,MH).
 
 head('PDS', 'PTKNEG',l, adv, 'PDS',_,_,MH,_,MH).
 
@@ -1525,7 +1525,7 @@ head('KOKOM','NE',r,cj,'KOMPX',_,_,MH,_,MH).
 
 head('KOKOM','FM',r,cj,'KOMPX',_,_,MH,_,MH).
 
-head('KOKOM','ADJA',r,cj,'KOMPX',_,_-D,MH,_,MH) :- endOfNP(D).
+head('KOKOM','ADJA',r,cj,'KOMPX',[_,_,_,_,_,_,HID,_],_-D,MH,_,MH) :- endOfNP(D); (getRange(HID,From-_), LeftPos is From-1, checkPos(LeftPos,_,Tag,_,_), detcan(Tag,LeftPos)).
 
 head('KOKOM','ADJD',r,cj,'KOMPX',_,_,MH,_,MH).
 
