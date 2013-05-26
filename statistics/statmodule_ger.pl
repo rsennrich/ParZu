@@ -21,7 +21,10 @@
 stats2(det,'ADJA',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC).
 stats2(det,'CARD',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.3,_D,_HC).
 stats2(attr,'ADJA',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.3,_D,_HC).
-stats2(attr,'CARD',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC).
+stats2(attr,'CARD',_FH,SH,_MORPHH,_Dtag,_FD,SD,_MORPHD,0.1,_D,_HC) :- lexic(SH,_,HPos),
+    lexic(SD,_,DPos),
+    RealDist is HPos-DPos,
+    RealDist > 0.
 
 %noun phrases that do not meet congruency constraints may still be allowed by parser
 stats2(bad_det,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC).

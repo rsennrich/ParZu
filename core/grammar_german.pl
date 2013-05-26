@@ -156,6 +156,9 @@ head('PIS','ADJD',l,attr,'PIS', _,F-G,MH,_,MH) :- 1 is F-G.
 head('PIS','PIDAT',l,attr,'PIS', _,F-G,MH,_,MH) :- 1 is F-G.
 head('PIS','ADJA',l,attr,'PIS', _,F-G,MH,_,MH) :- 1 is F-G.
 
+%phone numbers etc. have postmodifying 
+head('CARD','CARD',r,attr,'CARD',[_,_,_,_,_,_,_,_],H-_,MH,_,MH) :- LeftPos is H-1, checkPos(LeftPos,Word,_,_,_), number_head(Word).
+
 %======================================================================================
 %prep(osition)
 
