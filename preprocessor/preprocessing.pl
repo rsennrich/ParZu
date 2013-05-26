@@ -230,9 +230,6 @@ getlemma('Einem',_,ein,'ART') :- correct_mistagging(yes), !.
 %normal case: tagger and morphology system agree
 getlemma(Word,Tag,Lemma,Tag) :- gertwol(Word,Lemma,Tag,_Analysis, _), \+ Lemma = '<unknown>', !.
 
-%exception: if tagger says 'NN', and morphology system only knows word as 'NE', use 'NE'
-getlemma(Word,'NN',Lemma,'NE') :- correct_mistagging(yes), gertwol(Word,Lemma,'NE',_Analysis, _), \+ Lemma = '<unknown>', !.
-
 %exception: PIDAT/PIAT is inconsistent between tagger / morphology systems. Allow look-up of lemma from other class.
 getlemma(Word,'PIDAT',Lemma, 'PIDAT') :- \+ gertwol(Word,_,'PIDAT',_,_), gertwol(Word,Lemma,'PIAT',_Analysis, _), \+ Lemma = '<unknown>', !.
 getlemma(Word,'PIAT',Lemma, 'PIAT') :- \+ gertwol(Word,_,'PIAT',_,_), gertwol(Word,Lemma,'PIDAT',_Analysis, _), \+ Lemma = '<unknown>', !.
