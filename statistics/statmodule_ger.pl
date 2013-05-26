@@ -52,6 +52,9 @@ stats2(explsubj,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,_D,_HC-OG) :- ((me
 stats2(explobja,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,_D,_HC-OG) :- ((member('->objc->',OG);member('<-objc<-',OG))-> P is 1.06; ((member('->obji->',OG);member('<-obji<-',OG))->P is 0.8;P is 0.2)).
 
 
+
+stats2(comma,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1,_D,_HC).
+
 %use the conjunction to distinguish between subordinated clauses and clausal objects
 stats2(konjneb,_Htag,_FH,_SH,_MORPHH,_Dtag,FD,_SD,_MORPHD,P,_D,_HC-OG) :-
 	member('<-konjneb<-',OG)->P is 1.06;(
