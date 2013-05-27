@@ -18,48 +18,48 @@
 :- ensure_loaded('../core/helper_predicates.pl').
 
 %word classes other than nouns are penalised so that they are only chosen as head of an NP if there is no better alternative (removed from grammar for now, since too many FPs).
-stats2(det,'ADJA',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC).
-stats2(det,'CARD',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.3,_D,_HC).
-stats2(attr,'ADJA',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.3,_D,_HC).
-stats2(attr,'CARD',_FH,SH,_MORPHH,_Dtag,_FD,SD,_MORPHD,0.1,_D,_HC) :- lexic(SH,_,HPos),
+stats2(det,'ADJA',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC,_DC).
+stats2(det,'CARD',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.3,_D,_HC,_DC).
+stats2(attr,'ADJA',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.3,_D,_HC,_DC).
+stats2(attr,'CARD',_FH,SH,_MORPHH,_Dtag,_FD,SD,_MORPHD,0.1,_D,_HC,_DC) :- lexic(SH,_,HPos),
     lexic(SD,_,DPos),
     RealDist is HPos-DPos,
     RealDist > 0.
 
 %noun phrases that do not meet congruency constraints may still be allowed by parser
-stats2(bad_det,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC).
-stats2(bad_attr,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC).
-stats2(bad_pn,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC).
+stats2(bad_det,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC,_DC).
+stats2(bad_attr,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC,_DC).
+stats2(bad_pn,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC,_DC).
 
 %word classes other than articles or attributive pronouns should only be analysed as determiners if there is no other option.
-stats2(det,_Htag,_FH,_SH,_MORPHH,'PRELS',_FD,_SD,_MORPHD,0.45,_D,_HC).
-stats2(det,_Htag,_FH,_SH,_MORPHH,'PWS',_FD,_SD,_MORPHD,0.3,_D,_HC).
+stats2(det,_Htag,_FH,_SH,_MORPHH,'PRELS',_FD,_SD,_MORPHD,0.45,_D,_HC,_DC).
+stats2(det,_Htag,_FH,_SH,_MORPHH,'PWS',_FD,_SD,_MORPHD,0.3,_D,_HC,_DC).
 
-stats2(pn,'PTKA',_FH,_SH,_MORPHH,_DTag,_FD,_SD,_MORPHD,0.5,_D,_HC). %is only in grammar in case of tagging errors; should not be preferred
-stats2(pn,_Htag,_FH,_SH,_MORPHH,'ADV',_FD,_SD,_MORPHD,0.5,_D,_HC).
-stats2(pn,_Htag,_FH,_SH,_MORPHH,'ADJD',_FD,_SD,_MORPHD,0.5,_D,_HC).
-stats2(pn,_Htag,_FH,_SH,_MORPHH,'PP',_FD,_SD,_MORPHD,0.5,_D,_HC).
-stats2(pn,_Htag,_FH,_SH,_MORPHH,'ADJA',_FD,_SD,_MORPHD,0.5,_D,_HC).
-stats2(pn,_Htag,_FH,_SH,_MORPHH,'CARD',_FD,_SD,_MORPHD,0.5,_D,_HC).
+stats2(pn,'PTKA',_FH,_SH,_MORPHH,_DTag,_FD,_SD,_MORPHD,0.5,_D,_HC,_DC). %is only in grammar in case of tagging errors; should not be preferred
+stats2(pn,_Htag,_FH,_SH,_MORPHH,'ADV',_FD,_SD,_MORPHD,0.5,_D,_HC,_DC).
+stats2(pn,_Htag,_FH,_SH,_MORPHH,'ADJD',_FD,_SD,_MORPHD,0.5,_D,_HC,_DC).
+stats2(pn,_Htag,_FH,_SH,_MORPHH,'PP',_FD,_SD,_MORPHD,0.5,_D,_HC,_DC).
+stats2(pn,_Htag,_FH,_SH,_MORPHH,'ADJA',_FD,_SD,_MORPHD,0.5,_D,_HC,_DC).
+stats2(pn,_Htag,_FH,_SH,_MORPHH,'CARD',_FD,_SD,_MORPHD,0.5,_D,_HC,_DC).
 
-stats2(unknown,_Htag,_FH,_SH,_MORPHH,_,_FD,_SD,_MORPHD,0.1,_D,_HC).
+stats2(unknown,_Htag,_FH,_SH,_MORPHH,_,_FD,_SD,_MORPHD,0.1,_D,_HC,_DC).
 
 
 %might be useful in case of tagging errors
-stats2(part,_,_FH,_SH,_MORPHH,'ART',_FD,_SD,_MORPHD,0.9,_D,_HC).
+stats2(part,_,_FH,_SH,_MORPHH,'ART',_FD,_SD,_MORPHD,0.9,_D,_HC,_DC).
 
 
 %expl. should only be used together with objc/subjc.
-stats2(explsubj,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,_D,_HC-OG) :- ((member('->subjc->',OG);member('->obji->',OG);member('<-subjc<-',OG);member('<-obji<-',OG))-> P is 1.06; P is 0.2).
+stats2(explsubj,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,_D,_HC-OG,_DC) :- ((member('->subjc->',OG);member('->obji->',OG);member('<-subjc<-',OG);member('<-obji<-',OG))-> P is 1.06; P is 0.2).
 
-stats2(explobja,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,_D,_HC-OG) :- ((member('->objc->',OG);member('<-objc<-',OG))-> P is 1.06; ((member('->obji->',OG);member('<-obji<-',OG))->P is 0.8;P is 0.2)).
+stats2(explobja,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,_D,_HC-OG,_DC) :- ((member('->objc->',OG);member('<-objc<-',OG))-> P is 1.06; ((member('->obji->',OG);member('<-obji<-',OG))->P is 0.8;P is 0.2)).
 
 
 
 stats2(comma,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1,_D,_HC).
 
 %use the conjunction to distinguish between subordinated clauses and clausal objects
-stats2(konjneb,_Htag,_FH,_SH,_MORPHH,_Dtag,FD,_SD,_MORPHD,P,_D,_HC-OG) :-
+stats2(konjneb,_Htag,_FH,_SH,_MORPHH,_Dtag,FD,_SD,_MORPHD,P,_D,_HC-OG,_DC) :-
 	member('<-konjneb<-',OG)->P is 1.06;(
 	downcase_atom(FD,FL), 
 	(konjstats(FL,neb,NEB);NEB is 0),
@@ -69,7 +69,7 @@ stats2(konjneb,_Htag,_FH,_SH,_MORPHH,_Dtag,FD,_SD,_MORPHD,P,_D,_HC-OG) :-
 	Ratio< 0.3->P is 0.05;P is Ratio))).
 
 
-stats2(konjobjc,_Htag,_FH,_SH,_MORPHH,_Dtag,FD,_SD,_MORPHD,P,_D,_HC-OG) :-
+stats2(konjobjc,_Htag,_FH,_SH,_MORPHH,_Dtag,FD,_SD,_MORPHD,P,_D,_HC-OG,_DC) :-
 	member('<-konjneb<-',OG)->P is 0;(
 	downcase_atom(FD,FL), 
 	(konjstats(FL,neb,NEB);NEB is 0),
@@ -80,14 +80,14 @@ stats2(konjobjc,_Htag,_FH,_SH,_MORPHH,_Dtag,FD,_SD,_MORPHD,P,_D,_HC-OG) :-
 
 
 %the following structure always have precedence:
-stats2(pn,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1.06,_D,_HC).
-stats2(attr,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1.06,_D,_HC).
-stats2(det,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1.06,_D,_HC).
-stats2(aux,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1.06,_D,_HC).
-stats2(avz,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1.06,_D,_HC).
+stats2(pn,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1.06,_D,_HC,_DC).
+stats2(attr,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1.06,_D,_HC,_DC).
+stats2(det,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1.06,_D,_HC,_DC).
+stats2(aux,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1.06,_D,_HC,_DC).
+stats2(avz,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1.06,_D,_HC,_DC).
 
 %adverbs
-stats2(adv,Htag,_FH,SH,_MORPHH,Dtag,FD,SD,_MORPHD,P,D,_HC) :-
+stats2(adv,Htag,_FH,SH,_MORPHH,Dtag,FD,SD,_MORPHD,P,D,_HC,_DC) :-
     lexic(SH,_,HPos),
     lexic(SD,_,DPos),
     RealDist is HPos-DPos,
@@ -129,27 +129,27 @@ getadvprob(_Htag,_Dtag,_DWord,_RealDist,0.15) :- !.
 
 
 %zeit should be lower than app.
-stats2(zeit,'ADJA',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC).
-stats2(zeit,_Htag,_FH,_SH,_MORPHH,'CARD',_FD,_SD,_MORPHD,0.8,_D,_HC).
-stats2(zeit,_Htag,_FH,_SH,_MORPHH,'NN',_FD,_SD,_MORPHD,0.2,_D,_HC).
+stats2(zeit,'ADJA',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC,_DC).
+stats2(zeit,_Htag,_FH,_SH,_MORPHH,'CARD',_FD,_SD,_MORPHD,0.8,_D,_HC,_DC).
+stats2(zeit,_Htag,_FH,_SH,_MORPHH,'NN',_FD,_SD,_MORPHD,0.2,_D,_HC,_DC).
 
 
 %sentence coordinations: should be lower than 's' relation (if the latter occurs in training corpus)
-stats2(kon,_Htag,_FH,_SH,_MORPHH,'KONC',_FD,_SD,_MORPHD,P,D,_HC) :- P is  0.65 - D*0.001.
+stats2(kon,_Htag,_FH,_SH,_MORPHH,'KONC',_FD,_SD,_MORPHD,P,D,_HC,_DC) :- P is  0.65 - D*0.001.
 
 %coordinations: encourage short distances. Should have precedence over APP
-stats2(kon,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,_HC) :-
+stats2(kon,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,_HC,_DC) :-
 	posModifier(Htag,Dtag,kon,PosMod),
 	P is  PosMod*(1.06-D*0.05).
 
 
 
 %gradation
-stats2(grad,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.3,_D,_HC).
+stats2(grad,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.3,_D,_HC,_DC).
 
 
 %closing bracket - better than having two opening ones / prefer short distances
-stats2(bracket,'BRACKET',_FH,SH,_MORPHH,_Dtag,_FD,SD,_MORPHD,P,_D,_HC-OG) :-
+stats2(bracket,'BRACKET',_FH,SH,_MORPHH,_Dtag,_FD,SD,_MORPHD,P,_D,_HC-OG,_DC) :-
     lexic(SD,_,RIGHTPOS),
     lexic(SH,_,MIDPOS),
     append(_,[BRACKET, '<-bracket<-'|_],OG),
@@ -160,17 +160,17 @@ stats2(bracket,'BRACKET',_FH,SH,_MORPHH,_Dtag,_FD,SD,_MORPHD,P,_D,_HC-OG) :-
     Dist is RIGHTPOS - LEFTPOS,
     P is 1.06 - Dist*0.01.
 
-stats2(bracket,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.5,_D,_HC).
+stats2(bracket,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.5,_D,_HC,_DC).
 
-stats2(badbracket,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.65,_D,_HC).
+stats2(badbracket,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.65,_D,_HC,_DC).
 
 %loose apposition
-stats2(app_loose,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,D,_HC-_OG) :-
+stats2(app_loose,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,D,_HC-_OG,_DC) :-
     distModifier(D,app_loose,DISTMOD),
     P is DISTMOD.
 
 %close appositions: encourage short distances.
-stats2(app_close,Htag,FH,_SH,_MORPHH,Dtag,FD,_SD,MORPHD,P,D,_HC-OG) :-
+stats2(app_close,Htag,FH,_SH,_MORPHH,Dtag,FD,_SD,MORPHD,P,D,_HC-OG,_DC) :-
     lexModifier(Htag,Dtag,FH,FD,app_close,LEXMOD),
     posModifier(Htag,Dtag,app_close,POSMOD),
     distModifier(D,app_close,DISTMOD),
@@ -179,21 +179,21 @@ stats2(app_close,Htag,FH,_SH,_MORPHH,Dtag,FD,_SD,MORPHD,P,D,_HC-OG) :-
     P is LEXMOD*DISTMOD*POSMOD*DEPMOD*MORPHMOD.
 
 
-stats2(objp,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,P,D,HC-OG) :-
-        statsppobjp(objp,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,P,D,HC-OG).
+stats2(objp,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,P,D,HC-OG,DC) :-
+        statsppobjp(objp,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,P,D,HC-OG,DC).
 
 
 % PPs pre-modifying NPs are pretty rare, so these rules should only be used if there's no other choice. Still produces some false positives...
-stats2(pp,Htag,_FH,SH,_MORPHH,_Dtag,_FD,SD,_MORPHD,0.05,_D,_) :-
+stats2(pp,Htag,_FH,SH,_MORPHH,_Dtag,_FD,SD,_MORPHD,0.05,_D,_,_DC) :-
     (Htag = 'NN'; Htag = 'NE'; Htag = 'PDS'; Htag = 'PPER'; Htag = 'PIS'; Htag = 'FM'),
     lexic(SH,_,HPos),
     lexic(SD,_,DPos),
     HPos > DPos.
 
-stats2(pp,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,P,D,HC-OG) :-
-        statsppobjp(pp,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,P,D,HC-OG).
+stats2(pp,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,P,D,HC-OG,DC) :-
+        statsppobjp(pp,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,P,D,HC-OG,DC).
 
-statsppobjp(Rel,_Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,MORPHD,P,D,HC-_OG) :-
+statsppobjp(Rel,_Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,MORPHD,P,D,HC-_OG,_DC) :-
         getheadandnormalise(HC,Head,HeadTagTemp),
         (verbtag(HeadTagTemp)->HeadTag=v;HeadTag=HeadTagTemp),
         distModifier(D,HeadTag,Dtag,Rel,DISTMOD),
@@ -302,7 +302,7 @@ ppPosMod(Prep,Case,Tag,P) :- findall(MyFreq,(haspp('*any*','*any*',Prep,Case,MyF
 
 
 %subjects.
-stats2(subj,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,_D,HC-_OG) :-
+stats2(subj,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,_D,HC-_OG,_DC) :-
 	lexic(SD,_,DPos),
 	(Dtag='PWS'->DistMod is 1;DistMod is 1+((50-DPos)*0.0001)),
 	getheadandnormalise(HC,Head,_),
@@ -311,7 +311,7 @@ stats2(subj,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,_D,HC-_OG) :-
 
 
 %accusative objects.
-stats2(obja,Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,MORPHD,P,_D,HC-_OG) :-
+stats2(obja,Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,MORPHD,P,_D,HC-_OG,_DC) :-
 	getheadandnormalise(HC,Head,_),
     ((member(Head,['gibt','geben']),FD=es)->PTemp=0.1; %bilexicalized exception: "xxx gibt es": "es" is very unlikely to be obja
 	npidsamb(Head,MORPHD,Dtag,obja,PTemp)),
@@ -320,7 +320,7 @@ stats2(obja,Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,MORPHD,P,_D,HC-_OG) :-
 
 
 %accusative objects.
-stats2(obja2,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,MORPHD,P,_D,HC-_OG) :-
+stats2(obja2,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,MORPHD,P,_D,HC-_OG,_DC) :-
 	getheadandnormalise(HC,Head,_),
 	npidsamb(Head,MORPHD,Dtag,obja2,PTemp),
 	((Htag = 'ADJA';Htag='ADJD')->PosMod is 0.5;PosMod is 1),
@@ -328,10 +328,10 @@ stats2(obja2,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,MORPHD,P,_D,HC-_OG) :-
 
 
 %dative objects: exception: "Ihnen gemein"
-stats2(objd,_Htag,gemein,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.2,_D,_HC-_OG).
+stats2(objd,_Htag,gemein,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.2,_D,_HC-_OG,_DC).
 
 %dative objects
-stats2(objd,Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,_D,HC-_OG) :-
+stats2(objd,Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,_D,HC-_OG,_DC) :-
 % 	lexic(SH,_,HPos),
 	lexic(SD,_,DPos),
 % 	RealDist is HPos-DPos,
@@ -344,14 +344,14 @@ stats2(objd,Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,_D,HC-_OG) :-
 
 
 %genitive objects
-stats2(objg,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,MORPHD,P,_D,HC-_OG) :-
+stats2(objg,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,MORPHD,P,_D,HC-_OG,_DC) :-
 	getheadandnormalise(HC,Head,_),
 	((verb(Head,_,_,_,_,_,Objg,_,_,_,_,_,_,_,_,_),Objg > 0)->Max is 0.4;Max is 0.06), %should always be lower than prob for gmod; if no statistical evidence found, only use if all else is impossible
 	npidsamb(Head,MORPHD,Dtag,objg,PTemp),
 	P is min(Max,PTemp).
 
 %predicate nouns
-stats2(pred,Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,_D,HC-_OG) :-
+stats2(pred,Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,_D,HC-_OG,_DC) :-
 	\+ predcand_adverb(Dtag),
 	getheadandnormalise(HC,Head,_),
 	lexic(SD,_,DPos),
@@ -381,7 +381,7 @@ npidsamb(_,_,_,pred,0.01) :- !.
 
 
 %predicate nouns (ADJD) - not competing with subj/obj, but with ADV, which has its own disambiguation method (because they often have multiple potential heads).
-stats2(pred,_Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,_MORPHD,P,_D,HC-_OG) :-
+stats2(pred,_Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,_MORPHD,P,_D,HC-_OG,_DC) :-
         getheadandnormalise(HC,Head,_),
         downcase_atom(FD,Dep),
         downcase_atom(Dtag,DtagLower),
@@ -401,11 +401,12 @@ pred_disambiguate(Head, Dep, Dtag, Score) :- (adverbial(Head, Dep, Dtag, BilexAd
 
 
 %genitive modifiers
-stats2(gmod,_Htag,_FH,SH,_WFormH,_MORPHH,Dtag,_FD,SD,WFormD,MORPHD,P,_D,_HC-_OG) :-
+stats2(gmod,_Htag,_FH,SH,_WFormH,_MORPHH,Dtag,_FD,SD,WFormD,MORPHD,P,_D,_HC-_OG,_DC-DepRels) :-
 	\+ morphology(off), %if parsing with morphology turned off, this rule is counterproductive
 	lexic(SH,_,HPos),
 	lexic(SD,_,DPos),
 	RealDist is HPos-DPos,
+    get_relevant_name_for_gmod_disamb(Dtag,DepRels,WFormD,WFormDisamb),
 	distModifier(RealDist,gmod,DISTMOD), %prefer close attachment and modifier after head noun ("gestern hat der nachbar des mannes peter getroffen")
 	findall(_,case_acc(MORPHD,Dtag),LA),length(LA,LAL), %testing for accusative since there is no article that can be both accusative and genitive. dat/nom: 'eine mitarbeiterin der awo'
 	((	LAL =:= 0, %word not fully ambiguous
@@ -413,11 +414,11 @@ stats2(gmod,_Htag,_FH,SH,_WFormH,_MORPHH,Dtag,_FD,SD,WFormD,MORPHD,P,_D,_HC-_OG)
 	)
 	; %word case is fully ambiguous
 	(	LAL > 0,
-        ((Dtag = 'NE',atom_concat(_,s,WFormD))->(gmod_disamb(WFormD,P_GMOD), P is P_GMOD*DISTMOD); %ambiguous name ending with -s could be genitive
+        ((Dtag = 'NE',atom_concat(_,s,WFormDisamb))->(gmod_disamb(WFormDisamb,P_GMOD), P is P_GMOD*DISTMOD); %ambiguous name ending with -s could be genitive
         P is 0.01*DISTMOD) % else, assume that genitive is unlikely
 	)).
 
-stats2(gmod,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC-_OG) :- morphology(off).
+stats2(gmod,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC-_OG,_DC) :- morphology(off).
 
 gmod_disamb(DWord, P) :- downcase_atom(DWord,DWordL),
     gmod_ne(DWordL, GMOD, Total),
@@ -425,12 +426,23 @@ gmod_disamb(DWord, P) :- downcase_atom(DWord,DWordL),
 
 gmod_disamb(_DWord, 0.3).
 
-%subordinated clauses:
-stats2(neb,_Htag,_FH,_SH,_MORPHH,'NEBCONJLESS',_FD,_SD,_MORPHD,P,_D,_HC) :- P is 0.75. %should be higher than probability for 'kon'
+% "Bill Clintons Aussenminister": use "Clintons" for lexical disambiguation of gmod attachment, even though "Bill" is head of "Clintons".
+get_relevant_name_for_gmod_disamb('NE',DepRels,_,Word) :- length(DepRels,Len),
+        Pos is Len-1,
+        nth1(Pos, DepRels,'->app_close->'),
+        last(DepRels,Last),
+        Last =.. [App|_],
+        lexic(App,_,AppPos),
+        checkPos(AppPos,_,_,_,[Word|_]), !.
 
-stats2(neb,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,D,_HC) :- P is 0.3 * (1-D*0.01).
-stats2(rel,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,D,_HC) :- P is 0.4 * (1-D*0.01).
-stats2(subjc,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,_D,HC-_OG) :-
+get_relevant_name_for_gmod_disamb(_,_,Word,Word) :- !.
+
+%subordinated clauses:
+stats2(neb,_Htag,_FH,_SH,_MORPHH,'NEBCONJLESS',_FD,_SD,_MORPHD,P,_D,_HC,_DC) :- P is 0.75. %should be higher than probability for 'kon'
+
+stats2(neb,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,D,_HC,_DC) :- P is 0.3 * (1-D*0.01).
+stats2(rel,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,D,_HC,_DC) :- P is 0.4 * (1-D*0.01).
+stats2(subjc,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,_D,HC-_OG,_DC) :-
         getheadandnormalise(HC,Head,_),
         ((      verb(Head,Occurs,_,_,_,_,_,_,_,SubjC,_,_,_,_,_,_),
                 Occurs > 3,
@@ -443,7 +455,7 @@ stats2(subjc,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,_D,HC-_OG) :-
         (       ((\+ verb(Head,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_)); (verb(Head,Occurs,_,_,_,_,_,_,_,_,_,_,_,_,_,_), Occurs < 4)),
                 P is 0.2)).
 
-stats2(obji,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,HC-_OG) :-
+stats2(obji,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,HC-_OG,_DC) :-
         getheadandnormalise(HC,Head,_),
         distModifier(D,Htag,Dtag,obji,DISTMOD),
         ((      verb(Head,Occurs,_,_,_,_,_,_,ObjC,_,_,ObjI,_,_,_,_),
@@ -458,7 +470,7 @@ stats2(obji,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,HC-_OG) :-
                 P is 0.3*DISTMOD)).
 
 %ObjC: probability higher than other subordinated structures unless valency information shows that verb doesn't have clausal object.
-stats2(objc,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,HC-_OG) :-
+stats2(objc,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,HC-_OG,_DC) :-
 	getheadandnormalise(HC,Head,HTagLC),
 	posModifier(Htag,Dtag,objc,POSMOD),
 	distModifier(D,objc,DISTMOD),
@@ -480,7 +492,7 @@ stats2(objc,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,HC-_OG) :-
 
 
 %quotes - (in)direct speech
-stats2(s,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,HC-_OG) :-
+stats2(s,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,HC-_OG,_DC) :-
 	getheadandnormalise(HC,Head,_),
     distModifier(D,Htag,Dtag,s,DISTMOD),
 	((	verb(Head,Occurs,_,_,_,_,_,_,_,_,_,_,_,_,Quote,_),
@@ -500,7 +512,7 @@ stats2(s,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,HC-_OG) :-
 
 
 %parenthetical quotes - (in)direct speech
-stats2(par,Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,_MORPHD,P,D,_HC-_OG) :-
+stats2(par,Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,_MORPHD,P,D,_HC-_OG,_DC) :-
 	(Dtag='PAR';Dtag='QUOTE'),
 	lexic(SD,_,DPos),
 	chart(DPos,DPos,DPos,[_,_,HC,_],_,_,_,_,_,_),
@@ -523,13 +535,13 @@ stats2(par,Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,_MORPHD,P,D,_HC-_OG) :-
 
 
 %should have precedence over app
-stats2(par,_Htag,_FH,_SH,_MORPHH,'APP',_FD,_SD,_MORPHD,0.9,_D,_HC-_OG).
+stats2(par,_Htag,_FH,_SH,_MORPHH,'APP',_FD,_SD,_MORPHD,0.9,_D,_HC-_OG,_DC).
 
-stats2(par,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC-_OG).
+stats2(par,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC-_OG,_DC).
 
 %comparatives
 %prefer attachment to verb, unless NN/ADJ is very close. *tiny* improvement over baseline...
-stats2(kom,Htag,_FH,SH,_MORPHH,Dtag,_FD,SD,_MORPHD,P,D,_HC) :-
+stats2(kom,Htag,_FH,SH,_MORPHH,Dtag,_FD,SD,_MORPHD,P,D,_HC,_DC) :-
     lexic(SH,_,HPos),
     lexic(SD,_,DPos),
     RealDist is HPos-DPos,
@@ -540,7 +552,7 @@ stats2(kom,Htag,_FH,SH,_MORPHH,Dtag,_FD,SD,_MORPHD,P,D,_HC) :-
 
 
 %conjunctions. we will penalize some tag combinations; others get catchall weight.
-stats2(cj,Htag,FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,_HC) :-
+stats2(cj,Htag,FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,_HC,_DC) :-
     distModifier(D,cj,DistMod),
     (Htag='KON'->kon_mapping(Dtag,Kontag);Kontag=Dtag),
     cj_penalty(FH,Kontag,Penalty),
@@ -565,11 +577,11 @@ cj_penalty(denn,'KON_ADV',0) :- !.
 cj_penalty(_,_,1).
 
 %catchall for now...
-stats2(Rel,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,D,_HC) :-
+stats2(Rel,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,D,_HC,_DC) :-
 	distModifier(D,Rel,DistMod),
 	P is DistMod.
 
-stats2(Rel,Htag,FH,SH,_WordFormH,MORPHH,Dtag,FD,SD,_WordFormD,MORPHD,P,D,HC) :- stats2(Rel,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,P,D,HC).
+stats2(Rel,Htag,FH,SH,_WordFormH,MORPHH,Dtag,FD,SD,_WordFormD,MORPHD,P,D,HC,DC) :- stats2(Rel,Htag,FH,SH,MORPHH,Dtag,FD,SD,MORPHD,P,D,HC,DC).
 
 
 % if HC is ['müssen_VMFIN', 'prüfen_VVINF'], Head should be 'prüfen', head tag should be 'vvinf' (statistic files are in lower case letters).
