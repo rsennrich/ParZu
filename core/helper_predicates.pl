@@ -380,3 +380,16 @@ valid_pp_coord_end(bis).
 valid_pp_coord_end(nach).
 valid_pp_coord_end(zu).
 valid_pp_coord_end('über').
+
+%list of lemmas that may have multi-token number as apposition: phone numbers, bank accounts etc.
+number_head('BLZ').
+number_head('Bankleitzahl').
+number_head('Kto.').
+number_head('Konto').
+
+number_head('Fax').
+number_head('Tel').
+number_head('Tel.').
+number_head('Telefon').
+number_head('Nummer').
+number_head('Telefonnummer').

@@ -156,6 +156,9 @@ head('PIS','ADJD',l,attr,'PIS', _,F-G,MH,_,MH) :- 1 is F-G.
 head('PIS','PIDAT',l,attr,'PIS', _,F-G,MH,_,MH) :- 1 is F-G.
 head('PIS','ADJA',l,attr,'PIS', _,F-G,MH,_,MH) :- 1 is F-G.
 
+%phone numbers etc. have postmodifying 
+head('CARD','CARD',r,attr,'CARD',[_,_,_,_,_,_,_,_],H-_,MH,_,MH) :- LeftPos is H-1, checkPos(LeftPos,Word,_,_,_), number_head(Word).
+
 %======================================================================================
 %prep(osition)
 
@@ -517,7 +520,7 @@ head('V*IMP',OBJ,r,objg,'V*IMP',[_,_,_,_,OG,_,_,_],_-F,MG,MF,MG)  :- objcandidat
 
 %Genitive modifier after head noun.
 
-head('NN', GEN,r, gmod, 'NN',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; GEN = 'NE'), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
+head('NN', GEN,r, gmod, 'NN',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; GEN = 'NE'), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('->pp->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
 
 head('NE', GEN,r, gmod, 'NE',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; (GEN = 'NE', \+ case_gen(MG,'NE'))), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
 
@@ -1608,7 +1611,7 @@ head('VVIZU','KOMPX',l,kom,'VVIZU',[FC,_,_,_,_,UG,_,_],_,MH,_,MH) :- in_coordina
 
 
 %(peter) 'und' ->cj-> 'mark'. special: new morphological information is that of dependent, not that of head
-head('KON',Tag,r,cj,Transtag,[_,_,HeadWord,_,HeadRels,_,_,_],_,_,MD,MD) :- kon_mapping(Tag,Transtag), Transtag \= 'KON_FINVERB', Transtag \= 'KON_ADV', \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder',als]), restrict_comma_for_kon(Transtag, HeadWord, HeadRels).
+head('KON',Tag,r,cj,Transtag,[_,_,HeadWord,_,HeadRels,DepRels,_,_],H-D,_,MD,MD) :- kon_mapping(Tag,Transtag), Transtag \= 'KON_FINVERB', Transtag \= 'KON_ADV', \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder',als]), restrict_comma_for_kon(Transtag, HeadWord, HeadRels),  (member('->gmod->', DepRels)->1 < D-H;true).
 
 %seltsam, aber nie albern. "albern" should be coordinated adverb, not "nie".
 head('KON',Tag,r,cj,'KON_ADV',[_,_,HeadWord,_,_,_,_,_],_-D,_,MD,MD) :- kon_mapping(Tag,'KON_ADV'), RightPos is D+1, checkPos(RightPos,_,Tag2,_,_), (member(Tag,['ADV','ADJD','PTKNEG'])-> \+ member(Tag2,['ADV','ADJD','PTKNEG']);true), \+ member(HeadWord,['Sowohl',sowohl,weder,'Weder',entweder,'Entweder',als]).

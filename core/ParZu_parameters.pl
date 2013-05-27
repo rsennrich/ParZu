@@ -2,7 +2,7 @@
 
 %allow some structures that are strictly speaking ungrammatical (based on POS tags), but because of tagging errors, including them still helps
 % set to 'no' to disable.
-correct_mistagging(yes).
+correct_mistagging(no).
 
 %allow some structures that are strictly speaking ungrammatical (based on morphological constraints), but because of errors of the morphology tool and/or typos in the text, including them still helps.
 % set to 'no' to disable.
