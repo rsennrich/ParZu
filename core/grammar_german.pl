@@ -1552,26 +1552,26 @@ head('KOKOM','CARD',r,cj,'KOMPX',_,_,MH,_,MH).
 
 
 %härter als stahl; kraftvoll wie immer
-head('ADJA','KOMPX',r,kom,'ADJA',[_,_,_,Komp,_,_,_,_],_,MH,_,MH) :- Komp=als -> degree_comp(MH,'ADJA');true.
+head('ADJA','KOMPX',r,kom,'ADJA',[_,_,_,Komp,_,DepRels,_,_],_,MH,_,MH) :- (Komp=als -> degree_comp(MH,'ADJA');true), \+ member('<-adv<-',DepRels).
 
-head('ADJD','KOMPX',r,kom,'ADJD',[_,_,_,Komp,_,_,_,_],_,MH,_,MH) :- Komp=als -> degree_comp(MH,'ADJD');true.
+head('ADJD','KOMPX',r,kom,'ADJD',[_,_,_,Komp,_,DepRels,_,_],_,MH,_,MH) :- (Komp=als -> degree_comp(MH,'ADJD');true), \+ member('<-adv<-',DepRels).
 
-head('ADV','KOMPX',r,kom,'ADV',_,G-F,MH,_,MH) :- 1 is F-G.
+head('ADV','KOMPX',r,kom,'ADV',[_,_,_,_,_,DepRels,_,_],G-F,MH,_,MH) :- 1 is F-G, \+ member('<-adv<-',DepRels).
 
 
 %ein Mann wie stahl
-head('NN','KOMPX',r,kom,'NN',_,_,MH,_,MH).
+head('NN','KOMPX',r,kom,'NN',[_,_,_,_,_,DepRels,_,_],_,MH,_,MH) :- \+ member('<-adv<-',DepRels).
 
-head('NE','KOMPX',r,kom,'NE',_,_,MH,_,MH).
+head('NE','KOMPX',r,kom,'NE',[_,_,_,_,_,DepRels,_,_],_,MH,_,MH) :- \+ member('<-adv<-',DepRels).
 
-head('FM','KOMPX',r,kom,'FM',_,_,MH,_,MH).
+head('FM','KOMPX',r,kom,'FM',[_,_,_,_,_,DepRels,_,_],_,MH,_,MH) :- \+ member('<-adv<-',DepRels).
 
 
 %so etwas wie Würde
-head('PIS','KOMPX',r,kom,'PIS',_,G-F,MH,_,MH) :- 1 is F-G.
+head('PIS','KOMPX',r,kom,'PIS',[_,_,_,_,_,DepRels,_,_],G-F,MH,_,MH) :- 1 is F-G, \+ member('<-adv<-',DepRels).
 
 %Er als Tierfreund
-head('PPER','KOMPX',r,kom,'PPER',_,G-F,MH,_,MH) :- case_nom(MH,'PPER'), 1 is F-G.
+head('PPER','KOMPX',r,kom,'PPER',[_,_,_,_,_,DepRels,_,_],G-F,MH,_,MH) :- case_nom(MH,'PPER'), 1 is F-G, \+ member('<-adv<-',DepRels).
 
 
 
@@ -1584,11 +1584,11 @@ head('V*IMP','KOMPX',r,kom,'V*IMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coo
 %pre-modifying comparatives
 
 %wie immer kraftvoll
-head('ADJA','KOMPX',l,kom,'ADJA',[_,_,_,Komp,_,_,_,_],_,MH,_,MH) :- Komp=als -> degree_comp(MH,'ADJA');true.
+head('ADJA','KOMPX',l,kom,'ADJA',[_,_,_,Komp,_,_,_,_],_,MH,_,MH) :- (Komp=als -> (derived_from_ppres(MH,'ADJA');derived_from_ppast(MH,'ADJA'));true).
 
-head('ADJD','KOMPX',l,kom,'ADJD',[_,_,_,Komp,_,_,_,_],_,MH,_,MH) :- Komp=als -> degree_comp(MH,'ADJD');true.
+head('ADJD','KOMPX',l,kom,'ADJD',[_,_,_,Komp,_,_,_,_],_,MH,_,MH) :- (Komp=als -> (derived_from_ppres(MH,'ADJD');derived_from_ppast(MH,'ADJD'));true).
 
-head('PP','KOMPX',l,kom,'PP',[_,_,_,Komp,_,_,_,_],_,MH,_,MH) :- Komp=als -> degree_comp(MH,'ADJD');true.
+head('PP','KOMPX',l,kom,'PP',_,_,MH,_,MH).
 
 
 %als nächstes mein Lieblingslied
@@ -1600,11 +1600,11 @@ head('FM','KOMPX',l,kom,'FM',_,_,MH,_,MH).
 
 
 
-head('V*FIN','KOMPX',l,kom,'V*FIN',[FC,_,_,_,_,UG,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,UG).
+head('V*FIN','KOMPX',l,kom,'V*FIN',[FC,_,_,_,HeadRels,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,HeadRels).
 
-head('V*INF','KOMPX',l,kom,'V*INF',[FC,_,_,_,_,UG,_,_],_,MH,_,MH) :- in_coordination(FC,UG), restrict_vorfeld(FC,UG).
-head('V*PP','KOMPX',l,kom,'V*PP',[FC,_,_,_,_,UG,_,_],_,MH,_,MH) :- in_coordination(FC,UG), restrict_vorfeld(FC,UG).
-head('VVIZU','KOMPX',l,kom,'VVIZU',[FC,_,_,_,_,UG,_,_],_,MH,_,MH) :- in_coordination(FC,UG), restrict_vorfeld(FC,UG).
+head('V*INF','KOMPX',l,kom,'V*INF',[FC,_,_,_,HeadRels,_,_,_],_,MH,_,MH) :- in_coordination(FC,HeadRels), restrict_vorfeld(FC,HeadRels).
+head('V*PP','KOMPX',l,kom,'V*PP',[FC,_,_,_,HeadRels,_,_,_],_,MH,_,MH) :- in_coordination(FC,HeadRels), restrict_vorfeld(FC,HeadRels).
+head('VVIZU','KOMPX',l,kom,'VVIZU',[FC,_,_,_,HeadRels,_,_,_],_,MH,_,MH) :- in_coordination(FC,HeadRels), restrict_vorfeld(FC,HeadRels).
 
 %======================================================================================
 %conjunction
