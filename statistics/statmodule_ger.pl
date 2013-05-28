@@ -56,7 +56,7 @@ stats2(explobja,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,_D,_HC-OG,_DC) :- 
 
 
 
-stats2(comma,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1,_D,_HC).
+stats2(comma,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1,_D,_HC,_DC).
 
 %use the conjunction to distinguish between subordinated clauses and clausal objects
 stats2(konjneb,_Htag,_FH,_SH,_MORPHH,_Dtag,FD,_SD,_MORPHD,P,_D,_HC-OG,_DC) :-

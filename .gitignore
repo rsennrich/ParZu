@@ -1,3 +1,5 @@
 *.qlf
 *.tar.gz
 *.pyc
+statistics/tmp*
+tmp/

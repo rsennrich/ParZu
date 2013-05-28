@@ -2146,7 +2146,7 @@ head('V*PP', 'NN',r,zeit,'V*PP',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,MG,
 head('VVIZU', 'NN',r,zeit,'VVIZU',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 
 %allow four-digit numbers ("1985"), but not other numbers ("13") to have temporal function.
-card_is_zeit_cand(Word) :- atom_length(Word,4).
+card_is_zeit_cand(Word) :- atom_length(Word,4), name(Word,X), name(Num,X), number(Num).
 
 %======================================================================================
 %'grad'
@@ -2746,7 +2746,6 @@ restrict_vorfeld(Chunk,Dependents) :- member('mainclause',Chunk),
                                          '<-adv<-',
                                          '<-objc<-',
                                          '<-neb<-',
-                                         '<-s<-',
                                          '<-explobja<-'],[]). %only succeed if intersection is empty
 
 
