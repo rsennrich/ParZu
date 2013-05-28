@@ -169,6 +169,8 @@ transcodeRel(bad_det,det) :- !.
 transcodeRel(bad_attr,attr) :- !.
 transcodeRel(bad_pn,pn) :- !.
 
+transcodeRel(konc,kon) :- !.
+
 transcodeRel(Class,root) :- \+ relclass(Class), !.
 
 transcodeRel(Class,Class) :- !.
@@ -330,6 +332,7 @@ leavealone(subjc).
 leavealone(aux).
 leavealone(konj).
 leavealone(kon).
+leavealone(konc).
 leavealone(neb).
 leavealone(pp).
 leavealone(adv).

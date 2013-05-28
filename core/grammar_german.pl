@@ -706,7 +706,7 @@ head('PPER', 'PP',l,pp,'PPER',_,_,MH,_,MH).
 %pp premodifying comparative clause:
 %es erweist sich als Schnäppchen und im Idealfall als Kauf des Lebens
 head('KOMPX', 'PP',l,pp,'KOMPX',_,_,MH,_,MH).
-head('KOMPX', 'PAV',l,pp,'KOMPX',F-G,MH,_,MH) :- 1 is F-G.
+head('KOMPX', 'PAV',l,pp,'KOMPX',_,F-G,MH,_,MH) :- 1 is F-G.
 
 
 %complex prepositions:
@@ -1922,12 +1922,14 @@ head('V*FIN','$,',l,comma,'KONC',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ membe
 
 head('V*IMP','$,',l,comma,'KONC',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ member('<-comma<-', HeadRels).
 
+% head('V*FIN','$,',l,comma,'KONC',[_,_,_,_,HeadRels,_,_,_],H-D,HM,_,HM) :- \+ member('<-comma<-', HeadRels), (1 is H-D->(\+ member('->subj->', HeadRels), \+ member('->subjc->', HeadRels));true).
 
+% head('V*IMP','$,',l,comma,'KONC',[_,_,_,_,HeadRels,_,_,_],H-D,HM,_,HM) :- \+ member('<-comma<-', HeadRels), (1 is H-D->(\+ member('->subj->', HeadRels), \+ member('->subjc->', HeadRels));true).
 
 %v*fin + v*fin: doesn't require conjunction.
-head('V*FIN','KONC',r,kon,'V*FIN',[GC,FC,_,_,_,_,_,_],_,MH,_,MH) :- member('mainclause',FC),member('mainclause',GC).
+head('V*FIN','KONC',r,konc,'V*FIN',[GC,FC,_,_,_,_,_,_],_,MH,_,MH) :- member('mainclause',FC),member('mainclause',GC).
 
-head('V*IMP','KONC',r,kon,'V*IMP',[GC,FC,_,_,_,_,_,_],_,MH,_,MH) :- member('mainclause',FC),member('mainclause',GC).
+head('V*IMP','KONC',r,konc,'V*IMP',[GC,FC,_,_,_,_,_,_],_,MH,_,MH) :- member('mainclause',FC),member('mainclause',GC).
 
 
 
@@ -2754,7 +2756,7 @@ restrict_vorfeld(_,_) :- !. %catchall
 
 %restrict_coord/1: makes sure that subjects, objects etc. are not attached to a finite verb if there is a verb coordination in between:
 %example: susi denkt und peter sieht laura. -> 'laura' can't be object of 'denkt'.
-restrict_coord(RelList) :- intersection(RelList,['->kon->','->s->','->objc->','->subjc->','->neb->','->obji->','->rel->'],[]). %only succeed if intersection is empty
+restrict_coord(RelList) :- intersection(RelList,['->konc->','->kon->','->s->','->objc->','->subjc->','->neb->','->obji->','->rel->'],[]). %only succeed if intersection is empty
 
 
 % we relax our rule "attach everything to the finite verb" (which has the purpose of making most structure parsable with a context-free grammar) for coordinations of multiple non-finite verbs:
