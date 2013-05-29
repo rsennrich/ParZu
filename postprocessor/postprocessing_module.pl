@@ -192,7 +192,7 @@ fixAttachment(aux,DepPos,HeadPos,Pos) :-
 
 %fix attachment for prepositional phrases and adverbs (attached to finite verb in vorfeld, but to full verb in mittelfeld)
 fixAttachment(Class,DepPos,HeadPos,Pos) :-
-	(Class=pp;Class=adv),
+	topology_dependant(Class),
         chart(HeadPos,HeadPos,HeadPos,[_,_,HC,_],_,Tag,_,_,_,_),
 	(Tag='VAFIN';Tag='VMFIN';Tag='VAINF';Tag='VMINF';Tag='VAPP';Tag='VMPP'),
 	(append(mainclause,HC,HCTemp);HCTemp=HC),
@@ -230,6 +230,7 @@ fixAttachment(rel,DepPos,HeadPos,CandPos) :- output(DepPos,_,_,_,rel,HeadPos,_),
 %all other cases: dependents that are attached to finite verb should be attached to full verb instead.
 fixAttachment(Class,_,HeadPos,Pos) :- 
 	\+ leavealone(Class),
+        \+ topology_dependant(Class),
         chart(HeadPos,HeadPos,HeadPos,[_,_,HC,_],_,Tag,_,_,_,_),
 	(Tag='VAFIN';Tag='VMFIN';Tag='VAINF';Tag='VMINF';Tag='VAPP';Tag='VMPP'),
 	(append(mainclause,HC,HCTemp);HCTemp=HC),
@@ -334,14 +335,17 @@ leavealone(konj).
 leavealone(kon).
 leavealone(konc).
 leavealone(neb).
-leavealone(pp).
-leavealone(adv).
 leavealone(konjneb).
 leavealone(konjobjc).
 leavealone(koord).
 leavealone(par).
 leavealone(part).
 
+%these classes have topology-dependant attachment rule (attached to finite verb in vorfeld, but to full verb in mittelfeld)
+%comment these out if you want to always attach these relations to full verb, or change to 'leavealone' to always attach them to finite verb
+topology_dependant(pp).
+topology_dependant(adv).
+topology_dependant(zeit).
 
 
 coarsetag('ADJD','ADV') :- !.
