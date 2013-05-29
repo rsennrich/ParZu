@@ -553,8 +553,10 @@ getverbgroupsub(Sentence, LVL, Pos,EndPos) :- NewPos is Pos + 1,
 
 %parentheses and quotation mark don't stop search.
 getverbgroupsub(Sentence, LVL, Pos,EndPos) :- NewPos is Pos + 1,
-				  w(Sentence,NewPos,_Word,Tag,_,_),
+				  w(Sentence,NewPos,Word,Tag,_,_),
 				  Tag = '$(',
+				  Word \= '-',
+				  (Word = ')'->lvl(LVL,_,'$(',z);true),
 				  assert(lvl(LVL,NewPos,'$(',z)), !,
 				 getverbgroupsub(Sentence,LVL,NewPos, EndPos).
 

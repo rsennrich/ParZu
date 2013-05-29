@@ -2058,7 +2058,7 @@ head('V*FIN','QUOTE',l,s,'V*FIN',[FC,GC,_,_,OF,_,_,_],_,MH,_,MH) :- member('main
 
 head('QUOTE','$,',r,comma,'PAR',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- member('<-comma<-', HeadRels).
 
-head('PPNEB','$,',r,comma,'PPNEBX',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- member('<-comma<-', HeadRels).
+head('PPNEB','$,',r,comma,'PPNEBX',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ member('->comma->', HeadRels).
 head('PPNEBX','$,',l,comma,'PPNEB',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- member('->comma->', HeadRels).
 
 head('KOMPXWITHCOMMA','$,',r,comma,'KOMPXWITHCOMMA',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- member('<-comma<-', HeadRels), \+  member('->comma->', HeadRels).
@@ -2076,6 +2076,8 @@ head(Tag,'APP',r,par,Tag,[_,_,_,_,_,DepRels,_,DID],F-_,HM,_,HM) :- getRange(DID,
 
 %"Ich bin - wie versprochen - gekommen."
 head(Tag,'PPNEB',r,par,Tag,[_,_,_,_,_,_,_,DID],F-_,HM,_,HM) :- getRange(DID,From-_), lastlexical(From,F).
+head(Tag,'VVPP',r,par,Tag,[_,DC,_,_,_,DepRels,_,DID],F-_,HM,_,HM) :- verbchunklength(DC,1), length(DepRels,DepLen), LastRelPos is DepLen-1, ((nth1(LastRelPos, DepRels,'->bracket->'), nth1(1, DepRels, '<-bracket<-'));(nth1(LastRelPos, DepRels,'->comma->'), nth1(1, DepRels, '<-comma<-'))), getRange(DID,From-_), lastlexical(From,F).
+
 
 head(Tag,'KOMPXWITHCOMMA',r,par,Tag,[_,_,_,_,_,_,_,DID],F-_,HM,_,HM) :- getRange(DID,From-_), lastlexical(From,F).
 
@@ -2198,38 +2200,42 @@ head(OldTag,'$(',r,bracket,Tag,[_,_,_,Lex,_,_,_,_],_,HM,_,HM) :- atom_concat('BR
 
 
 
-leftbracket('«','1').
-leftbracket('»','2').
-leftbracket('„','3').
-leftbracket('(','11').
-leftbracket('[','12').
-leftbracket('{','13').
+leftbracket('«','1') :- !.
+leftbracket('»','2') :- !.
+leftbracket('„','3') :- !.
+leftbracket('(','11') :- !.
+leftbracket('[','12') :- !.
+leftbracket('{','13') :- !.
 
 %minus signs, hypens and dashes
 %for syntactic analysis, we don't differentiate between them, since their use may be inconsistent
-leftbracket('-','21').
-leftbracket('‐​','21').
-leftbracket('‑','21').
-leftbracket('‒','21').
-leftbracket('–','21').
-leftbracket('—','21').
-leftbracket('―','21').
+leftbracket('-','21') :- !.
+leftbracket('‐​','21') :- !.
+leftbracket('‑','21') :- !.
+leftbracket('‒','21') :- !.
+leftbracket('–','21') :- !.
+leftbracket('—','21') :- !.
+leftbracket('―','21') :- !.
 
-rightbracket('»','1').
-rightbracket('«','2').
-rightbracket('“','3').
-rightbracket(')','11').
-rightbracket(']','12').
-rightbracket('}','13').
+%unknown characters
+leftbracket(_,'0') :- !.
 
-rightbracket('-','21').
-rightbracket('‐​','21').
-rightbracket('‑','21').
-rightbracket('‒','21').
-rightbracket('–','21').
-rightbracket('—','21').
-rightbracket('―','21').
+rightbracket('»','1') :- !.
+rightbracket('«','2') :- !.
+rightbracket('“','3') :- !.
+rightbracket(')','11') :- !.
+rightbracket(']','12') :- !.
+rightbracket('}','13') :- !.
 
+rightbracket('-','21') :- !.
+rightbracket('‐​','21') :- !.
+rightbracket('‑','21') :- !.
+rightbracket('‒','21') :- !.
+rightbracket('–','21') :- !.
+rightbracket('—','21') :- !.
+rightbracket('―','21') :- !.
+
+rightbracket(_,'0') :- !.
 
 %if hyphen/dash is at a clause boundary, don't require them to be paired.
 head('KOUI','$(',l,badbracket,'KOUI',[_,_,_,Lex,_,_,_,_],F-G,HM,_,HM) :- 1 is F-G, leftbracket(Lex,'21').

@@ -537,6 +537,9 @@ stats2(par,Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,_MORPHD,P,D,_HC-_OG,_DC) :-
 %should have precedence over app
 stats2(par,_Htag,_FH,_SH,_MORPHH,'APP',_FD,_SD,_MORPHD,0.9,_D,_HC-_OG,_DC).
 
+stats2(par,_Htag,_FH,_SH,_MORPHH,'PPNEB',_FD,_SD,_MORPHD,0.9,_D,_HC-_OG,_DC).
+stats2(par,_Htag,_FH,_SH,_MORPHH,'VVPP',_FD,_SD,_MORPHD,0.9,_D,_HC-_OG,_DC).
+
 stats2(par,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC-_OG,_DC).
 
 %comparatives
