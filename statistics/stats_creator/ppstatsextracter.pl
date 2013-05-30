@@ -2,6 +2,8 @@
 
 :- dynamic w/7, haspp/5,occurs/3,hasobjp/5,occurstemp/3,haspptemp/5,hasobjptemp/5, wordstotal/1,objptotal/1,pptotal/1,nounattach/3,verbattach/3.
 
+:- ensure_loaded('../..core/morph_predicates.pl').
+
 %start(+In, +Out).
 start(In, Outfile,Outfile2) :- retractall(w(_,_,_,_,_,_,_)),
 	retractall(occurs(_,_,_)),
@@ -189,53 +191,30 @@ searchgoal(Sen,Pos,all,Tag,Word) :- w(Sen,Pos,Word,Tag,_Funct,_Dep,_Morph).
 
 
 %find all pp relations
-searchgoal(Sen,Pos,pp,WordOut,Word2,Tag2,Case) :- w(Sen,Pos,Word,Tag,'pp',Dep,[Case|_]),
-				     (Tag='apprart'->splitappr(Word,WordOut,_);WordOut=Word),
-				     w(Sen,Dep,Word2,Tag2,_Funct2,_Dep2,_Morph).
+searchgoal(Sen,Pos,pp,WordOut2,Word2,Tag2,Case) :- w(Sen,Pos,Word,_Tag,'pp',Dep,[Case|_]),
+                    (splitappr(Word,WordOut,_)->true;WordOut=Word),
+                    (derive_prep_from_pav(WordOut,WordOut2)->true;WordOut2=WordOut),
+                    w(Sen,Dep,Word2,Tag2,_Funct2,_Dep2,_Morph).
 
 %find all objp relations
-searchgoal(Sen,Pos,objp,WordOut,Word2,Tag2,Case) :- w(Sen,Pos,Word,Tag,'objp',Dep,[Case|_]),
-				     (Tag='apprart'->splitappr(Word,WordOut,_);WordOut=Word),
-				     w(Sen,Dep,Word2,Tag2,_Funct2,_Dep2,_Morph).
+searchgoal(Sen,Pos,objp,WordOut2,Word2,Tag2,Case) :- w(Sen,Pos,Word,_Tag,'objp',Dep,[Case|_]),
+                    (splitappr(Word,WordOut,_)->true;WordOut=Word),
+                    (derive_prep_from_pav(WordOut,WordOut2)->true;WordOut2=WordOut),
+                    w(Sen,Dep,Word2,Tag2,_Funct2,_Dep2,_Morph).
 
 
 
-searchgoal(Sen,Pos,verbattach,WordOut,Case) :- (w(Sen,Pos,Word,Tag,'pp',Dep,[Case|_]);w(Sen,Pos,Word,Tag,'objp',Dep,[Case|_])),
-				     (Tag='apprart'->splitappr(Word,WordOut,_);WordOut=Word),
-				     w(Sen,Dep,_,Tag2,_Funct2,_Dep2,_Morph),
-				      verbtag(Tag2).
+searchgoal(Sen,Pos,verbattach,WordOut2,Case) :- (w(Sen,Pos,Word,Tag,'pp',Dep,[Case|_]);w(Sen,Pos,Word,Tag,'objp',Dep,[Case|_])),
+                    (splitappr(Word,WordOut,_)->true;WordOut=Word),
+                    (derive_prep_from_pav(WordOut,WordOut2)->true;WordOut2=WordOut),
+                    w(Sen,Dep,_,Tag2,_Funct2,_Dep2,_Morph),
+                    verbtag(Tag2).
 
 searchgoal(Sen,Pos,nounattach,WordOut,Case) :- (w(Sen,Pos,Word,Tag,'pp',Dep,[Case|_]);w(Sen,Pos,Word,Tag,'objp',Dep,[Case|_])),
-				     (Tag='apprart'->splitappr(Word,WordOut,_);WordOut=Word),
-				     w(Sen,Dep,_,Tag2,_Funct2,_Dep2,_Morph),
-				      (Tag2='fm';Tag2='ne';Tag2='nn').
-
-
-%morphisto-style APPRART
-splitappr(am,an,_) :- !.
-splitappr(ans,an,_) :- !.
-splitappr(aufs,auf,_) :- !.
-splitappr(beim,bei,_) :- !.
-splitappr(durchs,durch,_) :- !.
-splitappr(im,in,_) :- !.
-splitappr(ins,in,_) :- !.
-splitappr(übers,über,_) :- !.
-splitappr(vom,von,_) :- !.
-splitappr(zum,zu,_) :- !.
-splitappr(zur,zu,_) :- !.
-
-
-%gertwol-style APPRART
-%'in-das' -> 'in' + 'das'
-splitappr(WordI,Word,I) :-
-	atomic(WordI),
-	sub_atom(WordI,Before,1,After,'-'),
-	sub_atom(WordI,0,Before,_,Word), 
-	Before1 is Before+1,
-	sub_atom(WordI,Before1,After,_,Iaaa),
-	name(Iaaa,Iaa), name(I,Iaa), !.
-
-splitappr(WordI,WordI,_) :- !.
+                    (splitappr(Word,WordOut,_)->true;WordOut=Word),
+                    (derive_prep_from_pav(WordOut,WordOut2)->true;WordOut2=WordOut),
+                    w(Sen,Dep,_,Tag2,_Funct2,_Dep2,_Morph),
+                    (Tag2='fm';Tag2='ne';Tag2='nn').
 
 writedown2(Out) :- occurs(Word,Tag,Freq),
 		Freq > 2,
@@ -288,18 +267,3 @@ writedown(Out) :- hasobjp(Word1,Tag,Word2,Case,Freq),
 
 
 writedown(_) :- !.
-
-
-verbtag('vvinf').
-verbtag('vainf').
-verbtag('vminf').
-verbtag('vvfin').
-verbtag('vvinf').
-verbtag('vafin').
-verbtag('vmfin').
-verbtag('vvpp').
-verbtag('vapp').
-verbtag('vmpp').
-verbtag('vaimp').
-verbtag('vvimp').
-verbtag('vvizu').

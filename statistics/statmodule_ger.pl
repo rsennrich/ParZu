@@ -16,6 +16,7 @@
 :- style_check(-discontiguous).
 
 :- ensure_loaded('../core/helper_predicates.pl').
+:- ensure_loaded('../core/morph_predicates.pl').
 
 %word classes other than nouns are penalised so that they are only chosen as head of an NP if there is no better alternative (removed from grammar for now, since too many FPs).
 stats2(det,'ADJA',_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC,_DC).
@@ -202,7 +203,7 @@ statsppobjp(Rel,_Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,MORPHD,P,D,HC-_OG,_DC) :-
         (var(MORPHD) -> List = [];setof(Case,member([Case],MORPHD),List)),
         ((List = [CaseTemp], \+ var(CaseTemp))->(case_tueba(CaseTemp,Case)); Case = _),
         get_pp_statistics(Head,HeadTag,Case,Prep,NumPP1,NumObjP1,NumHead),
-        ((adverbial_pronoun(Dtag),derive_prep_from_pav(Prep,Prep2))->get_pp_statistics(Head,HeadTag,Case,Prep2,NumPP2,NumObjP2,_);(NumPP2=0,NumObjP2=0)),
+        (((adverbial_pronoun(Dtag);Dtag='PWAV'),derive_prep_from_pav(Prep,Prep2))->get_pp_statistics(Head,HeadTag,Case,Prep2,NumPP2,NumObjP2,_);(NumPP2=0,NumObjP2=0)),
         NumPP is NumPP1 + NumPP2,
         NumObjP is NumObjP1 + NumObjP2,
         NumPPOBJP is NumPP + NumObjP,
@@ -242,48 +243,6 @@ get_pp_statistics(Head,HeadTag,Case,Prep,NumPP,NumObjP,NumHead) :-
 %statistics are slightly biased against noun heads; compensate this.
 noun_factor(nn,1.2) :- !.
 noun_factor(_,0.8) :- !.
-
-%morphisto-style APPRART
-splitappr(am,an,_) :- !.
-splitappr(ans,an,_) :- !.
-splitappr(aufs,auf,_) :- !.
-splitappr(beim,bei,_) :- !.
-splitappr(durchs,durch,_) :- !.
-splitappr(im,in,_) :- !.
-splitappr(ins,in,_) :- !.
-splitappr(übers,über,_) :- !.
-splitappr(vom,von,_) :- !.
-splitappr(zum,zu,_) :- !.
-splitappr(zur,zu,_) :- !.
-
-
-%gertwol-style APPRART
-%'in-das' -> 'in' + 'das'
-splitappr(WordI,Word,I) :-
-	atomic(WordI),
-	sub_atom(WordI,Before,1,After,'-'), !,
-	sub_atom(WordI,0,Before,_,Word), 
-	Before1 is Before+1,
-	sub_atom(WordI,Before1,After,_,Iaaa),
-	name(Iaaa,Iaa), name(I,Iaa), !.
-
-splitappr(WordI,WordI,_) :- !.
-
-
-%some adverbial pronouns are placeholders for prepositional phrases (darin, dafür)
-%get corresponding preposition here to do statistics with it.
-derive_prep_from_pav(PAV,Prep) :-
-        sub_atom(PAV,0,3,2,'dar'),
-        atom_length(PAV,Len),
-        NewLen is Len-3,
-        sub_atom(PAV,3,NewLen,_,Prep), !.
-
-
-derive_prep_from_pav(PAV,Prep) :-
-        sub_atom(PAV,0,2,2,'da'),
-        atom_length(PAV,Len),
-        NewLen is Len-2,
-        sub_atom(PAV,2,NewLen,_,Prep), !.
 
 
 %non-lexical disambiguation of pp attachment: only consider preposition and PoS of head.
@@ -693,23 +652,3 @@ testmorphology(List,Tag,Subj,Obja,Objd,Objg,SubjOut,ObjaOut,ObjdOut,ObjgOut) :-
             (case_acc(List,Tag)->ObjaOut is Obja;ObjaOut is 0),
             (case_dat(List,Tag)->ObjdOut is Objd;ObjdOut is 0),
             (case_gen(List,Tag)->ObjgOut is Objg;ObjgOut is 0), !.
-
-
-
-verbtag('v').
-verbtag('vvinf').
-verbtag('vainf').
-verbtag('vminf').
-verbtag('vvfin').
-verbtag('vvinf').
-verbtag('vafin').
-verbtag('vmfin').
-verbtag('vvpp').
-verbtag('vapp').
-verbtag('vmpp').
-verbtag('vaimp').
-verbtag('vvimp').
-verbtag('vvizu').
-nountag('nn').
-nametag('ne').
-nametag('fm').

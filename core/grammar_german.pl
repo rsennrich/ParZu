@@ -4,6 +4,7 @@
 
 :- style_check(-discontiguous).
 :- ensure_loaded('helper_predicates.pl').
+:- ensure_loaded('morph_predicates.pl').
 
 %======================================================================================
 %determiners
@@ -451,8 +452,8 @@ head('ADJD', OBJ,l,pred,'ADJD',[_,_,_,_,OF,_,_,_],F-G,MF,MG,MF) :-  1 is F-G, de
 
 
 %interrogative clause
-head('V*FIN','PWAV',l,pred,'QC',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF), \+ member('<-pred<-',OF), \+ member('->pred->',OF).
-head('VVPP','PWAV',l,pred,'QC',[FC,_,_,_,HeadRels,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), verbchunklength(FC,1), \+ member('<-pred<-',HeadRels), \+ member('->pred->',HeadRels).
+head('V*FIN','PWAV',l,pred,'QC',[FC,_,_,DWord,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF), \+ member('<-pred<-',OF), \+ member('->pred->',OF), \+ derive_prep_from_pav(DWord,_).
+head('VVPP','PWAV',l,pred,'QC',[FC,_,_,DWord,HeadRels,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), verbchunklength(FC,1), \+ member('<-pred<-',HeadRels), \+ member('->pred->',HeadRels),  \+ derive_prep_from_pav(DWord,_).
 
 
 %predicate noun after finite verb.
@@ -666,6 +667,11 @@ head('V*FIN', 'PPQ',l,pp,'QC',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld
 
 head('V*FIN', 'PAV',l,pp,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF).
 
+head('V*FIN', 'PWAV',l,pp,'V*FIN',[FC,_,_,DWord,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF), derive_prep_from_pav(DWord,_).
+
+
+
+
 
 %allow PPs before nonfinite verb in coordination chain
 %example/motivation: das kind, 1999 in cottbus geboren, konnte schon klavier spielen.
@@ -754,6 +760,8 @@ head('ADJD', 'PP',l,objp,'ADJD',[_,_,_,_,OF,_,_,_],F-_,MH,_,MH) :- \+ member('<-
 
 
 head('V*FIN', 'PAV',l,objp,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF), \+ noun_pred(OF).
+
+head('V*FIN', 'PWAV',l,objp,'V*FIN',[FC,_,_,DWord,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF), \+ member('<-objp<-',OF), \+ member('->objp->',OF), \+ member('<-pp<-',OF), \+ noun_pred(OF), derive_prep_from_pav(DWord,_).
 
 
 %allow PPs before nonfinite verb in coordination chain
@@ -1165,11 +1173,11 @@ head('VVIZU','PIS',l,adv,'VVIZU',_,_,MH,_,MH).
 
 
 %interrogative adverb (new transtag 'QC')
-head('V*FIN','PWAV',l,adv,'QC',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF).
+head('V*FIN','PWAV',l,adv,'QC',[FC,_,_,DWord,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF), \+ derive_prep_from_pav(DWord,_).
 
 
 %only necessary in case of tagging errors
-head('VVPP','PWAV',l,adv,'QC',[FC,_,_,_,_,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), verbchunklength(FC,1).
+head('VVPP','PWAV',l,adv,'QC',[FC,_,_,DWord,_,_,_,_],_,MH,_,MH) :- correct_mistagging(yes), verbchunklength(FC,1), \+ derive_prep_from_pav(DWord,_).
 
 
 %"wo" can be relative (der Ort, wo es am schönsten ist), or interrogative (ich frage mich, wo du bist).
@@ -2806,7 +2814,7 @@ endOfNP(Pos) :- NewPos is Pos + 1,
 
 endOfNP(Pos) :- NewPos is Pos + 1,
         checkPos(NewPos,_,Tag,_,_),
-        \+ (Tag = 'NN';Tag = 'NE';Tag = 'FM';Tag = 'CARD';Tag = 'ADJA').
+        \+ (Tag = 'NN';Tag = 'NE';Tag = 'FM';Tag = 'CARD';Tag = 'ADJA';Tag = 'TRUNC').
 
 %======================================================================================
 
