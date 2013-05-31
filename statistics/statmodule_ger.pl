@@ -286,10 +286,10 @@ stats2(subj,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,_D,HC-_OG,_DC) :-
 %accusative objects.
 stats2(obja,Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,MORPHD,P,_D,HC-_OG,_DC) :-
 	getheadandnormalise(HC,Head,_),
-    ((member(Head,['gibt','geben']),FD=es)->PTemp=0.1; %bilexicalized exception: "xxx gibt es": "es" is very unlikely to be obja
-	npidsamb(Head,MORPHD,Dtag,obja,PTemp)),
+	lexModifier(Htag,Dtag,Head,FD,obja,PTemp),
+	(PTemp=1->npidsamb(Head,MORPHD,Dtag,obja,PTemp2);PTemp2=PTemp),
 	((Htag = 'ADJA';Htag='ADJD')->PosMod is 0.5;PosMod is 1),
-	P is PTemp*PosMod.
+	P is PTemp2*PosMod.
 
 
 %accusative objects.
@@ -670,6 +670,15 @@ lexModifier('PIS','NN',niemand,_FD,app_close,0.3).
 lexModifier('PIS','PIS',niemand,_FD,app_close,1).
 
 lexModifier('PIS',_Dtag,_FH,_FD,app_close,0).
+
+%exception: "er lässt sich XY": "sich" is very unlikely to be obja
+% er lässt uns das Essen bezahlen -> 'uns' is obja of lassen and subj of bezahlen (secondary edge)
+% er lässt sich das Essen bezahlen -> 'sich' is objd of bezahlen, and it is unknown who pays
+lexModifier(_Htag,'PRF','lassen',_FD,obja,0.1).
+
+%exception: "xxx gibt es": "es" is very unlikely to be obja
+lexModifier(_Htag,_Dtag,'geben',es,obja,0.1).
+lexModifier(_Htag,_Dtag,'gibt',es,obja,0.1).
 
 lexModifier(_Htag,_Dtag,_FH,_FD,_Rel,1).
 
