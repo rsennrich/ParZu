@@ -167,7 +167,9 @@ idmain(Sentence, Pos, LVL, EndPos, ExpectFullVerb) :- w(Sentence,Pos,_Word,Tag,_
 
 %embedded infinitive clause found. The algorithm first completes this embedded clause and then continues searching for dependents.
 idmain(Sentence, Pos, LVL, EndPos, _) :- w(Sentence,Pos,_,'PTKZU',_,_),
-		    	  findfreelvl(LVL, NewLVL),
+			  RightPos is Pos+1,
+			  \+ (w(Sentence,RightPos,_,Tag2,_,_), (Tag2 = 'ADJA';Tag2='ADJD')), %ein ernst zu nehmendes Urteil: don't search for infinite verb
+			  findfreelvl(LVL, NewLVL),
 			  NewPos is Pos + 1, !,
 			  assert(lvl(NewLVL,Pos,'PTKZU',ptkzu)),
 			  idsub(Sentence,NewPos,NewLVL, EndSub),
@@ -659,6 +661,9 @@ complete2(Sentence, LVL, Rest) :- \+lvl(LVL,_,_,x),
 %passive recognition
 complete2(Sentence,LVL,Rest) :-  chunkPair(Rest,'werden',_,_Word2,'VVPP'),
 				fillallcompleted(Sentence,LVL,['passive'|Rest]).
+
+complete2(Sentence,LVL,Rest) :-  chunkPair(Rest,'sein',_,_Word2,'VVPP'),
+                fillallcompleted(Sentence,LVL,['passive'|Rest]).
 
 complete2(Sentence,LVL,Rest) :-  chunkPair(Rest,'sein',_,_Word2,Tag),
 				(Tag = 'VVIZU'; (Tag = 'VVINF', lvl(LVL,_,_,ptkzu))),
