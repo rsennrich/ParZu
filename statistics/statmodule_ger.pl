@@ -401,7 +401,8 @@ stats2(gmod,_Htag,_FH,SH,_WFormH,_MORPHH,Dtag,_FD,SD,WFormD,MORPHD,P,_D,_HC-_OG,
         )
         ; %word case is fully ambiguous
         (   LAL > 0,
-            ((Dtag = 'NE',(atom_concat(_,s,WFormDisamb);atom_concat(_,'\\',WFormDisamb)))->(gmod_disamb(WFormDisamb,P_GMOD), P is P_GMOD*DISTMOD); %ambiguous name ending with -s could be genitive
+            ((Dtag = 'NE',atom_concat(_,s,WFormDisamb))->(gmod_disamb(WFormDisamb,P_GMOD), P is P_GMOD*DISTMOD); %ambiguous name ending with -s could be genitive
+            ((Dtag = 'NE',atom_concat(_,'\'',WFormDisamb))->P is DISTMOD); %name ending in -' is genitive
             P is 0.01*DISTMOD) % else, assume that genitive is unlikely
         )).
 
