@@ -88,6 +88,20 @@ stats2(aux,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1.06,_D,_HC,_DC).
 stats2(avz,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1.06,_D,_HC,_DC).
 
 %adverbs
+
+%exception: nicht (nur) X, sondern (auch) Y: prefer attaching 'nicht' to head of coordination
+stats2(adv_kon,_Htag,_FH,SH,_MORPHH,_Dtag,_FD,SD,_MORPHD,P,D,_HC,_DC) :-
+    spyme,
+    lexic(SH,_,HPos),
+    lexic(SD,_,DPos),
+    RealDist is HPos-DPos,
+    RealDist > 0,
+    distModifier(D,adv,DistMod),
+    P is DistMod.
+
+spyme.
+
+
 stats2(adv,Htag,_FH,SH,_MORPHH,Dtag,FD,SD,_MORPHD,P,D,_HC,_DC) :-
     lexic(SH,_,HPos),
     lexic(SD,_,DPos),
@@ -120,7 +134,7 @@ getadvprob(Htag,_Dtag,DWord,RealDist,POSMod2) :- (Htag = 'KOMPX' -> Htag2 = 'kok
 		    (RealDist > 0->advbigramleft(DWordL,Htag3,Total,ADV); advbigramright(Htag3,DWordL,Total,ADV)),
 		      (Total > 10; ADV > 0),
 		      POSMod is ADV / Total,
-             (verbtag(Htag2)->POSMod2 is max(0.5+POSMod/100,POSMod);POSMod2 = POSMod), !.
+             (verbtag(Htag2)->POSMod2 is max(0.5+POSMod/100,POSMod);POSMod2 is max(0.06,POSMod)), !.
 
 %backoff probability for verbs
 getadvprob(Htag,_,_,_,0.55) :- (nonfinite(Htag);Htag = 'VVFIN';Htag = 'VAFIN';Htag = 'VMFIN';Htag = 'VVIZU'), !.

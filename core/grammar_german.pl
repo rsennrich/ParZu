@@ -1296,7 +1296,9 @@ head('ADJA','APPR',l, adv, 'ADJD',[_,_,_,am,_,_,_,_],F-G,MH,_,MH) :- correct_mis
 
 head('ADJA','APPR',l, adv, 'ADJD',[_,_,_,'an-der',_,_,_,_],F-G,MH,_,MH) :- correct_mistagging(yes), 1 is F-G.
 
-
+%nicht (nur) X, sondern (auch) Y.
+head(Tag, 'PTKNEG',l, adv_kon, Tag,[_,_,_,nicht,HeadRels,_,_,_],_,MH,_,MH) :- member('->kon->', HeadRels), among_dependents(HeadRels,'sondern_KON',2).
+head(Tag, 'ADV',l, adv_kon, Tag,[_,_,_,nur,HeadRels,_,_,_],_,MH,_,MH) :- member('->kon->', HeadRels), among_dependents(HeadRels,'sondern_KON',2).
 
 %"mehr als x"
 head('KOKOM','ADV',l,adv,'KOKOM', _,F-G,MH,_,MH) :- 1 is F-G.

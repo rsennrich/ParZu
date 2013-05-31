@@ -171,6 +171,8 @@ transcodeRel(bad_pn,pn) :- !.
 
 transcodeRel(konc,kon) :- !.
 
+transcodeRel(adv_kon,adv) :- !.
+
 transcodeRel(Class,root) :- \+ relclass(Class), !.
 
 transcodeRel(Class,Class) :- !.
