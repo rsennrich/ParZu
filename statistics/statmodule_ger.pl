@@ -310,18 +310,19 @@ stats2(objd,Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,_D,HC-_OG,_DC) :-
 % 	RealDist is HPos-DPos,
 	DistMod is 1+((50-DPos)*0.00005),
 	getheadandnormalise(HC,Head,_),
-    ((verb(Head,_,_,_,Objd,_,_,_,_,_,_,_,_,_,_,_),Objd > 0)->Max is 0.8;Max is 0.06), %we set max values because objd often competes with gmod (das Ende der Vertreibung kommt)
+    ((verb(Head,Occurs,_,_,Objd,_,_,_,_,_,_,_,_,_,_,_),Objd > 0)->Max is max(0.8,2*Objd/Occurs);Max is 0.06), %we set max values because objd often competes with gmod (das Ende der Vertreibung kommt)
 	npidsamb(Head,MORPHD,Dtag,objd,PLabel),
 	((Htag = 'ADJA';Htag='ADJD')->PosMod is 0.5;PosMod is 1),
 	P is min(Max,PLabel)*DistMod*PosMod.
 
 
 %genitive objects
-stats2(objg,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,MORPHD,P,_D,HC-_OG,_DC) :-
+stats2(objg,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,MORPHD,P,D,HC-_OG,_DC) :-
 	getheadandnormalise(HC,Head,_),
-	((verb(Head,_,_,_,_,_,Objg,_,_,_,_,_,_,_,_,_),Objg > 0)->Max is 0.4;Max is 0.06), %should always be lower than prob for gmod; if no statistical evidence found, only use if all else is impossible
+	distModifier(D,objg,DISTMOD),
+	((verb(Head,Occurs,_,_,_,_,Objg,_,_,_,_,_,_,_,_,_),Objg > 0)->Max is max(0.4,2*Objg/Occurs);Max is 0.06), %only overrule gmod if objg is relatively common (more than 50% of cases)
 	npidsamb(Head,MORPHD,Dtag,objg,PTemp),
-	P is min(Max,PTemp).
+	P is min(Max,PTemp)*DISTMOD.
 
 %predicate nouns
 stats2(pred,Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,_D,HC-_OG,_DC) :-
@@ -374,22 +375,35 @@ pred_disambiguate(Head, Dep, Dtag, Score) :- (adverbial(Head, Dep, Dtag, BilexAd
 
 
 %genitive modifiers
+
+%pre-modifying gmod: if not NE, must be morphologically unambiguous
+stats2(gmod,_Htag,_FH,SH,_WFormH,_MORPHH,Dtag,_FD,SD,_WFormD,MORPHD,P,_D,_HC-_OG,_DC) :-
+        \+ morphology(off), %if parsing with morphology turned off, this rule is counterproductive
+        lexic(SH,_,HPos),
+        lexic(SD,_,DPos),
+        RealDist is HPos-DPos,
+        RealDist > 0,
+        Dtag \= 'NE',
+        distModifier(RealDist,gmod,DISTMOD), %prefer close attachment and modifier after head noun ("gestern hat der nachbar des mannes peter getroffen")
+        ((case_nom(MORPHD,Dtag);case_acc(MORPHD,Dtag);case_dat(MORPHD,Dtag))->P is 0;P is 1*DISTMOD).
+
+%post-modifying gmod (or pre-modifying NE)
 stats2(gmod,_Htag,_FH,SH,_WFormH,_MORPHH,Dtag,_FD,SD,WFormD,MORPHD,P,_D,_HC-_OG,_DC-DepRels) :-
-	\+ morphology(off), %if parsing with morphology turned off, this rule is counterproductive
-	lexic(SH,_,HPos),
-	lexic(SD,_,DPos),
-	RealDist is HPos-DPos,
-    get_relevant_name_for_gmod_disamb(Dtag,DepRels,WFormD,WFormDisamb),
-	distModifier(RealDist,gmod,DISTMOD), %prefer close attachment and modifier after head noun ("gestern hat der nachbar des mannes peter getroffen")
-	findall(_,case_acc(MORPHD,Dtag),LA),length(LA,LAL), %testing for accusative since there is no article that can be both accusative and genitive. dat/nom: 'eine mitarbeiterin der awo'
-	((	LAL =:= 0, %word not fully ambiguous
-		P is 1*DISTMOD
-	)
-	; %word case is fully ambiguous
-	(	LAL > 0,
-        ((Dtag = 'NE',atom_concat(_,s,WFormDisamb))->(gmod_disamb(WFormDisamb,P_GMOD), P is P_GMOD*DISTMOD); %ambiguous name ending with -s could be genitive
-        P is 0.01*DISTMOD) % else, assume that genitive is unlikely
-	)).
+        \+ morphology(off), %if parsing with morphology turned off, this rule is counterproductive
+        lexic(SH,_,HPos),
+        lexic(SD,_,DPos),
+        RealDist is HPos-DPos,
+        get_relevant_name_for_gmod_disamb(Dtag,DepRels,WFormD,WFormDisamb),
+        distModifier(RealDist,gmod,DISTMOD), %prefer close attachment and modifier after head noun ("gestern hat der nachbar des mannes peter getroffen")
+        findall(_,case_acc(MORPHD,Dtag),LA),length(LA,LAL), %testing for accusative since there is no article that can be both accusative and genitive. dat/nom: 'eine mitarbeiterin der awo'
+        ((      LAL =:= 0, %word not fully ambiguous
+                P is 1*DISTMOD
+        )
+        ; %word case is fully ambiguous
+        (   LAL > 0,
+            ((Dtag = 'NE',(atom_concat(_,s,WFormDisamb);atom_concat(_,'\\',WFormDisamb)))->(gmod_disamb(WFormDisamb,P_GMOD), P is P_GMOD*DISTMOD); %ambiguous name ending with -s could be genitive
+            P is 0.01*DISTMOD) % else, assume that genitive is unlikely
+        )).
 
 stats2(gmod,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC-_OG,_DC) :- morphology(off).
 
@@ -588,7 +602,7 @@ posModifier('NN','NN',app_close,0.4) :- !.
 posModifier('NE','NN',app_close,0.2) :- !.
 posModifier(_Htag,'NN',app_close,0.75) :- !.
 posModifier('NE','NE',app_close,1.9) :- !.
-posModifier(_Htag,'NE',app_close,1.2) :- !.
+posModifier(_Htag,'NE',app_close,0.9) :- !.
 posModifier(_Htag,_Dtag,app_close,1) :- !.
 
 

@@ -521,22 +521,22 @@ head('V*IMP',OBJ,r,objg,'V*IMP',[_,_,_,_,OG,_,_,_],_-F,MG,MF,MG)  :- objcandidat
 
 %Genitive modifier after head noun.
 
-head('NN', GEN,r, gmod, 'NN',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; GEN = 'NE'), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('->pp->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
+head('NN', GEN,r, gmod, 'NN',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; GEN = 'NE'), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('<-pp<-',OF), \+ member('->pp->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
 
-head('NE', GEN,r, gmod, 'NE',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; (GEN = 'NE', \+ case_gen(MG,'NE'))), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
+head('NE', GEN,r, gmod, 'NE',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; (GEN = 'NE', \+ case_gen(MG,'NE'))), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('<-pp<-',OF), \+ member('<-adv<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
 
-head('FM', GEN,r, gmod, 'FM',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; (GEN = 'NE', \+ case_gen(MG,'FM'))), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
+head('FM', GEN,r, gmod, 'FM',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; (GEN = 'NE', \+ case_gen(MG,'FM'))), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('<-pp<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
 
-head('PDS', GEN,r, gmod, 'PDS',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; (GEN = 'NE', \+ case_gen(MG,'PDS'))), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
+head('PDS', GEN,r, gmod, 'PDS',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; (GEN = 'NE', \+ case_gen(MG,'PDS'))), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('<-pp<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
 
-head('PIS', GEN,r, gmod, 'PIS',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; (GEN = 'NE', \+ case_gen(MG,'PIS'))), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
+head('PIS', GEN,r, gmod, 'PIS',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; (GEN = 'NE', \+ case_gen(MG,'PIS'))), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('<-pp<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
 
-head('CARD', GEN,r, gmod, 'CARD',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; GEN = 'NE'), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
+head('CARD', GEN,r, gmod, 'CARD',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; GEN = 'NE'), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('<-pp<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
 
 
 %no occurrences of these in exploration corpus. still leave in? 
 %Yes for 'PWS': "Welcher der beiden ist der Mörder?" No for the others.
-head('PWS', GEN,r, gmod, 'PWS',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- F-G > 1, validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG).
+head('PWS', GEN,r, gmod, 'PWS',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- F-G > 1, validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('<-pp<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG).
 
 %head('PPER', GEN, r, gmod, 'PPER',[_,_,_,_,OG,_,_,_],_,MG,MF,MG) :- validgmod(GEN), case_gen(MF), \+ member('->gmod->',OG).
 
@@ -544,7 +544,7 @@ head('PWS', GEN,r, gmod, 'PWS',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- F-G > 1, val
 
 
 %Anfang des Jahres etc.: can be adverbial expression -> special metatag
-head('NN','NN',r,gmod,'NZEIT',[_,_,HeadWord,DepWord,HeadRels,DepRels,_,_],_,HeadMorph,DepMorph,HeadMorph) :- zeit_like_anfang(HeadWord), zeitcand(DepWord), case_gen(DepMorph,'NN'), \+ member('->gmod->',HeadRels), \+ member('<-gmod<-',DepRels), \+ member('->pp->',HeadRels), \+ member('->kon->',HeadRels), \+ member('->app_loose->',HeadRels), \+ member('->app_close->',HeadRels).
+head('NN','NN',r,gmod,'NZEIT',[_,_,HeadWord,DepWord,HeadRels,DepRels,_,_],_,HeadMorph,DepMorph,HeadMorph) :- zeit_like_anfang(HeadWord), zeitcand(DepWord), case_gen(DepMorph,'NN'), \+ member('->gmod->',HeadRels), \+ member('<-gmod<-',DepRels), \+ member('<-pp<-',DepRels), \+ member('->pp->',HeadRels), \+ member('->kon->',HeadRels), \+ member('->app_loose->',HeadRels), \+ member('->app_close->',HeadRels).
 
 
 %Genitive modfier before head noun. Pronoun heads seem to be ungrammatical: "Einer der Fischer" vs. *"Bremens einer".
