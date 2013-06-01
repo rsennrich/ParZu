@@ -825,15 +825,15 @@ head('FM','APP',r,app_loose,'FM',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unif
 
 head('PIS','APP',r,app_loose,'PIS',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PIS',MF,'NN',MNew), \+ member('->bracket->', HRels), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', -1).
 
-head('PPER','APP',r,app_loose,'PPER',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PPER',MF,'NN',MNew), \+ member('->bracket->', HRels), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', -1).
+head('PPER','APP',r,app_loose,'PPER',[_,_,HeadWord,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PPER',MF,'NN',MNew), HeadWord \= es, \+ member('->bracket->', HRels), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', -1).
 
 
 %apposition enclosed in bracket
-head(HTag,'NE',r,app_loose,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), member('<-bracket<-', OF), \+ member('->kon->', HeadRels), member('->bracket->', OF), \+ among_dependents(HeadRels, '->app_loose->', -1), \+ member('->app_loose->', OF), unify_case(MF,'NE',MG,HTag,MNew).
+head(HTag,'NE',r,app_loose,HTag,[_,_,HeadWord,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), (HTag = 'PPER'-> HeadWord \= es;true), member('<-bracket<-', OF), \+ member('->kon->', HeadRels), member('->bracket->', OF), \+ among_dependents(HeadRels, '->app_loose->', -1), \+ member('->app_loose->', OF), unify_case(MF,'NE',MG,HTag,MNew).
 
-head(HTag,'NN',r,app_loose,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), member('<-bracket<-', OF), \+ member('->kon->', HeadRels), member('->bracket->', OF), \+ among_dependents(HeadRels, '->app_loose->', -1), \+ member('->app_loose->', OF), unify_case(MF,'NN',MG,HTag,MNew).
+head(HTag,'NN',r,app_loose,HTag,[_,_,HeadWord,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), (HTag = 'PPER'-> HeadWord \= es;true), member('<-bracket<-', OF), \+ member('->kon->', HeadRels), member('->bracket->', OF), \+ among_dependents(HeadRels, '->app_loose->', -1), \+ member('->app_loose->', OF), unify_case(MF,'NN',MG,HTag,MNew).
 
-head(HTag,'FM',r,app_loose,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), member('<-bracket<-', OF), \+ member('->kon->', HeadRels), member('->bracket->', OF), \+ among_dependents(HeadRels, '->app_loose->', -1), \+ member('->app_loose->', OF), unify_case(MF,'FM',MG,HTag,MNew).
+head(HTag,'FM',r,app_loose,HTag,[_,_,HeadWord,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), (HTag = 'PPER'-> HeadWord \= es;true), member('<-bracket<-', OF), \+ member('->kon->', HeadRels), member('->bracket->', OF), \+ among_dependents(HeadRels, '->app_loose->', -1), \+ member('->app_loose->', OF), unify_case(MF,'FM',MG,HTag,MNew).
 
 
 %Anfang Oktober etc.: can be adverbial expression -> special metatag
@@ -847,7 +847,7 @@ head('NN','CARD',r,app_close,'NZEIT',[_,_,HeadWord,_,HeadRels,_,_,_],_,HeadMorph
 %name as apposition of noun: morphological mismatch is ok in some, but not all cases
 %Der Ministerpräsident Italiens -> no app (must be gmod)
 %Des Ministerpräsidenten Berlusconi -> (app is ok)
-head(HTag,'NE',r,app_close,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,_,MG) :- HTag \= 'NE', apphead(HTag), \+ member('->bracket->', HeadRels), \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels).
+head(HTag,'NE',r,app_close,HTag,[_,_,HeadWord,_,HeadRels,OF,_,_],_,MG,_,MG) :- HTag \= 'NE', apphead(HTag), (HTag = 'PPER'->HeadWord \= es;true), \+ member('->bracket->', HeadRels), \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), \+ member('->gmod->', HeadRels).
 
 %John Lennons -> take genitive information from last element
 %if first element is genitive, don't allow relation (except if morphology is ambiguous)
@@ -855,13 +855,38 @@ head(HTag,'NE',r,app_close,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,_,MG) :- HTag \= 
 head('NE','NE',r,app_close,'NE',[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MF) :- \+ member('<-det<-', OF), \+ member('->bracket->', HeadRels), \+ member('<-bad_det<-', OF), (case_gen(MG,'NE')->case_nom(MG,'NE');true), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels).
 
 %der bürgermeister meier vs. der internet browser: if last element is nn (but not if ne), use it for np agreement.
-head(HTag,'NN',r,app_close,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), \+ member('->bracket->', HeadRels), \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), unify_case(MF,'NN',MG,HTag,MNew).
+head(HTag,'NN',r,app_close,HTag,[_,_,HeadWord,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), (HTag = 'PPER'-> HeadWord \= es;true), \+ member('->bracket->', HeadRels), \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), \+ member('->gmod->', HeadRels), unify_case(MF,'NN',MG,HTag,MNew).
 
-head(HTag,'FM',r,app_close,HTag,[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), \+ member('->bracket->', HeadRels), \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), unify_case(MF,'FM',MG,HTag,MNew).
+head(HTag,'FM',r,app_close,HTag,[_,_,HeadWord,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), (HTag = 'PPER'-> HeadWord \= es;true), \+ member('->bracket->', HeadRels), \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), \+ member('->gmod->', HeadRels), unify_case(MF,'FM',MG,HTag,MNew).
 
-head(HTag,'CARD',r,app_close,HTag,[_,_,_,_,HeadRels,_,_,_],_,MH,_,MH) :- apphead(HTag), \+ member('->bracket->', HeadRels), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels).
+head(HTag,'CARD',r,app_close,HTag,[_,_,HeadWord,_,HeadRels,_,_,_],_,MH,_,MH) :- apphead(HTag), (HTag = 'PPER'-> HeadWord \= es;true), \+ member('->bracket->', HeadRels), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), \+ member('->gmod->', HeadRels).
 
 
+%nichts anderes
+head('PIS','PIS',r,app_close,'PIS',[_,_,_,andere,_,_,_,_],H-D,MH,_,MH) :- 1 is D-H.
+head('PIS','PIS',r,app_close,'PIS',[_,_,_,anderes,_,_,_,_],H-D,MH,_,MH) :- 1 is D-H.
+head('PIS','PIS',r,app_close,'PIS',[_,_,_,ander,_,_,_,_],H-D,MH,_,MH) :- 1 is D-H.
+
+%was/wer alles
+head('PWS','PIS',r,app_close,'PWS',[_,_,_,andere,_,_,_,_],H-D,MH,_,MH) :- 1 is D-H.
+head('PWS','PIS',r,app_close,'PWS',[_,_,_,anderes,_,_,_,_],H-D,MH,_,MH) :- 1 is D-H.
+head('PWS','PIS',r,app_close,'PWS',[_,_,_,ander,_,_,_,_],H-D,MH,_,MH) :- 1 is D-H.
+
+%wir alle/beide
+head(HTag,'PIS',r,app_close,HTag,[_,_,_,alle,_,_,_,_],H-D,MH,_,MH) :- 1 is D-H, apphead(HTag).
+head(HTag,'PIS',r,app_close,HTag,[_,_,_,alles,_,_,_,_],H-D,MH,_,MH) :- 1 is D-H, apphead(HTag).
+head(HTag,'PIS',r,app_close,HTag,[_,_,_,all,_,_,_,_],H-D,MH,_,MH) :- 1 is D-H, apphead(HTag).
+head(HTag,'PIS',r,app_close,HTag,[_,_,_,beide,_,_,_,_],H-D,MH,_,MH) :- 1 is D-H, apphead(HTag).
+
+%das alles
+head('PDS','PIS',r,app_close,'PDS',[_,_,_,alle,_,_,_,_],H-D,MH,_,MH) :- 1 is D-H.
+head('PDS','PIS',r,app_close,'PDS',[_,_,_,alles,_,_,_,_],H-D,MH,_,MH) :- 1 is D-H.
+head('PDS','PIS',r,app_close,'PDS',[_,_,_,all,_,_,_,_],H-D,MH,_,MH) :- 1 is D-H.
+
+%was/wer alles
+head('PWS','PIS',r,app_close,'PWS',[_,_,_,alle,_,_,_,_],H-D,MH,_,MH) :- 1 is D-H.
+head('PWS','PIS',r,app_close,'PWS',[_,_,_,alles,_,_,_,_],H-D,MH,_,MH) :- 1 is D-H.
+head('PWS','PIS',r,app_close,'PWS',[_,_,_,all,_,_,_,_],H-D,MH,_,MH) :- 1 is D-H.
 
 apphead('PPER').
 apphead('PIS').
