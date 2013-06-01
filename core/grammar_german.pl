@@ -940,6 +940,10 @@ head('KOUS',_,l,konjneb,'KOUS',[_,_,'daß',ohne,_,_,_,_],F-G,MH,_,MH) :- 1 is F-
 head('KOUS',_,l,konjneb,'KOUS',[_,_,dass,'Ohne',_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
 head('KOUS',_,l,konjneb,'KOUS',[_,_,dass,ohne,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
 
+%so daß
+head('KOUS',_,l,konjneb,'KOUS',[_,_,'daß',so,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+head('KOUS',_,l,konjneb,'KOUS',[_,_,dass,so,_,_,_,_],F-G,MH,_,MH) :- 1 is F-G.
+
 % als ob: same idea as "ohne dass"
 head('KOUS','KOUS',l,konjneb,'KOUS',[_,_,ob,als,_,_,_,_],H-D,MH,_,MH) :- 1 is H-D.
 head('KOUS','KOUS',l,konjneb,'KOUS',[_,_,ob,'Als',_,_,_,_],H-D,MH,_,MH) :- 1 is H-D.
@@ -961,6 +965,8 @@ head('NEB','$,',r,comma,'NEB',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ member('
 
 %subordinated clause before main clause
 head('V*FIN','NEB',l,neb,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- (restrict_vorfeld(FC,OF); member('<-adv<-',OF)).
+
+head('QC','NEB',l,neb,'QC',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- (restrict_vorfeld(FC,OF); member('<-adv<-',OF)).
 
 
 %subordinated clause after main clause
