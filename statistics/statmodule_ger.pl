@@ -480,21 +480,24 @@ stats2(objc,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,HC-_OG,_DC) :-
 
 
 %quotes - (in)direct speech
-stats2(s,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,HC-_OG,_DC) :-
+stats2(s,Htag,_FH,SH,_MORPHH,Dtag,_FD,SD,_MORPHD,P,_D,HC-_OG,_DC) :-
 	getheadandnormalise(HC,Head,_),
-    distModifier(D,Htag,Dtag,s,DISTMOD),
+	lexic(SH,_,HPos),
+	lexic(SD,_,DPos),
+	RealDist is HPos-DPos,
+	distModifier(RealDist,Htag,Dtag,s,DISTMOD),
 	((	verb(Head,Occurs,_,_,_,_,_,_,_,_,_,_,_,_,Quote,_),
 		Occurs > 3,
 		Ratio is Quote / Occurs,
 		(   (Ratio > 0.05,
 		    P is 1*DISTMOD)
 		    ;
-		    P is 0.01*DISTMOD
+		    P is 0.06*DISTMOD
 		)
 	)
 	; %backoff: if there is no lexical information, use a fixed probability.
 	(	((\+ verb(Head,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_)); (verb(Head,Occurs,_,_,_,_,_,_,_,_,_,_,_,_,_,_), Occurs < 4)),
-		P is 0.01*DISTMOD
+		P is 0.06*DISTMOD
 	)).
 
 
@@ -646,6 +649,9 @@ distModifier(D,_Class,DISTMOD) :- DISTMOD is 1-D*0.01.
 
 
 %distmodifier depending on tags
+
+distModifier(D,_Htag,_Dtag,s,DISTMOD) :- D > 0->DISTMOD is 1-D*0.01;DISTMOD is 0.95-D*0.01.
+
 distModifier(D,Htag,_Dtag,pp,DISTMOD) :- (nountag(Htag);nametag(Htag)),DISTMOD is 1-D*0.2, !.
 
 distModifier(D,Htag,_Dtag,kom,DISTMOD) :- (Htag = 'VVFIN'; Htag='VAFIN';Htag='VMFIN'), DISTMOD is 1-D*0.01.

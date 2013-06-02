@@ -1963,13 +1963,9 @@ head(_,'$(',l,bracket,'KON_ANY',  [_,_,_,'/',_,_,_,_],F-G,HM,_,HM) :- 1 is F-G.
 
 %two clauses that are not in a subordinated relationship can belong together.
 
-head('V*FIN','$,',l,comma,'KONC',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ member('<-comma<-', HeadRels).
+head('V*FIN','$,',l,comma,'KONC',[_,_,_,_,HeadRels,_,_,_],H-D,HM,_,HM) :- \+ member('<-comma<-', HeadRels), (1 is H-D->(\+ member('->subj->', HeadRels), \+ member('->subjc->', HeadRels));true).
 
-head('V*IMP','$,',l,comma,'KONC',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ member('<-comma<-', HeadRels).
-
-% head('V*FIN','$,',l,comma,'KONC',[_,_,_,_,HeadRels,_,_,_],H-D,HM,_,HM) :- \+ member('<-comma<-', HeadRels), (1 is H-D->(\+ member('->subj->', HeadRels), \+ member('->subjc->', HeadRels));true).
-
-% head('V*IMP','$,',l,comma,'KONC',[_,_,_,_,HeadRels,_,_,_],H-D,HM,_,HM) :- \+ member('<-comma<-', HeadRels), (1 is H-D->(\+ member('->subj->', HeadRels), \+ member('->subjc->', HeadRels));true).
+head('V*IMP','$,',l,comma,'KONC',[_,_,_,_,HeadRels,_,_,_],H-D,HM,_,HM) :- \+ member('<-comma<-', HeadRels), (1 is H-D->(\+ member('->subj->', HeadRels), \+ member('->subjc->', HeadRels));true).
 
 %v*fin + v*fin: doesn't require conjunction.
 head('V*FIN','KONC',r,konc,'V*FIN',[GC,FC,_,_,_,_,_,_],_,MH,_,MH) :- member('mainclause',FC),member('mainclause',GC).
