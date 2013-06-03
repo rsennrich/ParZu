@@ -2206,9 +2206,11 @@ head('ADJD','NN',l,grad,'ADJD',[_,_,_,DWord,HRels,DRels,_,_],HPos-DPos,HMorph,DM
 
 head('PIAT','NN',l,grad,'PIAT',[_,_,_,DWord,HRels,DRels,_,_],HPos-DPos,HMorph,DMorph,HMorph) :- case_acc(DMorph,'NN'), (1 is HPos-DPos;among_dependents(HRels, '_PTKA', 1)), (among_dependents(DRels, '_CARD', 1);measure(DWord);zeitcand(DWord)).
 
-head('PP','NN',l,grad,'PP',[_,_,_,DWord,HRels,DRels,_,_],HPos-DPos,HMorph,DMorph,HMorph) :- case_acc(DMorph,'NN'), (1 is HPos-DPos;among_dependents(HRels, '_PTKA', 1)), (among_dependents(DRels, '_CARD', 1);measure(DWord);zeitcand(DWord)).
+head('PP','NN',l,grad,'PP',[_,_,_,DWord,_,DRels,_,_],HPos-DPos,HMorph,DMorph,HMorph) :- case_acc(DMorph,'NN'), 1 is HPos-DPos, (among_dependents(DRels, '_CARD', 1);measure(DWord);zeitcand(DWord)).
 
-head('ADV','NN',l,grad,'ADV',[_,_,_,DWord,HRels,DRels,_,_],HPos-DPos,HMorph,DMorph,HMorph) :- case_acc(DMorph,'NN'), (1 is HPos-DPos;among_dependents(HRels, '_PTKA', 1)), (among_dependents(DRels, '_CARD', 1);measure(DWord);zeitcand(DWord)).
+head('PAV','NN',l,grad,'PAV',[_,_,_,DWord,_,DRels,_,_],HPos-DPos,HMorph,DMorph,HMorph) :- case_acc(DMorph,'NN'), 1 is HPos-DPos, (among_dependents(DRels, '_CARD', 1);measure(DWord);zeitcand(DWord)).
+
+head('ADV','NN',l,grad,'ADV',[_,_,_,DWord,_,DRels,_,_],HPos-DPos,HMorph,DMorph,HMorph) :- case_acc(DMorph,'NN'), 1 is HPos-DPos, (among_dependents(DRels, '_CARD', 1);measure(DWord);zeitcand(DWord)).
 
 
 %ein wenig zu alt
@@ -2218,9 +2220,11 @@ head('ADJD','PIS',l,grad,'ADJD',[_,_,_,_,HRels,DRels,_,_],HPos-DPos,HMorph,_,HMo
 
 head('PIAT','PIS',l,grad,'PIAT',[_,_,_,_,HRels,DRels,_,_],HPos-DPos,HMorph,_,HMorph) :- member('<-part<-',DRels), (1 is HPos-DPos;among_dependents(HRels, '_PTKA', 1)).
 
-head('PP','PIS',l,grad,'PP',[_,_,_,_,HRels,DRels,_,_],HPos-DPos,HMorph,_,HMorph) :- member('<-part<-',DRels), (1 is HPos-DPos;among_dependents(HRels, '_PTKA', 1)).
+head('PP','PIS',l,grad,'PP',[_,_,_,_,_,DRels,_,_],HPos-DPos,HMorph,_,HMorph) :- member('<-part<-',DRels), 1 is HPos-DPos.
 
-head('ADV','PIS',l,grad,'ADV',[_,_,_,_,HRels,DRels,_,_],HPos-DPos,HMorph,_,HMorph) :- member('<-part<-',DRels), (1 is HPos-DPos;among_dependents(HRels, '_PTKA', 1)).
+head('PAV','PIS',l,grad,'PAV',[_,_,_,_,_,DRels,_,_],HPos-DPos,HMorph,_,HMorph) :- member('<-part<-',DRels), 1 is HPos-DPos.
+
+head('ADV','PIS',l,grad,'ADV',[_,_,_,_,_,DRels,_,_],HPos-DPos,HMorph,_,HMorph) :- member('<-part<-',DRels), 1 is HPos-DPos.
 
 
 %voller Liebe

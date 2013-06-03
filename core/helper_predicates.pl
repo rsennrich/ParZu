@@ -393,3 +393,25 @@ number_head('Tel.').
 number_head('Telefon').
 number_head('Nummer').
 number_head('Telefonnummer').
+
+
+
+%prepositions that are often modified by a measurement (GRAD) ("zwei stunden nach dem Rennen")
+grad_head('nach').
+grad_head('vor').
+grad_head('hinter').
+grad_head('neben').
+
+grad_head('über').
+grad_head('überhalb').
+grad_head('unter').
+grad_head('unterhalb').
+
+grad_head('nördlich').
+grad_head('westlich').
+grad_head('östlich').
+grad_head('südlich').
+
+%attributive pronouns
+grad_head('mehr').
+grad_head('weniger').

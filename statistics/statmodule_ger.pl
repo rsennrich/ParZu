@@ -159,9 +159,14 @@ stats2(kon,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,_HC,_DC) :-
 
 
 
-%gradation
-stats2(grad,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.3,_D,_HC,_DC).
+%grad (measurement)
+stats2(grad,Htag,FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,_D,_HC,_DC) :-
+    (Htag='PP';Htag='PIAT';adverbial_pronoun(Htag)), !,
+    (adverbial_pronoun(Htag)->derive_prep_from_pav(FH,Prep);Prep=FH),
+    splitappr(Prep,Prep2,_),
+    (grad_head(Prep2)->P is 0.6; P is 0.1).
 
+stats2(grad,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.3,_D,_HC,_DC).
 
 %closing bracket - better than having two opening ones / prefer short distances
 stats2(bracket,'BRACKET',_FH,SH,_MORPHH,_Dtag,_FD,SD,_MORPHD,P,_D,_HC-OG,_DC) :-
