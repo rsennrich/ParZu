@@ -525,22 +525,22 @@ head('V*IMP',OBJ,r,objg,'V*IMP',[_,_,_,_,OG,_,_,_],_-F,MG,MF,MG)  :- objcandidat
 
 %Genitive modifier after head noun.
 
-head('NN', GEN,r, gmod, 'NN',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; GEN = 'NE'), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('<-pp<-',OF), \+ member('->pp->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
+head('NN', GEN,r, gmod, 'NN',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; GEN = 'NE'), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('<-pp<-',OF), \+ among_dependents(OF, '->app_loose->',-1), \+ member('->pp->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
 
-head('NE', GEN,r, gmod, 'NE',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; (GEN = 'NE', \+ case_gen(MG,'NE'))), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('<-pp<-',OF), \+ member('<-adv<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
+head('NE', GEN,r, gmod, 'NE',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; (GEN = 'NE', \+ case_gen(MG,'NE'))), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('<-pp<-',OF), \+ among_dependents(OF, '->app_loose->',-1), \+ member('<-adv<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
 
-head('FM', GEN,r, gmod, 'FM',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; (GEN = 'NE', \+ case_gen(MG,'FM'))), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('<-pp<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
+head('FM', GEN,r, gmod, 'FM',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; (GEN = 'NE', \+ case_gen(MG,'FM'))), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('<-pp<-',OF), \+ among_dependents(OF, '->app_loose->',-1), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
 
-head('PDS', GEN,r, gmod, 'PDS',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; (GEN = 'NE', \+ case_gen(MG,'PDS'))), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('<-pp<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
+head('PDS', GEN,r, gmod, 'PDS',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; (GEN = 'NE', \+ case_gen(MG,'PDS'))), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('<-pp<-',OF), \+ among_dependents(OF, '->app_loose->',-1), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
 
-head('PIS', GEN,r, gmod, 'PIS',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; (GEN = 'NE', \+ case_gen(MG,'PIS'))), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('<-pp<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
+head('PIS', GEN,r, gmod, 'PIS',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; (GEN = 'NE', \+ case_gen(MG,'PIS'))), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('<-pp<-',OF), \+ among_dependents(OF, '->app_loose->',-1), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
 
-head('CARD', GEN,r, gmod, 'CARD',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; GEN = 'NE'), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('<-pp<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
+head('CARD', GEN,r, gmod, 'CARD',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- (F-G > 1; GEN = 'NE'), validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('<-pp<-',OF), \+ among_dependents(OF, '->app_loose->',-1), \+ member('->pp->',OG), \+ member('->kon->',OG), \+ member('->app_loose->',OG), \+ member('->app_close->',OG).
 
 
 %no occurrences of these in exploration corpus. still leave in? 
 %Yes for 'PWS': "Welcher der beiden ist der Mörder?" No for the others.
-head('PWS', GEN,r, gmod, 'PWS',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- F-G > 1, validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('<-pp<-',OF), \+ member('->pp->',OG), \+ member('->kon->',OG).
+head('PWS', GEN,r, gmod, 'PWS',[_,_,_,_,OG,OF,_,_],G-F,MG,MF,MG) :- F-G > 1, validgmod(GEN), case_gen(MF,GEN), \+ member('->gmod->',OG), \+ member('<-gmod<-',OF), \+ member('<-pp<-',OF), \+ among_dependents(OF, '->app_loose->',-1), \+ member('->pp->',OG), \+ member('->kon->',OG).
 
 %head('PPER', GEN, r, gmod, 'PPER',[_,_,_,_,OG,_,_,_],_,MG,MF,MG) :- validgmod(GEN), case_gen(MF), \+ member('->gmod->',OG).
 
@@ -856,7 +856,7 @@ head(HTag,'NE',r,app_close,HTag,[_,_,HeadWord,_,HeadRels,OF,_,_],_,MG,_,MG) :- H
 %John Lennons -> take genitive information from last element
 %if first element is genitive, don't allow relation (except if morphology is ambiguous)
 %Der Ministerpräsident Italiens Silvio Berlusconi -> "Silvio" is not apposition of "Italiens", but of "Ministerpräsident"
-head('NE','NE',r,app_close,'NE',[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MF) :- \+ member('<-det<-', OF), \+ member('->bracket->', HeadRels), \+ member('<-bad_det<-', OF), (case_gen(MG,'NE')->case_nom(MG,'NE');true), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels).
+head('NE','NE',r,app_close,'NE',[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MF) :- \+ member('<-det<-', OF), \+ member('->bracket->', HeadRels), \+ member('<-bad_det<-', OF), (case_gen(MG,'NE')->case_nom(MG,'NE');true), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), \+ member('->gmod->', HeadRels).
 
 %der bürgermeister meier vs. der internet browser: if last element is nn (but not if ne), use it for np agreement.
 head(HTag,'NN',r,app_close,HTag,[_,_,HeadWord,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), (HTag = 'PPER'-> HeadWord \= es;true), \+ member('->bracket->', HeadRels), \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), \+ member('->gmod->', HeadRels), unify_case(MF,'NN',MG,HTag,MNew).
@@ -1484,6 +1484,9 @@ head('ADJD','PTKNEG',r,adv,'ADJD',_,_,MH,_,MH).
 %sich selbst
 head('PRF', 'ADV',r, adv, 'PRF',[_,_,_,selbst,_,_,_,_],G-F,MH,_,MH) :- 1 is F-G.
 head('PRF', 'ADV',r, adv, 'PRF',[_,_,_,allein,_,_,_,_],G-F,MH,_,MH) :- 1 is F-G.
+
+
+% head(Tag, 'ADV',l, adv, Transtag,[_,_,_,dort,_,_,_,_],_,MH,_,MH) :- kon_mapping(Tag,Transtag).
 
 %======================================================================================
 %auxiliary verbs
@@ -2301,6 +2304,9 @@ head(Tag,'XY',r,unknown,Tag,[_,_,_,_,_,_,_,_],F-G,HM,_,HM) :- -1 is F-G.
 % Correctly parse some abbreviated units of measurement, even if they are unknown to tagger.
 head('XY','CARD',l,attr,'NN',[_,_,HW,_,_,_,_,_],F-G,HM,_,HM) :- member(HW,[m,cm,km,mm,ft,h,min,s,g,kg,mg]), 1 is F-G.
 
+
+% attach interjections (will be removed in postprocessing)
+head(Tag,'ITJ',r,unknown,Tag,[_,_,_,_,_,_,_,_],F-G,HM,_,HM) :- -1 is F-G.
 
 
 %======================================================================================
