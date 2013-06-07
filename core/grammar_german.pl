@@ -170,6 +170,8 @@ head('CARD','CARD',r,attr,'CARD',[_,_,_,_,_,_,_,_],H-_,MH,_,MH) :- LeftPos is H-
 %use prepcompl/1 to list all valid dependents of prepositions.
 head('APPR',PN,r,pn,'PP',[_,_,HWord,DWord,HRels,DRels,_,_],_-F,MG,MF,MNew) :- prepcompl(PN,F), unify_case(MG,'APPR',MF,PN,MNew), \+ member('->pn->',HRels), \+ member('->bad_pn->',HRels), enforce_vor_allem_segmentation(HWord,DWord,DRels).
 
+head('APPR','ADJD',r,pn,'PP',[_,_,HWord,DWord,HRels,DRels,_,_],_-F,MH,_,MH) :- endOfNP(F), \+ member('<-obja<-',DRels), \+ member('->pn->',HRels), \+ member('->bad_pn->',HRels), enforce_vor_allem_segmentation(HWord,DWord,DRels).
+
 %allow (with low probability) non-congruent prepositional phrases
 head('APPR',PN,r,bad_pn,'PP',[_,_,HWord,DWord,HRels,DRels,_,_],_-F,MG,_,MG) :- prepcompl(PN,F), relax_agreement(yes), \+ member('->pn->',HRels), \+ member('->bad_pn->',HRels), enforce_vor_allem_segmentation(HWord,DWord,DRels).
 
@@ -474,6 +476,7 @@ head('V*IMP',Dtag,r,pred,'V*IMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH)  :- predcand_adve
 
 predcand('NN', _).
 predcand('NE', _).
+predcand('FM', _).
 predcand('PIS', _).
 predcand('PPER', _).
 predcand('PWS', _).
@@ -2905,7 +2908,6 @@ prepcompl('NE',_).
 prepcompl('FM',_).
 prepcompl('CARD',Pos) :- endOfNP(Pos).
 prepcompl('ADJA',Pos) :- endOfNP(Pos).
-prepcompl('ADJD',Pos) :- endOfNP(Pos).
 %including some rare (or non-existing) dependencies.
 prepcompl('PDS',_).
 prepcompl('PIS',_).
@@ -2942,7 +2944,7 @@ nonfinite('VVIZU').
 
 %determiner candidates.
 detcan('ART',_).
-detcan('PIDAT',Pos) :- LeftPos is Pos - 1, \+ checkPos(LeftPos,_,'ART',_,_), \+ checkPos(LeftPos,_,'ADJA',_,_).
+detcan('PIDAT',Pos) :- LeftPos is Pos - 1, checkPos(LeftPos,_,Tag,_,_), Tag \= 'ART', Tag \= 'ADJA', \+ attributive_pronoun(Tag).
 detcan('PIAT',_).
 detcan('PPOSAT',_).
 detcan('PDAT',_).
