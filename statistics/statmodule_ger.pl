@@ -605,7 +605,10 @@ depModifier(OG,app_close,0) :- (member('->app_close->',OG);member('->app_loose->
 depModifier(_,_,1) :- !.
 
 %allows to modify likelihood for certain head/dependent combinations.
+
+posModifier(_HTag,'PIS',app_close,1) :- !.
 posModifier('PPER',_,app_close,0.05) :- !.
+posModifier('PDS',_,app_close,0) :- !.
 posModifier('NN','NN',app_close,0.4) :- !.
 posModifier('NE','NN',app_close,0.2) :- !.
 posModifier(_Htag,'NN',app_close,0.75) :- !.

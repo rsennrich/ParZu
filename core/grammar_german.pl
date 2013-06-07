@@ -844,9 +844,9 @@ head(HTag,'FM',r,app_loose,HTag,[_,_,HeadWord,_,HeadRels,OF,_,_],_,MG,MF,MNew) :
 
 
 %Anfang Oktober etc.: can be adverbial expression -> special metatag
-head('NN','NN',r,app_close,'NZEIT',[_,_,HeadWord,DepWord,HeadRels,DepRels,_,_],_,HeadMorph,DepMorph,TransMorph) :- zeit_like_anfang(HeadWord), zeitcand(DepWord), \+ member('<-det<-', DepRels), \+ member('<-bad_det<-', DepRels), \+ member('<-det<-', HeadRels), \+ member('<-bad_det<-', HeadRels), \+ member('<-attr<-', HeadRels), \+ member('<-bad_attr<-', HeadRels), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), unify_case(HeadMorph,'NN',DepMorph,'NN',TransMorph).
+head('NN','NN',r,app_close,'NZEIT',[_,_,HeadWord,DepWord,HeadRels,DepRels,_,_],_,HeadMorph,DepMorph,TransMorph) :- zeit_like_anfang(HeadWord), zeitcand(DepWord), \+ member('<-det<-', DepRels), \+ member('<-bad_det<-', DepRels), \+ member('<-attr<-', DepRels), \+ member('<-bad_attr<-', DepRels), \+ member('<-det<-', HeadRels), \+ member('<-bad_det<-', HeadRels), \+ member('<-attr<-', HeadRels), \+ member('<-bad_attr<-', HeadRels), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), unify_case(HeadMorph,'NN',DepMorph,'NN',TransMorph).
 
-head('NN','CARD',r,app_close,'NZEIT',[_,_,HeadWord,_,HeadRels,_,_,_],_,HeadMorph,DepMorph,TransMorph) :- zeit_like_anfang(HeadWord), \+ member('<-det<-', HeadRels), \+ member('<-bad_det<-', HeadRels), \+ member('<-attr<-', HeadRels), \+ member('<-bad_attr<-', HeadRels), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), unify_case(HeadMorph,'NN',DepMorph,'NN',TransMorph).
+head('NN','CARD',r,app_close,'NZEIT',[_,_,HeadWord,_,HeadRels,DepRels,_,_],_,HeadMorph,DepMorph,TransMorph) :- zeit_like_anfang(HeadWord), \+ member('<-det<-', DepRels), \+ member('<-bad_det<-', DepRels), \+ member('<-attr<-', DepRels), \+ member('<-bad_attr<-', DepRels), \+ member('<-det<-', HeadRels), \+ member('<-bad_det<-', HeadRels), \+ member('<-attr<-', HeadRels), \+ member('<-bad_attr<-', HeadRels), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), unify_case(HeadMorph,'NN',DepMorph,'NN',TransMorph).
 
 
 %close apposition.
@@ -854,7 +854,7 @@ head('NN','CARD',r,app_close,'NZEIT',[_,_,HeadWord,_,HeadRels,_,_,_],_,HeadMorph
 %name as apposition of noun: morphological mismatch is ok in some, but not all cases
 %Der Ministerpräsident Italiens -> no app (must be gmod)
 %Des Ministerpräsidenten Berlusconi -> (app is ok)
-head(HTag,'NE',r,app_close,HTag,[_,_,HeadWord,_,HeadRels,OF,_,_],_,MG,_,MG) :- HTag \= 'NE', apphead(HTag), (HTag = 'PPER'->HeadWord \= es;true), \+ member('->bracket->', HeadRels), \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), \+ member('->gmod->', HeadRels).
+head(HTag,'NE',r,app_close,HTag,[_,_,HeadWord,_,HeadRels,OF,_,_],_,MG,_,MG) :- HTag \= 'NE', apphead(HTag), (HTag = 'PPER'->HeadWord \= es;true), \+ member('->bracket->', HeadRels), \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), \+ member('<-attr<-', OF), \+ member('<-bad_attr<-', OF), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), \+ member('->gmod->', HeadRels).
 
 %John Lennons -> take genitive information from last element
 %if first element is genitive, don't allow relation (except if morphology is ambiguous)
@@ -862,11 +862,19 @@ head(HTag,'NE',r,app_close,HTag,[_,_,HeadWord,_,HeadRels,OF,_,_],_,MG,_,MG) :- H
 head('NE','NE',r,app_close,'NE',[_,_,_,_,HeadRels,OF,_,_],_,MG,MF,MF) :- \+ member('<-det<-', OF), \+ member('->bracket->', HeadRels), \+ member('<-bad_det<-', OF), (case_gen(MG,'NE')->case_nom(MG,'NE');true), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), \+ member('->gmod->', HeadRels).
 
 %der bürgermeister meier vs. der internet browser: if last element is nn (but not if ne), use it for np agreement.
-head(HTag,'NN',r,app_close,HTag,[_,_,HeadWord,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), (HTag = 'PPER'-> HeadWord \= es;true), \+ member('->bracket->', HeadRels), \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), \+ member('->gmod->', HeadRels), unify_case(MF,'NN',MG,HTag,MNew).
+%if dependent has attribute ("Mindestgebot 50 Mark"), use head for np agreement
+head(HTag,'NN',r,app_close,HTag,[_,_,HeadWord,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), (HTag = 'PPER'-> HeadWord \= es;true), \+ member('->bracket->', HeadRels), \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), \+ member('->gmod->', HeadRels), ((member('<-attr<-', OF);member('<-bad_attr<-', OF))->unify_case(MG,HTag,MF,'NN',MNew);unify_case(MF,'NN',MG,HTag,MNew)).
 
-head(HTag,'FM',r,app_close,HTag,[_,_,HeadWord,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), (HTag = 'PPER'-> HeadWord \= es;true), \+ member('->bracket->', HeadRels), \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), \+ member('->gmod->', HeadRels), unify_case(MF,'FM',MG,HTag,MNew).
+head(HTag,'FM',r,app_close,HTag,[_,_,HeadWord,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), (HTag = 'PPER'-> HeadWord \= es;true), \+ member('->bracket->', HeadRels), \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), \+ member('->gmod->', HeadRels), ((member('<-attr<-', OF);member('<-bad_attr<-', OF))->unify_case(MG,HTag,MF,'FM',MNew);unify_case(MF,'FM',MG,HTag,MNew)).
 
-head(HTag,'CARD',r,app_close,HTag,[_,_,HeadWord,_,HeadRels,_,_,_],_,MH,_,MH) :- apphead(HTag), (HTag = 'PPER'-> HeadWord \= es;true), \+ member('->bracket->', HeadRels), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), \+ member('->gmod->', HeadRels).
+head(HTag,'CARD',r,app_close,HTag,[_,_,HeadWord,_,HeadRels,DepRels,_,_],_,MH,_,MH) :- apphead(HTag), (HTag = 'PPER'-> HeadWord \= es;true), \+ member('->bracket->', HeadRels), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), \+ member('->gmod->', HeadRels), \+ member('<-det<-', DepRels), \+ member('<-bad_det<-', DepRels), \+ member('<-attr<-', DepRels), \+ member('<-bad_attr<-', DepRels).
+
+
+%dependent has attribute: app still allowed, but don't use last element for np agreement, but simply the head
+% head(HTag,'NN',r,app_close,HTag,[_,_,HeadWord,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), (member('<-attr<-', OF);member('<-bad_attr<-', OF)), (HTag = 'PPER'-> HeadWord \= es;true), \+ member('->bracket->', HeadRels), \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), \+ member('->gmod->', HeadRels), unify_case(MG,HTag,MF,'NN',MNew).
+
+% head(HTag,'FM',r,app_close,HTag,[_,_,HeadWord,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), (member('<-attr<-', OF);member('<-bad_attr<-', OF)), (HTag = 'PPER'-> HeadWord \= es;true), \+ member('->bracket->', HeadRels), \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), \+ member('->gmod->', HeadRels), unify_case(MG,HTag,MF,'FM',MNew).
+
 
 
 %nichts anderes
@@ -897,6 +905,7 @@ head('PWS','PIS',r,app_close,'PWS',[_,_,_,all,_,_,_,_],H-D,MH,_,MH) :- 1 is D-H.
 
 apphead('PPER').
 apphead('PIS').
+apphead('PDS').
 apphead('FM').
 apphead('NN').
 apphead('NE').
