@@ -2108,6 +2108,7 @@ head('PPNEBX','$,',l,comma,'PPNEB',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- member
 head('KOMPXWITHCOMMA','$,',r,comma,'KOMPXWITHCOMMA',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- member('<-comma<-', HeadRels), \+  member('->comma->', HeadRels).
 head('KOMPX','$,',l,comma,'KOMPXWITHCOMMA',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ member('<-comma<-', HeadRels).
 
+head('QUOTE','$,',r,comma,'PARSO',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- member('<-comma<-', HeadRels), \+ member('->comma->', HeadRels), nth1(RelPos, HeadRels, '<-adv<-'), AdvPos is RelPos-1, nth1(AdvPos, HeadRels, AdvStruct), AdvStruct =.. [Adv,_], atom_concat(so,_,Adv).
 
 %quotes on both sides: "Er sei", sagte der Angeklagte, "völlig unschuldig."
 head(Tag,'PAR',r,par,Tag,[_,FD,_,_,_,DepRels,_,DID],F-_,HM,_,HM) :- getRange(DID,From-_), lastlexical(From,F), member('mainclause',FD), restrict_coord(DepRels), \+ member('->s->',DepRels), \+ member('<-s<-',DepRels), \+ member('<-objc<-',DepRels), \+ member('->objc->',DepRels), \+ member('<-obja<-',DepRels), \+ member('->obja->',DepRels).
@@ -2117,6 +2118,9 @@ head(Tag,'QUOTE',r,par,Tag,[_,FD,_,_,_,DepRels,_,DID],F-_,HM,_,HM) :- getRange(D
 
 %"Verantwortlich, so Peter, ist Hans"
 head(Tag,'APP',r,par,Tag,[_,_,_,_,_,DepRels,_,DID],F-_,HM,_,HM) :- getRange(DID,From-_), lastlexical(From,F), member('<-comma<-', DepRels), member('->comma->', DepRels), nth1(RelPos, DepRels, '<-adv<-'), AdvPos is RelPos-1, nth1(AdvPos, DepRels, AdvStruct), AdvStruct =.. [Adv,_], atom_concat(so,_,Adv).
+%"Verantwortlich, so scheint es, ist Hans"
+head(Tag,'PARSO',r,par,Tag,[_,_,_,_,_,_,_,DID],F-_,HM,_,HM) :- getRange(DID,From-_), lastlexical(From,F).
+
 
 %"Ich bin - wie versprochen - gekommen."
 head(Tag,'PPNEB',r,par,Tag,[_,_,_,_,_,_,_,DID],F-_,HM,_,HM) :- getRange(DID,From-_), lastlexical(From,F).

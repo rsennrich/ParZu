@@ -91,15 +91,12 @@ stats2(avz,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1.06,_D,_HC,_DC).
 
 %exception: nicht (nur) X, sondern (auch) Y: prefer attaching 'nicht' to head of coordination
 stats2(adv_kon,_Htag,_FH,SH,_MORPHH,_Dtag,_FD,SD,_MORPHD,P,D,_HC,_DC) :-
-    spyme,
     lexic(SH,_,HPos),
     lexic(SD,_,DPos),
     RealDist is HPos-DPos,
     RealDist > 0,
     distModifier(D,adv,DistMod),
     P is DistMod.
-
-spyme.
 
 
 stats2(adv,Htag,_FH,SH,_MORPHH,Dtag,FD,SD,_MORPHD,P,D,_HC,_DC) :-
@@ -532,6 +529,8 @@ stats2(par,Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,_MORPHD,P,D,_HC-_OG,_DC) :-
 
 %should have precedence over app
 stats2(par,_Htag,_FH,_SH,_MORPHH,'APP',_FD,_SD,_MORPHD,0.9,_D,_HC-_OG,_DC).
+
+stats2(par,_Htag,_FH,_SH,_MORPHH,'PARSO',_FD,_SD,_MORPHD,0.1,_D,_HC-_OG,_DC).
 
 stats2(par,_Htag,_FH,_SH,_MORPHH,'PPNEB',_FD,_SD,_MORPHD,0.9,_D,_HC-_OG,_DC).
 stats2(par,_Htag,_FH,_SH,_MORPHH,'VVPP',_FD,_SD,_MORPHD,0.9,_D,_HC-_OG,_DC).
