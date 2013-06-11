@@ -26,7 +26,7 @@ start(GERTWOL) :- start2(GERTWOL, user_input).
 start(GERTWOL, F) :- open(F, read, Stream, [encoding(utf8)]), start2(GERTWOL, Stream).
 
 start2(GERTWOL, Stream) :- retractall(w(_,_,_,_,_,_)), retractall(w(_,_,_,_)), retractall(sentno(_)), retractall(posno(_)), retractall(completed(_,_)), retractall(mainclause(_)), retractall(lvl(_,_,_,_)),
-		   consult(GERTWOL),
+		   ((morphology(none);morphology(keep))->true;consult(GERTWOL)),
 		   assert(sentno(1)),
 		   assert(posno(1)),
 		   readsentences(Stream).
