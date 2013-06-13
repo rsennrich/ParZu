@@ -1,5 +1,10 @@
 ParZu changelog
 
+0.21 (in development)
+  - projective output (option --projective) is now same as normal output wherever possible
+    (before, it always used pseudo-projective heads used during parsing, for instance finite verbs instead of full verbs as head for OBJA/OBJD)
+  - various grammar improvements
+
 0.20 2013/04/02
   - retrained statistics for disambiguation module (on Europarl)
     - new extraction process

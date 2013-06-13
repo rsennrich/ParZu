@@ -2,7 +2,7 @@
 %   Rico Sennrich
 %   take the parser output, convert it into the right format and do some postprocessing (non-projective dependencies)
 
-:- dynamic morphclean/1, projectivehead/2.
+:- dynamic morphclean/1, oldhead/2.
 
 :- ensure_loaded('../core/helper_predicates').
 
@@ -20,7 +20,7 @@ postprocess(Pos,Outputformat) :-
              (NewRel=root->HeadPos3=0;HeadPos3=HeadPos2),
              retract(output(Pos,Word,Lemma,Tag,Rel,HeadPos,Morph3)),
              assert(output(Pos,Word,Lemma,Tag,NewRel,HeadPos3,Morph3)),
-             assert(projectivehead(Pos,HeadPos)),
+             assert(oldhead(Pos,HeadPos)),
              NewPos is Pos + 1, !,
              postprocess(NewPos,Outputformat).
 
@@ -33,7 +33,7 @@ postprocess(_,Outputformat) :- findall(Pos,output(Pos,_,_,_,_,_,_),List),length(
               fail.
 
 %third round: cleanup
-postprocess(_,_) :- nl,retractall(output(_,_,_,_,_,_,_)), retractall(projectivehead(_,_)), !.
+postprocess(_,_) :- nl,retractall(output(_,_,_,_,_,_,_)), retractall(oldhead(_,_)), !.
 
 
 %print results in pseudo-conll format.
@@ -59,7 +59,7 @@ printresult(oldconll,Pos,DepWord,DepLemma,DepTag,Class,HeadPos,Morph) :-
 printresult(conll,Pos,DepWord,DepLemma,DepTag,Class,HeadPos,Morph) :- 
     transformMorph(conll,Morph,MorphOut),
     coarsetag(DepTag,CoarseTag),
-    getExtraHead(Pos,Class,ExtraHead,ExtraRel,conll),
+    getExtraHead(Pos,HeadPos,Class,ExtraHead,ExtraRel,conll),
     nbest_fixHead(HeadPos,HeadPosOut),
     nbest_fixHead(ExtraHead,ExtraHeadOut),
     write(Pos),
@@ -86,7 +86,7 @@ printresult(conll,Pos,DepWord,DepLemma,DepTag,Class,HeadPos,Morph) :-
 %print results in prolog format.
 printresult(prolog,Pos,Word,Lemma,Tag,Rel,HeadPos,Morph) :- 
     transformMorph(prolog,Morph,MorphOut),
-    getExtraHead(Pos,Rel,ExtraHead,ExtraRel,prolog),
+    getExtraHead(Pos,HeadPos,Rel,ExtraHead,ExtraRel,prolog),
     nbest_fixHead(HeadPos,HeadPosOut),
     nbest_fixHead(ExtraHead,ExtraHeadOut),
     (extrainfo(no)->writeq(word(Pos,Word,Lemma,Tag,Rel,HeadPosOut,MorphOut));
@@ -106,11 +106,11 @@ printresult(moses,_,Word,_,Tag,Rel,HeadPos,_) :-
 
 
 % if either the option --secedges (for secondary edges) or --projective (for projective edges) is active, get correct edge/label information
-getExtraHead(_Pos, _Rel, '_', '_', conll) :- extrainfo(no), !.
-getExtraHead(_Pos, _Rel, -, -, prolog) :- extrainfo(no), !.
+getExtraHead(_Pos, _HeadPos, _Rel, '_', '_', conll) :- extrainfo(no), !.
+getExtraHead(_Pos, _HeadPos, _Rel, -, -, prolog) :- extrainfo(no), !.
 
-getExtraHead(Pos, _Rel, ExtraHead, ExtraRel, Format) :- extrainfo(secedges), secedge(Pos,ExtraHead,ExtraRel,Format), !.
-getExtraHead(Pos, Rel, ExtraHead, Rel, _Format) :- extrainfo(projective), projectivehead(Pos,ExtraHead), !.
+getExtraHead(Pos, _HeadPos, _Rel, ExtraHead, ExtraRel, Format) :- extrainfo(secedges), secedge(Pos,ExtraHead,ExtraRel,Format), !.
+getExtraHead(Pos, HeadPos, Rel, ExtraHead, Rel, _Format) :- extrainfo(projective), (is_projective(Pos,HeadPos)->ExtraHead = HeadPos;oldhead(Pos,ExtraHead)), !.
 
 %n-best tagging uses an extra token at the start of the sentence to pass through tagging probability.
 %shift all positions one to the left.
@@ -119,6 +119,28 @@ nbest_fixHead(-, -) :- !.
 nbest_fixHead('_', '_') :- !.
 nbest_fixHead(PosIn, PosOut) :- nbestmode(NBEST), NBEST > 0, PosOut is PosIn-1, !.
 nbest_fixHead(Pos, Pos) :- !.
+
+
+%only use pseudo-projective head (found by parser) if post-processed one (found by fixAttachment) violates projectivity.
+is_projective(_,0) :- !, fail.
+
+is_projective(DepPos, HeadPos) :- DepPos < HeadPos,
+    First is DepPos + 1,
+    Last is HeadPos - 1,
+    between(First, Last, Pos),
+    output(Pos,_,_,_,_,TempHeadPos,_),
+    ((TempHeadPos = 0; is_dependent(Pos,HeadPos))->true; (!, fail)),
+    fail.
+
+is_projective(DepPos, HeadPos) :- DepPos > HeadPos,
+    First is HeadPos + 1,
+    Last is DepPos - 1,
+    between(First, Last, Pos),
+    output(Pos,_,_,_,_,TempHeadPos,_),
+    ((TempHeadPos = 0; is_dependent(Pos,HeadPos))->true; (!, fail)),
+    fail.
+
+is_projective(_,_) :- !.
 
 
 transformMorph(prolog,[Var],_) :- var(Var),!.
