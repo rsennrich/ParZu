@@ -333,7 +333,7 @@ stats2(pred,Htag,_FH,SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,_D,HC-_OG,_DC) :-
 	lexic(SH,_,HPos),
 	lexic(SD,_,DPos),
 	DistMod is 1+((50-DPos)*0.00005),
-	(HPos > DPos->DistMod2 = 0.2;DistMod2=1), % prefer subject-verb-predicate over predicate-verb-subject
+	((HPos > DPos, member('mainclause',HC))->DistMod2 = 0.2;DistMod2=1), % prefer subject-verb-predicate over predicate-verb-subject
 	npidsamb(Head,MORPHD,Dtag,pred,PLabel),
 	((Htag = 'ADJA';Htag='ADJD')->PosMod is 0.5;PosMod is 1),
 	P is PLabel*DistMod*PosMod*DistMod2.
