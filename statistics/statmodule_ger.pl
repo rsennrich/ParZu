@@ -327,14 +327,16 @@ stats2(objg,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,MORPHD,P,D,HC-_OG,_DC) :-
 	P is min(Max,PTemp)*DISTMOD.
 
 %predicate nouns
-stats2(pred,Htag,_FH,_SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,_D,HC-_OG,_DC) :-
+stats2(pred,Htag,_FH,SH,_MORPHH,Dtag,_FD,SD,MORPHD,P,_D,HC-_OG,_DC) :-
 	\+ predcand_adverb(Dtag),
 	getheadandnormalise(HC,Head,_),
+	lexic(SH,_,HPos),
 	lexic(SD,_,DPos),
 	DistMod is 1+((50-DPos)*0.00005),
+	(HPos > DPos->DistMod2 = 0.2;DistMod2=1), % prefer subject-verb-predicate over predicate-verb-subject
 	npidsamb(Head,MORPHD,Dtag,pred,PLabel),
 	((Htag = 'ADJA';Htag='ADJD')->PosMod is 0.5;PosMod is 1),
-	P is PLabel*DistMod*PosMod.
+	P is PLabel*DistMod*PosMod*DistMod2.
 
 %disambiguate between subj/obja/objd/objg/pred. Use lexical information of verb and morphology of dependent.
 npidsamb(Head,Morph,Tag,Cand,Prob) :- verb(Head,Occurs,Subj,Obja,Objd,Obja2,Objg,_,_,_,Pred,_,_,_,_,_),
