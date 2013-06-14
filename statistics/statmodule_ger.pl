@@ -548,31 +548,39 @@ stats2(kom,Htag,_FH,SH,_MORPHH,Dtag,_FD,SD,_MORPHD,P,D,_HC,_DC) :-
     P is DistMod*PosMod.
 
 
+%attachment of comparatives to comparative conjunction. we will penalize some tag combinations; others get catchall weight.
+stats2(cj,'KOKOM',FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,_HC,_DC) :-
+    distModifier(D,cj,DistMod),
+    cj_penalty('KOKOM',FH,Dtag,Penalty),
+    P is DistMod*Penalty.
+
 
 %conjunctions. we will penalize some tag combinations; others get catchall weight.
 stats2(cj,Htag,FH,_SH,_MORPHH,Dtag,_FD,_SD,_MORPHD,P,D,_HC,_DC) :-
     distModifier(D,cj,DistMod),
     (Htag='KON'->kon_mapping(Dtag,Kontag);Kontag=Dtag),
-    cj_penalty(FH,Kontag,Penalty),
+    cj_penalty(Htag, FH,Kontag,Penalty),
     P is DistMod*Penalty.
 
 
 %some conjunctions typically conjoin verbs; disallow some other tags.
 %often, sentence-level conjunctions are something like "X hat Rechte, aber wir erwarten...", so this prevents false positives.
-cj_penalty(aber,'KON_PPER',0) :- !.
-cj_penalty(aber,'KON_PRONOUN',0) :- !.
+cj_penalty(_,aber,'KON_PPER',0) :- !.
+cj_penalty(_,aber,'KON_PRONOUN',0) :- !.
 
-cj_penalty(doch,'KON_PRONOUN',0) :- !.
-cj_penalty(doch,'KON_PPER',0) :- !.
-cj_penalty(doch,'KON_NOUN',0) :- !.
-cj_penalty(doch,'KON_ADV',0) :- !.
+cj_penalty(_,doch,'KON_PRONOUN',0) :- !.
+cj_penalty(_,doch,'KON_PPER',0) :- !.
+cj_penalty(_,doch,'KON_NOUN',0) :- !.
+cj_penalty(_,doch,'KON_ADV',0) :- !.
 
-cj_penalty(denn,'KON_PRONOUN',0) :- !.
-cj_penalty(denn,'KON_PPER',0) :- !.
-cj_penalty(denn,'KON_NOUN',0) :- !.
-cj_penalty(denn,'KON_ADV',0) :- !.
+cj_penalty(_,denn,'KON_PRONOUN',0) :- !.
+cj_penalty(_,denn,'KON_PPER',0) :- !.
+cj_penalty(_,denn,'KON_NOUN',0) :- !.
+cj_penalty(_,denn,'KON_ADV',0) :- !.
 
-cj_penalty(_,_,1).
+cj_penalty('KOKOM',_,'ADV',0.5) :- !.
+
+cj_penalty(_,_,_,1).
 
 %catchall for now...
 stats2(Rel,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,D,_HC,_DC) :-

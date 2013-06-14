@@ -1594,8 +1594,6 @@ head('KOKOM','ADJD',r,cj,'KOMPX',_,_,MH,_,MH).
 
 head('KOKOM','PP',r,cj,'KOMPX',_,_,MH,_,MH).
 
-head('KOKOM','VVFIN',r,cj,'KOMPX',_,_,MH,_,MH).
-
 head('KOKOM','PIS',r,cj,'KOMPX',_,_,MH,_,MH).
 
 
@@ -2117,8 +2115,10 @@ head('QUOTE','$,',r,comma,'PAR',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- member('<
 head('PPNEB','$,',r,comma,'PPNEBX',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ member('->comma->', HeadRels).
 head('PPNEBX','$,',l,comma,'PPNEB',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- member('->comma->', HeadRels).
 
-head('KOMPXWITHCOMMA','$,',r,comma,'KOMPXWITHCOMMA',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- member('<-comma<-', HeadRels), \+  member('->comma->', HeadRels).
-head('KOMPX','$,',l,comma,'KOMPXWITHCOMMA',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ member('<-comma<-', HeadRels).
+head('KOMPXWITHCOMMATOLEFT','$,',r,comma,'KOMPXWITHCOMMA',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- member('<-comma<-', HeadRels), \+  member('->comma->', HeadRels).
+
+head('KOMPX','$,',l,comma,'KOMPXWITHCOMMA',[_,_,_,_,HeadRels,_,_,DepID],_,HM,_,HM) :- \+ member('<-comma<-', HeadRels), stopToRight(DepID).
+head('KOMPX','$,',l,comma,'KOMPXWITHCOMMATOLEFT',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ member('<-comma<-', HeadRels).
 
 head('QUOTE','$,',r,comma,'PARSO',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- member('<-comma<-', HeadRels), \+ member('->comma->', HeadRels), nth1(RelPos, HeadRels, '<-adv<-'), AdvPos is RelPos-1, nth1(AdvPos, HeadRels, AdvStruct), AdvStruct =.. [Adv,_], atom_concat(so,_,Adv).
 
