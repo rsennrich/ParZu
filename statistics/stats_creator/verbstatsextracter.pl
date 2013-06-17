@@ -107,8 +107,15 @@ searchgoal(Sen,Pos,'obja2',Word2) :- w(Sen,Pos,_,_,Class,Dep,_Morph),
              (Class3 = 'obja'; Class3 = 'objc'; Class3 = 's'),
              \+ Pos3 = Pos.
 
+%predicates: don't count adverbial predicates, which have separate statistics.
+searchgoal(Sen,Pos,pred,Word2) :- w(Sen,Pos,_,Tag,pred,Dep,_Morph), 
+			 w(Sen,Dep,Word2,Tag2,Funct2,_,_Morph2),
+			 verb(Tag2), \+ Funct2 = 'aux',
+			 \+ predcand_adverb(Tag).
+
 %catchall. Usually called with Class being uninitialised.
-searchgoal(Sen,Pos,Class,Word2) :- w(Sen,Pos,_,_Tag,Class,Dep,_Morph), 
+searchgoal(Sen,Pos,Class,Word2) :- w(Sen,Pos,_,_Tag,Class,Dep,_Morph),
+			 Class \= pred,
 			 w(Sen,Dep,Word2,Tag2,Funct2,_,_Morph2), 
 			 verb(Tag2), \+ Funct2 = 'aux'.
 
@@ -168,3 +175,7 @@ verb('vaimp').
 verb('vmfin').
 verb('vminf').
 verb('vmpp').
+
+predcand_adverb('adjd').
+predcand_adverb('adv').
+predcand_adverb('pwav').

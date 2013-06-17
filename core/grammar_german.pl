@@ -430,9 +430,9 @@ head('V*IMP',OBJ,r,objd,'V*IMP',[_,_,_,_,OG,_,_,_],_-F,MG,MF,MG)  :- objcandidat
 
 
 %predicate noun before finite verb.
-head('V*FIN',Dtag,l,pred,'V*FIN',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF)  :- predcand(Dtag,G), case_nom(MG,Dtag), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('<-adv<-',UG), \+ member('<-pred<-',UG), \+ member('->pred->',UG), \+ member('->objp->', UG), \+ member('<-objp<-', UG).
+head('V*FIN',Dtag,l,pred,'V*FIN',[FC,_,_,_,UG,_,_,_],_-G,MF,MG,MF)  :- predcand(Dtag,G), case_nom(MG,Dtag), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('<-subjc<-',UG), \+ member('<-adv<-',UG), \+ member('<-pred<-',UG), \+ member('->pred->',UG), \+ member('->objp->', UG), \+ member('<-objp<-', UG).
 
-head('V*FIN',Dtag,l,pred,'V*FIN',[FC,_,_,_,UG,_,_,_],_,MH,_,MH)  :- predcand_adverb(Dtag), Dtag \= 'PWAV', \+ member('<-pred<-',UG), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('<-adv<-',UG), \+ member('->pred->',UG), \+ member('<-objd<-',UG).
+head('V*FIN',Dtag,l,pred,'V*FIN',[FC,_,_,_,UG,_,_,_],_,MH,_,MH)  :- predcand_adverb(Dtag), Dtag \= 'PWAV', \+ member('<-pred<-',UG), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('<-subjc<-',UG), \+ member('<-adv<-',UG), \+ member('->pred->',UG), \+ member('<-objd<-',UG).
 
 
 
