@@ -2697,7 +2697,7 @@ createMeasureMorph(MorphIn,Number,MorphOut) :- morphology(MorphType),
             accusative(Acc),
             dative(Dat),
             genitive(Gen),
-            findall([Gender,Case,Number],(member(Gender,GenderList), member(Case,[Nom,Acc,Dat,Gen])),MorphOut), !.
+            findall([Gender,Case,Number],(member(Gender,GenderList), member(Case,[Nom,Acc,Dat,Gen])),MorphTemp), my_remove_duplicates(MorphTemp,MorphOut), !.
 
 createMorphOutput(Head,Dep,MyRel) :- (getChartInfo(Head,HPos,HWord,HLemma,_,HMorph);true),
       getChartInfo(Dep,DPos,DWord,DLemma,_,DMorph),
