@@ -1111,15 +1111,14 @@ head('OBJC','$,',l,comma,'OBJC',[_,_,_,_,HeadRels,_,_,_],_,HM,_,HM) :- \+ member
 head('V*FIN','OBJC/SUBJC',l,subjc,'V*FIN',[FC,_,_,_,OF,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,OF), \+ member('<-subj<-',OF), \+ member('->subj->',OF), \+ member('<-subjc<-',OF), \+ member('->subjc->',OF).
 
 %infinitive clausal subject before main clause 
-head('V*FIN','VVIZU',l,subjc,'V*FIN',[FC,GC,_,_,OF,_,_,_],_,MH,_,MH) :- FC \= GC, restrict_vorfeld(FC,OF), \+ member('<-subj<-',OF), \+ member('->subj->',OF), \+ member('<-subjc<-',OF), \+ member('->subjc->',OF).
 head('V*FIN','VVIZU_WITH_COMMA',l,subjc,'V*FIN',[FC,GC,_,_,OF,_,_,_],_,MH,_,MH) :- FC \= GC, restrict_vorfeld(FC,OF), \+ member('<-subj<-',OF), \+ member('->subj->',OF), \+ member('<-subjc<-',OF), \+ member('->subjc->',OF).
 
 %clausal subject after main clause
 head('V*FIN','OBJC/SUBJC',r,subjc,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG).
 
 %infinitive clausal subject after main clause 
-head('V*FIN','VVIZU',r,subjc,'V*FIN',[GC,FC,_,_,HeadRels,_,_,_],_,MH,_,MH) :- FC \= GC, restrict_coord(HeadRels), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG).
-head('V*IMP','VVIZU',r,subjc,'V*IMP',[GC,FC,_,_,HeadRels,_,_,_],_,MH,_,MH) :- FC \= GC, restrict_coord(HeadRels), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG).
+head('V*FIN','VVIZU_WITH_COMMA',r,subjc,'V*FIN',[GC,FC,_,_,HeadRels,_,_,_],_,MH,_,MH) :- FC \= GC, restrict_coord(HeadRels), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG).
+head('V*IMP','VVIZU_WITH_COMMA',r,subjc,'V*IMP',[GC,FC,_,_,HeadRels,_,_,_],_,MH,_,MH) :- FC \= GC, restrict_coord(HeadRels), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG).
 
 %======================================================================================
 %infinitive object
@@ -1133,7 +1132,7 @@ head('VVIZU_WITH_COMMA','$,',r,comma,'VVIZU_WITH_COMMA',[_,_,_,_,HeadRels,_,_,_]
 head('VVIZU','$,',r,comma,'VVIZU_WITH_COMMA',[_,_,_,_,HeadRels,_,HID,_],_,HM,_,HM) :- \+ member('->comma->', HeadRels), getRange(HID,From-_), LeftPos is From - 1, checkPos(LeftPos,_,Tag,_,_), (Tag = 'NONE';Tag='$.';Tag='$(';sentdelim(Tag);Tag='KON').
 
 %infinitive objects depend on finite verb on their left.
-head('V*FIN','VVIZU',r,obji,'V*FIN',[GC,FC,_,_,HeadRels,_,_,_],_,MH,_,MH) :- FC \= GC, restrict_coord(HeadRels).
+head('V*FIN','VVIZU',r,obji,'V*FIN',[GC,FC,FF,_,HeadRels,DepRels,_,_],_,MH,_,MH) :- FC \= GC, restrict_coord(HeadRels), (FF = sein-> \+ member('<-obja<-',DepRels);true).
 head('V*IMP','VVIZU',r,obji,'V*IMP',[GC,FC,_,_,HeadRels,_,_,_],_,MH,_,MH) :- FC \= GC, restrict_coord(HeadRels).
 
 head('V*FIN','VVIZU_WITH_COMMA',r,obji,'V*FIN',[_,_,_,_,HeadRels,_,_,_],_,MH,_,MH) :- restrict_coord(HeadRels).
@@ -1144,7 +1143,7 @@ head('V*INF','VVIZU_WITH_COMMA',r,obji,'V*INF',[HC,_,_,_,HeadRels,_,_,_],_,MH,_,
 head('V*PP','VVIZU_WITH_COMMA',r,obji,'V*PP',[HC,_,_,_,HeadRels,_,_,_],_,MH,_,MH) :- in_coordination(HC, HeadRels), restrict_coord(HeadRels).
 
 %VVIZU to the left of finite verb (topicalized or in subordinated clause)
-head('V*FIN','VVIZU',l,obji,'V*FIN',[FC,GC,_,_,OF,_,_,_],H-D,MH,_,MH) :- FC \= GC, 1 is H-D, restrict_vorfeld(FC,OF).
+head('V*FIN','VVIZU',l,obji,'V*FIN',[FC,GC,FF,_,OF,OG,_,_],H-D,MH,_,MH) :- FC \= GC, 1 is H-D, restrict_vorfeld(FC,OF), (FF = sein-> \+ member('<-obja<-',OG);true).
 head('V*FIN','VVIZU_WITH_COMMA',l,obji,'V*FIN',[FC,GC,_,_,OF,_,_,_],_,MH,_,MH) :- FC \= GC, restrict_vorfeld(FC,OF).
 
 
