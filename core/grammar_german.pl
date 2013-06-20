@@ -2701,11 +2701,11 @@ createMeasureMorph(MorphIn,Number,MorphOut) :- morphology(MorphType),
 
 createMorphOutput(Head,Dep,MyRel) :- (getChartInfo(Head,HPos,HWord,HLemma,_,HMorph);true),
       getChartInfo(Dep,DPos,DWord,DLemma,_,DMorph),
-      spyme(HPos,DPos,morph),
       (call(output(HPos,HWord,HLemma,HTag,_,_,HMorph2))->true;
-          (chart(HPos,HPos,HPos,_,Lemma,HTag,_,_,_,[Word|_]),
-          assert(output(HPos,Word,Lemma,HTag,root,0,HMorph)), 
-          HMorph2 = HMorph)),
+          var(HPos)->true;
+            ((chart(HPos,HPos,HPos,_,Lemma,HTag,_,_,_,[Word|_]),
+            assert(output(HPos,Word,Lemma,HTag,root,0,HMorph)), 
+            HMorph2 = HMorph))),
       (call(output(DPos,DWord,DLemma,DTag,MyRel,_,DMorph2));
           (checkPos(DPos,_,DTag,_,_),
           DMorph2 = DMorph)), 
@@ -2713,8 +2713,6 @@ createMorphOutput(Head,Dep,MyRel) :- (getChartInfo(Head,HPos,HWord,HLemma,_,HMor
       assert(output(DPos,DWord,DLemma,DTag,MyRel,0,DMorph2)), !.
 
 createMorphOutput(_,_,_) :- !.
-
-spyme(_,_,_).
 
 createRelOutput(Head,Dep,MyRel) :- lexic(Head,HLemma,HPos), 
       lexic(Dep,DLemma,DPos), 
