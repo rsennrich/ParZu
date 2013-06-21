@@ -2621,7 +2621,7 @@ get_gender([_,_,Gender],_,Gender,tueba) :- !.
 
 get_gender([_,Gender,_,_,_],'ADJA',Gender,gertwol) :- !.
 get_gender([_,Gender,_,_,_,_],'ADJA',Gender,gertwol) :- !.
-get_gender([_,_,_,Gender,_],'PPER',Gender,gertwol) :- !.
+get_gender([_,_,Gender,_],'PPER',Gender,gertwol) :- !.
 get_gender([_,Gender,_,_],'ART',Gender,gertwol) :-  !.
 get_gender([Gender,_],'APPRART',Gender,gertwol) :- !.
 get_gender([Gender,_,_],Tag,Gender,gertwol) :- (morph_noun(Tag);morph_pronoun(Tag)), !.

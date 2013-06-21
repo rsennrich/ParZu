@@ -129,7 +129,7 @@ is_projective(DepPos, HeadPos) :- DepPos < HeadPos,
     Last is HeadPos - 1,
     between(First, Last, Pos),
     output(Pos,_,_,_,_,TempHeadPos,_),
-    ((TempHeadPos = 0; is_dependent(Pos,HeadPos))->true; (!, fail)),
+    ((TempHeadPos=0->(oldhead(Pos,TempHeadPos2),between(DepPos, HeadPos, TempHeadPos2)); is_dependent(Pos,HeadPos))->true; (!, fail)),
     fail.
 
 is_projective(DepPos, HeadPos) :- DepPos > HeadPos,
@@ -137,7 +137,7 @@ is_projective(DepPos, HeadPos) :- DepPos > HeadPos,
     Last is DepPos - 1,
     between(First, Last, Pos),
     output(Pos,_,_,_,_,TempHeadPos,_),
-    ((TempHeadPos = 0; is_dependent(Pos,HeadPos))->true; (!, fail)),
+    ((TempHeadPos=0->(oldhead(Pos,TempHeadPos2),between(HeadPos, DepPos, TempHeadPos2)); is_dependent(Pos,HeadPos))->true; (!, fail)),
     fail.
 
 is_projective(_,_) :- !.
