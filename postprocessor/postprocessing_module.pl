@@ -129,7 +129,7 @@ is_projective(DepPos, HeadPos) :- DepPos < HeadPos,
     Last is HeadPos - 1,
     between(First, Last, Pos),
     output(Pos,_,_,_,_,TempHeadPos,_),
-    ((TempHeadPos=0->(oldhead(Pos,TempHeadPos2),between(DepPos, HeadPos, TempHeadPos2)); is_dependent(Pos,HeadPos))->true; (!, fail)),
+    ((TempHeadPos=0->(oldhead(Pos,TempHeadPos2),between(DepPos, HeadPos, TempHeadPos2)); (is_dependent(Pos,HeadPos), \+ projective_conflict(left, Pos, DepPos)))->true; (!, fail)),
     fail.
 
 is_projective(DepPos, HeadPos) :- DepPos > HeadPos,
@@ -137,11 +137,18 @@ is_projective(DepPos, HeadPos) :- DepPos > HeadPos,
     Last is DepPos - 1,
     between(First, Last, Pos),
     output(Pos,_,_,_,_,TempHeadPos,_),
-    ((TempHeadPos=0->(oldhead(Pos,TempHeadPos2),between(HeadPos, DepPos, TempHeadPos2)); is_dependent(Pos,HeadPos))->true; (!, fail)),
+    ((TempHeadPos=0->(oldhead(Pos,TempHeadPos2),between(HeadPos, DepPos, TempHeadPos2)); (is_dependent(Pos,HeadPos), \+ projective_conflict(right, Pos, DepPos)))->true; (!, fail)),
     fail.
 
 is_projective(_,_) :- !.
 
+%check if attachment would conflict with earlier/later attachments.
+%a token X between the head Y and dependent Z of a projective arc, and that does not depend on the dependent of the arc,
+%may not have any dependent A for which Z lies between X and A.
+projective_conflict(_,Pos, DepPos) :- is_dependent(Pos, DepPos), !, fail.
+
+projective_conflict(right,Pos, DepPos) :- oldhead(X,Pos), X > DepPos, !.
+projective_conflict(left,Pos, DepPos) :- oldhead(X,Pos), X < DepPos, !.
 
 transformMorph(prolog,[Var],_) :- var(Var),!.
 
