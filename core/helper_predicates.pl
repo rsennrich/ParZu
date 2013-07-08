@@ -270,6 +270,20 @@ zeit_like_anfang('Mitte').
 zeit_like_anfang('Ende').
 
 
+month('Januar').
+month('Februar').
+month('März').
+month('April').
+month('Mai').
+month('Juni').
+month('Juli').
+month('August').
+month('September').
+month('Oktober').
+month('November').
+month('Dezember').
+
+
 %override morphological analysis for some units of measurement: they may remain uninflected ("10 Grad" instead of "10 Grade").
 
 %SI-Units (except units of time, which are inflected):

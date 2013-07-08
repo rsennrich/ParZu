@@ -692,7 +692,7 @@ head(NONFIN, 'PAV',r,pp,NONFIN,[FC,_,_,_,UG,_,_,_],_,MH,_,MH) :- nonfinite(NONFI
 
 
 %PP premodifying participial adjective (der auf dem boden liegende mann)
-head('ADJA', 'PP',l,pp,'ADJA',_,F-_,MH,_,MH) :- \+ endOfNP(F).
+head('ADJA', 'PP',l,pp,'ADJA',_,_,MH,_,MH).
 head('ADJD', 'PP',l,pp,'ADJD',_,_,MH,_,MH).
 
 %daran angedockt
@@ -835,6 +835,10 @@ head('PIS','APP',r,app_loose,'PIS',[_,_,_,_,HRels,DRels,_,_],_,MG,MF,MNew) :- un
 head('PPER','APP',r,app_loose,'PPER',[_,_,HeadWord,_,HRels,DRels,_,_],_,MG,MF,MNew) :- unify_case(MG,'PPER',MF,'NN',MNew), HeadWord \= es, \+ member('->bracket->', HRels), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', -1).
 
 
+%"am Samstag, dem 5. Oktober" (comma to right is optional)
+head('NN','APPX',r,app_loose,'NN',[_,_,_,DepWord,HRels,DRels,_,_],_,MG,MF,MNew) :- month(DepWord), unify_case(MG,'NN',MF,'NN',MNew), \+ member('->bracket->', HRels), \+ member('->app_loose->', DRels), \+ among_dependents(HRels, '->app_loose->', -1).
+
+
 %apposition enclosed in bracket
 head(HTag,'NE',r,app_loose,HTag,[_,_,HeadWord,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), (HTag = 'PPER'-> HeadWord \= es;true), member('<-bracket<-', OF), \+ member('->kon->', HeadRels), member('->bracket->', OF), \+ among_dependents(HeadRels, '->app_loose->', -1), \+ member('->app_loose->', OF), unify_case(MF,'NE',MG,HTag,MNew).
 
@@ -868,13 +872,6 @@ head(HTag,'NN',r,app_close,HTag,[_,_,HeadWord,_,HeadRels,OF,_,_],_,MG,MF,MNew) :
 head(HTag,'FM',r,app_close,HTag,[_,_,HeadWord,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), (HTag = 'PPER'-> HeadWord \= es;true), \+ member('->bracket->', HeadRels), \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), \+ member('->gmod->', HeadRels), ((member('<-attr<-', OF);member('<-bad_attr<-', OF))->unify_case(MG,HTag,MF,'FM',MNew);unify_case(MF,'FM',MG,HTag,MNew)).
 
 head(HTag,'CARD',r,app_close,HTag,[_,_,HeadWord,_,HeadRels,DepRels,_,_],_,MH,_,MH) :- apphead(HTag), (HTag = 'PPER'-> HeadWord \= es;true), \+ member('->bracket->', HeadRels), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), \+ member('->gmod->', HeadRels), \+ member('<-det<-', DepRels), \+ member('<-bad_det<-', DepRels), \+ member('<-attr<-', DepRels), \+ member('<-bad_attr<-', DepRels).
-
-
-%dependent has attribute: app still allowed, but don't use last element for np agreement, but simply the head
-% head(HTag,'NN',r,app_close,HTag,[_,_,HeadWord,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), (member('<-attr<-', OF);member('<-bad_attr<-', OF)), (HTag = 'PPER'-> HeadWord \= es;true), \+ member('->bracket->', HeadRels), \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), \+ member('->gmod->', HeadRels), unify_case(MG,HTag,MF,'NN',MNew).
-
-% head(HTag,'FM',r,app_close,HTag,[_,_,HeadWord,_,HeadRels,OF,_,_],_,MG,MF,MNew) :- apphead(HTag), (member('<-attr<-', OF);member('<-bad_attr<-', OF)), (HTag = 'PPER'-> HeadWord \= es;true), \+ member('->bracket->', HeadRels), \+ member('<-det<-', OF), \+ member('<-bad_det<-', OF), \+ member('->app_loose->', HeadRels), \+ member('->kon->', HeadRels), \+ member('->gmod->', HeadRels), unify_case(MG,HTag,MF,'FM',MNew).
-
 
 
 %nichts anderes
