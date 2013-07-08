@@ -292,7 +292,7 @@ head('VVPP','PWS',l,subj,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- correct_mistagg
 
 
 %subject after finite verb
-head('V*FIN',SUBJ,r,subj,'V*FIN',[_,_,_,_,OG,OF,_,_],_-F,MG,MF,MNew)  :- subjcandidate(SUBJ,F), (among_dependents(OF,'->kon->',-1)->(case_nom(MF,SUBJ),MNew=MF); check_agreement(MG,'VVFIN',MF,SUBJ,MNew)), restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG), \+ member('->obji->',OG), \+ member('<-explsubj<-',OG), \+ member('->explsubj->',OG), \+ member('->objp->',OG), \+ member('->pred->',OG).
+head('V*FIN',SUBJ,r,subj,'V*FIN',[_,_,_,_,OG,OF,_,_],_-F,MG,MF,MNew)  :- subjcandidate(SUBJ,F), (among_dependents(OF,'->kon->',-1)->(case_nom(MF,SUBJ),MNew=MG); check_agreement(MG,'VVFIN',MF,SUBJ,MNew)), restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG), \+ member('->obji->',OG), \+ member('<-explsubj<-',OG), \+ member('->explsubj->',OG), \+ member('->objp->',OG), \+ member('->pred->',OG).
 
 
 %======================================================================================
