@@ -166,7 +166,7 @@ stats2(grad,Htag,FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,_D,_HC,_DC) :-
 stats2(grad,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.3,_D,_HC,_DC).
 
 %closing bracket - better than having two opening ones / prefer short distances
-stats2(bracket,'BRACKET',_FH,SH,_MORPHH,_Dtag,_FD,SD,_MORPHD,P,_D,_HC-OG,_DC) :-
+stats2(bracket,_Htag,_FH,SH,_MORPHH,_Dtag,_FD,SD,_MORPHD,P,_D,_HC-OG,_DC) :-
     lexic(SD,_,RIGHTPOS),
     lexic(SH,_,MIDPOS),
     append(_,[BRACKET, '<-bracket<-'|_],OG),
@@ -179,7 +179,7 @@ stats2(bracket,'BRACKET',_FH,SH,_MORPHH,_Dtag,_FD,SD,_MORPHD,P,_D,_HC-OG,_DC) :-
 
 stats2(bracket,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.5,_D,_HC,_DC).
 
-stats2(badbracket,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.65,_D,_HC,_DC).
+stats2(badbracket,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.55,_D,_HC,_DC).
 
 %loose apposition
 stats2(app_loose,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,D,_HC-_OG,_DC) :-

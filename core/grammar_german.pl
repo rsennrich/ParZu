@@ -2266,6 +2266,8 @@ head(OldTag,'$(',r,bracket,Tag,[_,_,_,Lex,_,_,_,_],_,HM,_,HM) :- atom_concat('BR
 leftbracket('«','1') :- !.
 leftbracket('»','2') :- !.
 leftbracket('„','3') :- !.
+leftbracket('"','4') :- !.
+leftbracket('\'','5') :- !. %'
 leftbracket('(','11') :- !.
 leftbracket('[','12') :- !.
 leftbracket('{','13') :- !.
@@ -2286,6 +2288,8 @@ leftbracket(_,'0') :- !.
 rightbracket('»','1') :- !.
 rightbracket('«','2') :- !.
 rightbracket('“','3') :- !.
+rightbracket('"','4') :- !.
+rightbracket('\'','5') :- !. %'
 rightbracket(')','11') :- !.
 rightbracket(']','12') :- !.
 rightbracket('}','13') :- !.
@@ -2306,9 +2310,7 @@ head('KOUS','$(',l,badbracket,'KOUS',[_,_,_,Lex,_,_,_,_],F-G,HM,_,HM) :- 1 is F-
 head('KON','$(',l,badbracket,'KON',[_,_,_,Lex,_,_,_,_],F-G,HM,_,HM) :- 1 is F-G, leftbracket(Lex,'21').
 head('V*FIN','$(',l,badbracket,'KONC',[_,_,_,Lex,_,_,_,_],_,HM,_,HM) :- leftbracket(Lex,'21').
 
-head(Tag,'$(',r,badbracket,Tag,[_,_,_,Lex,_,_,_,_],F-G,HM,_,HM) :- -1 is F-G, member(Lex,['"', '\'']).
-
-%good: ", \'
+head(Tag,'$(',r,badbracket,Tag,[_,_,_,Lex,_,_,_,_],F-G,HM,_,HM) :- -1 is F-G, member(Lex,['"', '\'']). %'
 
 %PP may be sentence-final and separated from its head by a dash
 head(Tag,'$(',l,badbracket,Tag,[_,_,_,Lex,_,_,HID,_],_,HM,_,HM) :- leftbracket(Lex,'21'), member(Tag,['PP']), stopToRight(HID).
