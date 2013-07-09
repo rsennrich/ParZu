@@ -807,6 +807,8 @@ head('FM','$,',l,comma,'APPX',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- \+ member('<-comm
 
 head('PIS','$,',l,comma,'APPX',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- \+ member('<-comma<-', OF), (member('->gmod->', OF); member('->pp->', OF)).
 
+head('CARD','$,',l,comma,'APPX',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- \+ member('<-comma<-', OF).
+
 
 head('NN','$,',l,comma,'APP',[_,_,_,_,HRels,_,HID,_],_,HM,_,HM) :- (commaToRight(HID);stopToRight(HID);(bracketToRight(HID,Bracket),rightbracket(Bracket,_))), \+ member('<-comma<-', HRels).
 
@@ -816,11 +818,12 @@ head('FM','$,',l,comma,'APP',[_,_,_,_,HRels,_,HID,_],_,HM,_,HM) :- (commaToRight
 
 head('PIS','$,',l,comma,'APP',[_,_,_,_,HRels,_,HID,_],_,MH,_,MH) :- (commaToRight(HID);stopToRight(HID);(bracketToRight(HID,Bracket),rightbracket(Bracket,_))), \+ member('<-comma<-', HRels), (member('->gmod->', HRels); member('->pp->', HRels)).
 
+head('CARD','$,',l,comma,'APP',[_,_,_,_,HRels,_,HID,_],_,HM,_,HM) :- (commaToRight(HID);stopToRight(HID);(bracketToRight(HID,Bracket),rightbracket(Bracket,_))), \+ member('<-comma<-', HRels).
+
+
 %comma at end of apposition allowed/included (but only if there is one on its left).
 
 head('APPX','$,',r,comma,'APP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- member('<-comma<-', OG), \+ member('->comma->', OG).
-
-%head('APP','$,',r,comma,'APP',[_,_,_,_,HRels,_,HID,_],_,HM,_,HM) :-  member('<-comma<-', HRels), \+ member('->comma->', HRels).
 
 
 %appositions that are enclosed by comma are bound to noun on their left.
