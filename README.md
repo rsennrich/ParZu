@@ -81,7 +81,7 @@ A short overview is given in `LABELS.md`.
 ON QUALITY AND TESTING
 ----------------------
 
-Some ballpark figures on what performance to expect (calculated on 1000 Tüba-D/Z sentences):
+Some (old) ballpark figures on what performance to expect (calculated on 1000 Tüba-D/Z sentences):
 
 out-of-the-box:             83%   precision; 81%   recall
 with morphisto:             86.5% precision; 83.5% recall
@@ -100,7 +100,6 @@ Given that both an input and a gold file exist, start the evaluation as follows:
 
 This will parse the first 1000 sentences* of TüBa-D/Z and report the results.
 *Sentences 1-1000 were used during development, sentences 1001-4000 for the evaluation in (Sennrich et al. 2009), and sentences 4001-end for training).
-The numbers reported above were obtained with an older Tüba version and may differ slightly.
 You can use the online demo at http://www.cl.uzh.ch/kitt/parzu/ to check if there are any major regressions in your local install.
 
 TECHNICAL FAQ
@@ -173,6 +172,11 @@ The parser is described in:
 
 Rico Sennrich, Gerold Schneider, Martin Volk and Martin Warin (2009): 
    A New Hybrid Dependency Parser for German. In: Proceedings of GSCL Conference, Potsdam.
+
+Rico Sennrich, Martin Volk and Gerold Schneider (2013):
+   Exploiting Synergies Between Open Resources for German Dependency Parsing, POS-tagging, and Morphological Analysis.
+   In: Proceedings of the International Conference Recent Advances in Natural Language Processing 2013, Hissar, Bulgaria.
+
 
 CONTACT
 -------
