@@ -219,6 +219,9 @@ morphmapping(X,X). %catchall
 
 %override some tagger analyses.
 
+getlemma(Word,Tag,Word,Tag) :- morphology(none), !.
+getlemma(Word,Tag,Word,Tag) :- morphology(keep), !.
+
 %noch (in 'weder x noch y') is often mistagged as adverb
 getlemma(noch,_,noch,'KON') :- correct_mistagging(yes), w(_,_,Word,_,_,_),member(Word,[weder,'Weder']), !.
 

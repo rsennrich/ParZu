@@ -811,5 +811,8 @@ functtag2('KON').
 functtag2('KOKOM').
 
 
+forcetag(_,_,_,_) :- morphology(none), !, fail.
+forcetag(_,_,_,_) :- morphology(keep), !, fail.
+
 %word form is ambiguous (same word form/same lemma), but because of syntactic context, we decide to overrule tagger.
 forcetag(Word,Tag,Lemma,NewTag) :- correct_mistagging(yes), gertwol(Word,Lemma,NewTag,_, _), gertwol(Word,_,Tag,_, _), \+ Lemma = '<unknown>'.
