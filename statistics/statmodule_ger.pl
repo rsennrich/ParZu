@@ -599,15 +599,22 @@ getheadandnormalise(HC,HeadOut,HeadTagOut) :- 	last(HC,Main),
     sub_atom(MainL,_,After,0,HeadTag),
     \+ sub_atom(HeadTag,_,_,_,'_'),
     sub_atom(MainL,0,Before,_,Head),
-	(  %if the last element in the chunk is a ptkvz, the main verb is the second last element.
-	(HeadTag = 'ptkvz', attachptkvz(Head,HC,HeadOut,HeadTagOut))	; 	(HeadOut = Head, HeadTagOut = HeadTag)
-	), !.
+    (  %if the last element in the chunk is a ptkvz, the main verb is the second last element.
+    (HeadTag = 'ptkvz', attachptkvz(Head,HC,HeadOut,HeadTagOut));
+    (HeadTag = 'adja', adj_getverbstem(Head,HeadOut), HeadTagOut = HeadTag);
+    (HeadOut = Head, HeadTagOut = HeadTag)
+    ), !.
 
 
 %attachptkvz(+Particle,+HeadChunk,?HeadOut,?HeadTagOut).
 attachptkvz(PTKVZ,HC,HeadOut,HeadTagOut) :- append(NewHC,[_],HC),
 					   getheadandnormalise(NewHC,HeadTemp,HeadTagOut),
                        atom_concat(PTKVZ,HeadTemp,HeadOut), !.
+
+% if adjective is derived from verb, make sure we use the verb lemma for subcategorization statistics. (currently only works for present participle ending in '-end', by simply cutting off the '-d')
+adj_getverbstem(In, Out) :-
+    sub_atom(In, Stem, 1, 0, Last),
+    (Last = 'd' -> sub_atom(In, 0, Stem, 1, Out); Out = In).
 
 %allows probability modifications according to dependents of the head.
 depModifier(OG,app_close,0) :- (member('->app_close->',OG);member('->app_loose->',OG)), !.

@@ -37,6 +37,7 @@ re_mainclass = re.compile('<\+(.*?)>')
 re_any = re.compile('<(.*?)>')
 re_segment = re.compile('<([A-Z]*?)>')
 re_last = re.compile('(?:^|\W)([\w\.]+?)(?:<[\w\-\^]*>)*?<\+',re.UNICODE)
+re_hyphenation = re.compile('{(.+?)}-')
 
 def get_repr(key,d):
     if key in d:
@@ -137,7 +138,10 @@ def extract(line):
             
         elif feature == 'PPast':
             d['derivation'] = '<PPAST'
-            
+
+    if '<~>end<+ADJ>' in line:
+        d['derivation'] = '<PPRES'
+
     return d
     
 
@@ -152,10 +156,10 @@ def get_true_pos(raw_pos,line):
         #stts tagset distinguishes between VV, VA and VM
         if line.startswith('<CAP>'):
             line = line[5:]
-        if line.startswith('haben') or line.startswith('werden') or line.startswith('sein'):
+        if line.startswith('haben') or line.startswith('hab<~>en') or line.startswith('werden') or line.startswith('werd<~>en') or line.startswith('sein'):
             pos += 'A'
-        elif line.startswith('dürfen') or line.startswith('können') or line.startswith('sollen') or line.startswith('müssen') or line.startswith('mögen') or line.startswith('wollen'):
-            pos += 'M'     
+        elif line.startswith('dürfen') or line.startswith('dürf<~>en') or line.startswith('können') or line.startswith('könn<~>en') or line.startswith('sollen') or line.startswith('soll<~>en') or line.startswith('müssen') or line.startswith('müss<~>en') or line.startswith('mögen') or line.startswith('mög<~>en') or line.startswith('wollen') or line.startswith('woll<~>en'):
+            pos += 'M'
         else:
             pos += 'V'
         
@@ -245,6 +249,9 @@ def get_true_pos(raw_pos,line):
 
 def getlemma(line,word,pos):
 
+    # map {CDU}-Fraktion to CDU-Fraktion
+    line = re_hyphenation.sub(r'\1-', line)
+
     if pos == 'NN':
     #sadly complicated hack to get desired lemmata for nouns. Morphisto normalizes all morphemes in the stem, which we don't want.
     #using longest common subsequence matching to find boundary, taking normalized last_morpheme, unnormalized stem.
@@ -291,10 +298,7 @@ def getlemma(line,word,pos):
         elif '<2><Pl>' in line:
             lemma = 'ihr'
 
-    try:
-        return lemma[0] + lemma[1:].lower()
-    except IndexError:
-        return lemma
+    return lemma
 
 
 # print analyses with fewest morphemes first
