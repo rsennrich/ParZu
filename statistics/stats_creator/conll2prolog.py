@@ -48,8 +48,21 @@ for line in sys.stdin:
     
     label = label.upper()
 
-    morph = list(morph)
-    
-    # first 4000 sentences are reserved for development/testing
-    if i > 4000:
-        print "w({0}, {1}, '{2}', '{3}', '{4}', {5}, {6}).".format(i,pos,token,tag,label,head,morph)
+    ## parser output has different morphology format than Tüba: This maps it to the right form (only for prepositions,
+    ## which are the only thing that matter for the current statistics)
+    if '|' in morph:
+        if ctag == 'PREP':
+            if morph != '_':
+                morph = [morph[0].lower()]
+            else:
+                morph = ['-']
+        else:
+            morph = ['-','-']
+
+    else:
+        morph = list(morph)
+
+
+    # in TüBa, we reserve first 4000 sentences for development/testing; can be disabled for other corpora
+    #if i > 4000:
+    print "w({0}, {1}, '{2}', '{3}', '{4}', {5}, {6}).".format(i,pos,token,tag,label,head,morph)
