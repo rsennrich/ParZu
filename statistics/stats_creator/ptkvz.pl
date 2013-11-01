@@ -35,6 +35,6 @@ writedown(_) :- !.
 
 getptkvz(Sentence,Pos,Word,Tag,WordNew) :-w(Sentence, Pos, Word, Tag, _Funct, _Dep, Morph),
 					   w(Sentence,_Pos2,PTKVZ, 'PTKVZ', 'AVZ',Pos,Morph),
-					   atom_concat(Word,PTKVZ,WordNew), !.
+					   atom_concat(PTKVZ,Word,WordNew), !.
 
 getptkvz(_Sentence,_Pos,Word,_Tag,Word) :- !.

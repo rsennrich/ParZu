@@ -2,7 +2,7 @@
 
 :- dynamic w/7, haspp/5,occurs/3,hasobjp/5,occurstemp/3,haspptemp/5,hasobjptemp/5, wordstotal/1,objptotal/1,pptotal/1,nounattach/3,verbattach/3.
 
-:- ensure_loaded('../..core/morph_predicates.pl').
+:- ensure_loaded('../../core/morph_predicates.pl').
 
 %start(+In, +Out).
 start(In, Outfile,Outfile2) :- retractall(w(_,_,_,_,_,_,_)),
