@@ -427,8 +427,8 @@ process_struc(Struc,Head,_) :-
     Struc =.. [Head,_Chunk]. %%% leaf
 
 process_struc(Struc,Head,HeadOfDep) :-
-    ((Struc =.. [Head,Chunk,Rel,Dep], name(Rel,[45,62|NRel])) -> Dir='(->)';         %% dep found TO THE RIGHT -> =[45,62]
-     (Struc =.. [Head,Dep,Rel,Chunk], name(Rel,[60,45|NRel]),    Dir='(<-)')),       %% dep found TO THE LEFT  <- =[60,45]
+    ((Struc =.. [Head,_,Rel,Dep], name(Rel,[45,62|NRel])) -> Dir='(->)';         %% dep found TO THE RIGHT -> =[45,62]
+     (Struc =.. [Head,Dep,Rel,_], name(Rel,[60,45|NRel]),    Dir='(<-)')),       %% dep found TO THE LEFT  <- =[60,45]
     reverse(NRel,RNRel), append([_,_],RRel,RNRel),
     reverse(RRel,RRRel), name(MyRel,RRRel),
     createMorphOutput(Struc,Dep,MyRel),

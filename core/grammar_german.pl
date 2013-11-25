@@ -1117,8 +1117,8 @@ head('V*FIN','VVIZU_WITH_COMMA',l,subjc,'V*FIN',[FC,GC,_,_,OF,_,_,_],_,MH,_,MH) 
 head('V*FIN','OBJC/SUBJC',r,subjc,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG).
 
 %infinitive clausal subject after main clause 
-head('V*FIN','VVIZU_WITH_COMMA',r,subjc,'V*FIN',[GC,FC,_,_,HeadRels,_,_,_],_,MH,_,MH) :- FC \= GC, restrict_coord(HeadRels), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG).
-head('V*IMP','VVIZU_WITH_COMMA',r,subjc,'V*IMP',[GC,FC,_,_,HeadRels,_,_,_],_,MH,_,MH) :- FC \= GC, restrict_coord(HeadRels), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG).
+head('V*FIN','VVIZU_WITH_COMMA',r,subjc,'V*FIN',[GC,FC,_,_,HeadRels,_,_,_],_,MH,_,MH) :- FC \= GC, restrict_coord(HeadRels), \+ member('<-subj<-',HeadRels), \+ member('->subj->',HeadRels), \+ member('<-subjc<-',HeadRels), \+ member('->subjc->',HeadRels).
+head('V*IMP','VVIZU_WITH_COMMA',r,subjc,'V*IMP',[GC,FC,_,_,HeadRels,_,_,_],_,MH,_,MH) :- FC \= GC, restrict_coord(HeadRels), \+ member('<-subj<-',HeadRels), \+ member('->subj->',HeadRels), \+ member('<-subjc<-',HeadRels), \+ member('->subjc->',HeadRels).
 
 %======================================================================================
 %infinitive object
@@ -2703,11 +2703,10 @@ createMeasureMorph(MorphIn,Number,MorphOut) :- morphology(MorphType),
 
 createMorphOutput(Head,Dep,MyRel) :- (getChartInfo(Head,HPos,HWord,HLemma,_,HMorph);true),
       getChartInfo(Dep,DPos,DWord,DLemma,_,DMorph),
-      (call(output(HPos,HWord,HLemma,HTag,_,_,HMorph2))->true;
+      (call(output(HPos,HWord,HLemma,_HTag,_,_,_HMorph2))->true;
           var(HPos)->true;
             ((chart(HPos,HPos,HPos,_,Lemma,HTag,_,_,_,[Word|_]),
-            assert(output(HPos,Word,Lemma,HTag,root,0,HMorph)), 
-            HMorph2 = HMorph))),
+            assert(output(HPos,Word,Lemma,HTag,root,0,HMorph))))),
       (call(output(DPos,DWord,DLemma,DTag,MyRel,_,DMorph2));
           (checkPos(DPos,_,DTag,_,_),
           DMorph2 = DMorph)), 
@@ -2718,7 +2717,7 @@ createMorphOutput(_,_,_) :- !.
 
 createRelOutput(Head,Dep,MyRel) :- lexic(Head,HLemma,HPos), 
       lexic(Dep,DLemma,DPos), 
-      (call(output(HPos,HWord,HLemma,HTag,_,_,HMorph));(getChartInfo(_,HPos,HWord,HLemma,_,HMorph),checkPos(HPos,_,HTag,_,_))),
+      (call(output(HPos,_,HLemma,_,_,_,_));(getChartInfo(_,HPos,_,HLemma,_,_),checkPos(HPos,_,_,_,_))),
       (retract(output(DPos,DWord,DLemma,DTag,_,_,DMorph));(getChartInfo(_,DPos,DWord,DLemma,_,DMorph),checkPos(DPos,_,DTag,_,_))),
       assert(output(DPos,DWord,DLemma,DTag,MyRel,HPos,DMorph)), !.
 
@@ -2786,7 +2785,7 @@ morph_cleanup(_,_,_,DMorph,_,_,_,DMorph) :- !.
 findkonchainhead(DPos,HMorph,HTag) :- output(DPos,_,_,_,kon,HPos,_),
         findkonchainhead(HPos,HMorph,HTag).
 
-findkonchainhead(HPos,HMorph,HTag) :- output(HPos,_,_,HTag,_,_,HMorph), (var(Htag); \+ kon_mapping(_,Htag), \+ Htag = 'KON'), !.
+findkonchainhead(HPos,HMorph,HTag) :- output(HPos,_,_,HTag,_,_,HMorph), (var(HTag); \+ kon_mapping(_,HTag), \+ HTag = 'KON'), !.
 
 
 % X , KON Y: comma is sometimes allowed, sometimes not.
