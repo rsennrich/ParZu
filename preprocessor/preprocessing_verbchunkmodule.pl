@@ -630,6 +630,14 @@ complete(Sentence, LVL, Rest) :- lvl(LVL,Pos,String,full),
 				 assert(completed(LVL,Pos)), !,
 				     complete(Sentence,LVL,[String|Rest]).
 
+complete(Sentence, LVL, Rest) :- lvl(LVL,Pos,String,ptkzu),
+                                \+ (lvl(LVL,Pos2,String,aux), Pos2 < Pos),
+                                NextPos is Pos + 1,
+                                completed(LVL, NextPos),
+                                \+ completed(LVL,Pos),
+                                assert(completed(LVL,Pos)), !,
+                                complete(Sentence,LVL,['zu_PTKZU'|Rest]).
+
 %this adds all auxiliary verb relationships to the chunk. 
 complete(Sentence, LVL, Rest) :- lvl(LVL,Pos,String,aux),
 				\+ (lvl(LVL,Pos2,String,aux), Pos2 < Pos),
@@ -646,6 +654,12 @@ complete(Sentence, LVL, Rest) :- lvl(LVL,Pos,String,head),
 
 %catchall
 complete(Sentence,LVL,List) :- 	complete2(Sentence,LVL,List).
+
+
+%if we find invalid pair of verbs (e.g. können + VVPP), abandon building verb complex.
+complete2(Sentence,LVL,Rest) :-  chunkPair(Rest,Word,_,Word2,Tag2),
+                                \+ valid_aux(Word,Tag2,Word2),
+                                fillallfailed(Sentence,LVL).
 
 
 %if we know that we're not in a subclause structure (no function words and no verbal particle 'zu'), mark the clause as a main clause
@@ -680,6 +694,13 @@ fillallcompleted(Sentence, LVL, ChunkList) :- (member('mainclause',ChunkList)->a
 				retract(w(Sentence,Pos,Word,Tag,_,C)),
 				assert(w(Sentence,Pos,Word,Tag,ChunkList,C)), !,
 				fillallcompleted(Sentence, LVL, ChunkList).
+
+%if we abandon a verb complex, all verbs are re-asserted recursively.
+fillallfailed(Sentence, LVL) :- completed(LVL,Pos),
+                                retract(completed(LVL,Pos)),
+                                retract(w(Sentence,Pos,Word,Tag,Chunk,C)),
+                                assert(w(Sentence,Pos,Word,Tag,Chunk,C)), !,
+                                fillallfailed(Sentence, LVL).
 
 % clean dynamic predicates.
 cleanup_chunking :- retractall(lvl(_,_,_,_)),
@@ -810,6 +831,16 @@ functtag2('PTKZU').
 functtag2('KON').
 functtag2('KOKOM').
 
+
+valid_aux('dürfen', Tag, _) :- enforce_aux_agreement(yes), !, member(Tag,['VVINF','VAINF','VMINF']).
+valid_aux('haben', Tag, Word) :- enforce_aux_agreement(yes), !, (member(Tag,['VVPP','VAPP', 'VMPP', 'PTKZU', 'VVIZU', 'VMINF']); Word='lassen').
+valid_aux('können', Tag, _) :- enforce_aux_agreement(yes), !, member(Tag,['VVINF','VAINF','VMINF']).
+valid_aux('mögen', Tag, _)  :- enforce_aux_agreement(yes), !, member(Tag,['VVINF','VAINF','VMINF']).
+valid_aux('müssen', Tag, _) :- enforce_aux_agreement(yes), !, member(Tag,['VVINF','VAINF','VMINF']).
+valid_aux('sein', Tag, _)  :- enforce_aux_agreement(yes), !, member(Tag,['VVPP','VAPP', 'VMPP', 'PTKZU', 'VVIZU']).
+valid_aux('sollen', Tag, _) :- enforce_aux_agreement(yes), !, member(Tag,['VVINF','VAINF','VMINF']).
+valid_aux('wollen', Tag, _) :- enforce_aux_agreement(yes), !, member(Tag,['VVINF','VAINF','VMINF']).
+valid_aux(_,_,_).
 
 forcetag(_,_,_,_) :- morphology(none), !, fail.
 forcetag(_,_,_,_) :- morphology(keep), !, fail.

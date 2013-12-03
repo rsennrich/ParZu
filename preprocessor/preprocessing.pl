@@ -20,6 +20,10 @@
 
 correct_mistagging(yes).
 
+% disallow 'können + VVPP' and similar.
+% Can decrease parsing quality if verbs are mistagged ("Er_PERS kann_VMFIN empfangen_VVPP"), but allows tagging errors to be fixed through n-best tagging.
+enforce_aux_agreement(yes). 
+
 %reads from stdin
 start(GERTWOL) :- start2(GERTWOL, user_input).
 %reads from file

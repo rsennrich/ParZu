@@ -212,12 +212,16 @@ fixAttachment(aux,DepPos,HeadPos,Pos) :-
     chart(HeadPos,HeadPos,HeadPos,[_,_,HC,_],HeadWord,HeadTag,_,_,_,_),
 	atom_concat(HeadWord,'_',HeadTemp),
 	atom_concat(HeadTemp,HeadTag,HeadX),
-    chart(DepPos,DepPos,DepPos,_,DepWord,DepTag,_,_,_,_),
+	chart(DepPos,DepPos,DepPos,_,DepWord,DepTag,_,_,_,_),
 	atom_concat(DepWord,'_',DepTemp),
 	atom_concat(DepTemp,DepTag,Dep),
 	nth1(DPos,HC,Dep),
-	HPos is DPos - 1,
-	nth1(HPos,HC,Head),
+	((ZuPos is DPos - 1,
+	nth1(ZuPos,HC,'zu_PTKZU'),
+	HPos is DPos - 2,
+	nth1(HPos,HC,Head));
+	(HPos is DPos - 1,
+	nth1(HPos,HC,Head))),
 	(Head=HeadX->Pos=HeadPos;getPosition(Head,HeadPos,Pos)), !.
 
 
