@@ -295,7 +295,7 @@ stats2(obja,Htag,_FH,_SH,_MORPHH,Dtag,FD,_SD,MORPHD,P,_D,HC-_OG,_DC) :-
 
 
 %accusative objects.
-stats2(obja2,_Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,MORPHD,P,_D,HC-_OG,_DC) :-
+stats2(obja2,Htag,_FH,_SH,_MORPHH,Dtag,_FD,_SD,MORPHD,P,_D,HC-_OG,_DC) :-
 	getheadandnormalise(HC,Head,_),
 	npidsamb(Head,MORPHD,Dtag,obja2,PTemp),
 	((Htag = 'ADJA';Htag='ADJD')->PosMod is 0.5;PosMod is 1),
