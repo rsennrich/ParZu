@@ -307,16 +307,27 @@ def preprocess(instream,outstream,options):
     #morphological analysis
     if options['morphology'] == 'gertwol' or options['morphology'] == 'morphisto':
 
-        morphin = open(options['morphinpath'],'r')
-
         if options['morphology'] == 'gertwol':
+            morphin = open(options['morphinpath'],'r')
             gertwol = Popen(["python", "gertwol_parzu.py", options['gertwolcmd'], options['gertwolscorecmd']], cwd=os.path.join(sys.path[0],'preprocessor','morphology'),stdin=morphin,stdout=morphfile,stderr=options['senderror'])
             gertwol.wait()
-        
+
         elif options['morphology'] == 'morphisto':
-            morphisto = Popen(["fst-infl", options['morphisto_model']],stdin=morphin,stdout=PIPE,stderr=options['senderror'])
-            morphisto2prolog = Popen(["python", "morphisto2prolog.py"], cwd=os.path.join(sys.path[0],'preprocessor','morphology'),stdin=morphisto.stdout,stdout=morphfile,stderr=options['senderror'])
-            morphisto2prolog.wait()
+            try:
+                morphin = open(options['morphinpath'],'r')
+                morphisto = Popen(["fst-infl2", options['morphisto_model']],stdin=morphin,stdout=PIPE,stderr=options['senderror'])
+                morphisto2prolog = Popen(["python", "morphisto2prolog.py"], cwd=os.path.join(sys.path[0],'preprocessor','morphology'),stdin=morphisto.stdout,stdout=morphfile,stderr=options['senderror'])
+                morphisto2prolog.wait()
+                morphisto.wait()
+                if morphisto.returncode > 0:
+                    sys.stderr.write('fst-infl2 failed; does model exist? trying fst-infl (in case model is non-compact)\n')
+                    raise RuntimeError
+            except RuntimeError:
+                morphin = open(options['morphinpath'],'r')
+                morphisto = Popen(["fst-infl", options['morphisto_model']],stdin=morphin,stdout=PIPE,stderr=options['senderror'])
+                morphisto2prolog = Popen(["python", "morphisto2prolog.py"], cwd=os.path.join(sys.path[0],'preprocessor','morphology'),stdin=morphisto.stdout,stdout=morphfile,stderr=options['senderror'])
+                morphisto2prolog.wait()
+                morphisto.wait()
 
     #having at least one entry makes sure that the preprocessing script doesn't crash
     morphfile.write('gertwol(\'<unknown>\',\'<unknown>\',_,_,_).')
