@@ -314,6 +314,7 @@ measure_stem('Lumen').
 measure_stem('Lux').
 measure_stem('Becquerel').
 measure_stem('Gray').
+measure_stem('Dezibel').
 
 measure_stem('Liter').
 
@@ -335,6 +336,7 @@ measure_prefix('Yotta').
 
 measure_prefix('Dezi').
 measure_prefix('Zenti').
+measure_prefix('Centi').
 measure_prefix('Milli').
 measure_prefix('Mikro').
 measure_prefix('Nano').
@@ -351,9 +353,20 @@ measure_prefix('Yokto').
 measure('Fuss').
 measure('Fuß').
 measure('Zoll').
+measure('Hektar').
+measure('Schritt').
+
+measure('Fass').
+measure('Glas').
+measure('Mann').
 
 measure('Prozent').
+measure('Promille').
 
+measure('Mal').
+measure('Stück').
+measure('Paar').
+measure('Dutzend').
 
 %currencies (only uninflected ones: Franken, Rupien etc. do not need exception)
 measure('Baht').
