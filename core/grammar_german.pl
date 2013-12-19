@@ -1884,13 +1884,13 @@ head('TRUNC','KON_ADJA',r,kon,'ADJA', [_,_,_,_,_,_,_,_],_,_,MD,MD).
 head('TRUNC','KON_ADV',r,kon,'ADJD', [_,_,_,_,_,_,_,_],_,_,MD,MD).
 
 %er ist hin- und hergefahren
-head('TRUNC','KON_FINVERB',r,kon,'VVFIN', [_,_,_,_,_,_,_,_],_,_,MD,MD).
+head('TRUNC','KON_FINVERB',r,kon,'VVFIN', [_,_,_,_,_,_,_,_],F-G,_,MD,MD) :- 1 is F-G.
 
-head('TRUNC','KON_INFVERB',r,kon,'VVINF', [_,_,_,_,_,_,_,_],_,_,MD,MD).
+head('TRUNC','KON_INFVERB',r,kon,'VVINF', [_,_,_,_,_,_,_,_],F-G,_,MD,MD) :- 1 is F-G.
 
-head('TRUNC','KON_PPVERB',r,kon,'VVPP', [_,_,_,_,_,_,_,_],_,_,MD,MD).
+head('TRUNC','KON_PPVERB',r,kon,'VVPP', [_,_,_,_,_,_,_,_],F-G,_,MD,MD) :- 1 is F-G.
 
-head('TRUNC','KON_VVIZU',r,kon,'VVIZU', [_,_,_,_,_,_,_,_],_,_,MD,MD).
+head('TRUNC','KON_VVIZU',r,kon,'VVIZU', [_,_,_,_,_,_,_,_],F-G,_,MD,MD) :- 1 is F-G.
 
 
 
