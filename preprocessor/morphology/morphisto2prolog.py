@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 # Copyright ©2011 University of Zürich
 # Author: Rico Sennrich <sennrich@cl.uzh.ch>
@@ -139,7 +139,7 @@ def extract(line):
         elif feature == 'PPast':
             d['derivation'] = '<PPAST'
 
-    if '<~>end<+ADJ>' in line:
+    if '<~>end<+ADJ>' in line or '<~>nd<+ADJ>' in line:
         d['derivation'] = '<PPRES'
 
     return d
