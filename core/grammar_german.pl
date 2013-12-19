@@ -1972,6 +1972,7 @@ head(Tag,'KON_ANY',r,kon,Tag,  _,_,MH,_,MH).
 
 %Der 9./10. Mai
 head(_,'$(',l,bracket,'KON_ANY',  [_,_,_,'/',_,_,_,_],F-G,HM,_,HM) :- 1 is F-G.
+head('CARD','$(',l,bracket,'KON_CARD',  [_,_,_,Bracket,_,_,_,_],F-G,HM,_,HM) :- 1 is F-G, rightbracket(Bracket,'21').
 
 %two clauses that are not in a subordinated relationship can belong together.
 
