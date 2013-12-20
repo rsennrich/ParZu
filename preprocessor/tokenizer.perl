@@ -43,13 +43,7 @@ if (scalar(%NONBREAKING_PREFIX) eq 0){
 }
 
 while(<STDIN>) {
-	if (/^<.+>$/ || /^\s*$/) {
-		#don't try to tokenize XML/HTML tag lines
-		print $_;
-	}
-	else {
-		print join("\n",split(/ /,&tokenize($_))) . "\n";
-	}
+	print join("\n",split(/ /,&tokenize($_))) . "\n";
 }
 
 #my $duration = Time::HiRes::tv_interval( $start );
