@@ -35,7 +35,8 @@ Additionally, the parser requires the following software and licenses:
 
 - A POS-Tagger using the STTS tagset: (for instance TreeTagger: http://www.ims.uni-stuttgart.de/projekte/corplex/TreeTagger/)
 - A tool for morphological analysis (not required, but strongly recommended). Supported:
-   - Morphisto: http://code.google.com/p/morphisto/ (open source; recommended)
+   - Zmorge: http://kitt.ifi.uzh.ch/kitt/zmorge/ (open source; recommended)
+   - Morphisto: http://code.google.com/p/morphisto/ (open source; non-commercial)
    - Gertwol: http://www2.lingsoft.fi/cgi-bin/gertwol (proprietary; might be deprecated in the future)
 
 For development and testing, we recommend Tüba-D/Z, which you can obtain at http://www.sfs.uni-tuebingen.de/tuebadz.shtml (free download for academic use).
