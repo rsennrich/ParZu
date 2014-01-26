@@ -2424,6 +2424,7 @@ case_gen([[A]],_) :- var(A), !.
 %case identifiers for gertwol-style morphology
 :- morphology(gertwol) -> assert((case_nom(List,Tag) :- member(Morph,List), get_case(Morph,Tag,'Nom',gertwol), !));true.
 :- morphology(gertwol) -> assert((case_acc(List,Tag) :- member(Morph,List), get_case(Morph,Tag,'Akk',gertwol), !));true.
+:- morphology(gertwol) -> assert((case_acc(List,Tag) :- member(Morph,List), get_case(Morph,Tag,'Acc',gertwol), !));true.
 :- morphology(gertwol) -> assert((case_dat(List,Tag) :- member(Morph,List), get_case(Morph,Tag,'Dat',gertwol), !));true.
 :- morphology(gertwol) -> assert((case_gen(List,Tag) :- member(Morph,List), get_case(Morph,Tag,'Gen',gertwol), !));true.
 
@@ -2663,6 +2664,7 @@ get_derived_from(Morph,_Tag,Origin,gertwol) :- last(Morph,Last), !, \+ var(Last)
 %used for format conversion
 case_tueba('Nom',n) :- !.
 case_tueba('Akk',a) :- !.
+case_tueba('Acc',a) :- !.
 case_tueba('Dat',d) :- !.
 case_tueba('Gen',g) :- !.
 case_tueba(X,X) :- !.
@@ -2675,6 +2677,7 @@ case_tueba(X,X) :- !.
 :- morphology(tueba)->assert(plural('p'));true.
 
 :- morphology(gertwol)->assert(nominative('Nom'));true.
+:- morphology(gertwol)->assert(accusative('Acc'));true.
 :- morphology(gertwol)->assert(accusative('Akk'));true.
 :- morphology(gertwol)->assert(dative('Dat'));true.
 :- morphology(gertwol)->assert(genitive('Gen'));true.
@@ -2753,10 +2756,10 @@ morph_cleanup(_,_,_,_,'KON',_,_,[_]) :- !.
 %Some grammatical functions are bound to a specific case. Restrict output morphology to syntactically valid analyses.
 morph_cleanup(subj,HMorph,HTag,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Nom']],'APPR',DMorphTemp), (unify_number(DMorphTemp,DTag,HMorph,HTag,DMorphOut);DMorphOut=DMorphTemp), !.
 morph_cleanup(pred,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Nom']],'APPR',DMorphOut), !.
-morph_cleanup(obja,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Akk']],'APPR',DMorphOut), !.
-morph_cleanup(obja2,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Akk']],'APPR',DMorphOut), !.
-morph_cleanup(grad,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Akk']],'APPR',DMorphOut), !.
-morph_cleanup(zeit,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Akk']],'APPR',DMorphOut), !.
+morph_cleanup(obja,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Akk', 'Acc']],'APPR',DMorphOut), !.
+morph_cleanup(obja2,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Akk', 'Acc']],'APPR',DMorphOut), !.
+morph_cleanup(grad,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Akk', 'Acc']],'APPR',DMorphOut), !.
+morph_cleanup(zeit,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Akk', 'Acc']],'APPR',DMorphOut), !.
 morph_cleanup(objd,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Dat']],'APPR',DMorphOut), !.
 morph_cleanup(objg,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Gen']],'APPR',DMorphOut), !.
 morph_cleanup(gmod,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Gen']],'APPR',DMorphOut), !.

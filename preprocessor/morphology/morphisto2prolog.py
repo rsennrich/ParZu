@@ -109,13 +109,10 @@ def extract(line):
         elif feature in ['Sg','Pl']:
             d['number'] = feature
             
-        elif feature in ['Nom','Akk','Dat','Gen']:
+        elif feature in ['Nom','Akk','Acc','Dat','Gen']:
             d['case'] = feature
         
-        elif feature == 'Acc':
-            d['case'] = 'Akk'
-        
-        elif feature in ['Sw','St','St/Mix']:
+        elif feature in ['Sw','St','St/Mix', 'Wk']:
             d['declension'] = feature
             
         elif feature in ['Pos','Comp','Sup']:
