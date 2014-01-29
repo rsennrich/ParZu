@@ -145,9 +145,6 @@ buildmorphology(deren,'PRELAT',[deren,_]) :- !.
 buildmorphology(dessen,'PDAT',[dessen,_]) :-  !.
 buildmorphology(deren,'PDAT',[deren,_]) :- !.
 
-%try spelling variations if word doesn't exist in Gertwol.
-buildmorphology(Word,Tag,[Word|ListOut]) :- (\+ (gertwol(Word,Lemma,_,_, _), \+ Lemma = '<unknown>')->(spellingvariation(Word,NewWord), \+ NewWord = Word,buildmorphology(NewWord,Tag,[_|ListOut]));fail).
-
 % Gertwol doesn't distinguish between modal/auxiliary/full verbs
 buildmorphology(Word,'VAFIN',MorphOut) :- (\+ gertwol(Word,_,'VAFIN',_, _))-> buildmorphology(Word,'VVFIN',MorphOut).
 buildmorphology(Word,'VMFIN',MorphOut) :- (\+ gertwol(Word,_,'VMFIN',_, _))-> buildmorphology(Word,'VVFIN',MorphOut).
@@ -249,11 +246,6 @@ getlemma(Word,'VMFIN',Lemma,'VMFIN') :- morphology(gertwol), gertwol(Word,Lemma,
 getlemma(Word,'VMINF',Lemma,'VMINF') :- morphology(gertwol), gertwol(Word,Lemma,'VVINF',_Analysis,_), \+ Lemma = '<unknown>', !.
 getlemma(Word,'VMPP',Lemma,'VMPP') :- morphology(gertwol), gertwol(Word,Lemma,'VVPP',_Analysis,_), \+ Lemma = '<unknown>', !.
 
-%try spelling variations
-getlemma(Word,InTag,Lemma,OutTag) :- spellingvariation(Word,NewWord), \+ NewWord = Word, !,
-      getlemma(NewWord,InTag,Lemma,OutTag).
-
-
 
 %catchall if all else fails.
 getlemma(Word,Tag,Word,Tag) :- findall(Tag2, (gertwol(Word,Lemma,Tag2,_, _),\+ Lemma = '<unknown>'), List),
@@ -261,20 +253,6 @@ getlemma(Word,Tag,Word,Tag) :- findall(Tag2, (gertwol(Word,Lemma,Tag2,_, _),\+ L
 			    sort(List,AltList),
 			    (Len > 0 -> (write('%word/tag combination not found in gertwol:'), write(Word), write(' '),write(Tag),write(' - alternatives proposed by Gertwol: '), write(AltList), write('\n'));true),
 			    !. 
-
-
-%try spelling variations until we find one that Gertwol recognizes
-spellingvariation(Word,Word) :- gertwol(Word,Lemma,_,_, _), \+ Lemma = '<unknown>', !.
-
-spellingvariation(Word,OutWord) :- name(Word,Chars), 
-                               (Chars=[65,101|Rest]->NewChars=[196|Rest];
-                                  (Chars=[79,101|Rest]->NewChars=[214|Rest];
-                                    (Chars=[85,101|Rest]->NewChars=[220|Rest];
-                                        (append(Before,[115,115|After],Chars), 
-                                         append(Before,[223],Start),
-                                         append(Start,After,NewChars))))),
-                               name(NewWord,NewChars),
-                               spellingvariation(NewWord,OutWord).
 
 
 %standard sort only removes duplicates if no variables are involved.
