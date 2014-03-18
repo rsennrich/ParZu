@@ -241,7 +241,7 @@ head('APPO','PWAV',l,pn,'PPQ',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- \+ member('<-pn<-
 %Subject, only one is allowed    
 
 %subject before finite verb
-head('V*FIN',SUBJ,l,subj,'V*FIN',[FC,_,_,_,UG,OG,_,_],_-G,MF,MG,MNew) :- subjcandidate(SUBJ,G), (among_dependents(OG,'->kon->',-1)->(case_nom(MG,SUBJ),MNew=MF);check_agreement(MF,'VVFIN',MG,SUBJ,MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('V*FIN',SUBJ,l,subj,'V*FIN',[FC,_,_,DWord,UG,OG,_,_],_-G,MF,MG,MNew) :- subjcandidate(SUBJ,G), ((among_dependents(OG,'->kon->',-1);collective(DWord))->(case_nom(MG,SUBJ),MNew=MF);check_agreement(MF,'VVFIN',MG,SUBJ,MNew)), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 %allow subject before nonfinite verb if no matching finite verb is found in preprocessing (-> chunk has only one element).
 head('VVPP', SUBJ,l,subj,'NEB',[FC,_,_,_,UG,_,_,_],F-G,MF,MG,MF) :- subjcandidate(SUBJ,G), \+ SUBJ = 'CARD', verbchunklength(FC,1), RightPos is F + 1, \+ checkPos(RightPos,_,'KON',_,_), case_nom(MG,SUBJ), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
@@ -292,7 +292,7 @@ head('VVPP','PWS',l,subj,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- correct_mistagg
 
 
 %subject after finite verb
-head('V*FIN',SUBJ,r,subj,'V*FIN',[_,_,_,_,OG,OF,_,_],_-F,MG,MF,MNew)  :- subjcandidate(SUBJ,F), (among_dependents(OF,'->kon->',-1)->(case_nom(MF,SUBJ),MNew=MG); check_agreement(MG,'VVFIN',MF,SUBJ,MNew)), restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG), \+ member('->obji->',OG), \+ member('<-explsubj<-',OG), \+ member('->explsubj->',OG), \+ member('->objp->',OG), \+ member('->pred->',OG).
+head('V*FIN',SUBJ,r,subj,'V*FIN',[_,_,_,DWord,OG,OF,_,_],_-F,MG,MF,MNew)  :- subjcandidate(SUBJ,F), ((among_dependents(OF,'->kon->',-1);collective(DWord))->(case_nom(MF,SUBJ),MNew=MG); check_agreement(MG,'VVFIN',MF,SUBJ,MNew)), restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG), \+ member('->obji->',OG), \+ member('<-explsubj<-',OG), \+ member('->explsubj->',OG), \+ member('->objp->',OG), \+ member('->pred->',OG).
 
 
 %======================================================================================

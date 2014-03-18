@@ -368,6 +368,25 @@ measure('Stück').
 measure('Paar').
 measure('Dutzend').
 
+% collective nouns can refer to a group of individuals, and sometimes occur with plural verb (even though prescriptive linguists might consider this ungrammatical)
+% unlike nouns of measure, we allow plural verb even if whole noun phrase (including article etc.) is singular
+% "Eine Mehrheit der Demonstranten fordern mehr Lohn"
+collective('Mehrheit').
+collective('Minderheit').
+collective('Anzahl').
+collective('Anteil').
+collective('Teil').
+collective('Reihe').
+collective('Dutzend').
+collective('Paar').
+collective('Prozent').
+collective('Promille').
+collective('Gruppe').
+collective('Rudel').
+collective('Herde').
+collective('Menge').
+
+
 %currencies (only uninflected ones: Franken, Rupien etc. do not need exception)
 measure('Baht').
 measure('Cent').
