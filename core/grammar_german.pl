@@ -133,11 +133,11 @@ head('FM','CARD',l,attr,'FM',[_,_,HeadWord,DepWord,OF,_,_,_],_,MH,_,MNew) :- \+ 
 
 
 %Der Ex- Aussenminister. Might be treated as two words (for instance on line breaks)
-head('NN','TRUNC',l,attr,'NN',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF), \+ member('<-adv<-',OF).
+head('NN','TRUNC',l,attr,'NN',[_,_,_,_,OF,_,_,_],D,MH,_,MH) :- 1 is D, \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF), \+ member('<-adv<-',OF).
 
-head('NE','TRUNC',l,attr,'NE',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF), \+ member('<-adv<-',OF).
+head('NE','TRUNC',l,attr,'NE',[_,_,_,_,OF,_,_,_],D,MH,_,MH) :- 1 is D, \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF), \+ member('<-adv<-',OF).
 
-head('FM','TRUNC',l,attr,'FM',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF), \+ member('<-adv<-',OF).
+head('FM','TRUNC',l,attr,'FM',[_,_,_,_,OF,_,_,_],D,MH,_,MH) :- 1 is D, \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF), \+ member('<-gmod<-',OF), \+ member('<-adv<-',OF).
 
 
 %CARD or ADJA as head of NP if noun is missing.
@@ -1973,6 +1973,9 @@ head(Tag,'KON_ANY',r,kon,Tag,  _,_,MH,_,MH).
 %Der 9./10. Mai
 head(_,'$(',l,bracket,'KON_ANY',  [_,_,_,'/',_,_,_,_],F-G,HM,_,HM) :- 1 is F-G.
 head('CARD','$(',l,bracket,'KON_CARD',  [_,_,_,Bracket,_,_,_,_],F-G,HM,_,HM) :- 1 is F-G, rightbracket(Bracket,'21').
+
+%Die Gross- / Kleinschreibung
+head('TRUNC','KON_ANY',r,kon,'NN',  [_,_,_,_,_,_,_,_],_,_,MD,MD).
 
 %two clauses that are not in a subordinated relationship can belong together.
 

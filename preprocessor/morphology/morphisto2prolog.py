@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 # Copyright ©2011 University of Zürich
 # Author: Rico Sennrich <sennrich@cl.uzh.ch>
