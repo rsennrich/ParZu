@@ -2251,6 +2251,22 @@ head('ADJD','NN',r,grad,'ADJD',[_,_,voll,_,_,_,_,_],_,HMorph,_,HMorph).
 head('ADJD','NN',r,grad,'ADJD',[_,_,voller,_,_,_,_,_],_,HMorph,_,HMorph).
 
 
+%======================================================================================
+%vocative
+
+% sentence-initial vocative: "Peter, das ist nicht lustig!"
+head('NE','$,',r,comma,'VOK',[_,_,_,_,HeadRels,_,HeadID,_],_,HMorph,_,HMorph) :- stopToLeft(HeadID), \+ member('->comma->', HeadRels).
+head('NN','$,',r,comma,'VOK',[_,_,_,_,HeadRels,_,HeadID,_],_,HMorph,_,HMorph) :- stopToLeft(HeadID), \+ member('->comma->', HeadRels).
+
+head('V*FIN','VOK',l,vok,'V*FIN',[_,_,_,_,_,DepRels,_,_],_,HMorph,_,HMorph) :- \+ member('<-adv<-', DepRels), \+ member('<-adv_kon<-', DepRels), \+ member('<-pp<-', DepRels).
+
+% sentence-final vocative: "Das ist nicht lustig, Peter!"
+head('NE','$,',l,comma,'VOK',[_,_,_,_,HeadRels,_,HeadID,_],_,HMorph,_,HMorph) :- stopToRight(HeadID), \+ member('<-comma<-', HeadRels), \+ member('<-det<-', HeadRels), \+ member('<-adv<-', HeadRels), \+ member('<-adv_kon<-', HeadRels), \+ member('<-pp<-', HeadRels).
+head('NN','$,',l,comma,'VOK',[_,_,_,_,HeadRels,_,HeadID,_],_,HMorph,_,HMorph) :- stopToRight(HeadID), \+ member('<-comma<-', HeadRels), \+ member('<-det<-', HeadRels), \+ member('<-adv<-', HeadRels), \+ member('<-adv_kon<-', HeadRels), \+ member('<-pp<-', HeadRels).
+
+head('V*FIN','VOK',r,vok,'V*FIN',[_,_,_,_,_,_,_,_],_,HMorph,_,HMorph).
+
+
 
 %======================================================================================
 %brackets can enclose any structure

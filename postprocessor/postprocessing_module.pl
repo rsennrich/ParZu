@@ -360,6 +360,7 @@ relclass(konjneb).
 relclass(par).
 relclass(objg).
 relclass(koord).
+relclass(vok).
 
 
 %subjects etc. are attached to the finite verb in the gold standard, so there's no need to modify these dependency relations.
@@ -375,6 +376,7 @@ leavealone(konjobjc).
 leavealone(koord).
 leavealone(par).
 leavealone(part).
+leavealone(vok).
 
 %these classes have topology-dependant attachment rule (attached to finite verb in vorfeld, but to full verb in mittelfeld)
 %comment these out if you want to always attach these relations to full verb, or change to 'leavealone' to always attach them to finite verb

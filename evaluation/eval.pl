@@ -389,3 +389,5 @@ evalclass('gmod-app') :- asserta(result('gmod-app',0,0,0,0)).
 evalclass(par) :- asserta(result(par,0,0,0,0)).
 
 evalclass(koord) :- asserta(result(koord,0,0,0,0)).
+
+evalclass(vok) :- asserta(result(vok,0,0,0,0)).

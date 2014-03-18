@@ -55,7 +55,7 @@ stats2(explsubj,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,_D,_HC-OG,_DC) :- 
 
 stats2(explobja,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,P,_D,_HC-OG,_DC) :- ((member('->objc->',OG);member('<-objc<-',OG))-> P is 1.06; ((member('->obji->',OG);member('<-obji<-',OG))->P is 0.8;P is 0.2)).
 
-
+stats2(vok,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,0.1,_D,_HC,_DC).
 
 stats2(comma,_Htag,_FH,_SH,_MORPHH,_Dtag,_FD,_SD,_MORPHD,1,_D,_HC,_DC).
 
