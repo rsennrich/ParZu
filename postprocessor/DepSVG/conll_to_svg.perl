@@ -76,6 +76,7 @@ while(<STDIN>) {
 
 		$relations->{$sid}->{$head}->{$loc}->{$type} = 1;
 
+		$ntype =~ s/\s+$//;
 		if($ntype ne "_" && $nhead ne "_" && ($type ne $ntype || $head != $nhead)) {
 			$relations->{$sid}->{$nhead}->{$loc}->{$ntype} = 2;
 		}
