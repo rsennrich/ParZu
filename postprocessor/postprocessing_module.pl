@@ -150,6 +150,10 @@ projective_conflict(_,Pos, DepPos) :- is_dependent(Pos, DepPos), !, fail.
 projective_conflict(right,Pos, DepPos) :- oldhead(X,Pos), X > DepPos, !.
 projective_conflict(left,Pos, DepPos) :- oldhead(X,Pos), X < DepPos, !.
 
+%%a token X between the head Y and dependent Z of a projective arc, and that does not depend on the dependent of the arc,
+%%may not depend on a head A that lies outside the range Y,Z
+projective_conflict(right,Pos, DepPos) :- oldhead(Pos,X), X > DepPos, !.
+
 transformMorph(prolog,[Var],_) :- var(Var),!.
 
 transformMorph(conll,[Var],'_') :- var(Var),!.
