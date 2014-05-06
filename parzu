@@ -204,7 +204,11 @@ def process_arguments():
         options['senderror'] = sys.stderr
     else:
         options['senderror'] = open(options['errorpath'],'w')
-        
+
+    if options['morphology'] == 'morphisto':
+        sys.stderr.write('Warning: deprecated value \'morphisto\' for option \'morphology\'. Use \'smor\' instead.\n')
+        options['morphology'] = 'smor'
+
     return options
       
       
