@@ -305,17 +305,17 @@ def preprocess(instream,outstream,options):
     morphfile = open(options['morphpath'],'w')
 
     #morphological analysis
-    if options['morphology'] == 'gertwol' or options['morphology'] == 'morphisto':
+    if options['morphology'] == 'gertwol' or options['morphology'] == 'smor':
 
         if options['morphology'] == 'gertwol':
             morphin = open(options['morphinpath'],'r')
             gertwol = Popen(["python", "gertwol_parzu.py", options['gertwolcmd'], options['gertwolscorecmd']], cwd=os.path.join(sys.path[0],'preprocessor','morphology'),stdin=morphin,stdout=morphfile,stderr=options['senderror'])
             gertwol.wait()
 
-        elif options['morphology'] == 'morphisto':
+        elif options['morphology'] == 'smor':
             try:
                 morphin = open(options['morphinpath'],'r')
-                morphisto = Popen(["fst-infl2", options['morphisto_model']],stdin=morphin,stdout=PIPE,stderr=options['senderror'])
+                morphisto = Popen(["fst-infl2", options['smor_model']],stdin=morphin,stdout=PIPE,stderr=options['senderror'])
                 morphisto2prolog = Popen(["python", "morphisto2prolog.py"], cwd=os.path.join(sys.path[0],'preprocessor','morphology'),stdin=morphisto.stdout,stdout=morphfile,stderr=options['senderror'])
                 morphisto2prolog.wait()
                 morphisto.wait()
@@ -324,7 +324,7 @@ def preprocess(instream,outstream,options):
                     raise RuntimeError
             except RuntimeError:
                 morphin = open(options['morphinpath'],'r')
-                morphisto = Popen(["fst-infl", options['morphisto_model']],stdin=morphin,stdout=PIPE,stderr=options['senderror'])
+                morphisto = Popen(["fst-infl", options['smor_model']],stdin=morphin,stdout=PIPE,stderr=options['senderror'])
                 morphisto2prolog = Popen(["python", "morphisto2prolog.py"], cwd=os.path.join(sys.path[0],'preprocessor','morphology'),stdin=morphisto.stdout,stdout=morphfile,stderr=options['senderror'])
                 morphisto2prolog.wait()
                 morphisto.wait()
@@ -362,9 +362,9 @@ def preprocess2(instream,outstream,options):
 
 #main parsing step
 def parse(instream,outstream,options):
-    #morphisto and 'keep' morphology options are internally treated as Gertwol morphology.
+    #smor and 'keep' morphology options are internally treated as Gertwol morphology.
     morphology_mapping = {'gertwol':'gertwol',
-                          'morphisto':'gertwol',
+                          'smor':'gertwol',
                           'none':'off',
                           'keep':'gertwol',
                           'tueba':'tueba'}

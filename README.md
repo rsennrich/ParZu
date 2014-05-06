@@ -89,7 +89,7 @@ with morphisto:             86.5% precision; 83.5% recall
 with Tüba-D/Z statistics:   85%   precision; 83%   recall
 with both :                 87.5% precision; 84.5% recall
 
-In short: if you use morphisto for morphological analysis, you get 10%-20% fewer errors.
+In short: if you use morphisto, SMOR or Zmorge for morphological analysis, you get 10%-20% fewer errors.
 The default statistics are trained on automatic parses of Europarl. This means they are slightly worse than statistics extracted from a hand-created treebank, but license-free.
 Using Tüba-D/Z statistics instead of the default ones decreases error rates by another 5-10%.
 The quality difference is more extreme for linguistically interesting phenomena (e.g. the functional disambiguation of noun phrases),
