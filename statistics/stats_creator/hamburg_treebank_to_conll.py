@@ -44,10 +44,16 @@ coarsetag = {'ADJD':'ADV',
     'VVPP':'V'
     }
 
-def print_sentence(sentence):
+def print_sentence(sentence, filename):
+    if any((not word['token'] or word['token'] == "''") for word in sentence):
+      sys.stderr.write('empty words in file {0} skipping\n'.format(filename))
+      return
+
     for word in sentence:
         if word['token'].startswith('\'') and word['token'].endswith('\''):
                 word['token'] = word['token'][1:-1]
+        if word['token'] == r'\\':
+            word['token'] = r'/'
         if 'lemma' in word and word['lemma'].startswith('\'') and word['lemma'].endswith('\''):
             word['lemma'] = word['lemma'][1:-1]
         if word['pos'].startswith('\'') and word['pos'].endswith('\''):
@@ -80,22 +86,25 @@ for f in sorted(files, key= lambda x: int(x[5:-4])):
 
         else:
             line = line.split()
-            if line[0] == 'base':
-                word['lemma'] = line[2]
-            elif line[0] == 'cat':
-                word['pos'] = line[2]
-            elif line[0] == 'case':
-                word['feature'] = line[2][0]
-            elif line[0] == 'SYN':
+            if line[0] == "'base'":
+                word['lemma'] = line[2][1:-1]
+            elif line[0] == "'cat'":
+                word['pos'] = line[2][1:-1]
+            elif line[0] == "'case'":
+                word['feature'] = line[2][1]
+            elif line[0] == "'SYN'":
                 try:
                     word['head'] = line[4]
                 except IndexError:
                     sys.stderr.write('warning: failed to find head in sentence ' + f + '\n')
                     word['head'] = '0'
-                word['label'] = line[2]
+                word['label'] = line[2][1:-1]
                 # we don't distinguish between dative object and 'ethischer dativ'
                 if word['label'] == 'ETH':
                     word['label'] = 'OBJD'
+                # we give label ROOT to all nodes without head
+                if word['head'] == '0':
+                    word['label'] = 'ROOT'
             else:
                 try:
                     int(line[0])
@@ -104,4 +113,4 @@ for f in sorted(files, key= lambda x: int(x[5:-4])):
                 except:
                     pass
 
-    print_sentence(sentence)
+    print_sentence(sentence, f)

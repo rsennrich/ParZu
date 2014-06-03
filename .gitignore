@@ -3,3 +3,4 @@
 *.pyc
 statistics/tmp*
 tmp/
+*.svg

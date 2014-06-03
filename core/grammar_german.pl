@@ -180,6 +180,11 @@ head(_,'PP',r,pn,'PP',[_,_,bis,_,_,_,_,_],G-F,MH,_,MH) :- correct_mistagging(yes
 head(_,'PP',r,pn,'PP',[_,_,'Bis',_,_,_,_,_],G-F,MH,_,MH) :- correct_mistagging(yes), 1 is F-G.
 
 
+%drei/CARD bis/APPR fünf/CARD
+head('APPR','CARD',r,pn,'PP_bis',[_,_,_,_,_,_,_,_],G-F,MH,_,MH) :- 1 is F-G.
+head('CARD','PP_bis',r,pp,'CARD',[_,_,_,bis,_,_,_,_],G-F,MH,_,MH) :- 1 is F-G.
+
+
 %zu might be mistagged as PTKA/PTKZU/PTKVZ
 head(_,PN,r,pn,'PP',[_,_,zu,_,OG,_,_,_],_-F,MG,MF,MNew) :- correct_mistagging(yes), prepcompl(PN,F), unify_case(MG,'APPR',MF,PN,MNew), \+ member('->pn->',OG), \+ member('->bad_pn->',OG).
 head(_,PN,r,pn,'PP',[_,_,'Zu',_,OG,_,_,_],_-F,MG,MF,MNew) :- correct_mistagging(yes), prepcompl(PN,F), unify_case(MG,'APPR',MF,PN,MNew), \+ member('->pn->',OG), \+ member('->bad_pn->',OG).

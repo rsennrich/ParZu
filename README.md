@@ -1,5 +1,5 @@
-ParZu - The Zurich Dependency Parser for German (formerly known as Pro3GresDE)
-=============================================================================
+ParZu - The Zurich Dependency Parser for German
+===============================================
 
 A project of the Computational Linguistics Group at the University of Zurich (http://www.cl.uzh.ch).
 
@@ -33,14 +33,14 @@ It may work in different environments, but there is no guarantee. Any contributi
 
 Additionally, the parser requires the following software and licenses:
 
-- A POS-Tagger using the STTS tagset: (for instance TreeTagger: http://www.ims.uni-stuttgart.de/projekte/corplex/TreeTagger/)
+- A POS-Tagger using the STTS tagset: (for instance clevertagger: https://github.com/rsennrich/clevertagger)
 - A tool for morphological analysis (not required, but strongly recommended). Supported:
    - Zmorge: http://kitt.ifi.uzh.ch/kitt/zmorge/ (open source; recommended)
    - Morphisto: http://code.google.com/p/morphisto/ (open source; non-commercial)
    - Gertwol: http://www2.lingsoft.fi/cgi-bin/gertwol (proprietary; might be deprecated in the future)
 
-For development and testing, we recommend Tüba-D/Z, which you can obtain at http://www.sfs.uni-tuebingen.de/tuebadz.shtml (free download for academic use).
-See the section below on how to extract and integrate statistical information from Tüba-D/Z into the system.
+For development and testing, we recommend Tüba-D/Z or the Hamburg Dependency Treebank HDT (free download for academic use).
+See the section below on how to extract and integrate statistical information from Tüba-D/Z or the HDT into the system.
 
 INSTALLATION
 ------------
@@ -53,8 +53,9 @@ INSTALLATION
 3. adjust file paths in the config.ini file. Also define which lemmatisation/morphology you use (if any), and make sure they work.
 
 4. (OPTIONAL): If you have the Tüba-D/Z corpus in the right format (dependencies, CONLL format, UTF-8), you can generate improved statistic files by executing `statistics/create_statistics.sh`. 
+    The Hamburg Dependency Treebank can be converted into the required CONLL format with the script `statistics/stats_creator/hamburg_treebank_to_conll.py`.
     The files advstats* freq* konjstats* ppstats* and vstats* are created in a temporary directory - move them into the `statistics/` folder to make the system use them.
-    With evaluation/create_devsets.py , you can create a development from the same Tüba-D/Z file, and perform quality/regression tests with python evaluation/do_evaluation.py.
+    With evaluation/create_devsets.py , you can create a development from a CONLL format file, and perform quality/regression tests with python evaluation/do_evaluation.py.
 
 5. (OPTIONAL): to speed up the parser initialization (with SWI-Prolog), run `statistics/compile.sh`. Repeat this step if you modify the statistics files.
 
@@ -82,18 +83,9 @@ A short overview is given in `LABELS.md`.
 ON QUALITY AND TESTING
 ----------------------
 
-Some (old) ballpark figures on what performance to expect (calculated on 1000 Tüba-D/Z sentences):
-
-out-of-the-box:             83%   precision; 81%   recall
-with morphisto:             86.5% precision; 83.5% recall
-with Tüba-D/Z statistics:   85%   precision; 83%   recall
-with both :                 87.5% precision; 84.5% recall
-
-In short: if you use morphisto, SMOR or Zmorge for morphological analysis, you get 10%-20% fewer errors.
-The default statistics are trained on automatic parses of Europarl. This means they are slightly worse than statistics extracted from a hand-created treebank, but license-free.
-Using Tüba-D/Z statistics instead of the default ones decreases error rates by another 5-10%.
-The quality difference is more extreme for linguistically interesting phenomena (e.g. the functional disambiguation of noun phrases),
-since trivial analyses (determiners and attributes) are hardly affected by the lack of morphological or lexical information.
+The default statistics are trained on automatic parses of Europarl.
+This means they are slightly worse than statistics extracted from a hand-created treebank, but license-free.
+See step 4 in the installation instractions on how to extract statistics from other treebanks.
 
 If you have a Tüba-D/Z license, you can use the script `evaluation/create_devsets.py` to generate a development set and do your own performance tests.
 Given that both an input and a gold file exist, start the evaluation as follows:
@@ -150,8 +142,8 @@ KNOWN ISSUES
 ------------
 
 Internally, ParZu uses the following format as input/output for tagging: one token per line, blank lines for sentence boundaries.
-Most POS taggers (e.g. TnT, Stanford POS tagger, hunpos, CRF++) support this format; the TreeTagger, however, uses SGML tags instead.
-Instead of calling the TreeTagger directly, use `preprocessing/treetagger-wrapper.py`, which converts between the different formats.
+Most POS taggers (e.g. TnT, Stanford POS tagger, hunpos, clevertagger) support this format; the TreeTagger, however, uses SGML tags instead.
+To use the TreeTagger for POS tagging, use `preprocessing/treetagger-wrapper.py`, which converts between the different formats.
 If you want to use the TreeTagger, set the paths to the TreeTagger binary and the German UTF-8 model in `preprocessing/treetagger-wrapper.py`.
 
 
