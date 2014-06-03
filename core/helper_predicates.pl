@@ -399,9 +399,11 @@ measure('Franc').
 measure('Kip').
 measure('Kwanza').
 measure('Lek').
+measure('Leu').
 measure('Lira').
 measure('Pfund').
 measure('Mark').
+measure('Pfennig').
 measure('Peso').
 measure('Rand').
 measure('Real').
