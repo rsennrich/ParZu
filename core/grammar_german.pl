@@ -1611,6 +1611,8 @@ head('KOKOM','PP',r,cj,'KOMPX',_,_,MH,_,MH).
 
 head('KOKOM','CARD',r,cj,'KOMPX',_,_,MH,_,MH).
 
+head('KOKOM','VVPP',r,cj,'KOMPX',_,_,MH,_,MH).
+
 
 
 %härter als stahl; kraftvoll wie immer
@@ -2177,11 +2179,11 @@ head('VVIZU', 'NN',l,zeit,'VVIZU',[FC,_,_,Lemma,UG,_,_,_],_,MF,MG,MF) :- zeitcan
 
 
 %Eines Tages regnete es.
-head('V*FIN','NN',l,zeit,'V*FIN',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), restrict_vorfeld(FC,UG), case_gen(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('V*FIN','NN',l,zeit,'V*FIN',[FC,_,_,Lemma,UG,[DET,Rel|_],_,_],_,MF,MG,MF) :- zeitgen(Lemma, Chunk, Rel), DET =.. [_,[Chunk]], restrict_vorfeld(FC,UG), case_gen(MG,'NN'), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 
-head('V*INF', 'NN',l,zeit,'V*INF',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), in_coordination(FC,UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
-head('V*PP', 'NN',l,zeit,'V*PP',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), in_coordination(FC,UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
-head('VVIZU', 'NN',l,zeit,'VVIZU',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), in_coordination(FC,UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('V*INF', 'NN',l,zeit,'V*INF',[FC,_,_,Lemma,UG,[DET,Rel|_],_,_],_,MF,MG,MF) :- zeitgen(Lemma, Chunk, Rel), DET =.. [_,[Chunk]], case_gen(MG,'NN'), in_coordination(FC,UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('V*PP', 'NN',l,zeit,'V*PP',[FC,_,_,Lemma,UG,[DET,Rel|_],_,_],_,MF,MG,MF) :- zeitgen(Lemma, Chunk, Rel), DET =.. [_,[Chunk]], case_gen(MG,'NN'), in_coordination(FC,UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('VVIZU', 'NN',l,zeit,'VVIZU',[FC,_,_,Lemma,UG,[DET,Rel|_],_,_],_,MF,MG,MF) :- zeitgen(Lemma, Chunk, Rel), DET =.. [_,[Chunk]], case_gen(MG,'NN'), in_coordination(FC,UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 
 
 %Anfang Oktober regnete es.
@@ -2213,9 +2215,11 @@ head('V*FIN','NZEIT',r,zeit,'V*FIN',[_,_,_,_,OG,_,_,_],_,MG,MF,MG) :- case_acc(M
 head('V*IMP','NZEIT',r,zeit,'V*IMP',[_,_,_,_,OG,_,_,_],_,MG,MF,MG) :- case_acc(MF,'NN'), \+ member('<-zeit<-',OG), \+ member('->zeit->',OG), restrict_coord(OG).
 
 
-head('V*INF', 'NN',r,zeit,'V*INF',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
-head('V*PP', 'NN',r,zeit,'V*PP',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
-head('VVIZU', 'NN',r,zeit,'VVIZU',[FC,_,_,Lemma,UG,[DET,'<-det<-'|_],_,_],_,MF,MG,MF) :- zeitcand(Lemma), DET =.. [_,[Chunk]], (Chunk = 'ein_ART';Chunk='eines_ART';Chunk='Eines_ART'), case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('V*FIN', 'NN',r,zeit,'V*FIN',[_,_,_,Lemma,UG,[DET,Rel|_],_,_],_,MF,MG,MF) :- zeitgen(Lemma, Chunk, Rel), DET =.. [_,[Chunk]], case_gen(MG,'NN'), restrict_coord(UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+
+head('V*INF', 'NN',r,zeit,'V*INF',[FC,_,_,Lemma,UG,[DET,Rel|_],_,_],_,MF,MG,MF) :- zeitgen(Lemma, Chunk, Rel), DET =.. [_,[Chunk]], case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('V*PP', 'NN',r,zeit,'V*PP',[FC,_,_,Lemma,UG,[DET,Rel|_],_,_],_,MF,MG,MF) :- zeitgen(Lemma, Chunk, Rel), DET =.. [_,[Chunk]], case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('VVIZU', 'NN',r,zeit,'VVIZU',[FC,_,_,Lemma,UG,[DET,Rel|_],_,_],_,MF,MG,MF) :- zeitgen(Lemma, Chunk, Rel), DET =.. [_,[Chunk]], case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 
 %allow four-digit numbers ("1985"), but not other numbers ("13") to have temporal function.
 card_is_zeit_cand(Word) :- atom_length(Word,4), name(Word,X), name(Num,X), number(Num).

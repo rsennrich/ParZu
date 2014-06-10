@@ -43,6 +43,10 @@ stats2(pn,_Htag,_FH,_SH,_MORPHH,'PP',_FD,_SD,_MORPHD,0.5,_D,_HC,_DC).
 stats2(pn,_Htag,_FH,_SH,_MORPHH,'ADJA',_FD,_SD,_MORPHD,0.5,_D,_HC,_DC).
 stats2(pn,_Htag,_FH,_SH,_MORPHH,'CARD',_FD,_SD,_MORPHD,0.5,_D,_HC,_DC).
 
+% hack for "er sieht drei bis fünf Leute" (with bis/APPR)
+stats2(pn,'APPR',bis,_SH,_MORPHH,'CARD',_FD,_SD,_MORPHD,1,_D,_HC,_DC).
+stats2(pp,'CARD',_FH,_SH,_MORPHH,'PP_bis',_FD,_SD,_MORPHD,2,_D,_HC,_DC).
+
 stats2(unknown,_Htag,_FH,_SH,_MORPHH,_,_FD,_SD,_MORPHD,0.1,_D,_HC,_DC).
 
 

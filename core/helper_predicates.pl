@@ -269,6 +269,29 @@ zeit_like_anfang('Anfang').
 zeit_like_anfang('Mitte').
 zeit_like_anfang('Ende').
 
+%fixed expressions that have adverbial meaning in genitive case: "Eines Tages", "des Öfteren" usw.
+zeitgen('Tag', 'eine_ART', '<-det<-').
+zeitgen('Tag', 'ein_ART', '<-det<-').
+zeitgen('Abend', 'eine_ART', '<-det<-').
+zeitgen('Abend', 'ein_ART', '<-det<-').
+zeitgen('Morgen', 'eine_ART', '<-det<-').
+zeitgen('Morgen', 'ein_ART', '<-det<-').
+zeitgen('weit', 'die_ART', '<-det<-').
+zeitgen('weit', 'der_ART', '<-det<-').
+zeitgen('weit', 'das_ART', '<-det<-').
+zeitgen('oft', 'die_ART', '<-det<-').
+zeitgen('oft', 'der_ART', '<-det<-').
+zeitgen('oft', 'das_ART', '<-det<-').
+zeitgen('Öfteren', 'die_ART', '<-det<-').
+zeitgen('Öfteren', 'der_ART', '<-det<-').
+zeitgen('Öfteren', 'das_ART', '<-det<-').
+zeitgen('Erachten', 'mein_PPOSAT', '<-det<-').
+zeitgen('Erachten', 'meine_PPOSAT', '<-det<-').
+zeitgen('erachten', 'mein_PPOSAT', '<-det<-').
+zeitgen('erachten', 'meine_PPOSAT', '<-det<-').
+zeitgen('Gewissen', 'gut_ADJA', '<-attr<-').
+zeitgen('Ende', 'letzte_ADJA', '<-attr<-').
+zeitgen('Ende', 'letzt_ADJA', '<-attr<-').
 
 month('Januar').
 month('Februar').
