@@ -1713,6 +1713,7 @@ head(Tag, 'KON',l, kon, Tag,[_,_,_,'Entweder',OF,_,_,_],_,MH,_,MH) :- member('->
 head(Tag, 'KON',l, kon, Tag,[_,_,_,weder,OF,_,_,_],_,MH,_,MH) :- member('->kon->', OF).
 head(Tag, 'KON',l, kon, Tag,[_,_,_,'Weder',OF,_,_,_],_,MH,_,MH) :- member('->kon->', OF).
 
+head('KOKOM',Tag,r,cj,Tag,[_,_,als,auch,_,DepRels,_,_],G-F,MH,_,MH) :- 1 is F-G, member('->kon->', DepRels).
 head('KON',Tag,r,cj,Tag,[_,_,als,auch,_,DepRels,_,_],G-F,MH,_,MH) :- 1 is F-G, member('->kon->', DepRels).
 head('ADV',Tag,r,kon,Transtag,[_,_,auch,_,_,_,_,_],H-_,_,MD,MD) :- LeftPos is H-1, checkPos(LeftPos,als,_,_,_), kon_mapping(Tag,Transtag).
 

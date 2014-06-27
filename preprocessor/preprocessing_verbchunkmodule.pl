@@ -123,11 +123,13 @@ idmain(Sentence, Pos, LVL, EndPos, no) :- w(Sentence,Pos,_Word,Tag,[String],_),
                           assert(lvl(NewLVL,Pos,String,full)),
                           getverbgroupsub(Sentence,NewLVL,Pos,EndPos).
 
-%verbal particle found. This stops the search for more dependents.
-idmain(Sentence, Pos, LVL, EndPos, _) :- w(Sentence,Pos,_Word,Tag,[String],_),
+%verbal particle found. If full verb follows, enter third search strategy (getverbgroupmain); else, stop search.
+idmain(Sentence, Pos, LVL, EndPos, ExpectFullVerb) :- w(Sentence,Pos,_Word,Tag,[String],_),
 			  Tag = 'PTKVZ',
-			  assert(lvl(LVL,Pos,String,ptkvz)), 
-			  EndPos is Pos + 1, !.
+			  assert(lvl(LVL,Pos,String,ptkvz)),
+			  ((NewPos is Pos + 1,
+			  w(Sentence,NewPos,_Word2,Tag2,[_String2],_),
+			  (fullverbcand(Tag2);Tag2='PTKZU'))->idmain(Sentence,NewPos,LVL,EndPos,ExpectFullVerb);EndPos is Pos + 1), !.
 
 
 %other finite verb found. Check for possibility of tagging error.
@@ -459,7 +461,7 @@ getverbgroupsub(Sentence, LVL, Pos,EndPos) :- NewPos is Pos + 1,
 				  (Tag = 'VAINF'; Tag ='VMINF'),
 			  	  (	lvl(LVL,_KonjPos,'KOUI',x)
 				  ;
-					lvl(LVL,_,y,ptkzu)
+					lvl(LVL,Pos,y,ptkzu)
 				  ),
 				  assert(lvl(LVL,NewPos,String,head)),
 				EndPos is Pos + 2,!.
@@ -507,6 +509,17 @@ getverbgroupsub(Sentence, LVL, Pos,EndPos) :- NewPos is Pos + 1,
 				  assert(lvl(LVL,NewPos,String,aux)), !,
 				 getverbgroupsub(Sentence,LVL,NewPos, EndPos).
 
+
+%exception: Weil ich ihn mich befreien lassen habe: treat lassen as full verb, leave befreien alone; the parser will take care of the correct attachment 
+%(it can't be treated as one verb complex because befreien and lassen have one object each.
+getverbgroupsub(Sentence, LVL, Pos,EndPos) :- NewPos is Pos + 1,
+                                  w(Sentence,NewPos,Word,Tag,[String],_),
+                                  fullverbcand(Tag),
+                                  getlemma(Word,Tag,Lemma,Tag),
+                                  modallike(Lemma),
+                                  retract(lvl(LVL,_, _,full)),
+                                  assert(lvl(LVL,NewPos, String,full)), !,
+                                 getverbgroupsub(Sentence,LVL,NewPos, EndPos).
 
 %exception: there might be two verb complexes in a subclause (e.g. "weil er gekränkt ist und sich austoben muss").
 getverbgroupsub(Sentence,LVL,Pos, EndPos) :- NewPos is Pos + 1,
