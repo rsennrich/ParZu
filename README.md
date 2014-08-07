@@ -50,7 +50,7 @@ INSTALLATION
 
 2. unpack (or git clone) the directory to your target directory.
 
-3. adjust file paths in the config.ini file. Also define which lemmatisation/morphology you use (if any), and make sure they work.
+3. adjust file paths in the config.ini file. Also define which lemmatisation/morphology you use (if any), and make sure they work. Default models can be installed/configured by executing `install.sh`
 
 4. (OPTIONAL): If you have the Tüba-D/Z corpus in the right format (dependencies, CONLL format, UTF-8), you can generate improved statistic files by executing `statistics/create_statistics.sh`. 
     The Hamburg Dependency Treebank can be converted into the required CONLL format with the script `statistics/stats_creator/hamburg_treebank_to_conll.py`.
