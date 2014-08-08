@@ -278,18 +278,18 @@ head('VAFIN','PDS',l,subj,'VAFIN',[FC,_,sein,_,UG,_,_,_],_,MF,MG,MF) :- case_nom
 head('VAFIN','PDS',l,subj,'VAFIN',[FC,_,sind,_,UG,_,_,_],_,MF,MG,MF) :- case_nom(MG,'PDS'), gender_neut(MG,'PDS'), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 head('VAFIN','PDS',l,subj,'VAFIN',[FC,_,waren,_,UG,_,_,_],_,MF,MG,MF) :- case_nom(MG,'PDS'), gender_neut(MG,'PDS'), restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
-head('VAFIN','PDS',r,subj,'VAFIN',[_,_,sein,_,UG,_,_,_],_,MF,MG,MF) :- case_nom(MG,'PDS'), restrict_coord(UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
-head('VAFIN','PDS',r,subj,'VAFIN',[_,_,sind,_,UG,_,_,_],_,MF,MG,MF) :- case_nom(MG,'PDS'), restrict_coord(UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
-head('VAFIN','PDS',r,subj,'VAFIN',[_,_,waren,_,UG,_,_,_],_,MF,MG,MF) :- case_nom(MG,'PDS'), restrict_coord(UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('VAFIN','PDS',r,subj,'VAFIN',[_,_,sein,_,UG,_,_,_],_,MF,MG,MF) :- case_nom(MG,'PDS'), restrict_coord_and_nachfeld(UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('VAFIN','PDS',r,subj,'VAFIN',[_,_,sind,_,UG,_,_,_],_,MF,MG,MF) :- case_nom(MG,'PDS'), restrict_coord_and_nachfeld(UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('VAFIN','PDS',r,subj,'VAFIN',[_,_,waren,_,UG,_,_,_],_,MF,MG,MF) :- case_nom(MG,'PDS'), restrict_coord_and_nachfeld(UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 %personal pronoun: special case with "es sind/waren": (es sind keine leeren Worte)
 head('VAFIN','PPER',l,subj,'VAFIN',[FC,_,sein,es,UG,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 head('VAFIN','PPER',l,subj,'VAFIN',[FC,_,sind,es,UG,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 head('VAFIN','PPER',l,subj,'VAFIN',[FC,_,waren,es,UG,_,_,_],_,MH,_,MH) :- restrict_vorfeld(FC,UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
-head('VAFIN','PPER',r,subj,'VAFIN',[_,_,sein,es,UG,_,_,_],_,MH,_,MH) :- restrict_coord(UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
-head('VAFIN','PPER',r,subj,'VAFIN',[_,_,sind,es,UG,_,_,_],_,MH,_,MH) :- restrict_coord(UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
-head('VAFIN','PPER',r,subj,'VAFIN',[_,_,waren,es,UG,_,_,_],_,MH,_,MH) :- restrict_coord(UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('VAFIN','PPER',r,subj,'VAFIN',[_,_,sein,es,UG,_,_,_],_,MH,_,MH) :- restrict_coord_and_nachfeld(UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('VAFIN','PPER',r,subj,'VAFIN',[_,_,sind,es,UG,_,_,_],_,MH,_,MH) :- restrict_coord_and_nachfeld(UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
+head('VAFIN','PPER',r,subj,'VAFIN',[_,_,waren,es,UG,_,_,_],_,MH,_,MH) :- restrict_coord_and_nachfeld(UG), \+ member('<-subj<-',UG), \+ member('->subj->',UG), \+ member('<-subjc<-',UG), \+ member('->subjc->',UG), \+ member('<-explsubj<-',UG), \+ member('->explsubj->',UG).
 
 
 %only necessary in case of tagging errors
@@ -297,7 +297,7 @@ head('VVPP','PWS',l,subj,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- correct_mistagg
 
 
 %subject after finite verb
-head('V*FIN',SUBJ,r,subj,'V*FIN',[_,_,_,DWord,OG,OF,_,_],_-F,MG,MF,MNew)  :- subjcandidate(SUBJ,F), ((among_dependents(OF,'->kon->',-1);collective(DWord))->(case_nom(MF,SUBJ),MNew=MG); check_agreement(MG,'VVFIN',MF,SUBJ,MNew)), restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG), \+ member('->obji->',OG), \+ member('<-explsubj<-',OG), \+ member('->explsubj->',OG), \+ member('->objp->',OG), \+ member('->pred->',OG).
+head('V*FIN',SUBJ,r,subj,'V*FIN',[_,_,_,DWord,OG,OF,_,_],_-F,MG,MF,MNew)  :- subjcandidate(SUBJ,F), ((among_dependents(OF,'->kon->',-1);collective(DWord))->(case_nom(MF,SUBJ),MNew=MG); check_agreement(MG,'VVFIN',MF,SUBJ,MNew)), restrict_coord_and_nachfeld(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('<-subjc<-',OG), \+ member('->subjc->',OG), \+ member('->obji->',OG), \+ member('<-explsubj<-',OG), \+ member('->explsubj->',OG), \+ member('->objp->',OG), \+ member('->pred->',OG).
 
 
 %======================================================================================
@@ -340,9 +340,9 @@ head('V*FIN','PRELS',l,obja,'QC',[FC,_,_,was,UG,_,_,_],_,MH,_,MH) :- restrict_vo
 
 
 %object after finite verb.
-head('V*FIN',OBJ,r,obja,'V*FIN',[GC,_,_,_,OG,_,_,_],_-F,MG,MF,MG)  :- objcandidate(OBJ,F), case_acc(MF,OBJ), \+ member('passive',GC), restrict_coord(OG), \+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG), \+ member('<-obji<-',OG), \+ member('->obji->',OG), \+ member('<-s<-',OG), \+ member('->s->',OG), \+ member('->objp->',OG), \+ member('<-explobja<-',OG), \+ member('->explobja->',OG).
+head('V*FIN',OBJ,r,obja,'V*FIN',[GC,_,_,_,OG,_,_,_],_-F,MG,MF,MG)  :- objcandidate(OBJ,F), case_acc(MF,OBJ), \+ member('passive',GC), restrict_coord_and_nachfeld(OG), \+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG), \+ member('<-obji<-',OG), \+ member('->obji->',OG), \+ member('<-s<-',OG), \+ member('->s->',OG), \+ member('->objp->',OG), \+ member('<-explobja<-',OG), \+ member('->explobja->',OG).
 
-head('V*IMP',OBJ,r,obja,'V*IMP',[GC,_,_,_,OG,_,_,_],_-F,MG,MF,MG)  :- objcandidate(OBJ,F), case_acc(MF,OBJ), \+ member('passive',GC), restrict_coord(OG), \+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG), \+ member('<-obji<-',OG), \+ member('->obji->',OG), \+ member('<-s<-',OG), \+ member('->s->',OG), \+ member('->objp->',OG), \+ member('<-explobja<-',OG), \+ member('->explobja->',OG).
+head('V*IMP',OBJ,r,obja,'V*IMP',[GC,_,_,_,OG,_,_,_],_-F,MG,MF,MG)  :- objcandidate(OBJ,F), case_acc(MF,OBJ), \+ member('passive',GC), restrict_coord_and_nachfeld(OG), \+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('<-objc<-',OG), \+ member('->objc->',OG), \+ member('<-obji<-',OG), \+ member('->obji->',OG), \+ member('<-s<-',OG), \+ member('->s->',OG), \+ member('->objp->',OG), \+ member('<-explobja<-',OG), \+ member('->explobja->',OG).
 
 %rollkragenpullover tragende brillenträger
 head('ADJA', OBJ,l,obja,'ADJA',[_,_,_,_,OF,_,_,_],F-G,MF,MG,MF) :- 1 is F-G, derived_from_ppres(MF,'ADJA'), objcandidate(OBJ,F), case_acc(MG,OBJ), \+ member('<-obja<-',OF), \+ member('->obja->',OF).
@@ -382,9 +382,9 @@ head('VVPP','PWS',l,obja2,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- correct_mistag
 
 
 %object after finite verb.
-head('V*FIN',OBJ,r,obja2,'V*FIN',[GC,_,_,_,OG,_,_,_],_-F,MG,MF,MG)  :- objcandidate(OBJ,F), case_acc(MF,OBJ), \+ member('passive',GC), restrict_coord(OG), \+ member('<-obja2<-',OG), \+ member('->obja2->',OG), \+ member('->objp->',OG), \+ member('<-explobja<-',OG), \+ member('->explobja->',OG).
+head('V*FIN',OBJ,r,obja2,'V*FIN',[GC,_,_,_,OG,_,_,_],_-F,MG,MF,MG)  :- objcandidate(OBJ,F), case_acc(MF,OBJ), \+ member('passive',GC), restrict_coord_and_nachfeld(OG), \+ member('<-obja2<-',OG), \+ member('->obja2->',OG), \+ member('->objp->',OG), \+ member('<-explobja<-',OG), \+ member('->explobja->',OG).
 
-head('V*IMP',OBJ,r,obja2,'V*IMP',[GC,_,_,_,OG,_,_,_],_-F,MG,MF,MG)  :- objcandidate(OBJ,F), case_acc(MF,OBJ), \+ member('passive',GC), restrict_coord(OG), \+ member('<-obja2<-',OG), \+ member('->obja2->',OG), \+ member('->objp->',OG), \+ member('<-explobja<-',OG), \+ member('->explobja->',OG).
+head('V*IMP',OBJ,r,obja2,'V*IMP',[GC,_,_,_,OG,_,_,_],_-F,MG,MF,MG)  :- objcandidate(OBJ,F), case_acc(MF,OBJ), \+ member('passive',GC), restrict_coord_and_nachfeld(OG), \+ member('<-obja2<-',OG), \+ member('->obja2->',OG), \+ member('->objp->',OG), \+ member('<-explobja<-',OG), \+ member('->explobja->',OG).
 
 
 %======================================================================================
@@ -425,9 +425,9 @@ head('ADJD', OBJ,l,objd,'ADJD',[_,_,Lemma,_,OF,_,_,_],F-G,MF,MG,MF) :-  1 is F-G
 
 
 %object after finite verb.
-head('V*FIN',OBJ,r,objd,'V*FIN',[_,_,_,_,OG,_,_,_],_-F,MG,MF,MG)  :- objcandidate(OBJ,F), case_dat(MF,OBJ), restrict_coord(OG), \+ member('<-objd<-',OG), \+ member('->objd->',OG), \+ member('->objp->',OG).
+head('V*FIN',OBJ,r,objd,'V*FIN',[_,_,_,_,OG,_,_,_],_-F,MG,MF,MG)  :- objcandidate(OBJ,F), case_dat(MF,OBJ), restrict_coord_and_nachfeld(OG), \+ member('<-objd<-',OG), \+ member('->objd->',OG), \+ member('->objp->',OG).
 
-head('V*IMP',OBJ,r,objd,'V*IMP',[_,_,_,_,OG,_,_,_],_-F,MG,MF,MG)  :- objcandidate(OBJ,F), case_dat(MF,OBJ), restrict_coord(OG), \+ member('<-objd<-',OG), \+ member('->objd->',OG), \+ member('->objp->',OG).
+head('V*IMP',OBJ,r,objd,'V*IMP',[_,_,_,_,OG,_,_,_],_-F,MG,MF,MG)  :- objcandidate(OBJ,F), case_dat(MF,OBJ), restrict_coord_and_nachfeld(OG), \+ member('<-objd<-',OG), \+ member('->objd->',OG), \+ member('->objp->',OG).
 
 
 %======================================================================================
@@ -468,15 +468,15 @@ head('VVPP','PWAV',l,pred,'QC',[FC,_,_,DWord,HeadRels,_,_,_],_,MH,_,MH) :- corre
 
 
 %predicate noun after finite verb.
-head('V*FIN',Dtag,r,pred,'V*FIN',[_,_,_,_,OG,_,_,_],_-G,MG,MF,MG)  :- predcand(Dtag,G), case_nom(MF,Dtag), restrict_coord(OG), \+ member('<-pred<-',OG), \+ member('->pred->',OG), \+ member('->objp->',OG), \+ member('<-objp<-', OG).
+head('V*FIN',Dtag,r,pred,'V*FIN',[_,_,_,_,OG,_,_,_],_-G,MG,MF,MG)  :- predcand(Dtag,G), case_nom(MF,Dtag), restrict_coord_and_nachfeld(OG), \+ member('<-pred<-',OG), \+ member('->pred->',OG), \+ member('->objp->',OG), \+ member('<-objp<-', OG).
 
-head('V*IMP',Dtag,r,pred,'V*IMP',[_,_,_,_,OG,_,_,_],_-G,MG,MF,MG)  :- predcand(Dtag,G), case_nom(MF,Dtag), restrict_coord(OG), \+ member('<-pred<-',OG), \+ member('->pred->',OG), \+ member('->objp->',OG), \+ member('<-objp<-', OG).
+head('V*IMP',Dtag,r,pred,'V*IMP',[_,_,_,_,OG,_,_,_],_-G,MG,MF,MG)  :- predcand(Dtag,G), case_nom(MF,Dtag), restrict_coord_and_nachfeld(OG), \+ member('<-pred<-',OG), \+ member('->pred->',OG), \+ member('->objp->',OG), \+ member('<-objp<-', OG).
 
 
 
-head('V*FIN',Dtag,r,pred,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH)  :- predcand_adverb(Dtag), restrict_coord(OG), \+ member('<-pred<-',OG), \+ member('->pred->',OG).
+head('V*FIN',Dtag,r,pred,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH)  :- predcand_adverb(Dtag), restrict_coord_and_nachfeld(OG), \+ member('<-pred<-',OG), \+ member('->pred->',OG).
 
-head('V*IMP',Dtag,r,pred,'V*IMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH)  :- predcand_adverb(Dtag), restrict_coord(OG), \+ member('<-pred<-',OG), \+ member('->pred->',OG).
+head('V*IMP',Dtag,r,pred,'V*IMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH)  :- predcand_adverb(Dtag), restrict_coord_and_nachfeld(OG), \+ member('<-pred<-',OG), \+ member('->pred->',OG).
 
 
 predcand('NN', _).
@@ -524,9 +524,9 @@ head('VVPP','PWS',l,objg,'QC',[FC,_,_,_,UG,_,_,_],_,MF,MG,MF) :- correct_mistagg
 
 
 %object after finite verb.
-head('V*FIN',OBJ,r,objg,'V*FIN',[_,_,_,_,OG,_,_,_],_-F,MG,MF,MG)  :- objcandidate(OBJ,F), case_gen(MF,OBJ), restrict_coord(OG), \+ member('<-objg<-',OG), \+ member('->objg->',OG), \+ member('->objp->',OG).
+head('V*FIN',OBJ,r,objg,'V*FIN',[_,_,_,_,OG,_,_,_],_-F,MG,MF,MG)  :- objcandidate(OBJ,F), case_gen(MF,OBJ), restrict_coord_and_nachfeld(OG), \+ member('<-objg<-',OG), \+ member('->objg->',OG), \+ member('->objp->',OG).
 
-head('V*IMP',OBJ,r,objg,'V*IMP',[_,_,_,_,OG,_,_,_],_-F,MG,MF,MG)  :- objcandidate(OBJ,F), case_gen(MF,OBJ), restrict_coord(OG), \+ member('<-objg<-',OG), \+ member('->objg->',OG), \+ member('->objp->',OG).
+head('V*IMP',OBJ,r,objg,'V*IMP',[_,_,_,_,OG,_,_,_],_-F,MG,MF,MG)  :- objcandidate(OBJ,F), case_gen(MF,OBJ), restrict_coord_and_nachfeld(OG), \+ member('<-objg<-',OG), \+ member('->objg->',OG), \+ member('->objp->',OG).
 
 %======================================================================================
 %g(enitive) mod(ifier). only one on each side of the head allowed.
@@ -587,9 +587,9 @@ head('FM', 'FM',l, gmod, 'FM',[_,_,_,_,UG,OG,_,_],_,MF,MG,MF) :- case_gen(MG,'FM
 
 
 %EXPL after finite verb - takes position of OBJA or SUBJ
-head('V*FIN','PPER',r,explsubj,'V*FIN',[_,_,_,'es',OG,_,_,_],_,MH,_,MH)  :- restrict_coord(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('->objp->',OG), \+ member('->pred->',OG).
+head('V*FIN','PPER',r,explsubj,'V*FIN',[_,_,_,'es',OG,_,_,_],_,MH,_,MH)  :- restrict_coord_and_nachfeld(OG), \+ member('<-subj<-',OG), \+ member('->subj->',OG), \+ member('->objp->',OG), \+ member('->pred->',OG).
 
-head('V*FIN','PPER',r,explobja,'V*FIN',[GC,_,_,'es',OG,_,_,_],_,MH,_,MH)  :- restrict_coord(OG), \+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('passive',GC), \+ member('<-s<-',OG), \+ member('->s->',OG), \+ member('->objp->',OG).
+head('V*FIN','PPER',r,explobja,'V*FIN',[GC,_,_,'es',OG,_,_,_],_,MH,_,MH)  :- restrict_coord_and_nachfeld(OG), \+ member('<-obja<-',OG), \+ member('->obja->',OG), \+ member('passive',GC), \+ member('<-s<-',OG), \+ member('->s->',OG), \+ member('->objp->',OG).
 
 
 %EXPL before finite verb - takes position of SUBJ
@@ -740,14 +740,14 @@ head('APPR', 'PAV',r,pp,'PP',_,G-F,MH,_,MH) :- 1 is F-G.
 
 
 %prepositional object after verb
-head('V*FIN', 'PP',r,objp,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('<-objp<-',OG), \+ member('->objp->',OG), \+ noun_pred(OG).
+head('V*FIN', 'PP',r,objp,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord_and_nachfeld(OG), \+ member('<-objp<-',OG), \+ member('->objp->',OG), \+ noun_pred(OG).
 
-head('V*IMP', 'PP',r,objp,'V*IMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('<-objp<-',OG), \+ member('->objp->',OG), \+ noun_pred(OG).
+head('V*IMP', 'PP',r,objp,'V*IMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord_and_nachfeld(OG), \+ member('<-objp<-',OG), \+ member('->objp->',OG), \+ noun_pred(OG).
 
 
-head('V*FIN', 'PAV',r,objp,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('<-objp<-',OG), \+ member('->objp->',OG), \+ noun_pred(OG).
+head('V*FIN', 'PAV',r,objp,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord_and_nachfeld(OG), \+ member('<-objp<-',OG), \+ member('->objp->',OG), \+ noun_pred(OG).
 
-head('V*IMP', 'PAV',r,objp,'V*IMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG), \+ member('<-objp<-',OG), \+ member('->objp->',OG), \+ noun_pred(OG).
+head('V*IMP', 'PAV',r,objp,'V*IMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord_and_nachfeld(OG), \+ member('<-objp<-',OG), \+ member('->objp->',OG), \+ noun_pred(OG).
 
 
 
@@ -1546,8 +1546,8 @@ head('VVIZU','V*INF/PP',l,aux,'VVIZU',[Chunk,Chunk,_,_,_,_,_,_],_,MH,_,MH).
 head('V*FIN','PTKVZ',l,avz,'V*FIN', _,F-G,MH,_,MH) :- 1 is F-G.
 head('V*IMP','PTKVZ',l,avz,'V*IMP', _,F-G,MH,_,MH) :- 1 is F-G.
 
-head('V*FIN','PTKVZ',r,avz,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG).
-head('V*IMP','PTKVZ',r,avz,'V*IMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord(OG).
+head('V*FIN','PTKVZ',r,avz,'V*FIN',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord_and_nachfeld(OG).
+head('V*IMP','PTKVZ',r,avz,'V*IMP',[_,_,_,_,OG,_,_,_],_,MH,_,MH) :- restrict_coord_and_nachfeld(OG).
 
 
 %new transtag to simplify other attachment rules. 
@@ -2201,22 +2201,22 @@ head('ADJA', 'NZEIT',l,zeit,'ADJA',[_,_,_,_,UG,_,_,_],_,MF,MG,MF) :-  (derived_f
 
 
 %'zeit' after verb
-head('V*FIN','CARD',r,zeit,'V*FIN',[_,_,_,DWord,OG,_,_,_],_,MH,_,MH) :- card_is_zeit_cand(DWord), \+ member('<-zeit<-',OG), \+ member('->zeit->',OG), restrict_coord(OG).
+head('V*FIN','CARD',r,zeit,'V*FIN',[_,_,_,DWord,OG,_,_,_],_,MH,_,MH) :- card_is_zeit_cand(DWord), \+ member('<-zeit<-',OG), \+ member('->zeit->',OG), restrict_coord_and_nachfeld(OG).
 
-head('V*IMP','CARD',r,zeit,'V*IMP',[_,_,_,DWord,OG,_,_,_],_,MH,_,MH) :- card_is_zeit_cand(DWord), \+ member('<-zeit<-',OG), \+ member('->zeit->',OG), restrict_coord(OG).
-
-
-head('V*FIN','NN',r,zeit,'V*FIN',[_,_,_,Lemma,OG,_,_,_],_,MG,MF,MG) :- zeitcand(Lemma), case_acc(MF,'NN'), \+ member('<-zeit<-',OG), \+ member('->zeit->',OG), restrict_coord(OG).
-
-head('V*IMP','NN',r,zeit,'V*IMP',[_,_,_,Lemma,OG,_,_,_],_,MG,MF,MG) :- zeitcand(Lemma), case_acc(MF,'NN'), \+ member('<-zeit<-',OG), \+ member('->zeit->',OG), restrict_coord(OG).
+head('V*IMP','CARD',r,zeit,'V*IMP',[_,_,_,DWord,OG,_,_,_],_,MH,_,MH) :- card_is_zeit_cand(DWord), \+ member('<-zeit<-',OG), \+ member('->zeit->',OG), restrict_coord_and_nachfeld(OG).
 
 
-head('V*FIN','NZEIT',r,zeit,'V*FIN',[_,_,_,_,OG,_,_,_],_,MG,MF,MG) :- case_acc(MF,'NN'), \+ member('<-zeit<-',OG), \+ member('->zeit->',OG), restrict_coord(OG).
+head('V*FIN','NN',r,zeit,'V*FIN',[_,_,_,Lemma,OG,_,_,_],_,MG,MF,MG) :- zeitcand(Lemma), case_acc(MF,'NN'), \+ member('<-zeit<-',OG), \+ member('->zeit->',OG), restrict_coord_and_nachfeld(OG).
 
-head('V*IMP','NZEIT',r,zeit,'V*IMP',[_,_,_,_,OG,_,_,_],_,MG,MF,MG) :- case_acc(MF,'NN'), \+ member('<-zeit<-',OG), \+ member('->zeit->',OG), restrict_coord(OG).
+head('V*IMP','NN',r,zeit,'V*IMP',[_,_,_,Lemma,OG,_,_,_],_,MG,MF,MG) :- zeitcand(Lemma), case_acc(MF,'NN'), \+ member('<-zeit<-',OG), \+ member('->zeit->',OG), restrict_coord_and_nachfeld(OG).
 
 
-head('V*FIN', 'NN',r,zeit,'V*FIN',[_,_,_,Lemma,UG,[DET,Rel|_],_,_],_,MF,MG,MF) :- zeitgen(Lemma, Chunk, Rel), DET =.. [_,[Chunk]], case_gen(MG,'NN'), restrict_coord(UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
+head('V*FIN','NZEIT',r,zeit,'V*FIN',[_,_,_,_,OG,_,_,_],_,MG,MF,MG) :- case_acc(MF,'NN'), \+ member('<-zeit<-',OG), \+ member('->zeit->',OG), restrict_coord_and_nachfeld(OG).
+
+head('V*IMP','NZEIT',r,zeit,'V*IMP',[_,_,_,_,OG,_,_,_],_,MG,MF,MG) :- case_acc(MF,'NN'), \+ member('<-zeit<-',OG), \+ member('->zeit->',OG), restrict_coord_and_nachfeld(OG).
+
+
+head('V*FIN', 'NN',r,zeit,'V*FIN',[_,_,_,Lemma,UG,[DET,Rel|_],_,_],_,MF,MG,MF) :- zeitgen(Lemma, Chunk, Rel), DET =.. [_,[Chunk]], case_gen(MG,'NN'), restrict_coord_and_nachfeld(UG), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 
 head('V*INF', 'NN',r,zeit,'V*INF',[FC,_,_,Lemma,UG,[DET,Rel|_],_,_],_,MF,MG,MF) :- zeitgen(Lemma, Chunk, Rel), DET =.. [_,[Chunk]], case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
 head('V*PP', 'NN',r,zeit,'V*PP',[FC,_,_,Lemma,UG,[DET,Rel|_],_,_],_,MF,MG,MF) :- zeitgen(Lemma, Chunk, Rel), DET =.. [_,[Chunk]], case_gen(MG,'NN'), verbchunklength(FC,1), \+ member('<-zeit<-',UG), \+ member('->zeit->',UG).
@@ -2862,6 +2862,9 @@ restrict_vorfeld(_,_) :- !. %catchall
 %restrict_coord/1: makes sure that subjects, objects etc. are not attached to a finite verb if there is a verb coordination in between:
 %example: susi denkt und peter sieht laura. -> 'laura' can't be object of 'denkt'.
 restrict_coord(RelList) :- intersection(RelList,['->konc->','->kon->','->s->','->objc->','->subjc->','->neb->','->obji->','->rel->'],[]). %only succeed if intersection is empty
+
+% like restrict_coord, but also don't allow any attachment if we're in the nachfeld (we've seen a separable verb prefix or full verb)
+restrict_coord_and_nachfeld(RelList) :- intersection(RelList,['->konc->','->kon->','->s->','->objc->','->subjc->','->neb->','->obji->','->rel->','->aux->','->avz->'],[]). %only succeed if intersection is empty
 
 
 % we relax our rule "attach everything to the finite verb" (which has the purpose of making most structure parsable with a context-free grammar) for coordinations of multiple non-finite verbs:
