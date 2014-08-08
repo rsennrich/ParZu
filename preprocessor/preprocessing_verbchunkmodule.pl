@@ -206,8 +206,10 @@ idmain(Sentence,Pos,LVL,EndPos, _) :- w(Sentence,Pos,_,'$,',_,_),
 idmain(Sentence,Pos,LVL, EndPos, ExpectFullVerb) :- sentdelim(SentDelim),
                 w(Sentence,XPos,_,SentDelim,_,_), 
                 XPos > Pos,
-			   NewPos is Pos + 1, !,
-			   idmain(Sentence,NewPos,LVL, EndPos, ExpectFullVerb).
+                NewPos is Pos + 1, !,
+                w(Sentence,Pos,_,Tag,_,_),
+                (Tag = 'VVIZU'->ExpectFullVerb2=no;ExpectFullVerb2=ExpectFullVerb),
+                idmain(Sentence,NewPos,LVL, EndPos, ExpectFullVerb2).
 
 %catchall. should not be needed, since recursive clause should always succeed.
 idmain(_,Pos,_,Pos, _) :- !.
