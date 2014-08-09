@@ -1000,6 +1000,9 @@ head('KOUS','KOUS',l,konjneb,'KOUS',[_,_,wenn,'Als',_,_,_,_],H-D,MH,_,MH) :- 1 i
 head('KOUS','KOUS',l,konjneb,'KOUS',[_,_,wenn,wie,_,_,_,_],H-D,MH,_,MH) :- 1 is H-D.
 head('KOUS','KOUS',l,konjneb,'KOUS',[_,_,wenn,'Wie',_,_,_,_],H-D,MH,_,MH) :- 1 is H-D.
 
+%als habe er geschlafen
+head('V*FIN',_,l,konjneb,'NEB',[_,_,_,als,_,_,_,_],H-D,MH,_,MH) :- 1 is H-D.
+
 %======================================================================================
 %subordinated clauses
 
@@ -1720,31 +1723,31 @@ head('ADV',Tag,r,kon,Transtag,[_,_,auch,_,_,_,_,_],H-_,_,MD,MD) :- LeftPos is H-
 
 
 %comma can join two elements if there is a conjunction after them: "ich kam, sah und siegte"
-head(Tag,'$,',l,comma,'KON_NOUN',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- kon_mapping(Tag,'KON_NOUN'), (member('->kon->',OF);(member('<-adv<-',OF), among_dependents(OF,'nicht_PTKNEG',1))), \+ member('<-comma<-', OF).
+head(Tag,'$,',l,comma,'KON_NOUN',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- kon_mapping(Tag,'KON_NOUN'), coordinated_element(OF), \+ member('<-comma<-', OF).
 
-head('CARD','$,',l,comma,'KON_CARD',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
+head('CARD','$,',l,comma,'KON_CARD',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- coordinated_element(OF), \+ member('<-comma<-', OF).
 
-head('PP','$,',l,comma,'KON_ADV',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- (member('->kon->',OF);(member('<-adv<-',OF), among_dependents(OF,'nicht_PTKNEG',1))), \+ member('<-comma<-', OF).
+head('PP','$,',l,comma,'KON_ADV',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- coordinated_element(OF), \+ member('<-comma<-', OF).
 
 head('PPREL','$,',l,comma,'KON_ADV',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- member('->kon->',OF), \+ member('<-comma<-', OF).
 
 head('PPQ','$,',l,comma,'KON_ADV',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- member('->kon->',OF), \+ member('<-comma<-', OF).
 
-head('ADV','$,',l,comma,'KON_ADV',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
+head('ADV','$,',l,comma,'KON_ADV',[_,_,HWord,_,OF,_,_,_],_,MH,_,MH) :- coordinated_element(OF), HWord \= 'aber',  \+ member('<-comma<-', OF).
 
-head('ADJD','$,',l,comma,'KON_ADV',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- (nth1(2,OF,'->kon->');(member('<-adv<-',OF), among_dependents(OF,'nicht_PTKNEG',1))), \+ member('<-comma<-', OF).
+head('ADJD','$,',l,comma,'KON_ADV',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- coordinated_element(OF), \+ member('<-comma<-', OF).
 
 head('PTKNEG','$,',l,comma,'KON_ADV',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
 
-head('ADJA','$,',l,comma,'KON_ADJA',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- (nth1(2,OF,'->kon->');(member('<-adv<-',OF), among_dependents(OF,'nicht_PTKNEG',1))), \+ member('<-comma<-', OF).
+head('ADJA','$,',l,comma,'KON_ADJA',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- coordinated_element(OF), \+ member('<-comma<-', OF).
 
-head(Tag,'$,',l,comma,'KON_PRONOUN',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- kon_mapping(Tag,'KON_PRONOUN'), (nth1(2,OF,'->kon->');(member('<-adv<-',OF), among_dependents(OF,'nicht_PTKNEG',1))), \+ member('<-comma<-', OF).
+head(Tag,'$,',l,comma,'KON_PRONOUN',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- kon_mapping(Tag,'KON_PRONOUN'), coordinated_element(OF), \+ member('<-comma<-', OF).
 
 head(Tag,'$,',l,comma,'KON_PRONOUN_REL',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- kon_mapping(Tag,'KON_PRONOUN_REL'), nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
 
-head(Tag,'$,',l,comma,'KON_PPER',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- kon_mapping(Tag,'KON_PPER'), (nth1(2,OF,'->kon->');(member('<-adv<-',OF), among_dependents(OF,'nicht_PTKNEG',1))), \+ member('<-comma<-', OF).
+head(Tag,'$,',l,comma,'KON_PPER',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- kon_mapping(Tag,'KON_PPER'), coordinated_element(OF), \+ member('<-comma<-', OF).
 
-head(Tag,'$,',l,comma,'KON_PRF',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- kon_mapping(Tag,'KON_PRF'), nth1(2,OF,'->kon->'), \+ member('<-comma<-', OF).
+head(Tag,'$,',l,comma,'KON_PRF',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- kon_mapping(Tag,'KON_PRF'), coordinated_element(OF), \+ member('<-comma<-', OF).
 
 head('V*FIN','$,',l,comma,'KON_FINVERB',[_,_,_,_,OF,_,_,_],_,MH,_,MH) :- member('->kon->', OF), \+ member('<-comma<-', OF), \+ member('->subj->', OF).
 
@@ -2996,6 +2999,9 @@ adverbial_pronoun('PROP').
 adverbial_pronoun('PAV').
 adverbial_pronoun('PROAV').
 
+%two indicators that token can be part of coordination chain; either it has coordinated element, or adverb indicating coordination.
+coordinated_element(Dependents) :- member('->kon->',Dependents), !.
+coordinated_element(Dependents) :- member('<-adv<-',Dependents), among_dependents(Dependents,Dep,1), !, conjunctive_adverb(Dep).
 
 %check each member of a list.
 among_dependents([Item|Rest], Tag, LVL) :- !, (among_dependents(Item,Tag, LVL);
