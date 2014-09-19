@@ -49,6 +49,7 @@ def usage():
     sys.stderr.write('\t\t' + bold +'plain' + reset + ': plain text\n')
     sys.stderr.write('\t\t' + bold +'preprocessed' + reset + ': parser-ready input (generated with output option "preprocessed")\n')
     sys.stderr.write('\t\t' + bold +'tokenized' + reset + ': tokenized text. one token per line, empty line for sentence boundary\n')
+    sys.stderr.write('\t\t' + bold +'tokenized_lines' + reset + ': tokenized text. one sentence per line, tokens separated by whitespace\n')
     sys.stderr.write('\t\t' + bold +'tagged' + reset + ': POS-tagged text. token [tab] tag [newline]\n\n')
     sys.stderr.write('\t' + bold + '-l' + reset + ', ' + bold + '--linewise' + reset + '\n')
     sys.stderr.write('\t\tparse text line by line (suppress automatic sentence splitting).\n\n')
@@ -159,7 +160,7 @@ def process_arguments():
     if arg_input:
         options['inputformat'] = arg_input
 
-    if not options['inputformat'] in ["plain","tokenized","tagged","preprocessed"]:
+    if not options['inputformat'] in ["plain","tokenized","tokenized_lines","tagged","preprocessed"]:
         sys.stderr.write("Error: Input option not recognized: " + options['inputformat'] + "\n")
         usage()
         sys.exit(2)
@@ -229,6 +230,7 @@ def main(options, input_stream, output_stream):
     
     #mapping between input/output options and corresponding processing step
     states = {"plain":0,
+              "tokenized_lines":0,
               "tokenized":10,
               "tagged":20,
               "preprocessed":30,
@@ -273,6 +275,9 @@ def tokenize(instream,outstream,options):
     
     if options['linewise']:
         tokenizer_in = instream
+    elif options['inputformat'] == 'tokenized_lines':
+      tokenizer = Popen(["python", os.path.join(root_directory,"preprocessor","tokenized_lines.py")], stdin=instream, stdout=outstream, stderr=options['senderror'])
+      return tokenizer
     else:
         sentences = Popen(["python", os.path.join(root_directory,"preprocessor","punkt_tokenizer.py")], stdin=instream, stdout=PIPE, stderr=options['senderror'])
         tokenizer_in = sentences.stdout
