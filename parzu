@@ -400,7 +400,7 @@ def parse(instream,outstream,options):
     else:
         runCMD = [prolog, '-q', prolog_load[prolog], 'ParZu-parser.pl', '-g', args]
         
-        if prolog == 'swipl':
+        if prolog.endswith('swipl'):
             runCMD += ['-G248M', '-L248M']
         
         parsing = Popen(runCMD, cwd=os.path.join(root_directory,'core'), stdin=instream, stdout=outstream, stderr=options['senderror'])

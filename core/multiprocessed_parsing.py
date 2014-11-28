@@ -152,7 +152,7 @@ if __name__ == "__main__":
     
     runCMD = [prolog, '-q', prolog_load, 'ParZu-parser.pl', '-g', args]
     
-    if prolog == 'swipl':
+    if prolog.endswith('swipl'):
         runCMD += ['-t', 'halt.','-G248M', '-L248M']
 
     main(init_pipe.stdout,sys.stdout,num_parsers,sentdelim,runCMD,path)
