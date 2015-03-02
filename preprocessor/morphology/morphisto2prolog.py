@@ -273,9 +273,12 @@ def getlemma(line,word,pos):
 # print analyses with fewest morphemes first
 # useful because parser uses greedy lemmatisation
 def print_cache(cache):
+    printed = set()
     for pos in cache:
         for item in sorted(cache[pos]):
-            print(item[1])
+            if item[1] not in printed:
+                printed.add(item[1])
+                print(item[1])
 
 
 #longest common subsequence code from http://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Longest_common_subsequence
@@ -310,7 +313,7 @@ if sys.version_info < (3, 0):
     sys.stderr = codecs.getwriter('UTF-8')(sys.stderr)
     sys.stdin = codecs.getreader('UTF-8')(sys.stdin)
 
-cache = defaultdict(list)
+cache = defaultdict(set)
 
 for line in sys.stdin:
     
@@ -324,7 +327,7 @@ for line in sys.stdin:
     if line.startswith('> ') or line == '>':
         word = line[2:]
         print_cache(cache)
-        cache = defaultdict(list)
+        cache = defaultdict(set)
         continue
 
     elif line.startswith('no result'):
@@ -363,8 +366,8 @@ for line in sys.stdin:
     if line.startswith('<CAP>'):
         segments -= 1
 
-    cache[pos].append((segments,"gertwol({0},{1},{2},{3},{4}).".format(get_repr2(word),get_repr2(lemma),get_repr2(pos),morph,other)))
+    cache[pos].add((segments,"gertwol({0},{1},{2},{3},{4}).".format(get_repr2(word),get_repr2(lemma),get_repr2(pos),morph,other)))
     if pos2:
-        cache[pos2].append((segments,"gertwol({0},{1},{2},{3},{4}).".format(get_repr2(word),get_repr2(lemma),get_repr2(pos2),morph2,other)))
+        cache[pos2].add((segments,"gertwol({0},{1},{2},{3},{4}).".format(get_repr2(word),get_repr2(lemma),get_repr2(pos2),morph2,other)))
 
 print_cache(cache)
