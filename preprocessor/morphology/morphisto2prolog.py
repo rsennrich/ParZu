@@ -248,34 +248,6 @@ def getlemma(line,word,pos):
 
     # map {CDU}-Fraktion to CDU-Fraktion
     line = re_hyphenation.sub(r'\1-', line)
-
-    if pos == 'NN':
-    #sadly complicated hack to get desired lemmata for nouns. Morphisto normalizes all morphemes in the stem, which we don't want.
-    #using longest common subsequence matching to find boundary, taking normalized last_morpheme, unnormalized stem.
-        last_morpheme = re_last.search(line)
-
-        if not last_morpheme:
-            return re_any.sub('',line)
-
-        last_morpheme = last_morpheme.group(1)
-        word_lc = word.lower()
-        last_morpheme_lc = last_morpheme.lower()
-        try:
-            joinpoint = backTrack(LCS(word_lc,last_morpheme_lc),word_lc,last_morpheme_lc,len(word_lc),len(last_morpheme_lc))[0]
-        except IndexError:
-            lemma = re_any.sub('',line)
-            try:
-                return lemma[0] + lemma[1:].lower()
-            except IndexError:
-                return lemma
-        if joinpoint > 1:
-            if word[joinpoint-1] == '-':
-                return re_any.sub('',word[:joinpoint])+last_morpheme
-            else:
-                return re_any.sub('',word[:joinpoint])+last_morpheme_lc
-        else:
-            return last_morpheme
-    
     lemma = re_any.sub('',line) #delete all markup, leaving what we'll use as lemma
 
 
