@@ -35,7 +35,7 @@ map_stts['NPROP'] = 'NE'
 word = ''
 re_mainclass = re.compile('<\+(.*?)>')
 re_any = re.compile('<(.*?)>')
-re_segment = re.compile('<([A-Z]*?)>')
+re_segment = re.compile('<([A-Z#\-~]*?)>')
 re_last = re.compile('(?:^|\W)([\w\.]+?)(?:<[\w\-\^]*>)*?<\+',re.UNICODE)
 re_hyphenation = re.compile('{(.+?)}-')
 
