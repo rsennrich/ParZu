@@ -343,6 +343,10 @@ def preprocess(instream,outstream,options):
                 morphisto2prolog = Popen(["python", "morphisto2prolog.py"], cwd=os.path.join(root_directory,'preprocessor','morphology'),stdin=morphisto.stdout,stdout=morphfile,stderr=options['senderror'])
                 morphisto2prolog.wait()
                 morphisto.wait()
+            except OSError, e:
+                if e.errno == 2:
+                    sys.stderr.write('Error: fst-infl2 not found. Please install sfst.\n')
+                    sys.exit(1)
 
     #having at least one entry makes sure that the preprocessing script doesn't crash
     morphfile.write('gertwol(\'<unknown>\',\'<unknown>\',_,_,_).')
