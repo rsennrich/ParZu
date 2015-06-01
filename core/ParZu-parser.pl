@@ -58,8 +58,9 @@ load_grammar_german :-
 sparse(Stack,[[F,Ftag,Chunk,MORPH]|SRest],[Pos|PosList],LastPos,FStack,2) :-               % sparse/6 shifts and dose nothing else
     !,
     inc(ID),
+    name('#', Hash),
     name(F,NF), name(ID,NID),
-    append(NF,"#",NFhash),
+    append(NF,Hash,NFhash),
     append(NFhash,NID,NFID),
     name(FID,NFID),
     appl(FID,Chunk,FChunk),
