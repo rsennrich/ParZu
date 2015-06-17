@@ -14,10 +14,10 @@ cd ../..
 
 # get models
 cd external
-wget http://kitt.ifi.uzh.ch/kitt/zmorge/transducers/zmorge-20140521-smor_newlemma.ca.zip
-wget http://kitt.ifi.uzh.ch/kitt/zmorge/models/hdt_ab.zmorge-20140521-smor_newlemma.model.zip
-unzip zmorge-20140521-smor_newlemma.ca.zip
-unzip hdt_ab.zmorge-20140521-smor_newlemma.model.zip
+wget -c http://kitt.ifi.uzh.ch/kitt/zmorge/transducers/zmorge-20140521-smor_newlemma.ca.zip
+wget -c http://kitt.ifi.uzh.ch/kitt/zmorge/models/hdt_ab.zmorge-20140521-smor_newlemma.model.zip
+unzip -u zmorge-20140521-smor_newlemma.ca.zip
+unzip -u hdt_ab.zmorge-20140521-smor_newlemma.model.zip
 cd ..
 
 SCRIPTPATH=`cd $(dirname "$SCRIPT") && pwd`
