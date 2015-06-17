@@ -7,6 +7,7 @@ import sys
 import os
 import getopt
 import shlex
+import pipes
 from subprocess import Popen, PIPE
 
 
@@ -27,7 +28,8 @@ prolog = 'swipl'
 
 #yap and swipl have different command line arguments: this maps to the correct one
 prolog_load = {'yap':'-l',
-         'swipl':'-s'}
+         'swipl':'-s',
+         'pl':'-s'}
 
 # root directory of ParZu if file is run as script
 root_directory = sys.path[0]
@@ -139,6 +141,15 @@ def parse_config(filename):
     f.close()
     return options
 
+
+def try_Popen(*args, **kwargs):
+    try:
+        ret = Popen(*args, **kwargs)
+        return ret
+    except OSError as err:
+        sys.stderr.write('OSError: {0}\ncommand was:\n\n'.format(err))
+        sys.stderr.write(' '.join(pipes.quote(s) for s in args[0]) + '\n\n')
+        sys.exit(1)
 
 #sanity checks and merging config and command line options
 def process_arguments():
@@ -276,13 +287,13 @@ def tokenize(instream,outstream,options):
     if options['linewise']:
         tokenizer_in = instream
     elif options['inputformat'] == 'tokenized_lines':
-      tokenizer = Popen(["python", os.path.join(root_directory,"preprocessor","tokenized_lines.py")], stdin=instream, stdout=outstream, stderr=options['senderror'])
+      tokenizer = try_Popen(["python", os.path.join(root_directory,"preprocessor","tokenized_lines.py")], stdin=instream, stdout=outstream, stderr=options['senderror'])
       return tokenizer
     else:
-        sentences = Popen(["python", os.path.join(root_directory,"preprocessor","punkt_tokenizer.py")], stdin=instream, stdout=PIPE, stderr=options['senderror'])
+        sentences = try_Popen(["python", os.path.join(root_directory,"preprocessor","punkt_tokenizer.py")], stdin=instream, stdout=PIPE, stderr=options['senderror'])
         tokenizer_in = sentences.stdout
     
-    tokenizer = Popen(["perl", os.path.join(root_directory,"preprocessor","tokenizer.perl"), "-l","de"], stdin=tokenizer_in, stdout=outstream, stderr=options['senderror'])
+    tokenizer = try_Popen(["perl", os.path.join(root_directory,"preprocessor","tokenizer.perl"), "-l","de"], stdin=tokenizer_in, stdout=outstream, stderr=options['senderror'])
     
     return tokenizer
 
@@ -295,11 +306,11 @@ def tag(instream,outstream,options):
     options['senderror'].write("Starting POS-tagger\n")
     
     if options['nbestmode']:
-        tagger = Popen(options["taggercmd"]+['-n',str(options['nbestmode'])], stdin=instream, stdout=PIPE, stderr=options['senderror'],cwd=root_directory)
-        tagger_formatted = Popen(['python',os.path.join(root_directory,"preprocessor","prune_nbest.py"),str(options['nbest_cutoff'])], stdin=tagger.stdout, stdout=outstream, stderr=options['senderror'])
+        tagger = try_Popen(options["taggercmd"]+['-n',str(options['nbestmode'])], stdin=instream, stdout=PIPE, stderr=options['senderror'],cwd=root_directory)
+        tagger_formatted = try_Popen(['python',os.path.join(root_directory,"preprocessor","prune_nbest.py"),str(options['nbest_cutoff'])], stdin=tagger.stdout, stdout=outstream, stderr=options['senderror'])
 
     else:
-        tagger_formatted = Popen(options['taggercmd'], stdin=instream, stdout=outstream, stderr=options['senderror'],cwd=root_directory) 
+        tagger_formatted = try_Popen(options['taggercmd'], stdin=instream, stdout=outstream, stderr=options['senderror'],cwd=root_directory) 
 
     return tagger_formatted
 
@@ -314,7 +325,7 @@ def preprocess(instream,outstream,options):
     tagfile = open(options['tagfilepath'],'w')
     #convert to prolog-readable format
     #additionally, create list of word types to be analysed (written to 'morphinpath')
-    treetagger2prolog = Popen(["python", os.path.join(root_directory,"preprocessor","treetagger2prolog.py"), options['morphinpath'],options['sentdelim']], stdin=instream, stdout=tagfile, stderr=options['senderror'])
+    treetagger2prolog = try_Popen(["python", os.path.join(root_directory,"preprocessor","treetagger2prolog.py"), options['morphinpath'],options['sentdelim']], stdin=instream, stdout=tagfile, stderr=options['senderror'])
 
     treetagger2prolog.wait()
     morphfile = open(options['morphpath'],'w')
@@ -324,14 +335,14 @@ def preprocess(instream,outstream,options):
 
         if options['morphology'] == 'gertwol':
             morphin = open(options['morphinpath'],'r')
-            gertwol = Popen(["python", "gertwol_parzu.py", options['gertwolcmd'], options['gertwolscorecmd']], cwd=os.path.join(root_directory,'preprocessor','morphology'),stdin=morphin,stdout=morphfile,stderr=options['senderror'])
+            gertwol = try_Popen(["python", "gertwol_parzu.py", options['gertwolcmd'], options['gertwolscorecmd']], cwd=os.path.join(root_directory,'preprocessor','morphology'),stdin=morphin,stdout=morphfile,stderr=options['senderror'])
             gertwol.wait()
 
         elif options['morphology'] == 'smor':
             try:
                 morphin = open(options['morphinpath'],'r')
-                morphisto = Popen(["fst-infl2", options['smor_model']],stdin=morphin,stdout=PIPE,stderr=options['senderror'])
-                morphisto2prolog = Popen(["python", "morphisto2prolog.py"], cwd=os.path.join(root_directory,'preprocessor','morphology'),stdin=morphisto.stdout,stdout=morphfile,stderr=options['senderror'])
+                morphisto = try_Popen(["fst-infl2", options['smor_model']],stdin=morphin,stdout=PIPE,stderr=options['senderror'])
+                morphisto2prolog = try_Popen(["python", "morphisto2prolog.py"], cwd=os.path.join(root_directory,'preprocessor','morphology'),stdin=morphisto.stdout,stdout=morphfile,stderr=options['senderror'])
                 morphisto2prolog.wait()
                 morphisto.wait()
                 if morphisto.returncode > 0:
@@ -339,8 +350,8 @@ def preprocess(instream,outstream,options):
                     raise RuntimeError
             except RuntimeError:
                 morphin = open(options['morphinpath'],'r')
-                morphisto = Popen(["fst-infl", options['smor_model']],stdin=morphin,stdout=PIPE,stderr=options['senderror'])
-                morphisto2prolog = Popen(["python", "morphisto2prolog.py"], cwd=os.path.join(root_directory,'preprocessor','morphology'),stdin=morphisto.stdout,stdout=morphfile,stderr=options['senderror'])
+                morphisto = try_Popen(["fst-infl", options['smor_model']],stdin=morphin,stdout=PIPE,stderr=options['senderror'])
+                morphisto2prolog = try_Popen(["python", "morphisto2prolog.py"], cwd=os.path.join(root_directory,'preprocessor','morphology'),stdin=morphisto.stdout,stdout=morphfile,stderr=options['senderror'])
                 morphisto2prolog.wait()
                 morphisto.wait()
             except OSError, e:
@@ -356,7 +367,7 @@ def preprocess(instream,outstream,options):
     tagfile = open(options['tagfilepath'],'r')
 
     #integrate morph. information and do verb complex analysis
-    preprocessing =  Popen([prolog, '-q', prolog_load[prolog], os.path.join(root_directory,'preprocessor','preprocessing.pl'), '-g', 'retractall(lemmatisation(_)),retractall(morphology(_)),assert(lemmatisation('+ options['morphology'] +')),assert(morphology('+ options['morphology'] +")),retract(sentdelim(_)),assert(sentdelim('"+ options['sentdelim'] +"')),start('" + options['morphpath'] + "'),halt."], stdout=outstream, stdin=tagfile, stderr=options['senderror'])
+    preprocessing =  try_Popen([prolog, '-q', prolog_load[prolog], os.path.join(root_directory,'preprocessor','preprocessing.pl'), '-g', 'retractall(lemmatisation(_)),retractall(morphology(_)),assert(lemmatisation('+ options['morphology'] +')),assert(morphology('+ options['morphology'] +")),retract(sentdelim(_)),assert(sentdelim('"+ options['sentdelim'] +"')),start('" + options['morphpath'] + "'),halt."], stdout=outstream, stdin=tagfile, stderr=options['senderror'])
 
     return preprocessing
 
@@ -371,10 +382,10 @@ def preprocess2(instream,outstream,options):
     options['senderror'].write("Starting preprocessor\n")
 
     #convert to prolog-readable format
-    treetagger2prolog = Popen(["python", os.path.join(root_directory,"preprocessor","treetagger2prolog.py"), '/dev/null',options['sentdelim']], stdin=instream, stdout=PIPE, stderr=options['senderror'])
+    treetagger2prolog = try_Popen(["python", os.path.join(root_directory,"preprocessor","treetagger2prolog.py"), '/dev/null',options['sentdelim']], stdin=instream, stdout=PIPE, stderr=options['senderror'])
 
     #integrate morph. information and do verb complex analysis
-    preprocessing =  Popen([prolog, '-q', prolog_load[prolog], os.path.join(root_directory,'preprocessor','preprocessing.pl'), '-g', 'retractall(lemmatisation(_)),retractall(morphology(_)),assert(lemmatisation('+ options['morphology'] +')),assert(morphology('+ options['morphology'] +")),retract(sentdelim(_)),assert(sentdelim('"+ options['sentdelim'] +"')),start('" + options['morphpath'] + "'),halt."], stdout=outstream, stdin=treetagger2prolog.stdout, stderr=options['senderror'])
+    preprocessing =  try_Popen([prolog, '-q', prolog_load[prolog], os.path.join(root_directory,'preprocessor','preprocessing.pl'), '-g', 'retractall(lemmatisation(_)),retractall(morphology(_)),assert(lemmatisation('+ options['morphology'] +')),assert(morphology('+ options['morphology'] +")),retract(sentdelim(_)),assert(sentdelim('"+ options['sentdelim'] +"')),start('" + options['morphpath'] + "'),halt."], stdout=outstream, stdin=treetagger2prolog.stdout, stderr=options['senderror'])
 
     return preprocessing
     
@@ -399,7 +410,7 @@ def parse(instream,outstream,options):
     args = 'retract(outputformat(_)),assert(outputformat('+ outputformat +")),retract(sentdelim(_)),assert(sentdelim('"+ options['sentdelim'] +"')),retract(returnsentdelim(_)),assert(returnsentdelim("+ options['returnsentdelim'] +')),retract(nbestmode(_)),assert(nbestmode('+ str(options['nbestmode']) +')),retractall(morphology(_)),assert(morphology('+ morphology_mapping[str(options['morphology'])] +')),retractall(lemmatisation(_)),assert(lemmatisation('+ morphology_mapping[str(options['morphology'])] +')),retractall(extrainfo(_)),assert(extrainfo('+ options['extrainfo'] +')),start,halt.'
     
     if enable_multiprocessing and options['num_processes'] > 1:
-        parsing = Popen(["python", os.path.join(root_directory,"core","multiprocessed_parsing.py"), str(options['num_processes']), args, options['sentdelim'], os.path.join(root_directory,'core'),prolog, prolog_load[prolog]], stdin=instream,stdout=outstream,stderr=options['senderror'])
+        parsing = try_Popen(["python", os.path.join(root_directory,"core","multiprocessed_parsing.py"), str(options['num_processes']), args, options['sentdelim'], os.path.join(root_directory,'core'),prolog, prolog_load[prolog]], stdin=instream,stdout=outstream,stderr=options['senderror'])
 
     else:
         runCMD = [prolog, '-q', prolog_load[prolog], 'ParZu-parser.pl', '-g', args]
@@ -407,7 +418,7 @@ def parse(instream,outstream,options):
         if prolog.endswith('swipl'):
             runCMD += ['-G248M', '-L248M']
         
-        parsing = Popen(runCMD, cwd=os.path.join(root_directory,'core'), stdin=instream, stdout=outstream, stderr=options['senderror'])
+        parsing = try_Popen(runCMD, cwd=os.path.join(root_directory,'core'), stdin=instream, stdout=outstream, stderr=options['senderror'])
         
     return parsing
 
@@ -430,14 +441,14 @@ def postprocess(instream,outstream,options):
     #postprocessing
     #add sentence number
     if outputformat == "prolog":
-        clean_parse = Popen(["perl", os.path.join(root_directory,"postprocessor","output_cleanup_sentnums.perl")], stdin=instream, stdout=cleanup_out, stderr=options['senderror'])
+        clean_parse = try_Popen(["perl", os.path.join(root_directory,"postprocessor","output_cleanup_sentnums.perl")], stdin=instream, stdout=cleanup_out, stderr=options['senderror'])
     
     else:
-        clean_parse = Popen(["perl", os.path.join(root_directory,"postprocessor","output_cleanup.perl")], stdin=instream, stdout=cleanup_out, stderr=options['senderror'])
+        clean_parse = try_Popen(["perl", os.path.join(root_directory,"postprocessor","output_cleanup.perl")], stdin=instream, stdout=cleanup_out, stderr=options['senderror'])
 
     #select one analysis from n-best
     if options['nbestmode']:
-        return_best = Popen(["python", os.path.join(root_directory,'postprocessor','select_from_nbest.py'), outputformat], stdin=clean_parse.stdout,stdout=outstream,stderr=options['senderror'])
+        return_best = try_Popen(["python", os.path.join(root_directory,'postprocessor','select_from_nbest.py'), outputformat], stdin=clean_parse.stdout,stdout=outstream,stderr=options['senderror'])
 
         return return_best
 
@@ -449,7 +460,7 @@ def generate_graphics(instream,outstream,options):
     
     options['senderror'].write("Starting to generate graphics in your current directory (1.svg, ..., n.svg)\n")
     
-    conll2svg = Popen(["perl", os.path.join(root_directory,'postprocessor','DepSVG','conll_to_svg.perl'),'--dir='+os.getcwd()], cwd=os.path.join(root_directory,'postprocessor','DepSVG'), stdin=instream,stdout=outstream,stderr=options['senderror'])
+    conll2svg = try_Popen(["perl", os.path.join(root_directory,'postprocessor','DepSVG','conll_to_svg.perl'),'--dir='+os.getcwd()], cwd=os.path.join(root_directory,'postprocessor','DepSVG'), stdin=instream,stdout=outstream,stderr=options['senderror'])
 
     return conll2svg
 
