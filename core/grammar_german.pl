@@ -2446,63 +2446,64 @@ case_acc([[A]],_) :- var(A), !.
 case_dat([[A]],_) :- var(A), !.
 case_gen([[A]],_) :- var(A), !.
 
+gender_neut([A],_) :- var(A), !.
+gender_neut([[A]],_) :- var(A), !.
 
 %case identifiers for tueba-style morphology
-:- morphology(tueba) -> assert((case_nom(List,Tag) :- member(Morph,List), get_case(Morph,Tag,'n',tueba), !));true.
-:- morphology(tueba) -> assert((case_acc(List,Tag) :- member(Morph,List), get_case(Morph,Tag,'a',tueba), !));true.
-:- morphology(tueba) -> assert((case_dat(List,Tag) :- member(Morph,List), get_case(Morph,Tag,'d',tueba), !));true.
-:- morphology(tueba) -> assert((case_gen(List,Tag) :- member(Morph,List), get_case(Morph,Tag,'g',tueba), !));true.
+:- if(morphology(tueba)).
+case_nom(List,Tag) :- member(Morph,List), get_case(Morph,Tag,'n',tueba), !.
+case_acc(List,Tag) :- member(Morph,List), get_case(Morph,Tag,'a',tueba), !.
+case_dat(List,Tag) :- member(Morph,List), get_case(Morph,Tag,'d',tueba), !.
+case_gen(List,Tag) :- member(Morph,List), get_case(Morph,Tag,'g',tueba), !.
+
+gender_neut(List,Tag) :- member(Morph,List), get_gender(Morph,Tag,'n',tueba), !.
+
+degree_comp(_,_) :- !.
+
+derived_from_ppres(_,_) :- !.
+derived_from_ppast(_,_) :- !.
+derived_from_vpart(_,_) :- !.
+
+:- endif.
+
 
 %case identifiers for gertwol-style morphology
-:- morphology(gertwol) -> assert((case_nom(List,Tag) :- member(Morph,List), get_case(Morph,Tag,'Nom',gertwol), !));true.
-:- morphology(gertwol) -> assert((case_acc(List,Tag) :- member(Morph,List), get_case(Morph,Tag,'Akk',gertwol), !));true.
-:- morphology(gertwol) -> assert((case_acc(List,Tag) :- member(Morph,List), get_case(Morph,Tag,'Acc',gertwol), !));true.
-:- morphology(gertwol) -> assert((case_dat(List,Tag) :- member(Morph,List), get_case(Morph,Tag,'Dat',gertwol), !));true.
-:- morphology(gertwol) -> assert((case_gen(List,Tag) :- member(Morph,List), get_case(Morph,Tag,'Gen',gertwol), !));true.
+:- if(morphology(gertwol)).
+case_nom(List,Tag) :- member(Morph,List), get_case(Morph,Tag,'Nom',gertwol), !.
+case_acc(List,Tag) :- member(Morph,List), get_case(Morph,Tag,'Akk',gertwol), !.
+case_acc(List,Tag) :- member(Morph,List), get_case(Morph,Tag,'Acc',gertwol), !.
+case_dat(List,Tag) :- member(Morph,List), get_case(Morph,Tag,'Dat',gertwol), !.
+case_gen(List,Tag) :- member(Morph,List), get_case(Morph,Tag,'Gen',gertwol), !.
+
+gender_neut(List,Tag) :- member(Morph,List), get_gender(Morph,Tag,'Neut',gertwol), !.
+
+degree_comp(List,Tag) :- member(Morph,List), get_degree(Morph,Tag,'Comp',gertwol), !.
+
+derived_from_ppres(List,Tag) :- derived_from_vpart(List,Tag).
+derived_from_ppres(List,Tag) :- !, member(Morph,List), get_derived_from(Morph,Tag,'<PPRES',gertwol).
+derived_from_ppast(List,Tag) :- derived_from_vpart(List,Tag).
+derived_from_ppast(List,Tag) :- !, member(Morph,List), get_derived_from(Morph,Tag,'<PPAST',gertwol).
+derived_from_vpart(List,Tag) :- !, member(Morph,List), get_derived_from(Morph,Tag,'<VPART',gertwol).
+
+:- endif.
 
 
 %placeholders in case morphology is turned off.
-:- morphology(off) -> assert(case_nom(_,_) :- !);true.
-:- morphology(off) -> assert(case_acc(_,_) :- !);true.
-:- morphology(off) -> assert(case_dat(_,_) :- !);true.
-:- morphology(off) -> assert(case_gen(_,_) :- !);true.
+:- if(morphology(off)).
+case_nom(_,_) :- !.
+case_acc(_,_) :- !.
+case_dat(_,_) :- !.
+case_gen(_,_) :- !.
 
+gender_neut(_,_) :- !.
 
-gender_neut([A],_) :- var(A), !.
-gender_neut([[A]],_) :- var(A), !.
-:- morphology(tueba) -> assert((gender_neut(List,Tag) :- member(Morph,List), get_gender(Morph,Tag,'n',tueba), !));true.
-:- morphology(gertwol) -> assert((gender_neut(List,Tag) :- member(Morph,List), get_gender(Morph,Tag,'Neut',gertwol), !));true.
-:- morphology(off) -> assert((gender_neut(_,_) :- !));true.
+degree_comp(_,_) :- !.
 
-%comparative adjectives
-:- morphology(gertwol) -> assert((degree_comp(List,Tag) :- member(Morph,List), get_degree(Morph,Tag,'Comp',gertwol), !));true.
-:- morphology(tueba) -> assert((degree_comp(_,_) :- !));true.
-:- morphology(off) -> assert((degree_comp(_,_) :- !));true.
+derived_from_ppres(_,_) :- !.
+derived_from_ppast(_,_) :- !.
+derived_from_vpart(_,_) :- !.
 
-
-%adjectives derived from present participle
-:- morphology(gertwol) -> assert((derived_from_ppres(List,Tag) :- derived_from_vpart(List,Tag)));true.
-
-:- morphology(gertwol) -> assert((derived_from_ppres(List,Tag) :- !, member(Morph,List), get_derived_from(Morph,Tag,'<PPRES',gertwol)));true.
-
-:- morphology(tueba) -> assert((derived_from_ppres(_,_) :- !));true.
-:- morphology(off) -> assert((derived_from_ppres(_,_) :- !));true.
-
-
-%adjectives derived from past participle
-:- morphology(gertwol) -> assert((derived_from_ppast(List,Tag) :- derived_from_vpart(List,Tag)));true.
-
-:- morphology(gertwol) -> assert((derived_from_ppast(List,Tag) :- !, member(Morph,List), get_derived_from(Morph,Tag,'<PPAST',gertwol)));true.
-
-:- morphology(tueba) -> assert((derived_from_ppast(_,_) :- !));true.
-:- morphology(off) -> assert((derived_from_ppast(_,_) :- !));true.
-
-
-%adjectives derived from present (or past) participle.
-:- morphology(gertwol) -> assert((derived_from_vpart(List,Tag) :- !, member(Morph,List), get_derived_from(Morph,Tag,'<VPART',gertwol)));true.
-
-:- morphology(tueba) -> assert((derived_from_vpart(_,_) :- !));true.
-:- morphology(off) -> assert((derived_from_vpart(_,_) :- !));true.
+:- endif.
 
 
 check_agreement(_,_,_,_,_) :- morphology(off), !.
