@@ -354,7 +354,7 @@ def preprocess(instream,outstream,options):
                 morphisto2prolog = try_Popen(["python", "morphisto2prolog.py"], cwd=os.path.join(root_directory,'preprocessor','morphology'),stdin=morphisto.stdout,stdout=morphfile,stderr=options['senderror'])
                 morphisto2prolog.wait()
                 morphisto.wait()
-            except OSError, e:
+            except OSError as e:
                 if e.errno == 2:
                     sys.stderr.write('Error: fst-infl2 not found. Please install sfst.\n')
                     sys.exit(1)
