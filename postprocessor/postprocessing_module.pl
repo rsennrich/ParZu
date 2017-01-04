@@ -182,7 +182,7 @@ getPosition(Lemma_Tag,OldPos,Pos) :-
 	name(Tag, TagChars),
 	name(Lemma, LemmaChars),
 	chart(Pos,Pos,Pos,_,Lemma,Tag,_,_,_,_),
-	call_with_depth_limit(is_dependent(Pos,OldPos,aux),1000,1), !.
+	call_with_depth_limit(is_dependent(Pos,OldPos,aux),1000,Depth), Depth \= 'depth_limit_exceeded', !.
 
 
 %fix expletives. 
