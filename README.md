@@ -5,7 +5,7 @@ A project of the Computational Linguistics Group at the University of Zurich (ht
 
 Project Homepage: http://github.com/rsennrich/parzu
 
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation
+online demo: https://pub.cl.uzh.ch/demo/parzu/
 
 ABOUT
 -----
@@ -93,7 +93,7 @@ Given that both an input and a gold file exist, start the evaluation as follows:
 
 This will parse the first 1000 sentences* of TüBa-D/Z and report the results.
 *Sentences 1-1000 were used during development, sentences 1001-4000 for the evaluation in (Sennrich et al. 2009), and sentences 4001-end for training).
-You can use the online demo at http://www.cl.uzh.ch/kitt/parzu/ to check if there are any major regressions in your local install.
+You can use the online demo at https://pub.cl.uzh.ch/demo/parzu/ to check if there are any major regressions in your local install.
 
 TECHNICAL FAQ
 -------------
