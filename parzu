@@ -460,7 +460,7 @@ def generate_graphics(instream,outstream,options):
     
     options['senderror'].write("Starting to generate graphics in your current directory (1.svg, ..., n.svg)\n")
     
-    conll2svg = try_Popen(["perl", os.path.join(root_directory,'postprocessor','DepSVG','conll_to_svg.perl'),'--dir='+os.getcwd()], cwd=os.path.join(root_directory,'postprocessor','DepSVG'), stdin=instream,stdout=outstream,stderr=options['senderror'])
+    conll2svg = try_Popen(["perl", '-I'+os.path.join(root_directory,'postprocessor','DepSVG'), os.path.join(root_directory,'postprocessor','DepSVG','conll_to_svg.perl'),'--dir='+os.getcwd()], cwd=os.path.join(root_directory,'postprocessor','DepSVG'), stdin=instream,stdout=outstream,stderr=options['senderror'])
 
     return conll2svg
 
