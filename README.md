@@ -59,6 +59,18 @@ INSTALLATION
 
 5. (OPTIONAL): to speed up the parser initialization (with SWI-Prolog), run `statistics/compile.sh`. Repeat this step if you modify the statistics files.
 
+INSTALLATION (DOCKER)
+---------------------
+
+Alternatively to the local installation, ParZu can also be installed through Docker:
+
+    docker build -t parzu-docker .
+
+You can then execute ParZu via `docker run`:
+
+    echo "Ich bin ein Berliner." | docker run -i parzu-docker
+
+
 EXAMPLE COMMANDS AND USAGE INFORMATION
 --------------------------------------
 
