@@ -19,8 +19,13 @@ The primary difference to the English parser is the German grammar and statistic
 Architecturally, it is different in that it supports the use of morphological information, and does not use a chunker.
 ParZu also has a python wrapper that supports various input/output formats and multiprocessing.
 
-REQUIREMENTS
-------------
+REQUIREMENTS (DOCKER)
+---------------------
+
+ParZu can be installed via Docker on any platform that supports Docker, including many Linux variants, Mac (OS X 10.11 or newer), and Windows 10.
+
+REQUIREMENTS (LOCAL INSTALLATION)
+---------------------------------
 
 This software was developed and tested using
 
@@ -28,8 +33,6 @@ This software was developed and tested using
     SWI-Prolog 5.6 (or YAP 6.2 - check the top of the script `parzu` to switch between the two)
     Python 2.6 (also tested on Python 3.1)
     Perl 5.10
-
-It may work in different environments, but there is no guarantee. Any contributions to improve cross-plattform compatibility are welcome.
 
 Additionally, the parser requires the following software and licenses:
 
@@ -42,8 +45,8 @@ Additionally, the parser requires the following software and licenses:
 For development and testing, we recommend Tüba-D/Z or the Hamburg Dependency Treebank HDT (free download for academic use).
 See the section below on how to extract and integrate statistical information from Tüba-D/Z or the HDT into the system.
 
-INSTALLATION
-------------
+LOCAL INSTALLATION
+------------------
 
 1. Install all requirements. In Ubuntu Linux, all are available in the repositories:
     sudo apt-get install swi-prolog sfst
