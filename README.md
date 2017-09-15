@@ -64,11 +64,11 @@ INSTALLATION (DOCKER)
 
 Alternatively to the local installation, ParZu can also be installed through Docker:
 
-    docker build -t parzu-docker .
+    docker pull rsennrich/parzu
 
 You can then execute ParZu via `docker run`:
 
-    echo "Ich bin ein Berliner." | docker run -i parzu-docker
+    echo "Ich bin ein Berliner." | docker run -i rsennrich/parzu
 
 
 EXAMPLE COMMANDS AND USAGE INFORMATION
