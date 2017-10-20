@@ -4,3 +4,5 @@
 statistics/tmp*
 tmp/
 *.svg
+external
+config.ini

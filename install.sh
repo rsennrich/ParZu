@@ -28,5 +28,6 @@ sed -i "s,^CRF_MODEL =.*$,CRF_MODEL = '$SCRIPTPATH/external/hdt_ab.zmorge-201405
 sed -i "s,^CRF_BACKEND_EXEC =.*$,CRF_BACKEND_EXEC = '$SCRIPTPATH/external/Wapiti/wapiti'," external/clevertagger/config.py
 
 # configure ParZu
+cp config.ini.example config.ini
 sed -i "s,^smor_model =.*$,smor_model = $SCRIPTPATH/external/zmorge-20140521-smor_newlemma.ca," config.ini
 sed -i "s,^taggercmd =.*$,taggercmd = $SCRIPTPATH/external/clevertagger/clevertagger," config.ini
