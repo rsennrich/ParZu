@@ -26,7 +26,7 @@ def parse():
     if request.method == "GET":
         text = request.args.get('text', None)
     else:
-        input = request.json
+        input = request.get_json(force=True)
         text = input.get('text')
     if not text:
         return "Please provide text as POST data or GET text= parameter\n", 400
