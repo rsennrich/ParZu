@@ -15,6 +15,7 @@ cd ../..
 # get models
 cd external
 wget -c http://kitt.ifi.uzh.ch/kitt/zmorge/transducers/zmorge-20140521-smor_newlemma.ca.zip
+wget -c http://kitt.ifi.uzh.ch/kitt/zmorge/transducers/zmorge-20150315-smor_newlemma.ca.zip
 wget -c http://kitt.ifi.uzh.ch/kitt/zmorge/models/hdt_ab.zmorge-20140521-smor_newlemma.model.zip
 unzip -u zmorge-20140521-smor_newlemma.ca.zip
 unzip -u hdt_ab.zmorge-20140521-smor_newlemma.model.zip
@@ -29,5 +30,5 @@ sed -i "s,^CRF_BACKEND_EXEC =.*$,CRF_BACKEND_EXEC = '$SCRIPTPATH/external/Wapiti
 
 # configure ParZu
 cp config.ini.example config.ini
-sed -i "s,^smor_model =.*$,smor_model = $SCRIPTPATH/external/zmorge-20140521-smor_newlemma.ca," config.ini
+sed -i "s,^smor_model =.*$,smor_model = $SCRIPTPATH/external/zmorge-20150315-smor_newlemma.ca," config.ini
 sed -i "s,^taggercmd =.*$,taggercmd = $SCRIPTPATH/external/clevertagger/clevertagger," config.ini
