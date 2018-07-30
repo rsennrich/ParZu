@@ -306,7 +306,7 @@ class PunktToken(object):
     #////////////////////////////////////////////////////////////
     # Note: [A-Za-z] is approximated by [^\W\d] in the general case.
     _RE_ELLIPSIS = re.compile(r'\.\.+$')
-    _RE_NUMERIC = re.compile(r'^-?[\.,]?[\divxlcdm][\d,\.-ivxlcdm]*\.?$')
+    _RE_NUMERIC = re.compile(r'^-?[\.,]?[\divxlcdm][\d,\.\-ivxlcdm]*\.?$')
     _RE_INITIAL = re.compile(r'[^\W\d]\.$', re.UNICODE)
     _RE_ALPHA = re.compile(r'[^\W\d]+$', re.UNICODE)
 
