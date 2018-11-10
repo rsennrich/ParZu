@@ -43,7 +43,7 @@ gertwolscorecmd = /opt/bin/gertwolscore
 
 # model for SMOR morphological analysis.
 # will be called with fst-infl (requires sfst)
-# pre-compiled Zmorge models can be found on http://kitt.ifi.uzh.ch/kitt/zmorge/
+# pre-compiled Zmorge models can be found on https://pub.cl.uzh.ch/users/sennrich/zmorge/
 smor_model = /home/rico/parzu/zmorge-20140224-smor_newlemma.ca
 
 #######################################

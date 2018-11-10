@@ -38,7 +38,7 @@ Additionally, the parser requires the following software and licenses:
 
 - A POS-Tagger using the STTS tagset: (for instance clevertagger: https://github.com/rsennrich/clevertagger)
 - A tool for morphological analysis (not required, but strongly recommended). Supported:
-   - Zmorge: http://kitt.ifi.uzh.ch/kitt/zmorge/ (open source; recommended)
+   - Zmorge: https://pub.cl.uzh.ch/users/sennrich/zmorge/ (open source; recommended)
    - Morphisto: http://code.google.com/p/morphisto/ (open source; non-commercial)
    - Gertwol: http://www2.lingsoft.fi/cgi-bin/gertwol (proprietary; might be deprecated in the future)
 
