@@ -17,12 +17,14 @@ use List::Util qw[min max];
 my $dir = ".";
 my $verbosity = 0;
 my $help = "";
+my $stdout = "";
 my $version = "";
 
 my $getopt_result = GetOptions(
 	"dir=s"        => \$dir,
 	"verbosity=i"  => \$verbosity,
 	"help"         => \$help,
+        "stdout"       => \$stdout,
 	"version"      => \$version
 );
 
@@ -50,7 +52,10 @@ while(<STDIN>) {
 	# Sentences are separated by an empty line.
 	if(/^$/) {
 		$sentstart = 1;
+		&sentences_to_svg($properties, $relations, $sid);
 		$sid++;
+		$properties = {};
+		$relations = {};
 		next;
 	}
 
@@ -65,32 +70,23 @@ while(<STDIN>) {
 			next;
 		}
 
-		$properties->{$sid}->{$loc}->{"LOC"} = $loc;
-		$properties->{$sid}->{$loc}->{"token"} = $token;
-		$properties->{$sid}->{$loc}->{"lemma"} = $lemma;
-		$properties->{$sid}->{$loc}->{"tag"} = $tag;
-		$properties->{$sid}->{$loc}->{"etag"} = $etag;
+		$properties->{$loc}->{"LOC"} = $loc;
+		$properties->{$loc}->{"token"} = $token;
+		$properties->{$loc}->{"lemma"} = $lemma;
+		$properties->{$loc}->{"tag"} = $tag;
+		$properties->{$loc}->{"etag"} = $etag;
 
 		### BUG: comment back in if you want to see the morph
-		$properties->{$sid}->{$loc}->{"morph"} = $morph;
+		$properties->{$loc}->{"morph"} = $morph;
 
-		$relations->{$sid}->{$head}->{$loc}->{$type} = 1;
+		$relations->{$head}->{$loc}->{$type} = 1;
 
 		$ntype =~ s/\s+$//;
 		if($ntype ne "_" && $nhead ne "_" && ($type ne $ntype || $head != $nhead)) {
-			$relations->{$sid}->{$nhead}->{$loc}->{$ntype} = 2;
+			$relations->{$nhead}->{$loc}->{$ntype} = 2;
 		}
 	}
 }
-print "done.\n" if $verbosity > 0;
-
-
-print "Generating SVG... " if $verbosity > 0;
-
-&sentences_to_svg($properties, $relations);
-
-print "done.\n" if $verbosity > 0;
-
 exit;
 
 
@@ -108,17 +104,15 @@ sub sentences_to_svg
 {
 	my $properties = shift;
 	my $relations = shift;
+	my $sid = shift;
 
-	foreach my $sid (keys %{$relations}) {
-
-		my $svg = &get_svg($properties->{$sid}, $relations->{$sid},
-						["token", "tag", "etag", "lemma", "morph", "LOC"],
-						0, 1000, 1000, $sid);	
+	my $svg = &get_svg($properties, $relations,
+		["token", "tag", "etag", "lemma", "morph", "LOC"],
+		0, 1000, 1000, $sid);	
 
 
-		&output_sentence($dir, $sid, $svg);
+	&output_sentence($dir, $sid, $svg);
 
-	}
 }
 
 
@@ -132,12 +126,15 @@ sub output_sentence
 	my $svg = shift;
 	my $on = 0;
 	my $max_y = 0;
+        my $filename = "";
 
-	mkdir $dir;
+        if (!$stdout) {
+	    mkdir $dir;
 
-	my $filename = $dir . "/" . $sid . "." . "svg";
+	    $filename = $dir . "/" . $sid . "." . "svg";
 
-	open(OUT, "> $filename") or die "conll_to_svg.perl: fatal error: open $filename: $!\n";
+	    open(STDOUT, "> $filename") or die "conll_to_svg.perl: fatal error: open $filename: $!\n";
+        }
 
 	my @lines = split /\n/, $svg;
 		foreach my $line (@lines) {
@@ -152,10 +149,12 @@ sub output_sentence
 				$line = "<a xlink:href='" . ($sid-1) . ".svg'><text stroke-width='1px' stroke-linecap='butt' font-family='Arial, Helvetica, sans-serif' font-size='12px' word-spacing='0px' letter-spacing='0px' x=\"0\" y=\"$max_y\">Previous</text></a>\n<a xlink:href='" . ($sid+1) . ".svg'><text stroke-width='1px' stroke-linecap='butt' font-family='Arial, Helvetica, sans-serif' font-size='12px' word-spacing='0px' letter-spacing='0px' x=\"60\" y=\"$max_y\">Next</text></a>\n</svg>"
 				}
 			# Print those lines that aren't disabled
-			if ($on==1) {print OUT "$line \n"};
+			if ($on==1) {print STDOUT "$line \n"};
 				}
 
-	close OUT or die "conll_to_svg.perl: fatal error: close $filename: $!\n";
+        if (!$stdout) {
+            close STDOUT or die "conll_to_svg.perl: fatal error: close $filename: $!\n";
+        }
 }
 
 
@@ -180,6 +179,7 @@ print <<EOF;
 usage: conll_to_svg.perl OPTION...
 OPTIONS:
 	--dir=<directory name>  (where the SVG is saved) (defaults to .)
+        --stdout: write to stdout (instead of file)
 	--verbosity=<integer>	(defaults to 0)
 	--version: print version information
 	--help: this help message

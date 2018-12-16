@@ -24,29 +24,34 @@ correct_mistagging(yes).
 % Can decrease parsing quality if verbs are mistagged ("Er_PERS kann_VMFIN empfangen_VVPP"), but allows tagging errors to be fixed through n-best tagging.
 enforce_aux_agreement(yes). 
 
-%reads from stdin
-start(GERTWOL) :- start2(GERTWOL, user_input).
-%reads from file
-start(GERTWOL, F) :- open(F, read, Stream, [encoding(utf8)]), start2(GERTWOL, Stream).
+%reads from stdin; writes to stdout
+start(GERTWOL) :- start2(GERTWOL, user_input, user_output).
 
-start2(GERTWOL, Stream) :- retractall(w(_,_,_,_,_,_)), retractall(w(_,_,_,_)), retractall(sentno(_)), retractall(posno(_)), retractall(completed(_,_)), retractall(mainclause(_)), retractall(lvl(_,_,_,_)),
+%reads from file, writes to stdout
+start(GERTWOL, F) :- open(F, read, Stream, [encoding(utf8)]), start2(GERTWOL, Stream, user_output).
+
+%reads from file, writes to file
+start(GERTWOL, F, G) :- open(F, read, Stream, [encoding(utf8)]), open(G, write, OutStream, [encoding(utf8)]), start2(GERTWOL, Stream, OutStream),
+close(Stream), close(OutStream).
+
+start2(GERTWOL, Stream, OutStream) :- retractall(w(_,_,_,_,_,_)), retractall(w(_,_,_,_)), retractall(sentno(_)), retractall(posno(_)), retractall(completed(_,_)), retractall(mainclause(_)), retractall(lvl(_,_,_,_)),
 		   ((morphology(none);morphology(keep))->true;consult(GERTWOL)),
 		   assert(sentno(1)),
 		   assert(posno(1)),
-		   readsentences(Stream).
+		   readsentences(Stream, OutStream).
 
 
 %reads a line and calls addnumber/1 to identify the sentence and position number.
-readsentences(Stream) :- repeat,
+readsentences(Stream, OutStream) :- repeat,
 				read(Stream,X),
-				addnumber(X),
+				addnumber(X, OutStream),
 				X == end_of_file,
 			    !.
 
 %addnumber/1: at the end of a sentence, posno is reset to 1 and sentno incremented by one. otherwise, posno is incremented by one.
 
 %end of sentence
-addnumber(X) :- sentdelim(SentDelim),
+addnumber(X, OutStream) :- sentdelim(SentDelim),
             X = w(Word,SentDelim,_,_C),
 			sentno(Sentence),
 			posno(Pos),
@@ -59,12 +64,12 @@ addnumber(X) :- sentdelim(SentDelim),
 			NewPos is 1,
 			assert(posno(NewPos)),
 		    dochunking(Sentence),
-		    printwords(Sentence),
+		    printwords(Sentence, OutStream),
 		    retractall(w(Sentence,_,_,_,_,_)),
 			!.
 
 %new word within sentence.
-addnumber(X) :-		X = w(Word,Tag,_,C),
+addnumber(X, _) :-		X = w(Word,Tag,_,C),
 			sentno(Sentence),
 			posno(Pos),
 			(lemmatisation(none) -> Lemma=Word, NewTag=Tag;getlemma(Word, Tag, Lemma,NewTag)),
@@ -76,18 +81,18 @@ addnumber(X) :-		X = w(Word,Tag,_,C),
 			!.
 
 %end_of_file has to succeed.
-addnumber(X) :- X == end_of_file, !.
+addnumber(X, _) :- X == end_of_file, !.
 
 
-printwords(Sentence) :-
+printwords(Sentence, OutStream) :-
             sentdelim(SentDelim),
 			w(Sentence,StopPos,_,SentDelim,_,_),
 			nl,
 			between(1,StopPos,Pos),
-			writedown(Sentence,Pos),
+			writedown(Sentence,Pos,OutStream),
 			fail.
 
-printwords(_) :- !.
+printwords(_, _) :- !.
 
 %cycles through all the words (this method makes sure that the print-out is in the right order) and calls writedown every time.
 printwords :- sentdelim(SentDelim),
@@ -102,16 +107,16 @@ printwords :- sentdelim(SentDelim),
 printwords :- !.
 
 %writedown(+SenNr,+PosNr,+OutStream)
-writedown(Sentence,Pos) :-
+writedown(Sentence,Pos,OutStream) :-
 			w(Sentence,Pos,Word,Tag,Chunk,MorphIn),
 			(lemmatisation(none) -> Lemma=Word;getlemma(Word, Tag, Lemma,Tag)),
 			(morphology(keep) -> MorphOut = MorphIn;buildmorphology(Word,Tag, MorphOut)), 
 %Next line is commented for Progresde-compatible input. Uncommenting might be useful for debugging purposes
 %                       Outline =.. [w,Sentence, Pos, Lemma,Tag,Chunk,MorphOut],
                         Outline =.. [w,Lemma,Tag,Chunk,MorphOut],
-                        writeq(Outline),
-                        write('.'),
-                        nl,
+                        writeq(OutStream, Outline),
+                        write(OutStream, '.'),
+                        nl(OutStream),
                         !.
 
 

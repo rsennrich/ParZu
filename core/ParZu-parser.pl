@@ -285,6 +285,17 @@ go_textual(File) :-
     collect_sents(no-end),
     seen.
 
+go_textual(File, OutFile) :-
+    abolish(perlevel/1),
+    retractall(sentno(_)), assert(sentno(0)),
+    open(File, read, Stream,[encoding(utf8)]), 
+    set_input(Stream),
+    open(OutFile, write, OutStream,[encoding(utf8)]), 
+    set_output(OutStream),
+    collect_sents(no-end),
+    seen,
+    close(OutStream).
+
 %read from stdin
 go_textual :-
     abolish(perlevel/1),
@@ -436,7 +447,9 @@ process_struc(Struc,Head,HeadOfDep) :-
     process_struc(Dep,HeadOfDep,HeadofDepDep),         %% Rel(Head,HeadOfDep).
     createRelOutput(Head,HeadOfDep,MyRel),
     % Res =.. [MyRel,Head,HeadOfDep,HeadofDepDep,Dir], awriteq(Res), write('.'), nl, assert(Res).
-    (outputformat(raw) -> (           Res =.. [MyRel,Head,HeadOfDep,HeadofDepDep,Dir], awriteq(Res), write('.'), nl) ; true).
+    (outputformat(raw) -> (
+      statschart(Head,HeadOfDep,MyRel,_,_,_,_,Prob),
+      Res =.. [MyRel,Head,HeadOfDep,HeadofDepDep,Dir, Prob], awriteq(Res), write('.'), nl) ; true).
 
 
 process_struc(Struc,Head,HeadOfDep) :-
@@ -447,7 +460,9 @@ process_struc(Struc,Head,HeadOfDep) :-
     createMorphOutput(Struc,Dep,MyRel),
     process_struc(Dep,HeadOfDep,HeadofDepDep),        %% Rel(Head,HeadOfDep)
     createRelOutput(Head,HeadOfDep,MyRel),
-    (outputformat(raw) -> (           Res =.. [MyRel,Head,HeadOfDep,HeadofDepDep,Dir], awriteq(Res), write('.'), nl) ; true),
+    (outputformat(raw) -> (
+      statschart(Head,HeadOfDep,MyRel,_,_,_,_,Prob),
+      Res =.. [MyRel,Head,HeadOfDep,HeadofDepDep,Dir,Prob], awriteq(Res), write('.'), nl) ; true),
     MoreDeps =.. ([Head,Chunk|Rest]),
     process_struc(MoreDeps,_,_),
     !.

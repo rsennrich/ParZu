@@ -77,6 +77,8 @@ You can then execute ParZu via `docker run`:
 EXAMPLE COMMANDS AND USAGE INFORMATION
 --------------------------------------
 
+you can use ParZu as a stand-alone script:
+
     echo "Das ist ein Test." | ./parzu
 runs preprocessing, the main parsing step and postprocessing.
 
@@ -85,6 +87,15 @@ parse pre-tagged text file
 
     ./parzu -h
 show available command line parameters
+
+alternatively, you can call ParZu from a Python application:
+
+    import parzu_class as parzu
+    options = parzu.process_arguments()
+    ParZu = parzu.Parser(options)
+    sentences = ParZu.main('Das ist ein Test. Das auch.')
+    for sentence in sentences:
+        print sentence
 
 The output formats are defined in 'postprocessor/postprocessing_module.pl' and can be chosen in config.ini or through command line parameters.
 All postprocessed formats are deprojectivized. If you are interested in projective parse trees, use "raw" output and do your own cleanup/format conversion.

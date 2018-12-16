@@ -272,13 +272,17 @@ def getlemma(line,word,pos):
 
 # print analyses with fewest morphemes first
 # useful because parser uses greedy lemmatisation
-def print_cache(cache):
+def print_cache(cache, outstream, outputs):
     printed = set()
     for pos in cache:
         for item in sorted(cache[pos]):
             if item[1] not in printed:
                 printed.add(item[1])
-                print(item[1])
+                output = item[1]
+                if outstream is None:
+                    outputs.append(output)
+                else:
+                    outstream.write(output + '\n')
 
 
 #longest common subsequence code from http://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Longest_common_subsequence
@@ -306,68 +310,89 @@ def backTrack(C, X, Y, i, j):
         else:
             return backTrack(C, X, Y, i, j-1)
 
+def main(instream, outstream=None):
+    """read input file (or list of lines) of morphological analyses in SMOR format,
+    produced by an SMOR/SMORLemma model, and convert it into a prolog-readable format.
+    Also does some mapping of feature names for legacy reasons, like mapping POS tags into STTS.
 
+    Output is either a file-like object or None. If output is None, function returns a list of strings."""
 
-if sys.version_info < (3, 0):
-    sys.stdout = codecs.getwriter('UTF-8')(sys.stdout)
-    sys.stderr = codecs.getwriter('UTF-8')(sys.stderr)
-    sys.stdin = codecs.getreader('UTF-8')(sys.stdin)
+    cache = defaultdict(set)
+    outputs = []
 
-cache = defaultdict(set)
+    for line in instream:
+        
+        lemma = ''
+        pos = ''
+        morph = []
+        other = "''"
+        
+        line = line.rstrip()
 
-for line in sys.stdin:
-    
-    lemma = ''
-    pos = ''
-    morph = []
-    other = "''"
-    
-    line = line.rstrip()
+        if line.startswith('> ') or line == '>':
+            word = line[2:]
+            print_cache(cache, outstream, outputs)
+            cache = defaultdict(set)
+            continue
 
-    if line.startswith('> ') or line == '>':
-        word = line[2:]
-        print_cache(cache)
-        cache = defaultdict(set)
-        continue
+        elif line.startswith('no result'):
+            output = "gertwol({0},'<unknown>',_,_,_).".format(get_repr2(word))
+            if outstream is None:
+                outputs.append(output)
+            else:
+                outstream.write(output + '\n')
+            continue
 
-    elif line.startswith('no result'):
-        print("gertwol({0},'<unknown>',_,_,_).".format(get_repr2(word)))
-        continue
+        elif line.startswith('><+') or line.startswith('<<+'):
+            output = "gertwol({0},{0},'$(',_,'').".format(get_repr2(line[0]))
+            if outstream is None:
+                outputs.append(output)
+            else:
+                outstream.write(output + '\n')
+            continue
 
-    elif line.startswith('><+') or line.startswith('<<+'):
-        print("gertwol({0},{0},'$(',_,'').".format(get_repr2(line[0])))
-        continue
+        try:
+            raw_pos = re_mainclass.search(line).group(1)
+        except:
+            sys.stderr.write(line)
+            raise
 
-    try:
-        raw_pos = re_mainclass.search(line).group(1)
-    except:
-        sys.stderr.write(line)
-        raise
+        pos,pos2 = get_true_pos(raw_pos,line)
+            
+        #we analyse the present participle as adverb/adjective, and discard this analysis (which has no equivalent in STTS)
+        if pos == 'VV' and '<PPres>' in line:
+            continue
+            
+        extracted_morph = extract(line)
+        morph = create_morph(word,pos,extracted_morph)
+        
+        if 'derivation' in extracted_morph:
+            other = get_repr('derivation',extracted_morph)
 
-    pos,pos2 = get_true_pos(raw_pos,line)
-           
-    #we analyse the present participle as adverb/adjective, and discard this analysis (which has no equivalent in STTS)
-    if pos == 'VV' and '<PPres>' in line:
-        continue
-           
-    extracted_morph = extract(line)
-    morph = create_morph(word,pos,extracted_morph)
-    
-    if 'derivation' in extracted_morph:
-        other = get_repr('derivation',extracted_morph)
+        if pos2:
+            morph2 = create_morph(word,pos2,extracted_morph)
 
-    if pos2:
-        morph2 = create_morph(word,pos2,extracted_morph)
+        lemma = getlemma(line,word,pos)
+        
+        #score number of morphemes; heuristic adopted from SFST
+        segments = len(re_segment.findall(line))
+        if line.startswith('<CAP>'):
+            segments -= 1
 
-    lemma = getlemma(line,word,pos)
-    
-    #score number of morphemes; heuristic adopted from SFST
-    segments = len(re_segment.findall(line))
-    if line.startswith('<CAP>'):
-        segments -= 1
+        cache[pos].add((segments,"gertwol({0},{1},{2},{3},{4}).".format(get_repr2(word),get_repr2(lemma),get_repr2(pos),morph,other)))
+        if pos2:
+            cache[pos2].add((segments,"gertwol({0},{1},{2},{3},{4}).".format(get_repr2(word),get_repr2(lemma),get_repr2(pos2),morph2,other)))
 
-    cache[pos].add((segments,"gertwol({0},{1},{2},{3},{4}).".format(get_repr2(word),get_repr2(lemma),get_repr2(pos),morph,other)))
-    if pos2:
-        cache[pos2].add((segments,"gertwol({0},{1},{2},{3},{4}).".format(get_repr2(word),get_repr2(lemma),get_repr2(pos2),morph2,other)))
+    print_cache(cache, outstream, outputs)
 
-print_cache(cache)
+    if outstream is None:
+        return outputs
+
+if __name__ == '__main__':
+
+    if sys.version_info < (3, 0):
+        sys.stdout = codecs.getwriter('UTF-8')(sys.stdout)
+        sys.stderr = codecs.getwriter('UTF-8')(sys.stderr)
+        sys.stdin = codecs.getreader('UTF-8')(sys.stdin)
+
+    main(sys.stdin, sys.stdout)
