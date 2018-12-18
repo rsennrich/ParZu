@@ -1,56 +1,79 @@
 """
 Very simple web server for ParZu
-See: http://github.com/rsennrich/ParZu
 """
-import csv
+
+from __future__ import unicode_literals
+
 import logging
-
-from io import StringIO, BytesIO
-
-import sys
 from flask import Flask, request, Response
-import subprocess
-import os
 
-PYTHON2 = (sys.version_info[0] == 2)
+from parzu_class import Parser, process_arguments
 
-app = Flask('ParZuServer')
+suggested_outputformats = ['conll', 'prolog', 'graphical']
+other_outputformats = ['tokenized', 'tagged', 'preprocessed', 'moses', 'raw']
+valid_outputformats  = suggested_outputformats + other_outputformats
 
-@app.route('/', methods=['GET'])
-def index():
-    return 'Simple web API for ParZu, see  this <a href="/parse?text=Ich bin ein Berliner">example</a>) and see <a href="http://github.com/rsennrich/ParZu">http://github.com/rsennrich/ParZu</a> for more information.', 200
+outputformat_docstring = ""
+for outputformat in suggested_outputformats:
+  outputformat_docstring += """      <li><a href="/parse?text=Ich bin ein Berliner.&format={0}">{0}</a></li>""".format(outputformat)
 
+index_str = """<!doctype html>
+<html lang="en">
+<title>ParZu API</title>
+<body>
+Simple web API for ParZu, supporting both GET and POST requests.
+<br/>
+<br/>
+Arguments:
+<ul>
+  <li>text: the raw text that you want to parse</li>
+  <li>format: the desired output format. Suggested choices:
+  <ul>
+  {0}
+  </ul>
+  </li>
+</ul>
+<br/>
+For more information, see <a href="http://github.com/rsennrich/ParZu">http://github.com/rsennrich/ParZu</a>.
+</body></html>
+""".format(outputformat_docstring)
 
-@app.route('/parse/', methods=['GET', 'POST'])
-def parse():
-    if request.method == "GET":
-        text = request.args.get('text', None)
-    else:
-        input = request.get_json(force=True)
-        text = input.get('text')
-    if not text:
-        return "Please provide text as POST data or GET text= parameter\n", 400
-    result = convert_output(do_parse(text))
-    return Response(result, mimetype='text/csv')
+class Server(object):
 
-def convert_output(output):
-    '1\tIch\tich\tPRO\tPPER\t1|Sg|_|Nom\t2\tsubj\t_\t_ \n2\tbin\tsein\tV\tVAFIN\t1|Sg|Pres|Ind\t0\troot\t_\t_ \n3\tein\teine\tART\tART\tIndef|_|_|Sg\t4\tdet\t_\t_ \n4\tBerliner\tBerliner\tADJA\tADJA\t_|_|Sg\t2\tpred\t_\t_ \n\n'
-    out = BytesIO() if PYTHON2 else StringIO()
-    w = csv.writer(out)
-    for line in csv.reader(StringIO(output), delimiter="\t"):
-        w.writerow(line)
-    return out.getvalue().strip() + "\n"
+    def __init__(self):
+        options = process_arguments(commandline=False)
+        self.parser = Parser(options)
+        self.app = Flask('ParZuServer')
 
-def do_parse(text):
-    path = os.path.dirname(os.path.realpath(__file__))
-    cmd = [os.path.join(path, "parzu")]
-    logging.debug("Calling {cmd} with {} bytes of input".format(len(text), **locals()))
-    p = subprocess.Popen(cmd, shell=False, stdin=subprocess.PIPE, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-    out, err = p.communicate(text.encode("utf-8"))
-    if p.returncode != 0:
-        raise Exception(err)
-    return out.decode("utf-8")
+        @self.app.route('/', methods=['GET'])
+        def index():
+            return Response(index_str, 200, mimetype='text/html')
 
+        @self.app.route('/parse/', methods=['GET', 'POST'])
+        def parse():
+            if request.method == "GET":
+                text = request.args.get('text', None)
+                outputformat = request.args.get('format', 'conll')
+            else:
+                input = request.get_json(force=True)
+                text = input.get('text')
+                outputformat = input.get('format', 'conll')
+            if not text:
+                return "Please provide text as POST data or GET text= parameter\n", 400
+
+            if outputformat not in valid_outputformats:
+                return "Please provide valid output format as POST data or GET format= parameter\n</br>Valid outputformats are: <ul><li>{0}</li></ul>".format('</li>\n<li>'.join(valid_outputformats)), 400
+
+            parses = self.parser.main(text, inputformat='plain', outputformat=outputformat)
+
+            if outputformat in ['tokenized', 'tagged', 'conll', 'prolog', 'moses']:
+                result = '\n'.join(parses)
+            elif outputformat in ['preprocessed', 'raw']:
+                result = parses
+            elif outputformat == 'graphical':
+                return Response(parses[0], mimetype='image/svg+xml')
+
+            return Response(result, mimetype='text/plain')
 
 if __name__ == '__main__':
     import argparse
@@ -65,4 +88,6 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO,
                         format='[%(asctime)s %(name)-12s %(levelname)-5s] %(message)s')
 
-    app.run(port=args.port, host=args.host, debug=args.debug, threaded=True)
+    server = Server()
+
+    server.app.run(port=args.port, host=args.host, debug=args.debug, threaded=True)

@@ -144,7 +144,8 @@ sub output_sentence
 			if ($line =~ m/root<\/text>/) {$on=0};
 			if ($line =~ m/root <\/text>/) {$on=0};
 			if ($line =~ m/y='(\d+)'/) {$max_y = max($1,$max_y)};
-			if ($line =~ m/<\/svg>/) {
+                        # link to previous/next svg
+			if ($line =~ m/<\/svg>/ && !$stdout) {
 				$max_y = 20;
 				$line = "<a xlink:href='" . ($sid-1) . ".svg'><text stroke-width='1px' stroke-linecap='butt' font-family='Arial, Helvetica, sans-serif' font-size='12px' word-spacing='0px' letter-spacing='0px' x=\"0\" y=\"$max_y\">Previous</text></a>\n<a xlink:href='" . ($sid+1) . ".svg'><text stroke-width='1px' stroke-linecap='butt' font-family='Arial, Helvetica, sans-serif' font-size='12px' word-spacing='0px' letter-spacing='0px' x=\"60\" y=\"$max_y\">Next</text></a>\n</svg>"
 				}

@@ -97,8 +97,12 @@ alternatively, you can call ParZu from a Python application:
     for sentence in sentences:
         print sentence
 
-The output formats are defined in 'postprocessor/postprocessing_module.pl' and can be chosen in config.ini or through command line parameters.
-All postprocessed formats are deprojectivized. If you are interested in projective parse trees, use "raw" output and do your own cleanup/format conversion.
+
+lastly, you can run ParZu as a server with a simple web API:
+
+    ./parzu_server.py
+
+you can try out the API, and see its arguments, by entering the URL into your web browser (by default `http://localhost:5003`)
 
 The dependency labels implemented in ParZu are described in:
 

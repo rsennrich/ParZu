@@ -133,13 +133,20 @@ def parse_config(filename):
 
 
 #sanity checks and merging config and command line options
-def process_arguments():
+def process_arguments(commandline=True):
 
     #get config options
     options = parse_config(os.path.join(root_directory,'config.ini'))
 
     #get command line options
-    arg_output,arg_input,options['linewise'],verbose,options['extrainfo'] = load_arguments()
+    if commandline:
+        arg_output,arg_input,options['linewise'],verbose,options['extrainfo'] = load_arguments()
+    else:
+        arg_output = False
+        arg_input = False
+        verbose = False
+        options['linewise'] = False
+        options['extrainfo'] = 'no'
 
     if arg_output:
         options['outputformat'] = arg_output
@@ -240,6 +247,7 @@ class Parser():
         self.prolog_preprocess.expect_exact('?- ')
         self.prolog_preprocess.delaybeforesend = 0
 
+        # launch main parser process (prolog script)
         self.prolog_parser = pexpect.spawn('swipl', 
                                            ['-q', '-s', 'ParZu-parser.pl', '-G248M', '-L248M'],
                                            echo=False,
@@ -249,14 +257,8 @@ class Parser():
         self.prolog_parser.expect_exact('?- ')
         self.prolog_parser.delaybeforesend = 0
 
-        if options['outputformat'] == 'graphical':
-            self.outputformat = 'conll'
-        else:
-            self.outputformat = options['outputformat']
-
-        parser_init = "retract(outputformat(_))," \
-                + 'assert(outputformat('+ self.outputformat +"))," \
-                + "retract(sentdelim(_))," \
+        # initialize parser parameters
+        parser_init = "retract(sentdelim(_))," \
                 + "assert(sentdelim('" + options['sentdelim'] +"'))," \
                 + "retract(returnsentdelim(_))," \
                 + "assert(returnsentdelim("+ options['returnsentdelim'] +"))," \
@@ -273,6 +275,7 @@ class Parser():
         self.prolog_parser.sendline(parser_init)
         self.prolog_parser.expect('.*\?- ')
 
+        # launch graphical conversion script
         self.conll_to_svg = pexpect.spawn('perl',
                                           ['-I', os.path.join(root_directory,'postprocessor','DepSVG'), os.path.join(root_directory,'postprocessor','DepSVG','conll_to_svg.perl'), '--stdout'],
                                           cwd=os.path.join(root_directory,'postprocessor','DepSVG'),
@@ -326,20 +329,20 @@ class Parser():
             codecs.open(preprocessed_path.name, 'w', encoding='UTF-8').write(text)
 
         if outputformat == 'preprocessed':
-            text = open(preprocessed_path).read()
+            text = codecs.open(preprocessed_path, encoding='UTF-8').read()
             os.remove(preprocessed_path)
             return text
 
         with self.lock_parse:
-            parsed_path = self.parse(preprocessed_path)
+            parsed_path = self.parse(preprocessed_path, outputformat)
         os.remove(preprocessed_path)
 
         if outputformat == 'raw':
-            text = open(parsed_path).read()
+            text = codecs.open(parsed_path, encoding='UTF-8').read()
             os.remove(parsed_path)
             return text
 
-        sentences = self.postprocess(parsed_path)
+        sentences = self.postprocess(parsed_path, outputformat)
         os.remove(parsed_path)
 
         if outputformat in outputformats:
@@ -465,7 +468,7 @@ class Parser():
     #main parsing step
     #input: path to input file (produced by preprocess())
     #output: path to output file (temporary file created by function)
-    def parse(self, inpath):
+    def parse(self, inpath, outputformat):
 
         if self.options['verbose']:
             self.options['senderror'].write("Starting parser\n")
@@ -473,7 +476,12 @@ class Parser():
         parsedfile = tempfile.NamedTemporaryFile(prefix='ParZu-parsed.pl', dir=os.path.join(self.options['tempdir']), delete=False)
         parsedfile.close()
 
-        cmd = "go_textual(\'" + inpath + "','" + parsedfile.name + "').\n"
+        if outputformat == 'graphical':
+            outputformat = 'conll'
+
+        cmd = "retract(outputformat(_))," \
+            + "assert(outputformat("+ outputformat +"))," \
+            + "go_textual(\'" + inpath + "','" + parsedfile.name + "').\n"
 
         self.prolog_parser.sendline(cmd)
 
@@ -491,15 +499,17 @@ class Parser():
     #de-projectivization and removal of debugging output
     #input: path to input file (produced by parse)
     #output:
-    def postprocess(self, inpath):
+    def postprocess(self, inpath, outputformat):
 
         if self.options['verbose']:
             self.options['senderror'].write("Starting postprocessor\n")
 
-        if self.outputformat == 'conll':
-            sentences = [s for s in cleanup_output.cleanup_conll(open(inpath))]
-        elif self.outputformat == 'prolog':
-            sentences = [s for s in cleanup_output.cleanup_prolog(open(inpath))]
+        infile = codecs.open(inpath, encoding='UTF-8')
+
+        if outputformat == 'prolog':
+            sentences = list(cleanup_output.cleanup_prolog(infile))
+        else:
+            sentences = list(cleanup_output.cleanup_conll(infile))
 
         return sentences
 
@@ -541,16 +551,3 @@ def process_by_sentence(processor, sentences):
         sentences_out.append('\n'.join(words))
 
     return sentences_out
-
-#clean temp directory
-def cleanup(options):
-    if options['deltemp'] == '1':
-        for fname in [options['tagfilepath'],options['morphinpath'],options['errorpath'],options['morphpath']]:
-            if os.path.isfile(fname):
-                os.remove(fname)
-
-
-#if __name__ == '__main__':
-
-    #options = process_arguments()
-    #main(options, sys.stdin, sys.stdout)
