@@ -106,25 +106,6 @@ inputformat = plain
 
 processes = 4
 
-
-#######################################
-
-#sentence delimiter
-#POS tag that is used to mark the end of sentences
-#overriding this allows you to do define your own parsing blocks, even if they aren't complete sentences.
-#special case: choosing "$newline" as sentence delimiter overrides the internal sentence segmenter and treat every line as one sentence
-
-sentdelim = $.
-
-
-#######################################
-
-#Include sentence delimiter in output
-#Define whether sentence delimiters should be part of output
-#Set to 'no' to disable
-returnsentdelim = yes
-
-
 #######################################
 
 #Use nbest tagging output
