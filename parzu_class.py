@@ -238,6 +238,16 @@ class Parser():
                 sys.stderr.write('Error: fst-infl2 not found. Please install sfst and smor_model in config.ini points to a valid model.\n')
                 sys.exit(1)
 
+        # test morphological analyzer
+        self.morph.send('\n\n')
+        out1 = self.morph.readline().strip()
+        out2 = self.morph.readline().strip()
+        if not (out1 == '>' and out1 == 'no result for'):
+            sys.stderr.write('Error: fst-infl2 returned unexpected output:\n')
+            sys.stderr.write(out1)
+            sys.stderr.write(out2 + '\n')
+            sys.exit(1)
+
         # launch morphological preprocessing (prolog script)
         self.prolog_preprocess = pexpect.spawn('swipl',
                                                ['-q', '-s', os.path.join(root_directory,'preprocessor','preprocessing.pl')],

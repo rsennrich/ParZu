@@ -18,6 +18,7 @@ wget -c https://pub.cl.uzh.ch/users/sennrich/zmorge/transducers/zmorge-20140521-
 wget -c https://pub.cl.uzh.ch/users/sennrich/zmorge/transducers/zmorge-20150315-smor_newlemma.ca.zip
 wget -c https://pub.cl.uzh.ch/users/sennrich/zmorge/models/hdt_ab.zmorge-20140521-smor_newlemma.model.zip
 unzip -u zmorge-20140521-smor_newlemma.ca.zip
+unzip -u zmorge-20150315-smor_newlemma.ca.zip
 unzip -u hdt_ab.zmorge-20140521-smor_newlemma.model.zip
 cd ..
 
