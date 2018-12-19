@@ -71,7 +71,7 @@ Alternatively to the local installation, ParZu can also be installed through Doc
 
 You can then execute ParZu via `docker run`:
 
-    docker run -i rsennrich/parzu
+    docker run -p 5003:5003 -i rsennrich/parzu
 
 This will launch a web server on http://localhost:5003/ (open this in a web browser, or see below how to interact with it)
 
