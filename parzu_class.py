@@ -239,7 +239,7 @@ class Parser():
                 sys.exit(1)
 
         # test morphological analyzer
-        self.morph.send('\n\n')
+        self.morph.send('\n')
         out1 = self.morph.readline().strip()
         out2 = self.morph.readline().strip()
         if not (out1 == '>' and out2 == 'no result for'):

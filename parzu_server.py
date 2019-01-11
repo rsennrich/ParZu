@@ -44,6 +44,7 @@ class Server(object):
 
     def __init__(self):
         options = process_arguments(commandline=False)
+        options['extrainfo'] = 'secedges'
         self.parser = Parser(options)
         self.app = Flask('ParZuServer')
 
