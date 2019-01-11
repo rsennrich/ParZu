@@ -117,7 +117,7 @@ The dependency labels implemented in ParZu are described in:
 
 Killian A. Foth. 2005. Eine umfassende Contraint-Dependenz-Grammatik des Deutschen. University of Hamburg.
 
-A short overview is given in `LABELS.md`.
+A short overview is given [here](doc/LABELS.md).
 
 ON QUALITY AND TESTING
 ----------------------
@@ -137,12 +137,18 @@ You can use the online demo at https://pub.cl.uzh.ch/demo/parzu/ to check if the
 TECHNICAL FAQ
 -------------
 
+- What is the architecture of the parser?
+
+  The core of ParZu is the syntactic parser itself, which relies on tokenized and POS-tagged input, and morphological annotation.
+  To allow parsing of raw text, ParZu includes a pipeline of text processing steps.
+  A short overview is given [here](doc/PIPELINE.md).
+
 - What do the fields in the output mean?
 
   By default, ParZu uses the CoNLL dependency format: http://ilk.uvt.nl/conll/#dataformat
   The parse information is in columns 7 and 8 (ID of head and dependency relation);
   columns 9 and 10 either provide information about secondary edges (option --secedges) or projective heads (option --projective).
-  The relation labels are described in `LABELS.md`, the STTS tagset for the POS tags at http://www.ims.uni-stuttgart.de/projekte/corplex/TagSets/stts-table.html .
+  The relation labels are described [here](doc/LABELS.md), the STTS tagset for the POS tags at http://www.ims.uni-stuttgart.de/projekte/corplex/TagSets/stts-table.html .
 
 - Why doesn't the parser immediately start generating output? (especially when parsing large texts)
 
