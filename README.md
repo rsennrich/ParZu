@@ -148,7 +148,7 @@ TECHNICAL FAQ
   By default, ParZu uses the CoNLL dependency format: http://ilk.uvt.nl/conll/#dataformat
   The parse information is in columns 7 and 8 (ID of head and dependency relation);
   columns 9 and 10 either provide information about secondary edges (option --secedges) or projective heads (option --projective).
-  The relation labels are described [here](doc/LABELS.md), the STTS tagset for the POS tags at http://www.ims.uni-stuttgart.de/projekte/corplex/TagSets/stts-table.html .
+  The relation labels are described [here](doc/LABELS.md), the STTS tagset for the POS tags at http://www.ims.uni-stuttgart.de/forschung/ressourcen/lexika/TagSets/stts-table.html .
 
 - Why doesn't the parser immediately start generating output? (especially when parsing large texts)
 
