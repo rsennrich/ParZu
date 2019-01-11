@@ -52,7 +52,7 @@ def cleanup_prolog(txtin):
         elif re_prologpreds_end.match(line):
             active = 0
             if outlines:
-                yield '\n'.join(outlines) + '\n'
+                yield '\n'.join(outlines) + '\n\n'
             outlines = []
         elif active and line:
             line = line.lstrip('word(')
@@ -73,7 +73,7 @@ if __name__ == '__main__':
     if outputformat == 'conll':
         func = cleanup_conll
     elif outputformat == 'prolog':
-        func = cleanup_conll
+        func = cleanup_prolog
 
     for sentence in func(sys.stdin):
         sys.stdout.write(sentence)
