@@ -108,8 +108,9 @@ lastly, you can run ParZu as a server with a simple web API:
 
     ./parzu_server.py
 
-you can try out the API, and see its arguments, by entering the URL into your web browser (by default `http://localhost:5003`),
-or by using some other http-capable tool like curl:
+by default, this will launch a server which serves http://localhost:5003. Check this location in a browser, or check [here](docs/API.md) to see the API.
+
+here is a sample command using curl:
 
     curl -H "Content-Type: application/json" -X POST -d '{"text": "Ich bin ein Berliner."}' "http://localhost:5003/parse/"
 
