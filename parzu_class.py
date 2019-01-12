@@ -58,8 +58,8 @@ def usage():
     sys.stderr.write('\t\t' + bold +'preprocessed' + reset + ': return preprocessed input (unparsed, but parser-ready)\n')
     sys.stderr.write('\t\t' + bold +'prolog' + reset + ': prolog-readable format\n')
     sys.stderr.write('\t\t' + bold +'raw' + reset + ': parser output without postprocessing (mostly for debugging)\n\n')
-    sys.stderr.write('\t' + bold + '-q'  + reset + ', ' + bold + '--quiet' + reset + '\n')
-    sys.stderr.write('\t\tsend warnings and errors to temporary log file instead of stderr\n')
+    sys.stderr.write('\t' + bold + '-v'  + reset + ', ' + bold + '--verbose' + reset + '\n')
+    sys.stderr.write('\t\tsend warnings and errors to stderr\n')
     sys.stderr.write('\t' + bold + '--projective' + reset + '\n')
     sys.stderr.write('\t\talso print projective output. Uses the last two columns of the CoNLL dependency format (or two extra arguments in the Prolog format).\n')
     sys.stderr.write('\t' + bold + '--secedges' + reset + '\n')
@@ -67,7 +67,7 @@ def usage():
 
 def load_arguments():
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "hi:lo:p:q", ["help", "input=", "linewise", "output=", "quiet", "secedges", "projective"])
+        opts, args = getopt.getopt(sys.argv[1:], "hi:lo:p:vq", ["help", "input=", "linewise", "output=", "verbose", "secedges", "projective", "quiet"])
     except getopt.GetoptError as err:
         # print help information and exit:
         sys.stderr.write(err) # will print something like "option -a not recognized"
@@ -76,7 +76,7 @@ def load_arguments():
     output = None
     inputformat = None
     linewise = False
-    verbose = True
+    verbose = False
     extrainfo = 'no'
     for o, a in opts:
         if o in ("-h", "--help"):
@@ -98,8 +98,8 @@ def load_arguments():
                 sys.stderr.write('Error: Cannot display secondary edges and projective tree at same time. Aborting.\n')
                 sys.exit()
             extrainfo = 'projective'
-        elif o in ("-q", "--quiet"):
-            verbose = False
+        elif o in ("-v", "--verbose"):
+            verbose = True
         else:
             assert False, "unhandled option"
     return output,inputformat,linewise,verbose,extrainfo
@@ -191,10 +191,8 @@ def process_arguments(commandline=True):
 
     options['taggercmd'] = shlex.split(options['taggercmd'])
 
-    if verbose:
-        options['senderror'] = sys.stderr
-    else:
-        options['senderror'] = open(options['errorpath'],'w')
+    options['verbose'] = verbose
+    options['senderror'] = sys.stderr
 
     if options['morphology'] == 'morphisto':
         sys.stderr.write('Warning: deprecated value \'morphisto\' for option \'morphology\'. Use \'smor\' instead.\n')
@@ -302,8 +300,6 @@ class Parser():
         self.lock_svg = threading.Lock()
 
         self.options = options
-
-        self.options['verbose'] = False
 
 
     def main(self, text, inputformat=None, outputformat=None):
