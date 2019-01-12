@@ -87,7 +87,7 @@ addnumber(X, _) :- X == end_of_file, !.
 printwords(Sentence, OutStream) :-
             sentdelim(SentDelim),
 			w(Sentence,StopPos,_,SentDelim,_,_),
-			nl,
+			nl(OutStream),
 			between(1,StopPos,Pos),
 			writedown(Sentence,Pos,OutStream),
 			fail.
@@ -256,7 +256,7 @@ getlemma(Word,'VMPP',Lemma,'VMPP') :- morphology(gertwol), gertwol(Word,Lemma,'V
 getlemma(Word,Tag,Word,Tag) :- findall(Tag2, (gertwol(Word,Lemma,Tag2,_, _),\+ Lemma = '<unknown>'), List),
 			    length(List,Len),
 			    sort(List,AltList),
-			    (Len > 0 -> (write('%word/tag combination not found in gertwol:'), write(Word), write(' '),write(Tag),write(' - alternatives proposed by Gertwol: '), write(AltList), write('\n'));true),
+			    (Len > 0 -> (write('%word/tag combination not found in morph. analyzer:'), write(Word), write(' '),write(Tag),write(' - alternatives proposed by analyzer: '), write(AltList), write('\n'));true),
 			    !. 
 
 

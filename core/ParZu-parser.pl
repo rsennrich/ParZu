@@ -293,6 +293,7 @@ go_textual(File, OutFile) :-
     open(OutFile, write, OutStream,[encoding(utf8)]), 
     set_output(OutStream),
     collect_sents(no-end),
+    !,
     seen,
     close(OutStream).
 

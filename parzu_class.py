@@ -252,7 +252,8 @@ class Parser():
         self.prolog_preprocess = pexpect.spawn('swipl',
                                                ['-q', '-s', os.path.join(root_directory,'preprocessor','preprocessing.pl')],
                                                echo=False,
-                                               encoding='utf-8')
+                                               encoding='utf-8',
+                                               timeout=None)
 
         self.prolog_preprocess.expect_exact('?- ')
         self.prolog_preprocess.delaybeforesend = 0
@@ -262,7 +263,8 @@ class Parser():
                                            ['-q', '-s', 'ParZu-parser.pl', '-G248M', '-L248M'],
                                            echo=False,
                                            encoding='utf-8',
-                                           cwd=os.path.join(root_directory,'core'))
+                                           cwd=os.path.join(root_directory,'core'),
+                                           timeout=None)
 
         self.prolog_parser.expect_exact('?- ')
         self.prolog_parser.delaybeforesend = 0
@@ -427,17 +429,23 @@ class Parser():
 
         sentences_out.append("\nw('ENDOFDOC','{0}',['._{0}'],'ENDOFDOC').".format(self.options['sentdelim']))
 
-        vocab = '\n'.join(vocab) + '\n\n'
 
-        # do morphological analysis
-        self.morph.send(vocab)
         analyses = []
-        while True:
-            ret = self.morph.readline().strip()
-            if ret == 'no result for':
-                break
-            else:
-                analyses.append(ret)
+        # split vocab into batches to avoid filling buffer
+        batch_size = 100
+        vocab = list(vocab)
+        for i in range(0, len(vocab), batch_size):
+            subvocab = '\n'.join(vocab[i:i+batch_size]) + '\n\n'
+
+            # do morphological analysis
+            self.morph.send(subvocab)
+
+            while True:
+                ret = self.morph.readline().strip()
+                if ret == 'no result for':
+                    break
+                else:
+                    analyses.append(ret)
 
         # convert morphological analysis to prolog format
         analyses = morphisto2prolog.main(analyses)
@@ -460,13 +468,12 @@ class Parser():
         # start preprocessing script and wait for it to finish
         self.prolog_preprocess.sendline('retractall(gertwol(_,_,_,_,_)),retractall(lemmatisation(_)),retractall(morphology(_)),assert(lemmatisation(smor)),assert(morphology(smor)),retract(sentdelim(_)),assert(sentdelim(\''+ self.options['sentdelim'] +"')),start('" + morphfile.name + "','" + tagfile.name + "','" + preprocessedfile.name + "').")
 
-        self.prolog_preprocess.readline()
-        self.prolog_preprocess.expect("(.*)\?- ")
-        expected_out = '\x1b[1mtrue.\x1b[0m\r\n\r\n?-'
-        if not self.prolog_preprocess.match.group().strip().endswith(expected_out):
-            self.options['senderror'].write('Warning: preprocessing.pl returned the following. Check if this indicates an error\n')
-            self.options['senderror'].write(self.prolog_preprocess.match.group().strip())
-            print([self.prolog_preprocess.match.group().strip()])
+        while True:
+            line = self.prolog_preprocess.readline()
+            if self.options['verbose']:
+                self.options['senderror'].write(line)
+            if line == '\x1b[1mtrue.\x1b[0m\r\n':
+                break
 
         # clean up temporary files
         os.remove(morphfile.name)
@@ -495,13 +502,12 @@ class Parser():
 
         self.prolog_parser.sendline(cmd)
 
-        self.prolog_parser.readline()
-        self.prolog_parser.expect("(.*)\?- ")
-        expected_out = '\x1b[1mtrue \x1b[0m\x1b[1m.\x1b[0m\r\n\r\n?-'
-        if not self.prolog_parser.match.group().strip().endswith(expected_out):
-            self.options['senderror'].write('Warning: ParZu-parser.pl returned the following. Check if this indicates an error\n')
-            self.options['senderror'].write(self.prolog_parser.match.group().strip())
-            print([self.prolog_parser.match.group().strip()])
+        while True:
+            line = self.prolog_parser.readline()
+            if self.options['verbose']:
+                self.options['senderror'].write(line)
+            if line == '\x1b[1mtrue.\x1b[0m\r\n':
+                break
 
         return parsedfile.name
 
