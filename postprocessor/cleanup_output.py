@@ -25,7 +25,7 @@ def cleanup_conll(txtin):
         elif re_prologpreds_end.match(line):
             active = 0
             if outlines:
-                yield '\n'.join(outlines) + '\n'
+                yield '\n'.join(outlines) + '\n\n'
             outlines = []
         elif active and line:
             outlines.append(line)
