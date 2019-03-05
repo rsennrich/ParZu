@@ -252,7 +252,7 @@ class Parser():
                                                ['-q', '-s', os.path.join(root_directory,'preprocessor','preprocessing.pl')],
                                                echo=False,
                                                encoding='utf-8',
-                                               timeout=2)
+                                               timeout=5)
 
         self.prolog_preprocess.expect_exact('?- ')
         self.prolog_preprocess.delaybeforesend = 0
@@ -263,7 +263,7 @@ class Parser():
                                            echo=False,
                                            encoding='utf-8',
                                            cwd=os.path.join(root_directory,'core'),
-                                           timeout=2)
+                                           timeout=5)
 
         self.prolog_parser.expect_exact('?- ')
         self.prolog_parser.delaybeforesend = 0
