@@ -5,7 +5,7 @@
 
 from __future__ import unicode_literals
 
-import sys 
+import sys
 import os
 import getopt
 import shlex
@@ -14,6 +14,7 @@ import pexpect
 import tempfile
 import threading
 import codecs
+import re
 from subprocess import Popen, PIPE
 
 # root directory of ParZu if file is run as script
@@ -171,10 +172,10 @@ def process_arguments(commandline=True):
 
     if options['nbestmode']:
         options['nbest_cutoff'] = float(options['nbest_cutoff'])
-        
+
     options['sentdelim'] = '$newline'
     options['returnsentdelim'] = 'no'
-    
+
     if options['tempdir'] == 'local':
         options['tempdir'] = os.path.join(root_directory,'tmp')
 
@@ -251,18 +252,18 @@ class Parser():
                                                ['-q', '-s', os.path.join(root_directory,'preprocessor','preprocessing.pl')],
                                                echo=False,
                                                encoding='utf-8',
-                                               timeout=None)
+                                               timeout=2)
 
         self.prolog_preprocess.expect_exact('?- ')
         self.prolog_preprocess.delaybeforesend = 0
 
         # launch main parser process (prolog script)
-        self.prolog_parser = pexpect.spawn('swipl', 
+        self.prolog_parser = pexpect.spawn('swipl',
                                            ['-q', '-s', 'ParZu-parser.pl', '-G248M', '-L248M'],
                                            echo=False,
                                            encoding='utf-8',
                                            cwd=os.path.join(root_directory,'core'),
-                                           timeout=None)
+                                           timeout=2)
 
         self.prolog_parser.expect_exact('?- ')
         self.prolog_parser.delaybeforesend = 0
@@ -468,7 +469,8 @@ class Parser():
             line = self.prolog_preprocess.readline()
             if self.options['verbose']:
                 self.options['senderror'].write(line)
-            if line == '\x1b[1mtrue.\x1b[0m\r\n':
+            line = re.sub(r'\x1B\[[0-?]*[ -/]*[@-~]', '', line)
+            if re.match('(\?-\s)?true\.\r\n', line):
                 break
 
         # clean up temporary files
@@ -502,7 +504,8 @@ class Parser():
             line = self.prolog_parser.readline()
             if self.options['verbose']:
                 self.options['senderror'].write(line)
-            if line == '\x1b[1mtrue.\x1b[0m\r\n':
+            line = re.sub(r'\x1B\[[0-?]*[ -/]*[@-~]', '', line)     # remove styling tokens
+            if re.match('(\?-)?(\s+\|\s+)?true\.\r\n', line):
                 break
 
         return parsedfile.name
