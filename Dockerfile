@@ -10,6 +10,7 @@ RUN apt-get update && apt-get -y install \
     python-pexpect \
     python-flask
 
+ADD https://api.github.com/repos/rsennrich/ParZu/git/refs/heads/master version.json
 RUN git clone https://github.com/rsennrich/ParZu
 
 RUN (cd ParZu; bash install.sh)
