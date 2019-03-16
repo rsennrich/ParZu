@@ -216,6 +216,10 @@ Rico Sennrich, Martin Volk and Gerold Schneider (2013):
    Exploiting Synergies Between Open Resources for German Dependency Parsing, POS-tagging, and Morphological Analysis.
    In: Proceedings of the International Conference Recent Advances in Natural Language Processing 2013, Hissar, Bulgaria.
 
+ACKNOWLEDGMENTS
+---------------
+
+This project has received funding from GRADUAL.CONSULTING.
 
 CONTACT
 -------
