@@ -2789,10 +2789,10 @@ morph_cleanup(_,_,_,_,'KON',_,_,[_]) :- !.
 %Some grammatical functions are bound to a specific case. Restrict output morphology to syntactically valid analyses.
 morph_cleanup(subj,HMorph,HTag,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Nom']],'APPR',DMorphTemp), (unify_number(DMorphTemp,DTag,HMorph,HTag,DMorphOut);DMorphOut=DMorphTemp), !.
 morph_cleanup(pred,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Nom']],'APPR',DMorphOut), !.
-morph_cleanup(obja,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Akk', 'Acc']],'APPR',DMorphOut), !.
-morph_cleanup(obja2,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Akk', 'Acc']],'APPR',DMorphOut), !.
-morph_cleanup(grad,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Akk', 'Acc']],'APPR',DMorphOut), !.
-morph_cleanup(zeit,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Akk', 'Acc']],'APPR',DMorphOut), !.
+morph_cleanup(obja,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Akk'], ['Acc']],'APPR',DMorphOut), !.
+morph_cleanup(obja2,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Akk'], ['Acc']],'APPR',DMorphOut), !.
+morph_cleanup(grad,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Akk'], ['Acc']],'APPR',DMorphOut), !.
+morph_cleanup(zeit,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Akk'], ['Acc']],'APPR',DMorphOut), !.
 morph_cleanup(objd,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Dat']],'APPR',DMorphOut), !.
 morph_cleanup(objg,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Gen']],'APPR',DMorphOut), !.
 morph_cleanup(gmod,_,_,DMorph,DTag,_,_,DMorphOut) :- morphology(gertwol), unify_case(DMorph,DTag,[['Gen']],'APPR',DMorphOut), !.
