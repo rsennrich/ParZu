@@ -1,12 +1,12 @@
 #!/bin/sh
 
 #example call (given the training data in a conll format):
-#./create_statistics.sh tueba6_goldpos.utf8.conll
+#./create_statistics.sh tuebadz-10.0-conll2010.txt
 
 if [ $# -lt 1 ]
 then
     echo "Error in $0 - Invalid Argument Count"
-    echo "Syntax: $0 tüba_file (in w/6 prolog format)"
+    echo "Syntax: $0 tüba_file conll10 format"
     exit
 fi
 

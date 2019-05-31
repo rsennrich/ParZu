@@ -16,8 +16,10 @@ for line in sys.stdin:
     if line == '\n':
         i += 1
         continue
-        
-    pos,word,lemma,ctag,tag,morph,head,label = line.strip().split()[:8]
+    elif line.startswith('#'):
+        continue
+
+    pos, word, lemma, _, tag, _, morph, _, head, _, label = line.strip().split()[:11]
     
 
     # map some lemmas in Tüba-D/Z to a format more compatible with morphological analyzers

@@ -64,7 +64,7 @@ def print_sentence(sentence, filename):
         if word['label'] == "''":
             word['label'] = '-PUNCT-'
         try:
-            print('\t'.join((word['position'], word['token'], word.get('lemma', word['token']), coarsetag.get(word['pos'], word['pos']), word['pos'], word.get('feature', '--'), word['head'], word['label'])))
+            print('\t'.join((word['position'], word['token'], word.get('lemma', word['token']), coarsetag.get(word['pos'], word['pos']), word['pos'], '_', word.get('feature', '--'), '_', word['head'], '_', word['label'])))
         except KeyError:
             sys.stderr.write('error: info incomplete in file ' + f + '\n')
             raise
