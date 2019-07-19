@@ -11,6 +11,7 @@ from flask import Flask, request, Response
 
 from parzu_class import Parser, process_arguments
 
+valid_inputformats = ['plain', 'tokenized', 'tokenized_lines', 'tagged']
 suggested_outputformats = ['conll', 'prolog', 'graphical']
 other_outputformats = ['tokenized', 'tagged', 'preprocessed', 'moses', 'raw']
 valid_outputformats  = suggested_outputformats + other_outputformats
@@ -18,6 +19,12 @@ valid_outputformats  = suggested_outputformats + other_outputformats
 outputformat_docstring = ""
 for outputformat in suggested_outputformats:
   outputformat_docstring += """      <li><a href="/parse?text=Ich bin ein Berliner.&format={0}">{0}</a></li>""".format(outputformat)
+
+inputformat_docstring = ""
+inputformat_docstring += """      <li><a href="/parse?text=Ich bin ein Berliner. Er ist ein Hamburger.&inputformat=plain">plain</a></li>"""
+inputformat_docstring += """      <li><a href="/parse?text=Ich%0Abin%0Aein%0ABerliner%0A.%0A%0AEr%0Aist%0Aein%0AHamburger%0A.&inputformat=tokenized">tokenized</a> (one line per word; empty line marks end of sentence)</li>"""
+inputformat_docstring += """      <li><a href="/parse?text=Ich bin ein Berliner .%0AEr ist ein Hamburger .&inputformat=tokenized_lines">tokenized_lines</a> (one line per sentence; tokens separated by whitespace)</li>"""
+inputformat_docstring += """      <li><a href="/parse?text=Ich PPER%0Abin VAFIN%0Aein ART%0ABerliner NN%0A. $.%0A%0AEr PPER%0Aist VAFIN%0Aein ART%0AHamburger NN%0A. $.&inputformat=tagged">tagged</a> (one line per word; empty line marks end of sentence; POS-tag for each word separated by whitespace/tab)</li>"""
 
 index_str = """<!doctype html>
 <html lang="en">
@@ -34,11 +41,16 @@ Arguments:
   {0}
   </ul>
   </li>
+  <li>inputformat: the format of the input string. Valid choices:
+  <ul>
+  {1}
+  </ul>
+  </li>
 </ul>
 <br/>
 For more information, see <a href="http://github.com/rsennrich/ParZu">http://github.com/rsennrich/ParZu</a>.
 </body></html>
-""".format(outputformat_docstring)
+""".format(outputformat_docstring, inputformat_docstring)
 
 class Server(object):
 
@@ -57,17 +69,22 @@ class Server(object):
             if request.method == "GET":
                 text = request.args.get('text', None)
                 outputformat = request.args.get('format', 'conll')
+                inputformat = request.args.get('inputformat', 'plain')
             else:
                 input = request.get_json(force=True)
                 text = input.get('text')
                 outputformat = input.get('format', 'conll')
+                inputformat = input.get('inputformat', 'plain')
             if not text:
                 return "Please provide text as POST data or GET text= parameter\n", 400
 
             if outputformat not in valid_outputformats:
-                return "Please provide valid output format as POST data or GET format= parameter\n</br>Valid outputformats are: <ul><li>{0}</li></ul>".format('</li>\n<li>'.join(valid_outputformats)), 400
+                return "Please provide valid output format as POST data or GET format= parameter\n</br>Valid output formats are: <ul><li>{0}</li></ul>".format('</li>\n<li>'.join(valid_outputformats)), 400
 
-            parses = self.parser.main(text, inputformat='plain', outputformat=outputformat)
+            if inputformat not in valid_inputformats:
+                return "Please provide valid input format as POST data or GET inputformat= parameter\n</br>Valid inputformats are: <ul><li>{0}</li></ul>".format('</li>\n<li>'.join(valid_inputformats)), 400
+
+            parses = self.parser.main(text, inputformat=inputformat, outputformat=outputformat)
 
             if outputformat in ['tokenized', 'tagged', 'conll', 'prolog', 'moses']:
                 result = '\n'.join(parses)
