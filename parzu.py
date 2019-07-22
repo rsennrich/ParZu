@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # Copyright © 2009-2011 University of Zürich
 # Author: Rico Sennrich <sennrich@cl.uzh.ch>
