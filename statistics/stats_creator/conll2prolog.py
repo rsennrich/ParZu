@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+
+from __future__ import print_function
 import sys
 
 try:
@@ -12,14 +14,22 @@ i = 1
 
 refl_mapping = {'uns':'wir', 'sich':'er','mich':'ich','dich':'du','mir':'ich','dir':'du','euch':'ihr'}
 
-for line in sys.stdin:
+for linenr, line in enumerate(sys.stdin):
     if line == '\n':
         i += 1
         continue
     elif line.startswith('#'):
         continue
 
-    pos, word, lemma, _, tag, _, morph, _, head, _, label = line.strip().split()[:11]
+    fields = line.strip().split()
+
+    # ConLL format as used in HDT 1.01; TüBa-D/Z 7
+    if len(fields) == 10:
+        pos,word,lemma,ctag,tag,morph,head,label = line.strip().split()[:8]
+
+    #CoNLL format as used in TüBa-D/Z 10
+    elif len(fields) == 17:
+        pos, word, lemma, _, tag, _, morph, _, head, _, label = fields[:11]
     
 
     # map some lemmas in Tüba-D/Z to a format more compatible with morphological analyzers
@@ -54,12 +64,19 @@ for line in sys.stdin:
     ## which are the only thing that matter for the current statistics)
     if '|' in morph:
         if ctag == 'PREP':
-            if morph != '_':
+            if "case=" in morph:
+                morph = [morph[morph.index('case=')+1]]
+            elif morph != '_':
                 morph = [morph[0].lower()]
             else:
                 morph = ['-']
+        elif "=" in morph:
+            morph = [cat[cat.index('=')+1:] for cat in morph.split('|')]
         else:
             morph = ['-','-']
+
+    elif "=" in morph:
+        morph = [morph[morph.index('=')+1]]
 
     else:
         morph = list(morph)
@@ -67,4 +84,4 @@ for line in sys.stdin:
 
     # in TüBa, we reserve first 4000 sentences for development/testing; can be disabled for other corpora
     #if i > 4000:
-    print "w({0}, {1}, '{2}', '{3}', '{4}', {5}, {6}).".format(i,pos,token,tag,label,head,morph)
+    print("w({0}, {1}, '{2}', '{3}', '{4}', {5}, {6}).".format(i,pos,token,tag,label,head,morph))
