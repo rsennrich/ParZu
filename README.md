@@ -56,7 +56,7 @@ LOCAL INSTALLATION
 3. adjust file paths in the config.ini file. Also define which lemmatisation/morphology you use (if any), and make sure they work. Default models can be installed/configured by executing `install.sh`
 
 4. (OPTIONAL): If you have the Tüba-D/Z corpus in the right format (dependencies, CONLL format, UTF-8), you can generate improved statistic files by executing `statistics/create_statistics.sh`. 
-    The Hamburg Dependency Treebank can be converted into the required CONLL format with the script `statistics/stats_creator/hamburg_treebank_to_conll.py`.
+    The same script will also work with the Hamburg Dependency Treebank in the CONLL format.
     The files advstats* freq* konjstats* ppstats* and vstats* are created in a temporary directory - move them into the `statistics/` folder to make the system use them.
     With evaluation/create_devsets.py , you can create a development from a CONLL format file, and perform quality/regression tests with python evaluation/do_evaluation.py.
 

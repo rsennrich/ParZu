@@ -32,6 +32,10 @@ for linenr, line in enumerate(sys.stdin):
         pos, word, lemma, _, tag, _, morph, _, head, _, label = fields[:11]
     
 
+    # we don't distinguish between dative object and 'ethischer dativ'
+    if label == 'ETH':
+        label = 'OBJD'
+
     # map some lemmas in Tüba-D/Z to a format more compatible with morphological analyzers
     if mode == 'lemma':
 
