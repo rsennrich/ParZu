@@ -539,7 +539,7 @@ class Parser():
         svg = []
 
         for sentence in sentences:
-            self.conll_to_svg.send(sentence + '\n')
+            self.conll_to_svg.send(sentence)
             while True:
                 line = self.conll_to_svg.readline()
                 svg.append(line.strip())
