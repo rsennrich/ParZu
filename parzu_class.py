@@ -312,6 +312,8 @@ class Parser():
             outputformat = self.options['outputformat']
 
         if inputformat in ['plain', 'tokenized_lines']:
+            if inputformat == 'plain':
+                text = text.strip()
             with self.lock_tokenize:
                 sentences = self.tokenize(text)
         else:
