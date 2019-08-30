@@ -38,6 +38,18 @@ head('PDS','PIDAT',l,det,'PDS', [_,_,_,all,_,_,_,_],H-D,MH,_,MH) :- 1 is H-D.
 %alles andere
 head('PIS','PIDAT',l,det,'PIS',_,H-D,MH,_,MH) :- 1 is H-D.
 
+%"das Ihre"
+% a relation between 'PPOSS' as head and a determiner (detcan/2 checks if DET is valid POS tag)
+% direction is 'l', meaning that dependent comes before the head
+% if successfull, the relation will receive label 'det',
+% we give the resulting construction a new internal POS-like tag ('NN') - this will be used when the head is combined with other words in later rules
+% We check that the position of the head (F) has no nouns or similar following it via endOfNP/1 (otherwise, this indicates a tagging error)
+% We check that the morphological information of the head (MF) and the dependent (MG) are compatible via check_agreement/5. The list of compatible morphological analyses is stored as MNew, and saved as the morphological information of the full structure
+% We check the construction of the head (OF). We dont allow this relation if the head already has a determiner to the left. 'bad_det' is a special type of relationship (defined above), which does not undergo morphological agreement check, but is allowed with low probability.
+% if all checks succeed, this relation is considered during parsing, and will be assigned a score that is defined in statmodule_ger.pl.
+% if one of the check fails, the relation will not be considered.
+head('PPOSS',DET,l,det,'NN',[_,_,_,_,OF,_,_,_],F-G,MF,MG,MNew) :- detcan(DET,G), endOfNP(F), check_agreement(MF,'NN',MG,DET,MNew), \+ member('<-det<-',OF), \+ member('<-bad_det<-',OF).
+
 
 head('NN','PIAT',l,det,'NN',[_,_,_,_,OF,_,_,_],_-G,MH,_,MH) :- \+ member('<-gmod<-',OF), OldPos is G - 1, checkPos(OldPos,_,LTag,_,_), \+ attributive_pronoun(LTag), \+ member(LTag,['ART','ADJA']).
 
