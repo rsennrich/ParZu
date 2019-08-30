@@ -1818,17 +1818,19 @@ head('PRF','KON_PRONOUN',r,kon,'PRF', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF
 
 head('PWS','KON_PRONOUN',r,kon,'PWS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PWS',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PWAT','KON_PRONOUN',r,kon,'PWS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PWAT',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
-
-head('PIAT','KON_PRONOUN',r,kon,'PIS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PIAT',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
-
-head('PDAT','KON_PRONOUN',r,kon,'PDS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PDAT',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
-
-head('PIDAT','KON_PRONOUN',r,kon,'PDS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PIDAT',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
-
 head('PPOSS','KON_PRONOUN',r,kon,'PPOSS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PPOSS',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
-head('PPOSAT','KON_PRONOUN',r,kon,'PPOSS', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PPOSAT',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
+
+%attributive pronouns: "mein und dein Freund"
+head('PWAT','KON_PRONOUN_AT',r,kon,'PWAT', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PWAT',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
+
+head('PIAT','KON_PRONOUN_AT',r,kon,'PIAT', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PIAT',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
+
+head('PDAT','KON_PRONOUN_AT',r,kon,'PDAT', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PDAT',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
+
+head('PIDAT','KON_PRONOUN_AT',r,kon,'PIDAT', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PIDAT',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
+
+head('PPOSAT','KON_PRONOUN_AT',r,kon,'PPOSAT', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MNew) :- unify_case(MG,'PPOSAT',MF,'PDS',MNew), prevent_clause_crossing_kon(HeadRels, DepRels, DepID).
 
 
 head('PRELS','KON_PRONOUN_REL',r,kon,'PRELS',  _,_,MG,MF,MNew) :- unify_case(MG,'PRELS',MF,'PRELS',MNew).
@@ -1892,7 +1894,7 @@ head('PRF','KON_NOUN',r,kon,'PRF', [_,_,_,_,HeadRels,DepRels,_,DepID],_,MG,MF,MN
 
 
 %ein und derselbe Job
-head('ART','KON_PRONOUN',r,kon,'ART',  _,_,_,MF,MNew) :- convertMorphList('PIS',MF,'ART',MNew).
+head('ART','KON_PRONOUN_AT',r,kon,'ART',  _,_,_,MF,MNew) :- convertMorphList('PIS',MF,'ART',MNew).
 
 %der oder die nächste
 head('ART','KON_ART',r,kon,'ART',  _,_,_,MF,MF).
@@ -2058,12 +2060,13 @@ kon_mapping('PRF','KON_PRF') :- !.
 kon_mapping('PDS','KON_PRONOUN') :- !.
 kon_mapping('PIS','KON_PRONOUN') :- !.
 kon_mapping('PWS','KON_PRONOUN') :- !.
-kon_mapping('PWAT','KON_PRONOUN') :- !.
-kon_mapping('PIAT','KON_PRONOUN') :- !.
-kon_mapping('PDAT','KON_PRONOUN') :- !.
-kon_mapping('PIDAT','KON_PRONOUN') :- !.
 kon_mapping('PPOSS','KON_PRONOUN') :- !.
-kon_mapping('PPOSAT','KON_PRONOUN') :- !.
+
+kon_mapping('PWAT','KON_PRONOUN_AT') :- !.
+kon_mapping('PIAT','KON_PRONOUN_AT') :- !.
+kon_mapping('PDAT','KON_PRONOUN_AT') :- !.
+kon_mapping('PIDAT','KON_PRONOUN_AT') :- !.
+kon_mapping('PPOSAT','KON_PRONOUN_AT') :- !.
 
 kon_mapping('ART','KON_ART') :- !.
 
