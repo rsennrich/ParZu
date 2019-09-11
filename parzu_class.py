@@ -111,6 +111,16 @@ def load_arguments():
 COMMENT_CHAR = '#'
 OPTION_CHAR =  '='
 
+EMPTY_SVG = """<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox='0 0 16 132' width='16' height='132'>
+
+<title/>
+<defs><marker id="a" viewbox="0 0 8 4" refX="8" refY="2" markerUnits="strokeWidth"
+markerWidth="8" markerHeight="4" orient="auto">
+<path d="M 0 0 L 8 2 L 0 4 Z" fill='#800'/>
+</marker>
+</defs>
+</svg>"""
 
 def parse_config(filename):
     options = {}
@@ -311,13 +321,24 @@ class Parser():
         if outputformat is None:
             outputformat = self.options['outputformat']
 
+
         if inputformat in ['plain', 'tokenized_lines']:
-            if inputformat == 'plain':
-                text = text.strip()
+            text = text.strip()
             with self.lock_tokenize:
-                sentences = self.tokenize(text)
+                sentences = self.tokenize(text, inputformat)
         else:
             sentences = text.split('\n\n')
+
+        # strip empty sentences
+        # TODO: we may want to retain empty sentences for alignment purposes in parallel data
+        # this is currently not supported in parzu_class; use the batch processing mode of ParZu for this
+        sentences = [s.strip() for s in sentences if s.strip()]
+
+        if not sentences:
+            if outputformat == 'graphical':
+                return [EMPTY_SVG]
+            else:
+                return []
 
         if outputformat == 'tokenized':
             return sentences
@@ -327,7 +348,6 @@ class Parser():
                 sentences = self.tag(sentences)
         else:
             sentences = text.split('\n\n')
-
         if outputformat == 'tagged':
             return sentences
 
@@ -368,13 +388,16 @@ class Parser():
     #sentence splitting and tokenization
     #input: plain text
     #output: one token per line; empty lines mark sentence boundaries
-    def tokenize(self, text):
+    def tokenize(self, text, inputformat):
 
         if self.options['verbose']:
             self.options['senderror'].write("Starting tokenizer\n")
 
-        if self.options['inputformat'] == 'tokenized_lines':
-            return '\n'.join(['\n'.join(line.split()) for line in text])
+        if not text:
+            return []
+
+        if inputformat == 'tokenized_lines':
+            return ['\n'.join(line.split()) for line in text.splitlines()]
 
         elif self.options['linewise']:
             sentences = text.splitlines()
