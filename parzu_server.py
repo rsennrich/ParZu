@@ -57,9 +57,10 @@ For more information, see <a href="http://github.com/rsennrich/ParZu">http://git
 
 class Server(object):
 
-    def __init__(self, timeout=10):
-        options = process_arguments(commandline=False)
-        options['extrainfo'] = 'secedges'
+    def __init__(self, timeout=10, options=None):
+        if options is None:
+            options = process_arguments(commandline=False)
+            options['extrainfo'] = 'secedges'
         self.parser = Parser(options, timeout=timeout)
         self.app = Flask('ParZuServer')
 
