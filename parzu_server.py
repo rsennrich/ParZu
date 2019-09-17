@@ -6,8 +6,11 @@ Very simple web server for ParZu
 
 from __future__ import unicode_literals
 
+import sys
 import logging
-from flask import Flask, request, Response
+import traceback
+from flask import Flask, request, Response, abort
+from pexpect.exceptions import TIMEOUT
 
 from parzu_class import Parser, process_arguments
 
@@ -54,10 +57,10 @@ For more information, see <a href="http://github.com/rsennrich/ParZu">http://git
 
 class Server(object):
 
-    def __init__(self):
+    def __init__(self, timeout=10):
         options = process_arguments(commandline=False)
         options['extrainfo'] = 'secedges'
-        self.parser = Parser(options)
+        self.parser = Parser(options, timeout=timeout)
         self.app = Flask('ParZuServer')
 
         @self.app.route('/', methods=['GET'])
@@ -84,7 +87,13 @@ class Server(object):
             if inputformat not in valid_inputformats:
                 return "Please provide valid input format as POST data or GET inputformat= parameter\n</br>Valid inputformats are: <ul><li>{0}</li></ul>".format('</li>\n<li>'.join(valid_inputformats)), 400
 
-            parses = self.parser.main(text, inputformat=inputformat, outputformat=outputformat)
+            try:
+                parses = self.parser.main(text, inputformat=inputformat, outputformat=outputformat)
+            except TIMEOUT as e:
+                sys.stderr.write(traceback.format_exc())
+                del self.parser
+                self.parser = Parser(options)
+                return abort(408)
 
             if outputformat in ['tokenized', 'tagged', 'conll', 'prolog', 'moses']:
                 result = '\n'.join(parses)
@@ -103,11 +112,13 @@ if __name__ == '__main__':
                         help="Port number to listen to (default: 5003)")
     parser.add_argument("--host", "-H", help="Host address to listen on (default: localhost)")
     parser.add_argument("--debug", "-d", help="Set debug mode", action="store_true")
+    parser.add_argument("--timeout", type=int, default=10,
+                        help="Timeout for each step in pipeline (total processing time may be longer).")
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.DEBUG if args.debug else logging.INFO,
                         format='[%(asctime)s %(name)-12s %(levelname)-5s] %(message)s')
 
-    server = Server()
+    server = Server(timeout=args.timeout)
 
     server.app.run(port=args.port, host=args.host, debug=args.debug, threaded=True)

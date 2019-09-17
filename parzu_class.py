@@ -312,6 +312,12 @@ class Parser():
 
         self.options = options
 
+    def __del__(self):
+        self.tokenizer.close()
+        self.morph.close()
+        self.prolog_preprocess.close()
+        self.prolog_parser.close()
+        self.conll_to_svg.close()
 
     def main(self, text, inputformat=None, outputformat=None):
 
