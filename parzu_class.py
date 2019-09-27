@@ -409,6 +409,8 @@ class Parser():
             sentences = text.splitlines()
         else:
             sentences = self.punkt_tokenizer.tokenize(text)
+            # remove line breaks
+            sentences = [sentence.replace('\n', ' ').replace('\r', '') for sentence in sentences]
 
         sentences = process_by_sentence(self.tokenizer, sentences)
 
