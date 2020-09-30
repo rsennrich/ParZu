@@ -257,6 +257,18 @@ class Parser():
             sys.stderr.write(out2 + '\n')
             sys.exit(1)
 
+        # get swi-prolog version
+        swipl_version, _ = Popen(['swipl', '--version'], stdout=PIPE).communicate()
+        swipl_version = swipl_version.split()
+        try:
+            swipl_version = map(int,swipl_version[swipl_version.index('version')+1].split('.'))
+            if swipl_version[0] >= 8 or (swipl_version[0] == 7 and swipl_version[1] >= 7):
+                prolog_newstacks = True
+            else:
+                prolog_newstacks = False
+        except IndexError:
+            swipl8 = False
+
         # launch morphological preprocessing (prolog script)
         self.prolog_preprocess = pexpect.spawn('swipl',
                                                ['-q', '-s', os.path.join(root_directory,'preprocessor','preprocessing.pl')],
@@ -268,8 +280,13 @@ class Parser():
         self.prolog_preprocess.delaybeforesend = 0
 
         # launch main parser process (prolog script)
+        args = ['-q', '-s', 'ParZu-parser.pl']
+        if prolog_newstacks:
+            args += ['--stack-limit=496M']
+        else:
+            args += ['-G248M', '-L248M']
         self.prolog_parser = pexpect.spawn('swipl',
-                                           ['-q', '-s', 'ParZu-parser.pl', '-G248M', '-L248M'],
+                                           args,
                                            echo=False,
                                            encoding='utf-8',
                                            cwd=os.path.join(root_directory,'core'),
