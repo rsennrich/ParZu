@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # Copyright © 2009-2011 University of Zürich
 # Author: Rico Sennrich <sennrich@cl.uzh.ch>
@@ -311,7 +311,7 @@ class Parser():
                 + "start_german."
 
         self.prolog_parser.sendline(parser_init)
-        self.prolog_parser.expect('.*\?- ')
+        self.prolog_parser.expect('.*true.*')
 
         # launch graphical conversion script
         self.conll_to_svg = pexpect.spawn('perl',

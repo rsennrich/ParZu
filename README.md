@@ -31,7 +31,7 @@ This software was developed and tested using
 
     Linux (32 and 64 bit)
     SWI-Prolog 5.6 (or YAP 6.2 - check the top of the script `parzu` to switch between the two)
-    Python 2.6 (also tested on Python 3.1)
+    Python 3.7
     Perl 5.10
 
 Additionally, the parser requires the following software and licenses:
