@@ -46,6 +46,20 @@ root_directory = sys.path[0]
 if '__file__' in globals():
     root_directory = os.path.dirname(os.path.abspath(__file__))
 
+
+# get swi-prolog version
+if prolog == 'swipl':
+    swipl_version, _ = Popen(['swipl', '--version'], stdout=PIPE, text=True).communicate()
+    swipl_version = swipl_version.split()
+    try:
+        swipl_version = list(map(int,swipl_version[swipl_version.index('version')+1].split('.')))
+        if swipl_version[0] >= 8 or (swipl_version[0] == 7 and swipl_version[1] >= 7):
+            prolog_newstacks = True
+        else:
+            prolog_newstacks = False
+    except IndexError:
+        prolog_newstacks = False
+
 ########################
 #Command line argument parser
 
@@ -418,7 +432,9 @@ def parse(instream,outstream,options):
     else:
         runCMD = [prolog, '-q', prolog_load[prolog], 'ParZu-parser.pl', '-g', args]
         
-        if prolog.endswith('swipl'):
+        if prolog == 'swipl' and prolog_newstacks:
+            runCMD += ['--stack-limit=496M']
+        else:
             runCMD += ['-G248M', '-L248M']
         
         parsing = try_Popen(runCMD, cwd=os.path.join(root_directory,'core'), stdin=instream, stdout=outstream, stderr=options['senderror'])
